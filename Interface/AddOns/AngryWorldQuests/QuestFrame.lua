@@ -470,7 +470,7 @@ local function UpdateTitleButton(title)
 		title.TagTexture:SetSize(16, 16)
 		title.TagText:ClearAllPoints()
 		title.TagText:SetPoint("RIGHT", title.TagTexture , "LEFT", -3, 0)
-		title.TagText:SetFont(filename, fontHeight, "")
+		title.TagText:SetFont(filename, fontHeight, "OUTLINE")
 	end
 end
 local function UpdateTitleButtons()
