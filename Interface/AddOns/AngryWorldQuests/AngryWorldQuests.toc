@@ -1,0 +1,18 @@
+## Interface: 70200
+## Title: |cff0080ffAngry WorldQuests|r
+## Title-zhCN: |cff0080ffAngry WorldQuests|r 世界任务助手
+## Title-zhTW: |cff0080ffAngry WorldQuests|r 世界任務助手
+## Notes: Adds World Quests to the quest list
+## Author: Ermad
+## SavedVariables: AngryWorldQuests_Config
+## SavedVariablesPerCharacter: AngryWorldQuests_CharacterConfig
+## X-Packaged-Version: v0.17.3
+
+Core.lua
+
+Config.lua
+Locale.lua
+
+QuestFrame.lua
+Data.lua
+FlightMap.lua
