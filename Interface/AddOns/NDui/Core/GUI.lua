@@ -309,7 +309,7 @@ local optionList = {		-- type, key, value, name, horizon, doubleline
 		{1, "Nameplate", "FriendlyCC", L["Friendly CC"]},
 		{1, "Nameplate", "HostileCC", L["Hostile CC"], true},
 		{1, "Nameplate", "TankMode", L["Tank Mode"]},
-		{1, "Nameplate", "CustomUnitColor", L["CustomUnitColor"], true},
+		{1, "Nameplate", "CustomUnitColor", "|cff00cc4c"..L["CustomUnitColor"], true},
 		{1, "Nameplate", "Arrow", L["Show Arrow"]},
 		{1, "Nameplate", "InsideView", L["Nameplate InsideView"]},
 		{2, "Nameplate", "UnitList", L["UnitColor List"], true},
@@ -493,6 +493,15 @@ local function CreateOption(i)
 				e:ClearFocus()
 				NDuiDB[key][value] = e:GetText()
 			end)
+			e:SetScript("OnEnter", function(self)
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				GameTooltip:ClearLines()
+				GameTooltip:AddLine(L["Tips"])
+				GameTooltip:AddLine(L["EdieBox Tip"], .6,.8,1)
+				GameTooltip:Show()
+			end)
+			e:SetScript("OnLeave", GameTooltip_Hide)
+
 			local label = B.CreateFS(e, 14, name, false, "CENTER", 0, 25)
 			label:SetTextColor(1, .8, 0)
 		-- Slider
