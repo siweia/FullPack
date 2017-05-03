@@ -8775,7 +8775,12 @@ do
 			--local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
 			inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
 			
+			
 			local _,itemLink = inspectScantip:GetItem()
+			if itemLink and (itemSlotID == 16 or itemSlotID == 17) and itemLink:find("item::") then
+				itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
+			end
+			
 			if itemLink then
 				inspectData['items'][itemSlotID] = itemLink
 				--inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
@@ -8839,6 +8844,65 @@ do
 				local isTrinket = module.db.itemsToSpells[itemID]
 				if isTrinket then
 					module.db.session_gGUIDs[name] = isTrinket
+				end
+				
+				
+				--------> Relic
+				if itemSlotID == 16 or itemSlotID == 17 then
+					--|cffe6cc80|Hitem:128935::140840:139250:140840::::110:262:16777472:9:1:744:113:1:3:3443:1472:3336:2:1806:1502:3:3443:1467:1813|h[Кулак Ра-дена]|h
+					--|cffe6cc80|Hitem:128908::140837:140841:140817::::110:65 :256     :9:1:751:660:3:3516:1502:3337:3:3516:1497:3336:3:3515:1477:1813|h[Боевые мечи валарьяров]|h|r
+					
+					local _,itemID,enchant,gem1,gem2,gem3,gem4,suffixID,uniqueID,level,specializationID,upgradeType,instanceDifficultyID,numBonusIDs,restLink = strsplit(":",itemLink,15)
+					
+					if ((gem1 and gem1 ~= "") or (gem2 and gem2 ~= "") or (gem1 and gem3 ~= "")) and (numBonusIDs and numBonusIDs ~= "") then
+						numBonusIDs = tonumber(numBonusIDs)
+						for j=1,numBonusIDs do
+							if not restLink then
+								break
+							end
+							local _,newRestLink = strsplit(":",restLink,2)
+							restLink = newRestLink
+						end
+						if restLink then
+							restLink = restLink:gsub("|h.-$","")
+						
+							if upgradeType and (tonumber(upgradeType) or 0) < 1000 then
+								local _,newRestLink = strsplit(":",restLink,2)
+								restLink = newRestLink
+							else
+								local _,_,newRestLink = strsplit(":",restLink,3)
+								restLink = newRestLink							
+							end
+							
+							for relic=1,3 do
+								if not restLink then
+									break
+								end
+								local numBonusRelic,newRestLink = strsplit(":",restLink,2)
+								numBonusRelic = tonumber(numBonusRelic or "?") or 0
+								restLink = newRestLink
+								
+								if numBonusRelic > 10 then	--Got Error in parsing here
+									break
+								end
+								
+								local relicBonus = numBonusRelic
+								for j=1,numBonusRelic do
+									if not restLink then
+										break
+									end
+									local bonusID,newRestLink = strsplit(":",restLink,2)
+									restLink = newRestLink
+									relicBonus = relicBonus .. ":" .. bonusID					
+								end
+								
+								local relicItemID = select(3+relic, strsplit(":",itemLink) )
+								if relicItemID and relicItemID ~= "" then
+									inspectData['items']['relic'..relic] = "item:"..relicItemID.."::::::::110:0::0:"..relicBonus..":::"
+								end
+							end
+						end
+					end
 				end
 			end
 			

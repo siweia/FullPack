@@ -1,6 +1,10 @@
---	1:08 24.03.2017
+--	19:58 03.04.2017
 
 --[[
+3855
+* Raid Inspect: fixes (weapons still be missing if players in another zone)
+* Raid Inspect: you able to see artifact relics for all players	
+
 3850
 * 7.2 Update
 * Note: Added ToS bosses
@@ -35,7 +39,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3850
+ExRT.V = 3855
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

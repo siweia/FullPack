@@ -1029,7 +1029,8 @@ local BossPhasesData = {
 }
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1
-local BossPhasesBossmod = function ()
+local BossPhasesBossmod
+function BossPhasesBossmod()
 	if BigWigsLoader and type(BigWigsLoader)=='table' and BigWigsLoader.RegisterMessage then
 		local r = {}
 		function r:BigWigs_Message (event, module, key, text, ...)

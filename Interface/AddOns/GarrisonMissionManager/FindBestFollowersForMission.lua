@@ -28,9 +28,6 @@ local type = type
 local wipe = wipe
 -- [AUTOLOCAL END]
 
-local MissionPage = GarrisonMissionFrame.MissionTab.MissionPage
-local MissionPageFollowers = MissionPage.Followers
-
 addon_env.event_frame = addon_env.event_frame or CreateFrame("Frame")
 local event_frame = addon_env.event_frame
 local RegisterEvent = event_frame.RegisterEvent
@@ -83,6 +80,8 @@ local function FindBestFollowersForMission(mission, followers, mode)
    for idx = 1, #event_handlers do UnregisterEvent(event_handlers[idx], "GARRISON_FOLLOWER_LIST_UPDATE") end
 
    local mission_id = mission.missionID
+   local MissionPage = mission_frame.MissionTab.MissionPage
+   local MissionPageFollowers = MissionPage.Followers
    local party_followers_count = #MissionPageFollowers
    if party_followers_count > 0 then
       for party_idx = 1, party_followers_count do
@@ -229,7 +228,7 @@ local function FindBestFollowersForMission(mission, followers, mode)
 
             if xp_only_rewards then
                -- Throw away teams that are completely filled with maxed out followers
-               if slots == followers_maxed then
+               if followers_not_maxed == 0 then
                   -- However, if ALL free followers are maxed and we have salvage yard - don't.
                   if not (salvage_yard_level and all_followers_maxed) then
                      skip = true
@@ -340,6 +339,28 @@ local function FindBestFollowersForMission(mission, followers, mode)
                            if prev_followers_troop > followers_troop then found = true break end
                         end
 
+                        -- If mission have XP-only rewards:
+                        -- 1) Check that we meet at least 100%.
+                        -- 2) Check that we have as many unmaxed followers as possible
+                        -- 3) If there's overmax reward - check for biggest success chance
+                        if xp_only_rewards then
+                           local prev_successChance_clamped = prev_successChance > 100 and 100 or prev_successChance
+                           local successChance_clamped = successChance > 100 and 100 or successChance
+
+                           if prev_successChance_clamped > successChance_clamped then break end
+                           if prev_successChance_clamped < successChance_clamped then found = true break end
+
+                           local prev_followers_not_maxed = prev_top.followers_not_maxed
+
+                           if prev_followers_not_maxed > followers_not_maxed then break end
+                           if prev_followers_not_maxed < followers_not_maxed then found = true break end
+
+                           if overmax_reward then
+                              if prev_successChance < successChance then found = true break end
+                              if prev_successChance > successChance then break end
+                           end
+                        end
+
                         local prev_material_yield = prev_top.material_yield
                         if mode == 'material_yield' then
                            if prev_material_yield < material_yield then found = true break end
@@ -392,11 +413,11 @@ local function FindBestFollowersForMission(mission, followers, mode)
                         if prev_followers_maxed > followers_maxed then found = true break end
                         if prev_followers_maxed < followers_maxed then break end
 
-                        local cXpBonus = prev_top.xpBonus
+                        local prev_xpBonus = prev_top.xpBonus
                         -- Maximize XP bonus only if party have unmaxed followers
-                        if slots ~= followers_maxed then
-                           if cXpBonus < xpBonus then found = true break end
-                           if cXpBonus > xpBonus then break end
+                        if followers_not_maxed > 0 then
+                           if prev_xpBonus < xpBonus then found = true break end
+                           if prev_xpBonus > xpBonus then break end
                         end
 
                         local cTotalTimeSeconds = prev_top.totalTimeSeconds
@@ -425,9 +446,9 @@ local function FindBestFollowersForMission(mission, followers, mode)
                         -- Minimize XP bonus if all followers are maxed, because it indicates either overkill or XP-bonus traits better used elsewhere
                         -- but only if there are unmaxed followers. Otherwise minimize it after other optimizations.
                         if not all_followers_maxed then
-                           if slots == followers_maxed then
-                              if cXpBonus > xpBonus then found = true break end
-                              if cXpBonus < xpBonus then break end
+                           if followers_not_maxed == 0 then
+                              if prev_xpBonus > xpBonus then found = true break end
+                              if prev_xpBonus < xpBonus then break end
                            end
                         end
 
@@ -450,8 +471,8 @@ local function FindBestFollowersForMission(mission, followers, mode)
 
                         if all_followers_maxed then
                            if slots == followers_maxed then
-                              if cXpBonus > xpBonus then found = true break end
-                              if cXpBonus < xpBonus then break end
+                              if prev_xpBonus > xpBonus then found = true break end
+                              if prev_xpBonus < xpBonus then break end
                            end
                         end
 
@@ -461,7 +482,7 @@ local function FindBestFollowersForMission(mission, followers, mode)
                      until true
 
                      if found then
-                        local all_followers_maxed_on_mission = slots == followers_maxed
+                        local all_followers_maxed_on_mission = followers_not_maxed == 0
                         local new = top_list[4]
                         new[1] = follower1
                         new[2] = follower2
@@ -520,9 +541,10 @@ local function FindBestFollowersForMission(mission, followers, mode)
    if party_followers_count > 0 then
       for party_idx = 1, party_followers_count do
          if preserve_mission_page_followers[party_idx] then
-            mission_frame:AssignFollowerToMission(MissionPageFollowers[party_idx], preserve_mission_page_followers[party_idx])
+            AddFollowerToMission(mission_id, preserve_mission_page_followers[party_idx].followerID)
          end
       end
+      if MissionPage:IsVisible() then mission_frame:UpdateMissionParty(MissionPageFollowers) end
    end
 
    if compare_top_1 then
@@ -550,6 +572,7 @@ local function FindBestFollowersForMission(mission, followers, mode)
    -- local location, xp, environment, environmentDesc, environmentTexture, locPrefix, isExhausting, enemies = C_Garrison.GetMissionInfo(missionID);
    -- /run GMM_dumpl("location, xp, environment, environmentDesc, environmentTexture, locPrefix, isExhausting, enemies", C_Garrison.GetMissionInfo(GarrisonMissionFrame.MissionTab.MissionPage.missionInfo.missionID))
    -- /run GMM_dumpl("totalTimeString, totalTimeSeconds, isMissionTimeImproved, successChance, partyBuffs, isEnvMechanicCountered, xpBonus, materialMultiplier", C_Garrison.GetPartyMissionInfo(GarrisonMissionFrame.MissionTab.MissionPage.missionInfo.missionID))
+   -- /run GMM_dumpl("totalTimeString, totalTimeSeconds, isMissionTimeImproved, successChance, partyBuffs, isEnvMechanicCountered, xpBonus, materialMultiplier", C_Garrison.GetPartyMissionInfo(OrderHallMissionFrame.MissionTab.MissionPage.missionInfo.missionID))
 end
 addon_env.FindBestFollowersForMission = FindBestFollowersForMission
 addon_env.top = top

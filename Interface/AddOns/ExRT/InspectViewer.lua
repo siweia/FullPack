@@ -307,9 +307,44 @@ function module.options:Load()
 	self.chkArtifact.id = 5
 	
 	do
-		local text = RELIC_TOOLTIP_TYPE:gsub(" %(.+$","")
+		local text = RELIC_TOOLTIP_TYPE:gsub("[%( ]*%%s[%) ]*","")
 		self.chkRelics = ELib:Radio(self,text):Point(260,-28+25):AddButton():OnClick(reloadChks)
 		self.chkRelics.id = 6
+	end
+	
+	local inspectScantip = CreateFrame("GameTooltip", "ExRTInspectViewerScanningTooltip", nil, "GameTooltipTemplate")
+	inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
+
+	local ScanRelicType_STR = RELIC_TOOLTIP_TYPE:gsub("([%(%)])","%%%1"):gsub("%%s","(.-)")
+	local ScanRelicType_Cache = {}
+	local function ScanRelicType(relicLink)
+		local _,itemID = strsplit(":",relicLink)
+		if ScanRelicType_Cache[itemID] then
+			return ScanRelicType_Cache[itemID]
+		end
+		inspectScantip:SetHyperlink(relicLink)
+		
+		for j=2, inspectScantip:NumLines() do
+			local text = _G["ExRTInspectViewerScanningTooltipTextLeft"..j]:GetText()
+			if text and text:find(ScanRelicType_STR) then
+				local type_name = text:match(ScanRelicType_STR)
+				
+				local type_name_lower = type_name:lower()
+				for id,str in pairs(module.db.relicLocalizated) do
+					if str:lower():find(type_name_lower) then
+						inspectScantip:ClearLines()
+						ScanRelicType_Cache[itemID] = id
+						return id
+					end
+				end
+				
+				inspectScantip:ClearLines()
+				ScanRelicType_Cache[itemID] = type_name
+				return type_name
+			end		
+		end
+		
+		inspectScantip:ClearLines()
 	end
 	
 	local function ItemsTrackDropDownClick(self)
@@ -325,8 +360,8 @@ function module.options:Load()
 	module.db.colorizeLowIlvl685 = VExRT.InspectViewer.ColorizeLowIlvl685
 	module.db.colorizeNoValorUpgrade = VExRT.InspectViewer.ColorizeNoValorUpgrade
 	
-	local colorizeLowIlvl630 = 860
-	local colorizeLowIlvl685 = 880
+	local colorizeLowIlvl630 = 875
+	local colorizeLowIlvl685 = 900
 	
 	self.chkItemsTrackDropDown = ELib:DropDown(self,300,7):Point(50,0):Size(50)
 	self.chkItemsTrackDropDown:Hide()
@@ -695,6 +730,9 @@ function module.options:Load()
 									local itemColor = select(4,GetItemQualityColor(itemQuality or 1))
 									if itemQuality == 6 then
 										itemLevel = items_ilvl[slotID]
+										if slotID == 16 or slotID == 17 then
+											itemLevel = max(items_ilvl[16] or 0,items_ilvl[17] or 0)
+										end
 									end
 									line.items[j].text:SetText("|c"..(itemColor or "ffffffff")..(itemLevel or ""))
 									
@@ -923,56 +961,41 @@ function module.options:Load()
 						
 						line.ilvl:SetText("")
 						
-						local db
-						for long_name,DB in pairs(module.db.artifactDB) do
-							if ExRT.F.delUnitNameServer(long_name) == ExRT.F.delUnitNameServer(name) then
-								if (not db) or (DB.time > db.time) then
-									db = DB
+						for j=1,3 do
+							local relicLink = data.items['relic'..j]
+							if relicLink then
+								local icon = line.items[j*5]
+								local _,_,_,ilvl,_,_,_,_,_,itemTexture = GetItemInfo(relicLink)
+								if not itemTexture then
+									local _,_,_,_,t = GetItemInfoInstant(relicLink)
+									itemTexture = t
 								end
-							end						
-						end
-						
-						if not db then
-							if not RefreshArtifactCache[ name ] then
-								line.refreshArtifact:Show()
-							else
-								local isAddonOn = false
-								for long_name,_ in pairs(parentModule.db.artifactNoResDB) do
-									if ExRT.F.delUnitNameServer(long_name) == ExRT.F.delUnitNameServer(name) then
-										isAddonOn = true
-										break
-									end						
-								end
-							
-								if isAddonOn then
-									line.otherInfo:SetText(L.BossWatcherDamageSwitchTabInfoNoInfo)
-								else
-									line.otherInfo:SetText(L.InspectViewerNoExRTAddon)
-								end
-								line.otherInfo:Show()
-								line.updateAP:Show()
-							end
-						else
-							line.updateAP:Show()
-							for j=1,3 do
-								local relicLink = db["relic"..j]
-								if relicLink then
-									local icon = line.items[j*5]
-									local _,_,_,ilvl,_,_,_,_,_,itemTexture = GetItemInfo(relicLink)
-									if not itemTexture then
-										local _,_,_,_,t = GetItemInfoInstant(relicLink)
-										itemTexture = t
-									end
-									icon.text:SetText(ilvl or "")
-									icon.texture:SetTexture(itemTexture or "")
-									icon.link = relicLink
-									icon:Show()
-								end
-								local relicType = db["relicType"..j]
+								icon.text:SetText(ilvl or "")
+								icon.texture:SetTexture(itemTexture or "")
+								icon.link = relicLink
+								icon:Show()
+								
+								local relicType = ScanRelicType(relicLink)
 								if relicType then
-									line["relic"..j]:SetText(module.db.relicLocalizated[relicType] or "")
+									if type(relicType) == 'number' then
+										relicType = module.db.relicLocalizated[relicType] or ""
+									end
+									line["relic"..j]:SetText(relicType)
+								else
+									line["relic"..j]:SetText("")
 								end
 							end
+						end	
+						
+						local weaponIlvl = 0
+						local items_ilvl = data.items_ilvl
+						if items_ilvl then
+							for slotID=16,17 do
+								weaponIlvl = max(weaponIlvl,items_ilvl[slotID] or 0)
+							end
+						end
+						if weaponIlvl > 0 then
+							line.ilvl:SetFormattedText("|cffe5cc7f%d",weaponIlvl)
 						end
 					end
 					
@@ -1980,18 +2003,22 @@ function module.options:Load()
 	
 	function module.options.showPage()
 		local count = 0
-		for _ in pairs(module.db.inspectDB) do
-			count = count + 1
+		local nowDB = {}
+		for name,data in pairs(module.db.inspectDB) do
+			table.insert(nowDB,{name,data})
 		end
 		for name,_ in pairs(module.db.inspectQuery) do
 			if not module.db.inspectDB[name] then
-				count = count + 1
+				table.insert(nowDB,{name})
 			end
 		end
+		ReloadPage_CreateNowDB(nowDB)
+		count = #nowDB
+		
 		local val = self.ScrollBar:GetValue()
 		local newMax = max(count-module.db.perPage+1,1)
 		self.ScrollBar:SetMinMaxValues(1,newMax)
-		if val < newMax then
+		if val > newMax then
 			val = newMax
 		end
 		self.ScrollBar.ignore = true
