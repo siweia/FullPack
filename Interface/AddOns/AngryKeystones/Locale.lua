@@ -33,14 +33,14 @@ langs.enUS = {
 	timeLost = "Time Lost",
 	config_smallAffixes = "Reduce the size of affix icons on timer frame",
 	config_deathTracker = "Show death tracker on timer frame",
-	config_persistTracker = "Continue showing objective tracker after Mythic Keystone completion (requires Reload UI to take effect)",
+	config_persistTracker = "Show objective tracker after Mythic Keystone completion (requires Reload UI to take effect)",
 	scheduleTitle = "Schedule",
 	scheduleWeek1 = "This week",
 	scheduleWeek2 = "Next week",
 	scheduleWeek3 = "In two weeks",
 	scheduleWeek4 = "In three weeks",
 	scheduleMissingKeystone = "Requires a level 7+ Mythic Keystone in your inventory to display.",
-	config_exclusiveTracker = "Hide quest and achievement trackers during Mythic Keystone dungeons (requires Reload UI to take effect)",
+	config_exclusiveTracker = "Hide quest and achievement trackers during Mythic Keystones (requires Reload UI to take effect)",
 	config_hideTalkingHead = "Hide Talking Head dialog during a Mythic Keystone dungeon",
 	config_resetPopup = "Show popup to reset instances upon leaving a completed Mythic Keystone dungeon",
 }
@@ -160,6 +160,7 @@ langs.zhCN = {
 	scheduleMissingKeystone = "你需要一把7级以上的钥石才可激活此项功能。",
 	config_exclusiveTracker = "在副本中隐藏任务和成就追踪（重载插件后生效）",
 	config_hideTalkingHead = "在史诗钥石副本中隐藏NPC情景对话窗口",
+	config_resetPopup = "离开已完成的副本后提示是否重置",
 }
 langs.zhTW = {
 	config_characterConfig = "為角色進行獨立的配置",
@@ -192,6 +193,7 @@ langs.zhTW = {
 	scheduleMissingKeystone = "你需要一把7級以上的鑰石來激活此項功能。",
 	config_exclusiveTracker = "在副本中隱藏成就和任務追蹤（重裝插件後生效）",
 	config_hideTalkingHead = "在傳奇鑰石副本中隱藏NPC情景對話窗口",
+	config_resetPopup = "離開已完成的副本後提示是否重置",
 }
 
 function Locale:Get(key)
