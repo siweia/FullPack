@@ -72,6 +72,7 @@ module.db.data = {
 		other = {
 			blessing = {},
 			roles = {},
+			rolesGUID = {},
 		},
 	},
 }
@@ -1138,6 +1139,7 @@ function _BW_Start(encounterID,encounterName)
 		other = {
 			blessing = {},
 			roles = {},
+			rolesGUID = {},
 		},
 	}
 	
@@ -1220,6 +1222,8 @@ function _BW_Start(encounterID,encounterName)
 					raidGUIDs[ guid ] = name
 					
 					addReductionOnPull(name,guid)
+					
+					fightData.other.rolesGUID[guid] = UnitGroupRolesAssigned(name)
 				end
 				
 				fightData.other.roles[name] = UnitGroupRolesAssigned(name)
@@ -1246,6 +1250,8 @@ function _BW_Start(encounterID,encounterName)
 					raidGUIDs[ guid ] = name
 					
 					addReductionOnPull(name,guid)
+					
+					fightData.other.rolesGUID[guid] = UnitGroupRolesAssigned(name)
 				end
 				
 				fightData.other.roles[name] = UnitGroupRolesAssigned(name)
@@ -2851,6 +2857,7 @@ function module:ClearData()
 			other = {
 				blessing = {},
 				roles = {},
+				rolesGUID = {},
 			},	
 		},
 	}
@@ -9811,6 +9818,23 @@ function BWInterfaceFrameLoad()
 		HealingTab_UpdatePage()
 	end
 	
+	local function HealingTab_SelectDropDown_OptionTanks(_,destTable,onlyTanks)
+		ELib:DropDownClose()
+		local Back_destVar = ExRT.F.table_copy2(HdestVar)
+		local Back_sourceVar = ExRT.F.table_copy2(HsourceVar)
+		wipe(HdestVar)
+		for i=1,#destTable do
+			local isTank
+			if CurrentFight.other.rolesGUID[ destTable[i][1] ] == "TANK" then
+				isTank = true
+			end
+			if (isTank and onlyTanks) or (not isTank and not onlyTanks) then
+				HdestVar[ destTable[i][1] ] = true
+			end
+		end
+		HealingTab_UpdatePage()
+	end
+	
 	local function HealingTab_CheckDropDownSource(self,checked)
 		if checked then
 			HsourceVar[self.arg1] = true
@@ -9890,6 +9914,20 @@ function BWInterfaceFrameLoad()
 				checkable = true,
 			}
 		end
+		tinsert(BWInterfaceFrame.tab.tabs[2].targetDropDown.List,2,{
+			text = L.BossWatcherHealToTanks,
+			padding = 16,
+			func = HealingTab_SelectDropDown_OptionTanks,
+			arg1 = destTable,
+			arg2 = true,
+		})
+		tinsert(BWInterfaceFrame.tab.tabs[2].targetDropDown.List,2,{
+			text = L.BossWatcherHealToNonTanks,
+			padding = 16,
+			func = HealingTab_SelectDropDown_OptionTanks,
+			arg1 = destTable,
+			arg2 = false,
+		})
 		if not disableUpdateVars then
 			wipe(HsourceVar)
 			wipe(HdestVar)

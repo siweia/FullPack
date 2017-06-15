@@ -934,9 +934,7 @@ function module.options:Load()
 							local it = 0
 							for j=1,#db do
 								local spellID = C_ArtifactUI.GetPowerInfo(db[j][1])
-								if ExRT.clientVersion >= 70200 then
-									spellID = spellID.spellID
-								end
+								spellID = spellID.spellID
 								
 								local spellTexture = GetSpellTexture(spellID)
 								
@@ -1764,7 +1762,7 @@ function module.options:Load()
 	local function SetupButton(self, powerID, anchorRegion, currRank, totalRanks)
 		local spellID, cost, currentRank, maxRank, bonusRanks, x, y, prereqsMet, isStart, isGoldMedal, isFinal = C_ArtifactUI.GetPowerInfo(powerID)
 
-		if ExRT.clientVersion >= 70200 then
+		do
 			cost, currentRank, maxRank, bonusRanks, x, y, prereqsMet, isStart, isGoldMedal, isFinal = 
 			spellID.cost, spellID.currentRank, spellID.maxRank, spellID.bonusRanks, spellID.position.x, spellID.position.y, spellID.prereqsMet, spellID.isStart, spellID.isGoldMedal, spellID.isFinal
 			spellID = spellID.spellID

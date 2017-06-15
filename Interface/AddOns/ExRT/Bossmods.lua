@@ -7698,9 +7698,9 @@ function module.main:ENCOUNTER_END(encounterID,_,_,_,success)
 		ExRT.F:ExBossmodsCloseAll()
 	elseif encounterID == 1854 and Dragons.mainFrame then
 		ExRT.F:ExBossmodsCloseAll()
-	elseif encounterID == 1873 and Ilgynoth.setupFrame and Ilgynoth.setupFrame.isEnabled and ExRT.clientVersion < 70100 then
+	elseif encounterID == 1873 and Ilgynoth.setupFrame and Ilgynoth.setupFrame.isEnabled and false then	--Removed in 7.1
 		ExRT.F:ExBossmodsCloseAll()
-	elseif encounterID == 1864 and Archimonde.mainframe and Archimonde.mainframe.isEnabled and ExRT.clientVersion < 70100 then
+	elseif encounterID == 1864 and Archimonde.mainframe and Archimonde.mainframe.isEnabled and false then	--Removed in 7.1
 		ExRT.F:ExBossmodsCloseAll()
 	end
 end

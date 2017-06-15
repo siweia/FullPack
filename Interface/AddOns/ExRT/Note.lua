@@ -45,32 +45,41 @@ module.db.otherIconsList = {
 module.db.iconsLocalizatedNames = {
 	L.raidtargeticon1,L.raidtargeticon2,L.raidtargeticon3,L.raidtargeticon4,L.raidtargeticon5,L.raidtargeticon6,L.raidtargeticon7,L.raidtargeticon8,
 }
-module.db.iconsEngNames = {
-	L.raidtargeticon1_eng,L.raidtargeticon2_eng,L.raidtargeticon3_eng,L.raidtargeticon4_eng,L.raidtargeticon5_eng,L.raidtargeticon6_eng,L.raidtargeticon7_eng,L.raidtargeticon8_eng,
-}
+local iconsLangs = {"eng","de","it","fr","ru"}
+for _,lang in pairs(iconsLangs) do
+	module.db["icons"..lang.."Names"] = {}
+	for i=1,8 do
+		module.db["icons"..lang.."Names"][i] = L["raidtargeticon"..i.."_"..lang]
+	end
+end
+
 local frameStrataList = {"BACKGROUND","LOW","MEDIUM","HIGH","DIALOG","FULLSCREEN","FULLSCREEN_DIALOG","TOOLTIP"}
 
 module.db.msgindex = -1
 module.db.lasttext = ""
 
+local string_gsub = string.gsub
+
 local function txtWithIcons(t)
 	t = t or ""
-	t = string.gsub(t,"||T","|T")
-	t = string.gsub(t,"||t","|t")
+	t = string_gsub(t,"||T","|T")
+	t = string_gsub(t,"||t","|t")
 	for i=1,8 do
-		t = string.gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
-		t = string.gsub(t,module.db.iconsEngNames[i],module.db.iconsList[i])
-		t = string.gsub(t,"{rt"..i.."}",module.db.iconsList[i])
+		t = string_gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
+		t = string_gsub(t,"{rt"..i.."}",module.db.iconsList[i])
+		for _,lang in pairs(iconsLangs) do
+			t = string_gsub(t,module.db["icons"..lang.."Names"][i],module.db.iconsList[i])
+		end
 	end
-	t = string.gsub(t,"||c","|c")
-	t = string.gsub(t,"||r","|r")
+	t = string_gsub(t,"||c","|c")
+	t = string_gsub(t,"||r","|r")
 	for i=1,#module.db.otherIconsList do
-		t = string.gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
+		t = string_gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
 	end
 	
-	local spellLastPos = t:find("{spell:[^}]+}")
+	local spellLastPos = t:find("{spell:%d+}")
 	while spellLastPos do
-		local template,spell = t:match("({spell:([^}]+)})")
+		local template,spell = t:match("({spell:(%d+)})")
 		local _,spellTexture
 		spell = tonumber(spell)
 		if spell then
@@ -80,19 +89,19 @@ local function txtWithIcons(t)
 		spellTexture = spellTexture or ""
 		
 		if template:find("%-") then
-			template = template:gsub("%-","%%%-")
+			template = string_gsub(template,"%-","%%%-")
 		end
 		
-		t = t:gsub(template,spellTexture)
+		t = string_gsub(t,template,spellTexture)
 		
-		local spellNewPos = t:find("{spell:[^}]+}")
+		local spellNewPos = t:find("{spell:%d+}")
 		if spellLastPos == spellNewPos then
 			break
 		end
 		spellLastPos = spellNewPos
 	end
 	
-	t = string.gsub(t,"{[^}]*}","")
+	t = string_gsub(t,"%b{}","")
 	return t
 end
 
@@ -108,6 +117,16 @@ function module.options:Load()
 		106898,192077,46968,119381,179057,192058,0,
 		--"Interface\\Icons\\inv_60legendary_ring1c","Interface\\Icons\\inv_60legendary_ring1b","Interface\\Icons\\inv_60legendary_ring1a",0,
 		0,
+		233283,230345,234264,233272,233062,231363,0,
+		233894,234015,239401,233426,233983,233441,236283,233430,0,
+		237630,236442,236529,236518,236547,233263,236305,236596,236694,234996,234995,0,
+		239375,239420,230959,230276,241509,230273,230362,230920,0,
+		240066,241600,234016,233429,231729,240315,231854,241594,0,
+		236142,235968,236340,236361,235969,236513,235927,236158,236449,236131,236072,236241,235924,235907,0,
+		241635,235028,241636,236061,235267,248812,234891,235271,235240,235213,235538,243276,235534,241593,238028,0,
+		236494,240623,233556,239207,240594,235572,242017,240249,240728,239212,0,
+		238430,240910,239932,235120,238502,236710,236378,244834,241564,0,
+		0,
 		204284,204766,204372,204471,204448,204316,0,
 		206617,205707,219823,206607,207011,207012,207013,219808,0,
 		214573,206641,206488,206798,207631,208499,208910,207141,206792,206557,206560,206559,207513,0,
@@ -118,10 +137,12 @@ function module.options:Load()
 		218806,219049,219009,218148,218424,218438,218774,218807,218508,0,
 		209166,209165,208659,208944,209244,209973,232974,209568,210022,0,
 		210339,210296,206985,206515,209011,206384,206555,206581,227550,209518,206840,206516,0,
+		--[[
 		0,
 		228053,227992,227903,228056,227967,228565,228032,228730,193367,232450,0,
 		228758,228768,228769,228744,228810,228818,228253,228228,228248,227514,227894,227642,0,
 		229582,229583,227498,229579,229580,228012,228162,231350,227807,228914,228007,0,
+		]]
 	}
 	
 	module.db.encountersList = {
@@ -269,9 +290,11 @@ function module.options:Load()
 			if i < size then
 				VExRT.Note.Black[i] = VExRT.Note.Black[i + 1]
 				VExRT.Note.BlackNames[i] = VExRT.Note.BlackNames[i + 1]
+				VExRT.Note.AutoLoad[i] = VExRT.Note.AutoLoad[i + 1]
 			else
 				VExRT.Note.Black[i] = nil
 				VExRT.Note.BlackNames[i] = nil
+				VExRT.Note.AutoLoad[i] = nil
 			end
 		end
 		NotesListUpdateNames()
@@ -384,6 +407,7 @@ function module.options:Load()
 			text = text:gsub("||c........","")
 			text = text:gsub("||r","")
 			text = text:gsub("||T.-:0||t ","")
+			text = text:gsub("%b{}","")
 			
 			local lines = {strsplit("\n", text)}
 			for i=1,#lines do
@@ -416,10 +440,10 @@ function module.options:Load()
 		if not BlackNoteNow then
 			return
 		end
-		VExRT.Note.Text1 = VExRT.Note.Black[BlackNoteNow] or ""
-		VExRT.Note.DefName = VExRT.Note.BlackNames[BlackNoteNow] or ""
-		VExRT.Note.AutoLoad[0] = VExRT.Note.AutoLoad[BlackNoteNow]
-		module.frame:Save() 
+		--VExRT.Note.Text1 = VExRT.Note.Black[BlackNoteNow] or ""
+		--VExRT.Note.DefName = VExRT.Note.BlackNames[BlackNoteNow] or ""
+		--VExRT.Note.AutoLoad[0] = VExRT.Note.AutoLoad[BlackNoteNow]
+		module.frame:Save(BlackNoteNow) 
 		
 		module.options.NotesList:SetListValue(1)
 		
@@ -694,7 +718,15 @@ function module.options:Load()
 		end
 	end) 
 	
-	self.sliderFontSize = ELib:Slider(self.tab.tabs[2],L.NoteFontSize):Size(300):Point(11,-175):Range(6,72):SetTo(VExRT.Note.FontSize or 12):OnChange(function(self,event) 
+	self.chkSaveAllNew = ELib:Check(self.tab.tabs[2],L.NoteEnableWhenReceive,VExRT.Note.EnableWhenReceive):Point(10,-165):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Note.EnableWhenReceive = true
+		else
+			VExRT.Note.EnableWhenReceive = nil
+		end
+	end) 
+	
+	self.sliderFontSize = ELib:Slider(self.tab.tabs[2],L.NoteFontSize):Size(300):Point(11,-200):Range(6,72):SetTo(VExRT.Note.FontSize or 12):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.Note.FontSize = event
 		module.frame:UpdateFont()
@@ -710,7 +742,7 @@ function module.options:Load()
 		module.frame:UpdateFont()
 	end
 
-	self.dropDownFont = ELib:DropDown(self.tab.tabs[2],350,10):Point(10,-205):Size(300)
+	self.dropDownFont = ELib:DropDown(self.tab.tabs[2],350,10):Point(10,-230):Size(300)
 	for i=1,#ExRT.F.fontList do
 		self.dropDownFont.List[i] = {}
 		local info = self.dropDownFont.List[i]
@@ -757,7 +789,7 @@ function module.options:Load()
 		module.frame:UpdateFont()
 	end) 
 	
-	self.slideralpha = ELib:Slider(self.tab.tabs[2],L.messagebutalpha):Size(300):Point(11,-250):Range(0,100):SetTo(VExRT.Note.Alpha or 100):OnChange(function(self,event) 
+	self.slideralpha = ELib:Slider(self.tab.tabs[2],L.messagebutalpha):Size(300):Point(11,-275):Range(0,100):SetTo(VExRT.Note.Alpha or 100):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.Note.Alpha = event
 		module.frame:SetAlpha(event/100)
@@ -765,7 +797,7 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 	
-	self.sliderscale = ELib:Slider(self.tab.tabs[2],L.messagebutscale):Size(300):Point(11,-320):Range(5,200):SetTo(VExRT.Note.Scale or 100):OnChange(function(self,event) 
+	self.sliderscale = ELib:Slider(self.tab.tabs[2],L.messagebutscale):Size(300):Point(11,-345):Range(5,200):SetTo(VExRT.Note.Scale or 100):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.Note.Scale = event
 		ExRT.F.SetScaleFix(module.frame,event/100)
@@ -773,7 +805,7 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 
-	self.slideralphaback = ELib:Slider(self.tab.tabs[2],L.messageBackAlpha):Size(300):Point(11,-285):Range(0,100):SetTo(VExRT.Note.ScaleBack or 100):OnChange(function(self,event) 
+	self.slideralphaback = ELib:Slider(self.tab.tabs[2],L.messageBackAlpha):Size(300):Point(11,-310):Range(0,100):SetTo(VExRT.Note.ScaleBack or 100):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.Note.ScaleBack = event
 		module.frame.background:SetColorTexture(0, 0, 0, event/100)
@@ -781,7 +813,7 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 	
-	self.moreOptionsDropDown = ELib:DropDown(self.tab.tabs[2],275,#frameStrataList+1):Point(10,-355):Size(300):SetText(L.NoteFrameStrata)
+	self.moreOptionsDropDown = ELib:DropDown(self.tab.tabs[2],275,#frameStrataList+1):Point(10,-380):Size(300):SetText(L.NoteFrameStrata)
 	
 	local function moreOptionsDropDown_SetVaule(_,arg)
 		VExRT.Note.Strata = arg
@@ -805,7 +837,7 @@ function module.options:Load()
 		ELib:DropDownClose()
 	end})
 	
-	self.ButtonToCenter = ELib:Button(self.tab.tabs[2],L.MarksBarResetPos):Size(300,20):Point(10,-385):Tooltip(L.MarksBarResetPosTooltip):OnClick(function()
+	self.ButtonToCenter = ELib:Button(self.tab.tabs[2],L.MarksBarResetPos):Size(300,20):Point(10,-410):Tooltip(L.MarksBarResetPosTooltip):OnClick(function()
 		VExRT.Note.Left = nil
 		VExRT.Note.Top = nil
 
@@ -875,6 +907,29 @@ end
 module.frame.background = module.frame:CreateTexture(nil, "BACKGROUND")
 module.frame.background:SetColorTexture(0, 0, 0, 1)
 module.frame.background:SetAllPoints()
+
+module.frame.red_back = CreateFrame("Frame",nil,module.frame)
+module.frame.red_back:SetPoint("TOPLEFT",0,0)
+module.frame.red_back:SetPoint("BOTTOMRIGHT",0,0)
+module.frame.red_back.b = module.frame.red_back:CreateTexture(nil, "BACKGROUND", nil, 1)
+module.frame.red_back.b:SetColorTexture(1, 0, 0, .2)
+module.frame.red_back.b:SetAllPoints()
+module.frame.red_back.s = ELib:Shadow(module.frame.red_back,20)
+module.frame.red_back.s:SetBackdropBorderColor(1, 0, 0, .2)
+module.frame.red_back:Hide()
+local red_back_t = 1
+module.frame.red_back:SetScript("OnShow",function()
+	red_back_t = 3
+end)
+module.frame.red_back:SetScript("OnUpdate",function(self,tmr)
+	red_back_t = red_back_t - tmr
+	if red_back_t <= 0 then
+		self:Hide()
+		return
+	end
+	self.s:SetBackdropBorderColor(1, 0, 0, max(0, .4 * min(2,red_back_t)/2))
+	self.b:SetColorTexture(1, 0, 0, max(0, .4 * min(2,red_back_t)/2))
+end)
 
 module.frame.text = module.frame:CreateFontString(nil,"ARTWORK")
 module.frame.text:SetFont(ExRT.F.defFont, 12)
@@ -970,6 +1025,10 @@ function module:addonMessage(sender, prefix, ...)
 		if module.options.UpdatePageAfterGettingNote then
 			module.options.UpdatePageAfterGettingNote()
 		end
+		if VExRT.Note.EnableWhenReceive and not VExRT.Note.enabled then
+			module:Enable()
+		end
+		module.frame.red_back:Show()
 	elseif prefix == "multiline_add" then
 		if VExRT.Note.OnlyPromoted and IsInRaid() and not ExRT.F.IsPlayerRLorOfficer(sender) then
 			return
@@ -1013,7 +1072,7 @@ function module:addonMessage(sender, prefix, ...)
 			if ExRT.F.IsPlayerRLorOfficer(ExRT.SDB.charName) == 2 then
 				return
 			end
-			if ExRT.F.IsPlayerRLorOfficer(sender) == 2 or GetPlayerRankInRaid(sender) > GetPlayerRankInRaid(ExRT.SDB.charName) or sender < ExRT.SDB.charName then
+			if (ExRT.F.IsPlayerRLorOfficer(sender) == 2) or (GetPlayerRankInRaid(sender) > GetPlayerRankInRaid(ExRT.SDB.charName)) or (sender < ExRT.SDB.charName) then
 				local type = ...
 				if type == "ENCOUNTER" then
 					IsUpdateNoteByEncounterFromMe = nil
@@ -1081,6 +1140,10 @@ function module.main:ADDON_LOADED()
 			end
 		end
 	end
+	if VExRT.Addon.Version < 3865 then
+		--VExRT.Note.EnableWhenReceive = true
+	end	
+	
 	VExRT.Note.BlackNames = VExRT.Note.BlackNames or {}
 	
 	for i=1,3 do

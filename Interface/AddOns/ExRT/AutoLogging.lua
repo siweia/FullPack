@@ -5,7 +5,7 @@ local VExRT = nil
 local module = ExRT.mod:New("AutoLogging",ExRT.L.Logging,nil,true)
 local ELib,L = ExRT.lib,ExRT.L
 
-module.db.minRaidMapID = ExRT.SDB.charLevel > 100 and 1520 or 1205
+module.db.minRaidMapID = 1520
 module.db.minPartyMapID = 1456
 
 function module.options:Load()
@@ -21,7 +21,7 @@ function module.options:Load()
 		end
 	end)
 		
-	self.shtml1 = ELib:Text(self,"- "..L.RaidLootT17Highmaul.."\n- "..L.RaidLootT17BF.."\n -"..L.RaidLootT18HC.."\n -"..L.S_ZoneT19Nightmare..(ExRT.clientVersion >= 70100 and "\n -"..L.S_ZoneT19ToV or "").."\n -"..L.S_ZoneT19Suramar,12):Size(620,0):Point("TOP",0,-65):Top()
+	self.shtml1 = ELib:Text(self," -"..L.S_ZoneT19Nightmare.."\n -"..L.S_ZoneT19ToV.."\n -"..L.S_ZoneT19Suramar.."\n -"..L.S_ZoneT20ToS,12):Size(620,0):Point("TOP",0,-65):Top()
 
 	self.shtml2 = ELib:Text(self,L.LoggingHelp1,12):Size(650,0):Point("TOP",self.shtml1,"BOTTOM",0,-15):Top()
 	

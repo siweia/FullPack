@@ -85,6 +85,34 @@ txtrng:SetJustifyH("RIGHT")
 txtrng:SetJustifyV("BOTTOM")
 txtrng:SetText("")
 
+local txttime = frame:CreateFontString(nil,"OVERLAY")
+txttime:SetPoint("TOP",txtrng,"BOTTOM",0,-1)
+txttime:SetFont("Interface\\AddOns\\ExRT\\media\\ariblk.ttf", 10, "OUTLINE")
+txttime:SetText("")
+
+--[[
+C_Timer.NewTicker(1,function()
+	if not frame:IsShown() then
+		txttime.p = nil
+		return
+	end
+	if not txttime.p then
+		txttime:SetText("")
+		txttime.p = txttime.d
+		return 
+	end
+	if txttime.d then
+		if txttime.p == txttime.d then
+			txttime:SetText("inf")
+		else
+			txttime:SetFormattedText("%ds",txttime.d / ((txttime.p - txttime.d) / 1))
+		end
+		--print(txttime.p,txttime.d)
+		txttime.p = txttime.d 
+	end
+end)
+]]
+
 ---------------------
 --  Map Utilities  --
 ---------------------
@@ -208,7 +236,8 @@ do
 			local xend = ((column + 1) * 53) / 512
 			local yend = ((row + 1) * 70) / 512
 			arrow:SetTexCoord(xstart,xend,ystart,yend)
-			txtrng:SetText(floor(distance))
+			txtrng:SetFormattedText("%d",distance)
+			txttime.d = distance
 		else
 			if showDownArrow then
 				frame:SetHeight(42)
@@ -252,7 +281,8 @@ do
 						frame:Hide()			
 					end
 				end
-				txtrng:SetText(floor(distance))
+				txtrng:SetFormattedText("%d",distance)
+				txttime.d = distance
 			elseif runAwayArrow then
 				arrow:SetVertexColor(1, 0.3, 0)
 			else

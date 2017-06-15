@@ -577,8 +577,10 @@ local function AutoRaidSetup()
 	
 	if zoneType ~= "raid" then
 		if inRaid and not module.db.sessionInRaid then
-			module.db.sessionInRaid = true
 			if RaidLeader then
+				module.db.sessionInRaid = true
+				module.db.sessionInRaidLoot = true
+				
 				SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
 				SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
 				--SetLootThreshold(VExRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
@@ -587,6 +589,14 @@ local function AutoRaidSetup()
 		elseif not inRaid and module.db.sessionInRaid then
 			module.db.sessionInRaid = nil
 		end
+	else
+		if inRaid and not module.db.sessionInRaidLoot then
+			module.db.sessionInRaidLoot = true
+			if RaidLeader then
+				SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
+				ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+			end
+		end	
 	end
 	
 	if inRaid and RaidLeader and VExRT.InviteTool.LootMethod == "master" then
