@@ -1,8 +1,7 @@
--- Author      : Potdisc
+--- lootFrame.lua	Adds the interface for selecting a response to a session.
+-- DefaultModule.
+-- @author	Potdisc
 -- Create Date : 12/16/2014 8:24:04 PM
--- DefaultModule
--- lootFrame.lua	Adds the interface for selecting a response to a session
-
 
 local addon = LibStub("AceAddon-3.0"):GetAddon("RCLootCouncil")
 local LootFrame = addon:NewModule("RCLootFrame", "AceTimer-3.0")
@@ -93,8 +92,9 @@ function LootFrame:Update()
 			entries[numEntries].icon:SetNormalTexture(v.texture)
 			entries[numEntries].itemText:SetText(v.link)
 			entries[numEntries].itemLvl:SetText(format(L["ilvl: x"], v.ilvl))
-			if not entries[numEntries].buttons[addon.mldb.numButtons+1] then
+			if not entries[numEntries].buttons[addon.mldb.numButtons+1] or (entries[numEntries].buttons[addon.mldb.numButtons+1]:GetText() ~= L["Pass"]) then
 				 -- mldb have probably updated since we created the buttons
+				 addon:Debug("Updating buttons")
 				 entries[numEntries]:UpdateButtons()
 			end
 			-- Update the buttons and get frame width
@@ -194,9 +194,13 @@ function LootFrame:GetEntry(entry)
 			f.buttons[i]:SetScript("OnClick", function() LootFrame:OnRoll(entry, i) end)
 		end
 		-- Pass button
-		f.buttons[addon.mldb.numButtons + 1] = addon:CreateButton(L["Pass"], f)
+		f.buttons[addon.mldb.numButtons + 1] = f.buttons[addon.mldb.numButtons + 1] or addon:CreateButton(L["Pass"], f)
+		f.buttons[addon.mldb.numButtons + 1]:SetText(L["Pass"])
 		f.buttons[addon.mldb.numButtons + 1]:SetPoint("LEFT", f.buttons[addon.mldb.numButtons], "RIGHT", 5, 0)
 		f.buttons[addon.mldb.numButtons + 1]:SetScript("OnClick", function() LootFrame:OnRoll(entry, "PASS") end)
+		if #f.buttons > addon.mldb.numButtons + 1 then
+			for i = addon.mldb.numButtons +2, #f.buttons do f.buttons[i]:Hide() end
+		end
 	end
 	f:UpdateButtons()
 
