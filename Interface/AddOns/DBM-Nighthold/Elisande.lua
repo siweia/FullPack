@@ -217,9 +217,9 @@ function mod:OnCombatStart(delay)
 		timerTimeElementalsCD:Start(8-delay, FAST)
 		timerSpanningSingularityCD:Start(53.7-delay, 2)
 		specWarnSpanningSingularityPre:Schedule(48.7, DBM_CORE_ROOM_EDGE)
-		if self.Options.SpecWarn209168moveto then
+		--if self.Options.SpecWarn209168moveto then
 			voiceSpanningSingularity:Schedule(48.7, "runtoedge")
-		end
+		--end
 		countdownSpanningSingularity:Start(53.7)
 		timerArcaneticRing:Start(30-delay, 1)
 		countdownArcaneticRing:Start(30-delay)
@@ -601,9 +601,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, spellGUID)
 			timerSpanningSingularityCD:Start(timer, nextCount)
 			if self:IsMythic() then
 				specWarnSpanningSingularityPre:Schedule(timer-5, DBM_CORE_ROOM_EDGE)
-				if self.Options.SpecWarn209168moveto then
+				--if self.Options.SpecWarn209168moveto then
 					voiceSpanningSingularity:Schedule(timer-5, "runtoedge")
-				end
+				--end
 				countdownSpanningSingularity:Start(timer)
 			end
 		end
