@@ -2,14 +2,14 @@ local B, C, L, DB = unpack(select(2, ...))
 if DB.Client ~= "zhCN" then return end
 
 local hx = {
-	"技能监视更新；",
-	"团队框体法术更新；",
-	"姓名板施法条不可打断时添加护盾显示；",
-	"Skada更新到1.6.8；",
-	"图腾助手调整；",
-	"RCLootCoucil皮肤更新对新版本的支持；",
-	"Aurora部分模块调整；",
-	"动作条调整。",
+	"修改背包物品高亮的方式；",
+	"小版本号变化时，不显示更新日志；",
+	"添加神器能量偏好功能；",
+	"添加珠宝反光棱柱的通报功能；",
+	"添加工程移形换影装置的通报功能；",
+	"控制台调整；",
+	"Buff检查时，略去服务器名字；",
+	"姓名板调整。",
 }
 
 local function changelog()
@@ -48,9 +48,12 @@ end
 
 NDui:EventFrame("PLAYER_ENTERING_WORLD"):SetScript("OnEvent", function(self)
 	self:UnregisterAllEvents()
-
+	if HelloWorld then return end
 	if not NDuiADB["Changelog"] then NDuiADB["Changelog"] = {} end
-	if (not HelloWorld) and NDuiADB["Changelog"].Version ~= DB.Version then
+
+	local old1, old2, old3 = string.split(".", NDuiADB["Changelog"].Version or "")
+	local cur1, cur2, cur3 = string.split(".", DB.Version)
+	if old1 ~= cur1 or old2 ~= cur2 then
 		changelog()
 		NDuiADB["Changelog"].Version = DB.Version
 	end
