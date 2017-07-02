@@ -113,6 +113,71 @@ function module:OnLogin()
 		if NDuiDB["Bags"]["BagsiLvl"] then
 			self.iLvl = B.CreateFS(self, 12, "", false, "BOTTOMLEFT", 1, 1)
 		end
+
+		if NDuiDB["Bags"]["NewItemGlow"] then
+			local flash = self:CreateTexture(nil, "ARTWORK")
+			flash:SetTexture(DB.newItemFlash)
+			flash:SetPoint("TOPLEFT", -20, 20)
+			flash:SetPoint("BOTTOMRIGHT", 20, -20)
+			flash:SetBlendMode("ADD")
+			flash:SetAlpha(0)
+			local anim = flash:CreateAnimationGroup()
+			anim:SetLooping("REPEAT")
+			anim.rota = anim:CreateAnimation("Rotation")
+			anim.rota:SetDuration(1)
+			anim.rota:SetDegrees(-90)
+			anim.fader = anim:CreateAnimation("Alpha")
+			anim.fader:SetFromAlpha(0)
+			anim.fader:SetToAlpha(.5)
+			anim.fader:SetDuration(.5)
+			anim.fader:SetSmoothing("OUT")
+			anim.fader2 = anim:CreateAnimation("Alpha")
+			anim.fader2:SetStartDelay(.5)
+			anim.fader2:SetFromAlpha(.5)
+			anim.fader2:SetToAlpha(0)
+			anim.fader2:SetDuration(1.2)
+			anim.fader2:SetSmoothing("OUT")
+			self:HookScript("OnHide", function() if anim:IsPlaying() then anim:Stop() end end)
+
+			self.anim = anim
+		end
+
+		if NDuiDB["Bags"]["PreferPower"] > 1 then
+			local protect = self:CreateTexture(nil, "ARTWORK")
+			protect:SetTexture("Interface\\PETBATTLES\\DeadPetIcon")
+			protect:SetAllPoints()
+			protect:Hide()
+			self.powerProtect = protect
+		end
+	end
+
+	local PowerDB = {}
+	local function isArtifactPower(link)
+		if PowerDB[link] then return true end
+
+		local tip = _G["NDuiPowerTip"] or CreateFrame("GameTooltip", "NDuiPowerTip", nil, "GameTooltipTemplate")
+		tip:SetOwner(UIParent, "ANCHOR_NONE")
+		tip:SetHyperlink(link)
+
+		for i = 2, 5 do
+			local textLine = _G["NDuiPowerTipTextLeft"..i]
+			if textLine and textLine:GetText() then
+				local isPower = strmatch(textLine:GetText(), _G.ARTIFACT_POWER)
+				if isPower then
+					PowerDB[link] = true
+					break
+				end
+			end
+		end
+		return PowerDB[link]
+	end
+
+	local function isPowerInWrongSpec()
+		if NDuiDB["Bags"]["PreferPower"] == 1 then return end
+		local spec = GetSpecialization()
+		if spec and spec + 1 ~= NDuiDB["Bags"]["PreferPower"] then
+			return true
+		end
 	end
 
 	function MyButton:OnUpdate(item)
@@ -149,11 +214,18 @@ function module:OnLogin()
 
 		if NDuiDB["Bags"]["BagsiLvl"] then
 			self.iLvl:SetText("")
-			local link = GetContainerItemLink(item.bagID, item.slotID)
-			if link and (rarity and rarity > 1) and (item.level and item.level > 0) and (item.subType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC or (item.equipLoc ~= "" and item.equipLoc ~= "INVTYPE_TABARD" and item.equipLoc ~= "INVTYPE_BODY")) then
-				local level = NDui:GetItemLevel(link, rarity)
+			if item.link and (rarity and rarity > 1) and (item.level and item.level > 0) and (item.subType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC or (item.equipLoc ~= "" and item.equipLoc ~= "INVTYPE_TABARD" and item.equipLoc ~= "INVTYPE_BODY")) then
+				local level = GetDetailedItemLevelInfo(item.link)
 				self.iLvl:SetText(level)
 				self.iLvl:SetTextColor(color.r, color.g, color.b)
+			end
+		end
+
+		if self.powerProtect then
+			if isPowerInWrongSpec() and item.type == AUCTION_CATEGORY_CONSUMABLES and item.id ~= 147717 and item.link and isArtifactPower(item.link) then
+				self.powerProtect:Show()
+			else
+				self.powerProtect:Hide()
 			end
 		end
 	end
