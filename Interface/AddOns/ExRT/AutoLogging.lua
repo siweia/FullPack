@@ -74,12 +74,12 @@ local function ZoneNewFunction()
 	if zoneForLogging then
 		LoggingCombat(true)
 		print('==================')
-		print(ExRT.L.LoggingStart)
+		print(L.LoggingStart)
 		print('==================')
 	elseif prevZone and LoggingCombat() then
 		LoggingCombat(false)
 		print('==================')
-		print(ExRT.L.LoggingEnd)
+		print(L.LoggingEnd)
 		print('==================')
 	end
 	prevZone = zoneForLogging

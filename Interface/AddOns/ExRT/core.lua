@@ -1,6 +1,10 @@
---	4:21 08.06.2017
+--	13:15 26.06.2017
 
 --[[
+3875
+* Raid cooldowns: Blessing of Sacrifice cd fix
+* Minor fixes
+
 3870
 * Note: new option "Enable when you receive a new note"
 * Note: fixed bug when autoload boss randomly changed if you delete note
@@ -53,7 +57,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3870
+ExRT.V = 3875
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

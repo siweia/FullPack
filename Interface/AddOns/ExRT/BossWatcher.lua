@@ -1027,6 +1027,34 @@ local BossPhasesData = {
 			[2] = -14719,
 		},		
 	},	--ToS: Аватара Падшего
+	[2051] = {
+		events = {"COMBAT_LOG_EVENT_UNFILTERED"},
+		func = function(_,_,_,event,_,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellId)
+			if event == "SPELL_CAST_SUCCESS" then
+				if spellId == 244834 then
+					active_phase = 2
+					C_Timer.After(60,function()
+						if active_phase then
+							active_phase = 3
+						end
+					end)
+				elseif spellId == 241983 then
+					active_phase = 4
+				end
+			elseif event == "SPELL_CAST_START" then 
+				if spellId == 238999 and active_phase ~= 5 then
+					active_phase = 5
+				end
+			end
+		end,
+		names = {
+			[1] = -14921,
+			[2] = -15221,
+			[3] = -15229,
+			[4] = -15394,
+			[5] = -15255,
+		},
+	},	--ToS: Kj
 }
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1

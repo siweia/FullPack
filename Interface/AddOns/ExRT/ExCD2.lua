@@ -2984,7 +2984,7 @@ do
 		elseif _db.isEncounter and not IsEncounterInProgress() then
 			_db.isEncounter = nil
 			_db.isResurectDisabled = nil
-			if GetDifficultyForCooldownReset() then
+			if GetDifficultyForCooldownReset() and not module.db.disableCDresetting then
 				AfterCombatResetFunction()
 				forceUpdateAllData = true
 				forceSortAllData = true
@@ -3551,7 +3551,9 @@ do
 					local timeReduce = durationTable[j+1]
 					if type(timeReduce) == 'table' then
 						local traits = GetArtifactTraitsKnown(fullName,durationTable[j])
-						traits = max(traits,4)		--Set all traits minimum at 4
+						if traits == 0 then
+							traits = max(traits,4)		--Set all traits minimum at 4
+						end
 						if traits > 0 then
 							data.duration = data.duration + timeReduce[traits]
 						end
@@ -3571,12 +3573,16 @@ do
 					local timeReduce = cdTable[j+1]
 					if type(timeReduce) == 'table' then
 						local traits = GetArtifactTraitsKnown(fullName,cdTable[j])
-						traits = max(traits,4)		--Set all traits minimum at 4
+						if traits == 0 and (spellID ~= 6940 or (uSpecID == 4 and cdTable[j] == 200298)) then
+							traits = max(traits,4)		--Set all traits minimum at 4
+						end
 						if traits > 0 then
 							data.cd = data.cd + timeReduce[traits]
 						end
 					elseif tonumber(timeReduce) then
-						data.cd = data.cd + timeReduce
+						if spellID ~= 6940 or (uSpecID == 5 and cdTable[j] == 209285) then
+							data.cd = data.cd + timeReduce
+						end
 					else
 						local timeFix = tonumber( string.sub( timeReduce, 2 ) )
 						data.cd = data.cd * timeFix
@@ -3635,7 +3641,7 @@ function module:Enable()
 
 	module:RegisterSlash()
 	module:RegisterTimer()
-	module:RegisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED')
+	module:RegisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END')
 
 	UpdateRoster()
 end
@@ -3654,7 +3660,7 @@ function module:Disable()
 	
 	module:UnregisterSlash()
 	module:UnregisterTimer()
-	module:UnregisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED')
+	module:UnregisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END')
 end
 
 function module.main:ADDON_LOADED()
@@ -3898,6 +3904,18 @@ function module.main:UNIT_PET(arg)
 		end
 	end
 end
+
+function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, groupSize)
+	if encounterID == 1866 then
+		module.db.disableCDresetting = true
+	end
+end
+function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, groupSize, success)
+	if encounterID == 1866 then
+		module.db.disableCDresetting = nil
+	end	
+end
+
 
 do
 	local eventsView = nil
@@ -8813,7 +8831,7 @@ do
 					if text and text ~= "" then
 						for stateName,stateData in pairs(moduleInspect.db.statsNames) do
 							inspectData[stateName] = inspectData[stateName] or 0
-							local findText = text:gsub("[, ]","")
+							local findText = text:gsub("[,]",""):gsub("(%d+)[ ]+(%d+)","%1%2")
 							for k=1,#stateData do
 								local findData = findText:match(stateData[k])
 								if findData then
@@ -9002,6 +9020,10 @@ function moduleInspect.main:ADDON_LOADED()
 	
 	VExRT.InspectArtifact = VExRT.InspectArtifact or {}
 	VExRT.InspectArtifact.players = VExRT.InspectArtifact.players or {}
+	
+	if VExRT.Addon.Version < 3875 then
+		wipe(VExRT.InspectArtifact.players)
+	end
 	
 	Inspect_Artifact_ADDON_LOADED()
 end
@@ -9526,6 +9548,7 @@ end
 local UpdateArtifactToTalentsData
 
 function Inspect_Artifact_ADDON_LOADED()
+	--[[
 	for player,data in pairs(VExRT.InspectArtifact.players) do
 		local db = {
 			time = data[2],
@@ -9535,6 +9558,7 @@ function Inspect_Artifact_ADDON_LOADED()
 		Inspect_ParseArtifactString(db, data[1])
 		UpdateArtifactToTalentsData(player)
 	end
+	]]
 end
 
 local UpdateArtifactInfoTimer
@@ -9638,10 +9662,12 @@ function moduleInspect:addonMessage(sender, prefix, prefix2, ...)
 				
 				db.time = currTime
 				
+				--[[
 				VExRT.InspectArtifact.players[ sender ] = {
 					name,
 					currTime,
 				}
+				]]
 			elseif type == "AR" then
 				local db = moduleInspect.db.artifactDB[ sender ]
 				if not db then

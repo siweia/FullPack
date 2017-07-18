@@ -20,6 +20,7 @@ All functions:
 	:NewPoint(...)		-> ClearAllPoints() + SetPoint(...)
 	:Scale(...)		-> SetScale(...)
 	:OnClick(func)		-> SetScript("OnClick",func)
+	:OnShow(func,disableFirst)  -> SetScript("OnShow",func) && run func if not disabled
 	:Run(func,...)		-> func(self,...)
 
 -> ELib:Shadow(parent,size,edgeSize)
@@ -3163,6 +3164,10 @@ do
 			end
 		end
 		
+		line.background = line:CreateTexture(nil, "BACKGROUND")
+		line.background:SetPoint("TOPLEFT")
+		line.background:SetPoint("BOTTOMRIGHT")
+		
 		line.HighlightTexture = line:CreateTexture()
 		line.HighlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
 		line.HighlightTexture:SetBlendMode("ADD")
@@ -3246,6 +3251,13 @@ do
 				else
 					line.iconRight:SetTexture("")
 				end			
+			end
+			if self.colors then
+				if self.colors[i] then
+					line.background:SetColorTexture(unpack(self.colors[i]))
+				else
+					line.background:SetColorTexture(0,0,0,0)
+				end
 			end
 			line:Show()
 			line.index = i
