@@ -95,6 +95,7 @@ local defaultSettings = {
 		MapScale = 1.1,
 		MinmapScale = 1.4,
 		ShowRecycleBin = true,
+		WhoPings = true,
 	},
 	Nameplate = {
 		Enable = true,
@@ -362,11 +363,13 @@ local optionList = {		-- type, key, value, name, horizon, doubleline
 	},
 	[9] = {
 		{1, "Map", "Coord", L["Map Coords"]},
+		{},--blank
 		{1, "Map", "Invite", L["Calendar Reminder"]},
-		{1, "Map", "Clock", L["Minimap Clock"]},
+		{1, "Map", "Clock", L["Minimap Clock"], true},
 		{1, "Map", "CombatPulse", L["Minimap Pulse"]},
-		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"]},
-		{1, "Misc", "ExpRep", L["Show Expbar"]},
+		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"], true},
+		{1, "Map", "WhoPings", L["Show WhoPings"]},
+		{1, "Misc", "ExpRep", L["Show Expbar"], true},
 		{},--blank
 		{3, "Map", "MapScale", L["Map Scale"], false, {1, 2, 1}},
 		{3, "Map", "MinmapScale", L["Minimap Scale"], true, {1, 2, 1}},
@@ -552,7 +555,7 @@ local function CreateOption(i)
 			bd:SetFrameStrata("BACKGROUND")
 			B.CreateBD(bd, .3)
 			local slider = select(4, s:GetRegions())
-			slider:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+			slider:SetTexture(DB.sparkTex)
 			slider:SetBlendMode("ADD")
 		-- Dropdown
 		elseif type == 4 then
