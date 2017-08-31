@@ -270,7 +270,7 @@ end
 addon_env.RemoveAllWorkers_TooltipShow = RemoveAllWorkers_TooltipShow
 
 local function AssignRemove_PerformInit()
-   PlaySound("gsTitleOptionOK")
+   PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
    for event in pairs(events_for_buildings) do UnregisterEvent(event_frame, event) end
    assign_remove_in_progress = true
    GarrisonBuilding_UpdateButtons()
@@ -303,7 +303,7 @@ local function AssignAllWorkers_Perform()
       end
    end
    if not empty then
-      AssignRemove_PerformFinalize("UI_Garrison_CommandTable_AssignFollower")
+      AssignRemove_PerformFinalize(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_ASSIGN_FOLLOWER)
    else
       After(0.001, AssignAllWorkers_Perform)
    end
@@ -331,7 +331,7 @@ local function RemoveAllWorkers_Perform()
       end
    end
    if empty then
-      AssignRemove_PerformFinalize("UI_Garrison_CommandTable_UnassignFollower")
+      AssignRemove_PerformFinalize(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_UNASSIGN_FOLLOWER)
    else
       After(0.001, RemoveAllWorkers_Perform)
    end
