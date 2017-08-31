@@ -1,4 +1,4 @@
-## Interface: 70200
+## Interface: 70300
 ## Title: Angry Keystones
 ## Title-zhCN: |cff0080ffAngry Keystones|r 大秘境计时
 ## Title-zhTW: |cff0080ffAngry Keystones|r 大秘境計時
