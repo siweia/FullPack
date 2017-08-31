@@ -1033,13 +1033,12 @@ local BossPhasesData = {
 			if event == "SPELL_CAST_SUCCESS" then
 				if spellId == 244834 then
 					active_phase = 2
-					C_Timer.After(60,function()
-						if active_phase then
-							active_phase = 3
-						end
-					end)
 				elseif spellId == 241983 then
 					active_phase = 4
+				end
+			elseif event == "SPELL_AURA_REMOVED" then 
+				if spellId == 244834 and active_phase then
+					active_phase = 3
 				end
 			elseif event == "SPELL_CAST_START" then 
 				if spellId == 238999 and active_phase ~= 5 then
@@ -2309,17 +2308,17 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 	------ powers
 	---------------------------------	
 	elseif event == "SPELL_ENERGIZE" or event == "SPELL_PERIODIC_ENERGIZE" then
-		local spellID,_,_,amount,powerType = ...
+		local spellID, _, _, amount, overEnergize, powerType, alternatePowerType = ...
 		
-		local sourceData = fightData_power[sourceGUID]
+		local sourceData = fightData_power[destGUID]
 		if not sourceData then
 			sourceData = {}
-			fightData_power[sourceGUID] = sourceData
+			fightData_power[destGUID] = sourceData
 		end
-		local powerData = sourceData[powerType]
+		local powerData = sourceData[powerType or 0]
 		if not powerData then
 			powerData = {}
-			sourceData[powerType] = powerData
+			sourceData[powerType or 0] = powerData
 		end
 		local spellData = powerData[spellID]
 		if not spellData then
@@ -2952,10 +2951,16 @@ function BWInterfaceFrameLoad()
 		---Tab with mobs fix
 		if activeTab == 4 then
 			local activeTabOnPage = BWInterfaceFrame.tab.tabs[4].infoTabs.selected
+			for i=1,#reportData[4][activeTabOnPage] do
+				reportData[4][activeTabOnPage][i] = reportData[4][activeTabOnPage][i]:gsub("||","")
+			end
 			ExRT.F:ToChatWindow(reportData[4][activeTabOnPage])
 			return		
 		end
 		
+		for i=1,#reportData[activeTab] do
+			reportData[activeTab][i] = reportData[activeTab][i]:gsub("||","")
+		end
 		ExRT.F:ToChatWindow(reportData[activeTab],nil,reportOptions[activeTab])
 	end)
 	BWInterfaceFrame.report:Hide()

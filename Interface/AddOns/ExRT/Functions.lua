@@ -2,7 +2,7 @@ local GlobalAddonName, ExRT = ...
 
 ExRT.F.FUNC_FILE_LOADED = true
 
-local UnitName, GetTime, GetCursorPosition = UnitName, GetTime, GetCursorPosition
+local UnitName, GetTime, GetCursorPosition, UnitIsUnit = UnitName, GetTime, GetCursorPosition, UnitIsUnit
 local select, floor, tonumber, tostring, string_sub, string_find, string_len, bit_band, type, unpack, pairs, format, strsplit = select, floor, tonumber, tostring, string.sub, string.find, string.len, bit.band, type, unpack, pairs, format, strsplit
 local string_gsub, string_match = string.gsub, string.match
 local RAID_CLASS_COLORS, COMBATLOG_OBJECT_TYPE_MASK, COMBATLOG_OBJECT_CONTROL_MASK, COMBATLOG_OBJECT_REACTION_MASK, COMBATLOG_OBJECT_AFFILIATION_MASK, COMBATLOG_OBJECT_SPECIAL_MASK = RAID_CLASS_COLORS, COMBATLOG_OBJECT_TYPE_MASK, COMBATLOG_OBJECT_CONTROL_MASK, COMBATLOG_OBJECT_REACTION_MASK, COMBATLOG_OBJECT_AFFILIATION_MASK, COMBATLOG_OBJECT_SPECIAL_MASK
@@ -574,8 +574,9 @@ end
 function ExRT.F.IsPlayerRLorOfficer(unitName)
 	local shortName = ExRT.F.delUnitNameServer(unitName)
 	for i=1,GetNumGroupMembers() do
-		local name,rank = GetRaidRosterInfo(i)
-		if name and (name == unitName or ExRT.F.delUnitNameServer(name) == shortName) then
+		--if name and (name == unitName or ExRT.F.delUnitNameServer(name) == shortName) then
+		if UnitIsUnit(unitName,"raid"..i) or UnitIsUnit(shortName,"raid"..i) then
+			local name,rank = GetRaidRosterInfo(i)
 			if rank > 0 then
 				return rank
 			else
@@ -638,6 +639,32 @@ function ExRT.F.GetPlayerRole()
 			isMelee = GetSpecialization() == 2
 		elseif class == "HUNTER" then
 			isMelee = GetSpecialization() == 3
+		end
+		if isMelee then
+			return role, "MDD"
+		else
+			return role, "RDD"
+		end
+	end
+end
+
+function ExRT.F.GetUnitRole(unit)
+	local role = UnitGroupRolesAssigned(unit)
+	if role == "HEALER" then
+		local _,class = UnitClass(unit)
+		return role, (class == "PALADIN" or class == "MONK") and "MHEALER" or "RHEALER"
+	elseif role ~= "DAMAGER" then
+		--TANK, NONE
+		return role
+	else
+		local _,class = UnitClass(unit)
+		local isMelee = (class == "WARRIOR" or class == "PALADIN" or class == "ROGUE" or class == "DEATHKNIGHT" or class == "MONK" or class == "DEMONHUNTER")
+		if class == "DRUID" then
+			isMelee = not (UnitPowerType(unit) == 8)	--astral power
+		elseif class == "SHAMAN" then
+			isMelee = UnitPowerMax(unit) >= 150
+		elseif class == "HUNTER" then
+			isMelee = (ExRT.A.Inspect and UnitName(unit) and ExRT.A.Inspect.db.inspectDB[UnitName(unit)] and ExRT.A.Inspect.db.inspectDB[UnitName(unit)].spec) == 255
 		end
 		if isMelee then
 			return role, "MDD"
@@ -1146,7 +1173,7 @@ ExRT.GDB.ClassSpecializationRole = {
 	[252] = 'MELEE',
 	[253] = 'RANGE',
 	[254] = 'RANGE',
-	[255] = 'RANGE',
+	[255] = 'MELEE',
 	[256] = 'HEAL',
 	[257] = 'HEAL',
 	[258] = 'RANGE',

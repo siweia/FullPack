@@ -235,12 +235,25 @@ local zoneEJids = {
 	S_ZoneT19ToV = 861,
 	S_ZoneT19Suramar = 786,
 	S_ZoneT20ToS = 875,
+	S_ZoneT21A = 946,
 }
 for prefix,eID in pairs(zoneEJids) do
 	L[prefix] = EJ_GetInstanceInfo(eID)
 end
 
 local encounterIDtoEJidData = {
+	[2076] = 1992,	--Garothi Worldbreaker
+	[2074] = 1987,	--Hounds of Sargeras
+	[2064] = 1985,	--Portal Keeper Hasabel
+	[2070] = 1997,	--War Council
+	[2075] = 2025,	--Eonar, the Lifebinder
+	[2082] = 2009,	--Imonar the Soulhunter
+	[2069] = 1983,	--Varimathras
+	[2088] = 2004,	--Kin'garoth
+	[2073] = 1986,	--The Coven of Shivarra
+	[2063] = 1984,	--Aggramar
+	[2092] = 2031,	--Argus the Unmaker
+
 	[2032] = 1862,	--Горот
 	[2048] = 1867,	--Демоны-инквизиторы
 	[2036] = 1856,	--Харджатан

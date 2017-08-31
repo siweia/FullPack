@@ -9409,7 +9409,7 @@ end
 
 local artifactUIfixTimer
 local function artifactUI_CheckMajorFrames(self)
-	if (not WorldMapFrame or not WorldMapFrame:IsVisible()) and (not PlayerTalentFrame or not PlayerTalentFrame:IsVisible()) and (not OrderHallMissionFrame or not OrderHallMissionFrame:IsVisible()) and (not MailFrame or not MailFrame:IsVisible()) then
+	if (not WorldMapFrame or not WorldMapFrame:IsVisible()) and (not PlayerTalentFrame or not PlayerTalentFrame:IsVisible()) and (not OrderHallMissionFrame or not OrderHallMissionFrame:IsVisible()) and (not MailFrame or not MailFrame:IsVisible()) and (not ArtifactRelicForgeFrame or not ArtifactRelicForgeFrame:IsVisible()) then
 		if artifactUIfixTimer then
 			artifactUIfixTimer:Cancel()
 		end

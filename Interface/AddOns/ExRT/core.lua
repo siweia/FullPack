@@ -1,63 +1,21 @@
---	13:15 26.06.2017
+--	22:22 27.08.2017
 
 --[[
-3875
-* Raid cooldowns: Blessing of Sacrifice cd fix
+3885
+* 7.3.0 Update
+* Saving log: added options for difficulties
+
+3880
+* Note: added custom Weak Auras event for updating note: "EXRT_NOTE_UPDATE"
+* Fight log: minor fixes (powers gain, report for named mobs (KJ for ex.))
+* Coins: added 7.3 bosses
 * Minor fixes
 
-3870
-* Note: new option "Enable when you receive a new note"
-* Note: fixed bug when autoload boss randomly changed if you delete note
-* Note: added flash when you receive a new note
-* Note: added ToS icons
-* Raid cooldowns: set all traits minimum on 4th rank
-* Fight log: healing tab: added filter for targets "only tanks" & "non-tanks"
-* Minor fixes
-
-3860
-* Note: fixed "blackbox" error
-* Note: added support for multilanguage icons
-* Raid cooldowns: added time till next charge for resurrect line
-
-3855
-* Raid Inspect: fixes (weapons still be missing if players in another zone)
-* Raid Inspect: you able to see artifact relics for all players	
-
-3850
-* 7.2 Update
-* Note: Added ToS bosses
-* Fight Log: added death report for cheath death procs
-* Added scale-bar for options window
-
-
-3845
-* Raid Inspect: Added Trial of Valor and Nighthold achievements
-* Fixed memory leak caused by inspecting
-* Localization updates
-* Minor fixes
-
-3842
-* Note: added Nighthold icons
-* Timers: fixed sync with BW
-* Bonus Loot: removed AP rewards from notifications
-* Minor fixes
-
-3841
-* Major fixes
-
-3840
-* Fixed pull timer for party group
-* Auto Logging: added 5ppl mythic diff (must be correct logs if you run mythic+)
-* Raid cooldowns: 7.1.5 class balance & legendary updates
-* Who Pulled: added option for message in chat
-* Timers: Time to kill: new option
-* 7.1.5 Update
-* Minor fixes
 
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3875
+ExRT.V = 3885
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

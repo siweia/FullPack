@@ -32,6 +32,38 @@ function module.options:Load()
 			VExRT.Logging.enable5ppLegion = nil
 		end
 	end)
+	
+	self.raidMythic = ELib:Check(self,RAID..": "..PLAYER_DIFFICULTY6,not VExRT.Logging.disableMythic):Point("TOP",self.enable5ppLegion,"BOTTOM",0,-5):Point("LEFT",self,5,0):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Logging.disableMythic = nil
+		else
+			VExRT.Logging.disableMythic = true
+		end
+	end)
+	
+	self.raidHeroic = ELib:Check(self,RAID..": "..PLAYER_DIFFICULTY2,not VExRT.Logging.disableHeroic):Point("TOP",self.raidMythic,"BOTTOM",0,-5):Point("LEFT",self,5,0):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Logging.disableHeroic = nil
+		else
+			VExRT.Logging.disableHeroic = true
+		end
+	end)
+	
+	self.raidNormal = ELib:Check(self,RAID..": "..PLAYER_DIFFICULTY1,not VExRT.Logging.disableNormal):Point("TOP",self.raidHeroic,"BOTTOM",0,-5):Point("LEFT",self,5,0):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Logging.disableNormal = nil
+		else
+			VExRT.Logging.disableNormal = true
+		end
+	end)
+	
+	self.raidLFR = ELib:Check(self,RAID..": "..PLAYER_DIFFICULTY3,VExRT.Logging.enableLFR):Point("TOP",self.raidNormal,"BOTTOM",0,-5):Point("LEFT",self,5,0):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Logging.enableLFR = true
+		else
+			VExRT.Logging.enableLFR = nil
+		end
+	end)
 end
 
 
@@ -58,8 +90,12 @@ local function GetCurrentMapForLogging()
 	if VExRT.Logging.enabled then
 		local _, zoneType, difficulty, _, _, _, _, mapID = GetInstanceInfo()
 		if difficulty == 7 or difficulty == 17 then
-			return false
-		elseif zoneType == 'raid' and (tonumber(mapID) and mapID >= module.db.minRaidMapID) then
+			if VExRT.Logging.enableLFR then
+				return true
+			else
+				return false
+			end
+		elseif zoneType == 'raid' and (tonumber(mapID) and mapID >= module.db.minRaidMapID) and ((difficulty == 16 and not VExRT.Logging.disableMythic) or (difficulty == 15 and not VExRT.Logging.disableHeroic) or (difficulty == 14 and not VExRT.Logging.disableNormal) or (difficulty ~= 14 and difficulty ~= 15 and difficulty ~= 16)) then
 			return true
 		elseif VExRT.Logging.enable5ppLegion and (difficulty == 8 or difficulty == 23) and (tonumber(mapID) and mapID >= module.db.minPartyMapID) then
 			return true

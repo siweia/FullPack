@@ -982,7 +982,7 @@ function module.frame:Clear()
 end 
 
 local function GetPlayerRankInRaid(unit)
-	local rank = tonumber( ExRT.F.IsPlayerRLorOfficer(unit) )
+	local rank = tonumber( ExRT.F.IsPlayerRLorOfficer(unit) or "0" )
 	return rank or 0
 end
 local function SendNoteByEncounter(blackNoteID)
@@ -1029,6 +1029,9 @@ function module:addonMessage(sender, prefix, ...)
 			module:Enable()
 		end
 		module.frame.red_back:Show()
+		if type(WeakAuras)=="table" and WeakAuras.ScanEvents and type(WeakAuras.ScanEvents)=="function" then
+			WeakAuras.ScanEvents("EXRT_NOTE_UPDATE")
+		end
 	elseif prefix == "multiline_add" then
 		if VExRT.Note.OnlyPromoted and IsInRaid() and not ExRT.F.IsPlayerRLorOfficer(sender) then
 			return

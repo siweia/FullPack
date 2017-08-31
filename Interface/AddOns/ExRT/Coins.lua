@@ -8,6 +8,35 @@ local VExRT = nil
 local strsplit = strsplit
 
 module.db.spellsCoins = {
+	[250541] = L.bossName[2076], --"AN - Boss 1",
+	[250574] = L.bossName[2074], --"AN - Boss 2",
+	[250575] = L.bossName[2064], --"AN - Boss 3",
+	[250576] = L.bossName[2070], --"AN - Boss 4",
+	[250577] = L.bossName[2075], --"AN - Boss 5",
+	[250578] = L.bossName[2082], --"AN - Boss 6",
+	[250579] = L.bossName[2069], --"AN - Boss 7",
+	[250580] = L.bossName[2088], --"AN - Boss 8",
+	[250581] = L.bossName[2073], --"AN - Boss 9",
+	[250582] = L.bossName[2063], --"AN - Boss 10",
+	[250583] = L.bossName[2092], --"AN - Boss 11",
+	
+	[247484] = "Seat of the Triumverate - Boss 01",	--7.0 Dungeon - Seat of the Triumverate - Bonus Roll Loot - Boss 01
+	[247485] = "Seat of the Triumverate - Boss 02",	--7.0 Dungeon - Seat of the Triumverate - Bonus Roll Loot - Boss 02
+	[247486] = "Seat of the Triumverate - Boss 03",	--7.0 Dungeon - Seat of the Triumverate - Bonus Roll Loot - Boss 03
+	[247487] = "Seat of the Triumverate - Boss 04",	--7.0 Dungeon - Seat of the Triumverate - Bonus Roll Loot - Boss 04
+	
+	[244168] = "7.2.5 World Boss",
+	[244170] = "7.2.5 World Boss",
+	[244171] = "7.2.5 World Boss",
+	[244185] = "7.2.5 World Boss",
+	[244186] = "7.2.5 World Boss",
+	[244187] = "7.2.5 World Boss",
+	
+	[244777] = "Cathedral of Eternal Night - Boss 01",	--7.0 Dungeon - Cathedral of Eternal Night - Bonus Roll Loot - Boss 01
+	[244778] = "Cathedral of Eternal Night - Boss 02",	--7.0 Dungeon - Cathedral of Eternal Night - Bonus Roll Loot - Boss 02
+	[244779] = "Cathedral of Eternal Night - Boss 03",	--7.0 Dungeon - Cathedral of Eternal Night - Bonus Roll Loot - Boss 03
+	[244781] = "Cathedral of Eternal Night - Boss 04",	--7.0 Dungeon - Cathedral of Eternal Night - Bonus Roll Loot - Boss 04
+
 	[240641] = L.bossName[2032], --"ToS - Boss 1",
 	[240643] = L.bossName[2048], --"ToS - Boss 2",
 	[240644] = L.bossName[2036], --"ToS - Boss 3",
@@ -273,14 +302,14 @@ function module.main:CHAT_MSG_LOOT(msg, ...)
 		if numAffixes > 0 then
 			affixes = ":"..numAffixes..":"..affixes
 		end
-		if itemID and itemID ~= "144297" then
+		if itemID and itemID ~= "144297" and itemID ~= "147581" then
 			VExRT.Coins.list[#VExRT.Coins.list + 1] = "!"..ExRT.F.tohex(class or 0,1)..itemID..unitName..time()..affixes
 		end	
 	elseif msg:find(module.db.bonusLootChat) then
 		local unitName = msg:match(module.db.bonusLootChat)
 		local itemID = msg:match("|Hitem:(%d+)")
 		local class
-		if unitName and itemID and itemID ~= "144297" then
+		if unitName and itemID and itemID ~= "144297" and itemID ~= "147581" then
 			if UnitName(unitName) then
 				class = select(3,UnitClass(unitName))
 			end
