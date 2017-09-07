@@ -1,4 +1,4 @@
---if GetBuildInfo() ~= "7.2.5" then return end
+if GetBuildInfo() ~= "7.3.0" then return end
 local ADDON, Addon = ...
 local Mod = Addon:NewModule('Schedule')
 
@@ -11,7 +11,7 @@ local affixSchedule = {
 	{ 6, 3, 9 },
 	{ 5, 13, 10 },
 	{ 7, 12, 9 },
-	{ 8, 3, 10 },	
+	{ 8, 3, 10 },
 	{ 11, 2, 9 },
 	{ 5, 14, 10 },
 	{ 6, 4, 9 },
