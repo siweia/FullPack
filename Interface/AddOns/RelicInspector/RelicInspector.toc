@@ -2,8 +2,9 @@
 ## Title: RelicInspector
 ## Notes: Displays artifact weapon relics in the tooltip
 ## Author: Thoralie
-## Version: 1.11.11
+## Version: 2.0.2
 ## SavedVariables: RelicInspectorDB
+## SavedVariablesPerCharacter: RelicInspectorCharDB
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
