@@ -406,7 +406,7 @@ do
 	end
 	local function OnClick(self)
 		ToggleDropDownMenu(nil, nil, self:GetParent())
-		PlaySound(ExRT.clientVersion >= 70300 and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or "igMainMenuOptionCheckBoxOn")
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 	function Templates:ExRTUIChatDownButtonTemplate(parent)
 		local self = CreateFrame("Button",nil,parent)
