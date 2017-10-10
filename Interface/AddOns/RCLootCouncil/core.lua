@@ -232,7 +232,7 @@ function RCLootCouncil:OnInitialize()
 				{	text = L["Greed"],				whisperKey = L["whisperKey_greed"],},	-- 2
 				{	text = L["Minor Upgrade"],		whisperKey = L["whisperKey_minor"],},	-- 3
 			},
-			tierButtonsEnabled = true,
+			tierButtonsEnabled = false,
 			tierNumButtons = 4,
 			tierButtons = {
 				{	text = L["4 Piece"],					whisperKey = "1, 4tier, 4piece"},		-- 1
