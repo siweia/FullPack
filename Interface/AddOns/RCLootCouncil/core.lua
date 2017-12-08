@@ -247,6 +247,9 @@ function RCLootCouncil:OnInitialize()
 						relic = { -- v2.7
 							['*'] = true
 						},
+						ranks = {
+							['*'] = true
+						},
 					},
 				},
 			},
@@ -307,6 +310,7 @@ function RCLootCouncil:OnInitialize()
 				[143656] = true, [143657] = true, [143658] = true, -- Echo of Time (Nighthold quest item)
 				[132204] = true, [151248] = true, [151249] = true, [151250] = true, -- Sticky Volatile Essence, Fragment of the Guardian's Seal (Tomb of Sargeras)
 				[152902] = true, [152906] = true, [152907] = true, [155831] = true, -- Rune of Passage (Antorus shortcut item), Pantheon's Blessing
+				[152908] = true, [152909] = true, [152910] = true, -- Sigil of the Dark Titan (Another Antorus shortcut item)
 			},
 		},
 	} -- defaults end
@@ -1397,7 +1401,10 @@ function RCLootCouncil:AutoResponse(table)
 			end
 		end
 		-- target, session, response, isTier, isRelic, note, roll, link, ilvl, equipLoc, relicType, sendAvgIlvl, sendSpecID
-		self:SendResponse("group", session, response, nil, nil, nil, nil, v.link, v.ilvl, v.equipLoc, v.relic, true, true)
+		-- v2.7.1: Disconnection reported in large raid. It's likely that it is caused by the large amount of responses received in a short time frame.
+		-- First, delay by 1s, so people won't receive response within the same second of lootTable
+		-- Second, delay incremental short time for each session, to avoid message bursts when lots of items or in large raid.
+		self:ScheduleTimer("SendResponse", 1+0.5*(k-1), "group", session, response, nil, nil, nil, nil, v.link, v.ilvl, v.equipLoc, v.relic, true, true)
 	end
 end
 
@@ -1707,19 +1714,30 @@ function RCLootCouncil:OnEvent(event, ...)
 
 	elseif event == "LOOT_OPENED" then
 		self:Debug("Event:", event, ...)
-		self.lootOpen = true
+		if select(1, ...) ~= "scheduled" and self.LootOpenScheduled then return end -- When this function is scheduled to run again, but LOOT_OPENDED event fires, return.
+		self.LootOpenScheduled = false
 		wipe(self.lootSlotInfo)
+		if GetNumLootItems() <= 0 then return end-- In case when function rerun, loot window is closed.
+
+		self.lootOpen = true
 		for i = 1,  GetNumLootItems() do
-			local texture, name, quantity, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(i)
-			local link = GetLootSlotLink(i)
-			if link then
-				self.lootSlotInfo[i] = {
-					name = name,
-					link = link,
-					quantity = quantity,
-					quality = quality,
-					locked = locked,
-				}
+			if LootSlotHasItem(i) then
+				local texture, name, quantity, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(i)
+				local link = GetLootSlotLink(i)
+				if texture then
+					self.lootSlotInfo[i] = {
+						name = name,
+						link = link, -- This could be nil, if the item is money.
+						quantity = quantity,
+						quality = quality,
+						locked = locked,
+					}
+				else -- It's possible that item in the loot window is uncached. Retry in the next frame.
+					self:Debug("Loot uncached when the loot window is opened. Retry in the next frame.", link)
+					self.LootOpenScheduled = true
+					-- Must offer special argument as 2nd argument to indicate this is run from scheduler.
+					return self:ScheduleTimer("OnEvent", 0, "LOOT_OPENED", "scheduled")
+				end
 			end
 		end
 		if self.isMasterLooter then
@@ -1753,7 +1771,7 @@ function RCLootCouncil:NewMLCheck()
 	local old_lm = self.lootMethod
 	self.isMasterLooter, self.masterLooter = self:GetML()
 	self.lootMethod = GetLootMethod()
-	if self.masterLooter and self.masterLooter ~= "" and strfind(self.masterLooter, "Unknown") then
+	if self.masterLooter and self.masterLooter ~= "" and (strfind(self.masterLooter, "Unknown") or strfind(self.masterLooter, _G.UNKNOWNOBJECT)) then
 		-- ML might be unknown for some reason
 		self:Debug("Unknown ML")
 		return self:ScheduleTimer("NewMLCheck", 2)
@@ -1786,6 +1804,9 @@ function RCLootCouncil:NewMLCheck()
 	end
 	-- Check if we can use in party
 	if not IsInRaid() and db.onlyUseInRaids then return end
+
+	-- Don't do popups if we're already handling loot
+	if self.handleLoot then return end
 
 	-- We are ML and shouldn't ask the player for usage
 	if self.lootMethod == "master" and db.usage.ml then -- addon should auto start
@@ -2101,6 +2122,7 @@ end
 -- Assumes strings of format "x.y.z".
 -- @return True if ver1 is older than ver2, otherwise false.
 function RCLootCouncil:VersionCompare(ver1, ver2)
+	if not ver1 or not ver2 then return end
 	local a1,b1,c1 = string.split(".", ver1)
 	local a2,b2,c2 = string.split(".", ver2)
 	if not (c1 and c2) then return end -- Check if it exists

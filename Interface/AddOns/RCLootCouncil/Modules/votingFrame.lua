@@ -30,6 +30,10 @@ local guildRanks = {} -- returned from addon:GetGuildRanks()
 local GuildRankSort, ResponseSort -- Initialize now to avoid errors
 local defaultScrollTableData = {} -- See below
 local moreInfoData = {}
+local MIN_UPDATE_INTERVAL = 0.2 -- Minimum update interval
+local noUpdateTimeRemaining = 0 -- The time until we allow the next update.
+local updateFrame = CreateFrame("FRAME") -- to ensure the update operations that does not occur, because it's within min update interval, gets updated eventually
+local needUpdate = false -- Does voting frame needs an update after MIN_UPDATE_INTERVAL after the last update?
 
 function RCVotingFrame:OnInitialize()
 	-- Contains all the default data needed for the scroll table
@@ -71,6 +75,9 @@ function RCVotingFrame:OnEnable()
 	self:ScheduleTimer("CandidateCheck", 20)
 	guildRanks = addon:GetGuildRanks()
 	addon:Debug("RCVotingFrame", "enabled")
+	updateFrame:Show()
+	needUpdate = false
+	noUpdateTimeRemaining = 0
 end
 
 function RCVotingFrame:OnDisable() -- We never really call this
@@ -81,6 +88,9 @@ function RCVotingFrame:OnDisable() -- We never really call this
 	active = false
 	session = 1
 	self:UnregisterAllComm()
+	updateFrame:Hide()
+	needUpdate = false
+	noUpdateTimeRemaining = 0
 end
 
 function RCVotingFrame:Hide()
@@ -398,37 +408,12 @@ end
 --	Visuals
 -- @section Visuals
 ------------------------------------------------------------------
--- Returns true if a filter is set for this session
-local function IsFiltering(session)
-	if not db.modules["RCVotingFrame"].filters.showPlayersCantUseTheItem then
-		return true
-	end
-	if lootTable[session].token and addon.mldb.tierButtonsEnabled then
-		for _, v in pairs(db.modules["RCVotingFrame"].filters.tier) do
-			if not v then return true end
-		end
-	elseif lootTable[session].relic and addon.mldb.relicButtonsEnabled then
-		for _, v in pairs(db.modules["RCVotingFrame"].filters.relic) do
-			if not v then return true end
-		end
-	else
-		for k,v in pairs(db.modules["RCVotingFrame"].filters) do
-			if type(k) == "number" then
-				if not v then return true end
-			end
-		end
-	end
-	-- Check the universals (pass, autopass, status) last
-	for k,v in pairs(db.modules["RCVotingFrame"].filters) do
-		if type(k) == "string" and k ~= "tier" and k ~= "relic" then
-			if not v then return true end
-		end
-	end
-end
-
 function RCVotingFrame:Update()
+	needUpdate = false
+	if noUpdateTimeRemaining > 0 then needUpdate = true; return end
 	if not self.frame then return end -- No updates when it doesn't exist
 	if not lootTable[session] then return addon:Debug("VotingFrame:Update() without lootTable!!") end -- No updates if lootTable doesn't exist.
+	noUpdateTimeRemaining = MIN_UPDATE_INTERVAL
 	self.frame.st:SortData()
 	self.frame.st:SortData() -- It appears that there is a bug in lib-st that only one SortData() does not use the "sortnext" to correct sort the rows.
 	-- update awardString
@@ -466,12 +451,23 @@ function RCVotingFrame:Update()
 		self.frame.abortBtn:SetText(_G.CLOSE)
 		self.frame.disenchant:Hide()
 	end
-	if IsFiltering(session) then
+	if #self.frame.st.filtered < #self.frame.st.data then -- Some row is filtered in this session
 		self.frame.filter.Text:SetTextColor(0.86,0.5,0.22) -- #db8238
 	else
 		self.frame.filter.Text:SetTextColor(_G.NORMAL_FONT_COLOR:GetRGB()) --#ffd100
 	end
 end
+
+updateFrame:SetScript("OnUpdate", function(self, elapsed)
+	if noUpdateTimeRemaining > elapsed then
+		noUpdateTimeRemaining = noUpdateTimeRemaining - elapsed
+	else
+		noUpdateTimeRemaining = 0
+	end
+	if needUpdate and noUpdateTimeRemaining <= 0 then
+		RCVotingFrame:Update()
+	end
+end)
 
 function RCVotingFrame:SwitchSession(s)
 	addon:Debug("SwitchSession", s)
@@ -1041,6 +1037,16 @@ end
 
 function RCVotingFrame.filterFunc(table, row)
 	if not db.modules["RCVotingFrame"].filters then return true end -- db hasn't been initialized, so just show it
+	local name = row.name
+	local rank = lootTable[session].candidates[name].rank
+	if rank and guildRanks[rank] then
+		if not db.modules["RCVotingFrame"].filters.ranks[guildRanks[rank]] then
+			return false
+		end
+	elseif not db.modules["RCVotingFrame"].filters.ranks.notInYourGuild then
+		return false
+	end
+
 	local response = lootTable[session].candidates[row.name].response
 	if not db.modules["RCVotingFrame"].filters.showPlayersCantUseTheItem then
 		local v = lootTable[session]
@@ -1246,7 +1252,7 @@ do
 	-- Do reannounce (and request rolls)
 	-- whether request rolls, and who to reannounce is determined by the value of LIB_UIDROPDOWNMENU_MENU_VALUE
 	--@param isThisItem true to reannounce on this item, false to reannounce on all items.
-	RCVotingFrame.reannounceOrRequestRollButton = function(candidateName, isThisItem)
+	function RCVotingFrame.reannounceOrRequestRollButton(candidateName, isThisItem)
 		if type(LIB_UIDROPDOWNMENU_MENU_VALUE) ~= "string" then return end
 		local namePred, sesPred
 		if isThisItem then
@@ -1278,13 +1284,27 @@ do
 
 		if isThisItem then
 			RCVotingFrame:ReannounceOrRequestRoll(namePred, sesPred, isRoll, noAutopass, announceInChat)
+			RCVotingFrame.reannounceOrRequestRollPrint(RCVotingFrame.reannounceOrRequestRollText(candidateName), isThisItem, isRoll)
 		else -- Need to confirm to reannounce for all items.
-			LibDialog:Spawn("RCLOOTCOUNCIL_CONFIRM_REANNOUNCE_ALL_ITEMS", {text=RCVotingFrame.reannounceOrRequestRollText(candidateName), isRoll = isRoll,
-				func = function() RCVotingFrame:ReannounceOrRequestRoll(namePred, sesPred, isRoll, noAutopass, announceInChat) end })
+			local target = RCVotingFrame.reannounceOrRequestRollText(candidateName)
+			LibDialog:Spawn("RCLOOTCOUNCIL_CONFIRM_REANNOUNCE_ALL_ITEMS", {text=target, isRoll = isRoll,
+				func = function() 
+					RCVotingFrame:ReannounceOrRequestRoll(namePred, sesPred, isRoll, noAutopass, announceInChat)
+					RCVotingFrame.reannounceOrRequestRollPrint(target, isThisItem, isRoll) 
+				end })
 		end
 
 	end
 
+	-- Print sth when the button or confirmation dialog is clicked.
+	function RCVotingFrame.reannounceOrRequestRollPrint(target, isThisItem, isRoll)
+		local itemText = isThisItem and L["This item"] or L["All unawarded items"]
+		if isRoll then
+			addon:Print(format(L["Requested rolls for 'item' from 'target'"], itemText, target))
+		else
+			addon:Print(format(L["Reannounced 'item' to 'target'"], itemText, target))
+		end
+	end
 	--- The entries placed in the rightclick menu.
 	-- Each level in the menu has it's own indexed entries, and each entry requires a text field as minimum,
 	-- but can otherwise have the same values as normal DropDownMenus.
@@ -1639,6 +1659,45 @@ do
 					info.checked = db.modules["RCVotingFrame"].filters[k]
 					Lib_UIDropDownMenu_AddButton(info, level)
 				end
+			end
+
+			info = Lib_UIDropDownMenu_CreateInfo()
+			info.text = _G.RANK
+			info.isTitle = true
+			info.notCheckable = true
+			info.disabled = true
+			Lib_UIDropDownMenu_AddButton(info, level)
+
+			info = Lib_UIDropDownMenu_CreateInfo()
+			info.text = _G.RANK.."..."
+			info.notCheckable = true
+			info.hasArrow = true
+			info.value = "FILTER_RANK"
+			Lib_UIDropDownMenu_AddButton(info, level)
+		elseif level == 2 then
+			if LIB_UIDROPDOWNMENU_MENU_VALUE == "FILTER_RANK" then
+				info = Lib_UIDropDownMenu_CreateInfo()
+				if IsInGuild() then
+					for k = 1, GuildControlGetNumRanks() do
+						info.text = GuildControlGetRankName(k)
+						info.func = function()
+							addon:Debug("Update rank Filter", k)
+							db.modules["RCVotingFrame"].filters.ranks[k] = not db.modules["RCVotingFrame"].filters.ranks[k]
+							RCVotingFrame:Update()
+						end
+						info.checked = db.modules["RCVotingFrame"].filters.ranks[k]
+						Lib_UIDropDownMenu_AddButton(info, level)
+					end
+				end
+
+				info.text = L["Not in your guild"]
+				info.func = function()
+					addon:Debug("Update rank Filter", "Not in your guild")
+					db.modules["RCVotingFrame"].filters.ranks.notInYourGuild = not db.modules["RCVotingFrame"].filters.ranks.notInYourGuild
+					RCVotingFrame:Update()
+				end
+				info.checked = db.modules["RCVotingFrame"].filters.ranks.notInYourGuild
+				Lib_UIDropDownMenu_AddButton(info, level)
 			end
 		end
 	end

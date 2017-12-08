@@ -129,13 +129,10 @@ end
 function RCLootCouncilML:GetLootTableForTransmit()
 	local copy = CopyTable(self.lootTable)
 	for k, v in pairs(copy) do
-		if k == "equipLoc" then -- Dont break backward compatibility, generated when received in new version
-			copy[k] = select(4, GetItemInfoInstant(item))
-		elseif k == "typeID" and k == "subTypeID" then -- Generated when received
-			copy[k] = nil
-		elseif k == "baggedEntry" then -- Only ML needs this
-			copy[k] = nil
-		end
+		v["equipLoc"] = select(4, GetItemInfoInstant(v.link))
+		v["typeID"] = nil
+		v["subTypeID"] = nil
+		v["baggedEntry"] = nil -- Only ML needs this.
 	end
 	return copy
 end
@@ -641,7 +638,7 @@ function RCLootCouncilML:OnCommReceived(prefix, serializedMsg, distri, sender)
 				addon:Debug("Responded to reconnect from", sender)
 			elseif command == "lootTable" and addon:UnitIsUnit(sender, addon.playerName) then
 				-- Start a timer to set response as offline/not installed unless we receive an ack
-				self:ScheduleTimer("Timer", 10, "LootSend")
+				self:ScheduleTimer("Timer", 11 + 0.5*#self.lootTable, "LootSend")
 
 			elseif command == "tradable" then -- Raid members send the info of the tradable item he looted.
 				local item = unpack(data)
@@ -773,17 +770,20 @@ function RCLootCouncilML:LootOpened()
 			self:UpdateLootSlots()
 		else -- Otherwise add the loot
 			for i = 1, GetNumLootItems() do
-				local item = GetLootSlotLink(i)
-				if db.altClickLooting then self:ScheduleTimer("HookLootButton", 0.5, i) end -- Delay lootbutton hooking to ensure other addons have had time to build their frames
-				local _, _, quantity, quality = GetLootSlotInfo(i)
-				if self:ShouldAutoAward(item, quality) and quantity > 0 then
-					self:AutoAward(i, item, quality, db.autoAwardTo, db.autoAwardReason, addon.bossName)
+				if addon.lootSlotInfo[i] then
+					local item = addon.lootSlotInfo[i].link -- This can be nil, if this is money(a coin).
+					local quantity = addon.lootSlotInfo[i].quantity
+					local quality = addon.lootSlotInfo[i].quality
+					if db.altClickLooting then self:ScheduleTimer("HookLootButton", 0.5, i) end -- Delay lootbutton hooking to ensure other addons have had time to build their frames
+					if item and self:ShouldAutoAward(item, quality) and quantity > 0 then
+						self:AutoAward(i, item, quality, db.autoAwardTo, db.autoAwardReason, addon.bossName)
 
-				elseif self:CanWeLootItem(item, quality) and quantity > 0 then -- check if our options allows us to loot it
-					self:AddItem(item, false, i)
+					elseif item and self:CanWeLootItem(item, quality) and quantity > 0 then -- check if our options allows us to loot it
+						self:AddItem(item, false, i)
 
-				elseif quantity == 0 then -- it's coin, just loot it
-					LootSlot(i)
+					elseif quantity == 0 then -- it's coin, just loot it
+						LootSlot(i)
+					end
 				end
 			end
 		end
