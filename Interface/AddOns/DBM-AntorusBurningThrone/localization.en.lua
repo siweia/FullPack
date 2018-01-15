@@ -53,7 +53,8 @@ L:SetMiscLocalization({
 	Purifiers 	=	"Purifier",
 	Bats 		=	"Bats",
 	EonarHealth	= 	"Eonar Health",
-	EonarPower	= 	"Eonar Power"
+	EonarPower	= 	"Eonar Power",
+	NextLoc		=	"Next:"
 })
 
 ---------------------------
@@ -110,13 +111,19 @@ L= DBM:GetModLocalization(1984)
 L:SetMiscLocalization({
 	Foe			=	"Foe",
 	Rend		=	"Rend",
-	Tempest 	=	"Tempest"
+	Tempest 	=	"Tempest",
+	Current		=	"Current:"
 })
 
 ---------------------------
 -- Argus the Unmaker --
 ---------------------------
 L= DBM:GetModLocalization(2031)
+
+L:SetMiscLocalization({
+	SeaText =		"{rt6} Haste/Vers",
+	SkyText =		"{rt5} Crit/Mast"
+})
 
 -------------
 --  Trash  --
