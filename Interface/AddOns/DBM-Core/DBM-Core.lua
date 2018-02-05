@@ -41,9 +41,9 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 17234 $"):sub(12, -3)),
-	DisplayVersion = "7.3.20", -- the string that is shown as version
-	ReleaseRevision = 17234 -- the revision of the latest stable version that is available
+	Revision = tonumber(("$Revision: 17241 $"):sub(12, -3)),
+	DisplayVersion = "7.3.21", -- the string that is shown as version
+	ReleaseRevision = 17241 -- the revision of the latest stable version that is available
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
