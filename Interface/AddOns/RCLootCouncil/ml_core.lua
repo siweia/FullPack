@@ -56,7 +56,7 @@ function RCLootCouncilML:OnEnable()
 	self:RegisterEvent("UI_INFO_MESSAGE", "OnEvent")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED", "OnEvent")
 	self:RegisterBucketEvent("GROUP_ROSTER_UPDATE", 10, "UpdateGroup") -- Bursts in group creation, and we should have plenty of time to handle it
-	self:RegisterBucketMessage("RCConfigTableChanged", 2, "ConfigTableChanged") -- The messages can burst
+	self:RegisterBucketMessage("RCConfigTableChanged", 5, "ConfigTableChanged") -- The messages can burst
 	self:RegisterMessage("RCCouncilChanged", "CouncilChanged")
 end
 
@@ -165,18 +165,19 @@ function RCLootCouncilML:UpdateGroup(ask)
 	if type(ask) ~= "boolean" then ask = false end
 	local group_copy = {}
 	local updates = false
-	for name in pairs(self.candidates) do	group_copy[name] = true end
+	for name, v in pairs(self.candidates) do	group_copy[name] = v.role end
 	for i = 1, GetNumGroupMembers() do
 		local name, _, _, _, _, class, _, _, _, _, _, role  = GetRaidRosterInfo(i)
-
 		if name then -- Apparantly name can be nil (ticket #223)
 			name = addon:UnitName(name) -- Get their unambiguated name
-			if group_copy[name] then	-- If they're already registered
-				group_copy[name] = nil	-- remove them from the check
+			if group_copy[name] then -- If they're already registered
+				if group_copy[name] ~= role then	-- They have changed their role
+					self:AddCandidate(name, class, role, self.candidates[name].enchanter, self.candidates[name].enchant_lvl, self.candidates[name].specID)
+				end
+				group_copy[name] = nil -- Remove them, as they're still in the group
 			else -- add them
 				if not ask then -- ask for playerInfo?
 					addon:SendCommand(name, "playerInfoRequest")
-					addon:SendCommand(name, "MLdb", addon.mldb) -- and send mlDB
 				end
 				self:AddCandidate(name, class, role) -- Add them in case they haven't installed the adoon
 				updates = true
@@ -191,6 +192,7 @@ function RCLootCouncilML:UpdateGroup(ask)
 		if v then self:RemoveCandidate(name); updates = true end
 	end
 	if updates then
+		addon:SendCommand("group", "MLdb", addon.mldb)
 		addon:SendCommand("group", "candidates", self.candidates)
 
 		local oldCouncil = self.council
@@ -643,6 +645,7 @@ function RCLootCouncilML:OnCommReceived(prefix, serializedMsg, distri, sender)
 				self:ScheduleTimer("Timer", 11 + 0.5*#self.lootTable, "LootSend")
 
 			elseif command == "tradable" then -- Raid members send the info of the tradable item he looted.
+				if not db.autolootOthersBoE then return end -- Don't even bother
 				local item = unpack(data)
 				if db.handleLoot and item and GetItemInfoInstant(item) and IsInInstance() and (not addon:UnitIsUnit(sender, "player") or addon.lootMethod ~= "master") then
 					addon:Debug("Receive info of tradable item: ", item, sender)
@@ -657,8 +660,9 @@ function RCLootCouncilML:OnCommReceived(prefix, serializedMsg, distri, sender)
 					local quality = select(3, GetItemInfo(item))
 
 					if (IsEquippableItem(item) or db.autolootEverything) and -- Safetee: I don't want to check db.autoloot here, because this is actually not a loot.
-						(quality and quality >= GetLootThreshold()) then
-						if db.autolootOthersBoE and bindType and bindType ~= LE_ITEM_BIND_ON_ACQUIRE then
+						not self:IsItemIgnored(item) and -- Item mustn't be ignored
+						(quality and quality >= GetLootThreshold()) and
+						(bindType and bindType ~= LE_ITEM_BIND_ON_ACQUIRE) then
 							-- Safetee: I actually prefer to use the term "non-bop" instead of "boe"
 							if InCombatLockdown() then
 								addon:Print(format(L["autoloot_others_item_combat"], addon:GetUnitClassColoredName(sender), item))
@@ -666,7 +670,6 @@ function RCLootCouncilML:OnCommReceived(prefix, serializedMsg, distri, sender)
 							else
 								self:AddUserItem(item, sender)
 							end
-						end
 					end
 				end
 			end
@@ -1674,11 +1677,12 @@ end
 -- The loottable sort compare function
 -- Sorted by:
 -- 1. equipment slot: head, neck, ...
--- 2. subType: junk(armor token), plate, mail, ...
--- 3. relicType: Arcane, Life, ..
--- 4. Item level from high to low
--- 5. The sum of item stats, to make sure items with bonuses(socket, leech, etc) are sorted first.
--- 6. Item name
+-- 2. trinket category name
+-- 3. subType: junk(armor token), plate, mail, ...
+-- 4. relicType: Arcane, Life, ..
+-- 5. Item level from high to low
+-- 6. The sum of item stats, to make sure items with bonuses(socket, leech, etc) are sorted first.
+-- 7. Item name
 --
 -- @param a: an entry in the lootTable
 -- @param b: The other entry in the looTable
@@ -1690,6 +1694,15 @@ function RCLootCouncilML.LootTableCompare(a, b)
 	local equipLocB = RCLootCouncilML.EQUIPLOC_SORT_ORDER[b.token and addon:GetTokenEquipLoc(b.token) or b.equipLoc] or math.huge
 	if equipLocA ~= equipLocB then
 		return equipLocA < equipLocB
+	end
+	if a.equipLoc == "INVTYPE_TRINKET" and b.equipLoc == "INVTYPE_TRINKET" then
+		local specA = _G.RCTrinketSpecs[addon:GetItemIDFromLink(a.link)]
+		local specB = _G.RCTrinketSpecs[addon:GetItemIDFromLink(b.link)]
+		local categoryA = (specA and _G.RCTrinketCategories[specA]) or ""
+		local categoryB = (specB and _G.RCTrinketCategories[specB]) or ""
+		if categoryA ~= categoryB then
+			return categoryA < categoryB
+		end
 	end
 	if a.typeID ~= b.typeID then
 		return a.typeID > b.typeID
