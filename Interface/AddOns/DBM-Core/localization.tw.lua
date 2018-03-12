@@ -1,4 +1,4 @@
-﻿if GetLocale() ~= "zhTW" then return end
+if GetLocale() ~= "zhTW" then return end
 
 DBM_HOW_TO_USE_MOD					= "歡迎使用DBM。在聊天頻道輸入 /dbm 打開設定開始設定。你可以載入特定區域後為任何首領設定你喜歡的特別設置。DBM會在設定你的職業天賦的預設值，但有些選項可能需要調整。"
 DBM_SILENT_REMINDER					= "提醒：DBM正處於無聲模式。"
@@ -450,7 +450,7 @@ DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.count	= "" .. UnitName("player") .. "中了%s(%
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.fade	= "%s在%%d秒後消退!"
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.shortfade	= "%%d"
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.iconfade	= "{rt%%2$d}%%1$d"
-DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.position = "{rt%%3$d}"..UnitName("player").."{rt%%3$d}中了%1$s %%2$s"--Arg order is going to be a problem. any way to word differently for playername at end?
+DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.position = "{rt%%d}"..UnitName("player").."{rt%%d}中了%s(%%s)"--Arg order is going to be a problem. any way to word differently for playername at end?
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.combo	= "%s和%%s"
 DBM_CORE_AUTO_YELL_CUSTOM_FADE			= "%s消退了"
 DBM_CORE_AUTO_HUD_OPTION_TEXT			= "為$spell:%s顯示HudMap(已退役)"
