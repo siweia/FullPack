@@ -1,6 +1,18 @@
---	17:31 21.11.2017
+--	3:31 03.02.2018
 
 --[[
+3910
+* Raid cooldowns: Added allied racial abilities
+* Raid cooldowns: Small redesign for custom spell frame
+* Raid cooldowns: Added whisper-to-use option
+* Minor fixes
+
+3905
+* Raid cooldowns: Added stuns to quick setup
+* Note: Added Antorus icons
+* Raid Check: added 1% versatility food
+* Minor fixes
+
 3900
 * Note: "Only trusted" option set to enabled for all users
 * Raid Check: added vantus runes checker
@@ -26,7 +38,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3900
+ExRT.V = 3910
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
