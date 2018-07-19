@@ -1,4 +1,4 @@
---if GetBuildInfo() ~= "7.3.2" then return end
+if GetBuildInfo() ~= "7.2.0" then return end
 local ADDON, Addon = ...
 local Mod = Addon:NewModule('Schedule')
 
@@ -6,7 +6,7 @@ local rowCount = 4
 
 local requestKeystoneCheck
 
--- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified
+-- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 local affixSchedule = {
 	{ 6, 3, 9 },
 	{ 5, 13, 10 },

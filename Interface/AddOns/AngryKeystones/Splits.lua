@@ -129,7 +129,7 @@ function Mod:CHALLENGE_MODE_COMPLETED()
 	local mapID, level, timeElapsed, onTime, keystoneUpgradeLevels = C_ChallengeMode.GetCompletionInfo()
 	local name, _, timeLimit = C_ChallengeMode.GetMapInfo(challengeMapID)
 	local _, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
-	local splits = Mod.splits or {}
+	local splits = Mod.splits
 
 	local missingCount = 0
 	for index,elapsed in pairs(splits) do

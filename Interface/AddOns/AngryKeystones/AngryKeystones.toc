@@ -1,12 +1,10 @@
-## Interface: 70300
+## Interface: 80000
 ## Title: Angry Keystones
-## Title-zhCN: |cff0080ffAngry Keystones|r 大秘境计时
-## Title-zhTW: |cff0080ffAngry Keystones|r 大秘境計時
 ## Notes: Displays additional information for Mythic Keystone dungeons
 ## Author: Ermad
 ## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
-## X-Packaged-Version: v0.12.8
+## X-Packaged-Version: v0.13.0
 
 Core.lua
 Locale.lua
