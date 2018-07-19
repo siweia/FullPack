@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1984, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17471 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17623 $"):sub(12, -3))
 mod:SetCreatureID(121975)
 mod:SetEncounterID(2063)
 mod:SetZone()
@@ -87,7 +87,6 @@ mod.vb.firstCombo = nil
 mod.vb.secondCombo = nil
 mod.vb.comboCount = 0
 --mod.vb.incompleteCombo = false
-local foeBreaker1, foeBreaker2 = DBM:GetSpellInfo(245458), DBM:GetSpellInfo(255059)
 local comboDebug = {}
 local comboDebugCounter = 0
 local unitTracked = {}
@@ -317,12 +316,12 @@ function mod:OnCombatStart(delay)
 				if cid == 122532 then
 					local unitPower = UnitPower(UnitID)
 					if not unitTracked[GUID] then unitTracked[GUID] = "None" end
-					if (unitPower < 30) then
+					if (unitPower < 35) then
 						if unitTracked[GUID] ~= "Green" then
 							unitTracked[GUID] = "Green"
 							DBM.Nameplate:Show(true, GUID, 244912, 463281)
 						end
-					elseif (unitPower < 60) then
+					elseif (unitPower < 70) then
 						if unitTracked[GUID] ~= "Yellow" then
 							unitTracked[GUID] = "Yellow"
 							DBM.Nameplate:Hide(true, GUID, 244912, 463281)
@@ -387,11 +386,10 @@ function mod:SPELL_CAST_START(args)
 		end
 		self.vb.foeCount = self.vb.foeCount + 1
 		if self:IsTank() then
-			local tanking, status = UnitDetailedThreatSituation("player", "boss1")
-			if tanking or (status == 3) then--Player is current target
+			if self:IsTanking("player", "boss1", nil, true) then
 				specWarnFoeBreakerDefensive:Show()
 				specWarnFoeBreakerDefensive:Play("defensive")
-			elseif not DBM:UnitDebuff("player", foeBreaker1) and not DBM:UnitDebuff("player", foeBreaker2) and self.vb.foeCount == 2 then
+			elseif (self.vb.foeCount == 2) and not DBM:UnitDebuff("player", 245458, 255059) then
 				if self.Options.ignoreThreeTank and self:GetNumAliveTanks() >= 3 then return end
 				if self:AntiSpam(2, 6) then--Second cast and you didn't take first and didn't get a flame rend taunt warning in last 2 seconds
 					specWarnFoeBreakerTaunt:Show(BOSS)
@@ -460,7 +458,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.Options.ignoreThreeTank and self:GetNumAliveTanks() >= 3 then return end
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) then--For good measure, filter non tanks on wipes or LFR trolls
-			if not args:IsPlayer() and (self:IsMythic() and self.vb.rendCount == 2 or not DBM:UnitDebuff("player", foeBreaker1) and not DBM:UnitDebuff("player", foeBreaker2)) then
+			if not args:IsPlayer() and (self:IsMythic() and self.vb.rendCount == 2 or not DBM:UnitDebuff("player", 245458, 255059)) then
 				--Will warn if Rend count 2 and mythic, combo has ended and tank that didn't get hit should taunt boss to keep him still
 				--Will warn if Flame did not hit you and you do NOT have foebreaker debuff yet, should taunt to keep boss from moving, you're the next foe soaker in this case.
 				--Will NOT warn if Using 3+ tank strat and 3 tank filter enabled. If using 3+ tank strat, none of the two above can be safely assumed who should taunt boss, so we do nothing
@@ -616,7 +614,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, spellName, _, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 245993 then--Scorching Blaze
 		timerScorchingBlazeCD:Start()
 	elseif spellId == 254451 then--Ravenous Blaze (mythic replacement for Scorching Blaze)
@@ -660,7 +658,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, spellName, _, _, spellId)
 		timerTaeshalachTechCD:Start(nil, self.vb.techCount+1)
 		countdownTaeshalachTech:Start()
 		if self.Options.InfoFrame then
-			DBM.InfoFrame:SetHeader(spellName)
+			DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(spellId))
 			DBM.InfoFrame:Show(5, "function", updateInfoFrame, false, false, true)
 		end
 	elseif spellId == 244792 and self.vb.techActive then--Burning Will of Taeshalach (technique ended)
