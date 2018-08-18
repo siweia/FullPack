@@ -28,6 +28,7 @@ local MAPID_KUL_TIRAS = 876
 local MAPID_STORMSONG_VALLEY = 942
 local MAPID_DRUSTVAR = 896
 local MAPID_TIRAGARDE_SOUND = 895
+local MAPID_TOL_DAGOR = 1169
 
 local MAPID_ZONES_CONTINENTS = {
 	[MAPID_DALARAN] = MAPID_BROKENISLES,
@@ -47,6 +48,7 @@ local MAPID_ZONES_CONTINENTS = {
 	[MAPID_STORMSONG_VALLEY] = MAPID_KUL_TIRAS,
 	[MAPID_DRUSTVAR] = MAPID_KUL_TIRAS,
 	[MAPID_TIRAGARDE_SOUND] = MAPID_KUL_TIRAS,
+	[MAPID_TOL_DAGOR] = MAPID_KUL_TIRAS,
 }
 local MAPID_CONTINENTS = { [MAPID_BROKENISLES] = true, [MAPID_ARGUS] = true, [MAPID_ZANDALAR] = true, [MAPID_KUL_TIRAS] = true }
 
@@ -613,7 +615,7 @@ local function QuestFrame_AddQuestButton(questInfo, prevButton)
 		if tagTexCoords then
 			button.TagTexture:SetTexCoord( unpack(tagTexCoords) )
 		else
-			button.TagTexture:SetTexCoord( 0, 1, 0, 1 )
+			button.TagTexture:SetTexCoord( .08, .92, .08, .92 )
 		end
 	end
 
