@@ -628,7 +628,7 @@ end
 
 function UF:CreateClassPower(self)
 	if self.mystyle == "PlayerPlate" then
-		width, height = self:GetWidth(), 13
+		width, height = self:GetWidth(), (self:GetHeight()+self.Power:GetHeight())
 		C.UFs.BarPoint = {"BOTTOMLEFT", self, "TOPLEFT", 0, 3}
 	end
 
@@ -662,7 +662,7 @@ function UF:CreateClassPower(self)
 
 	if DB.MyClass == "DEATHKNIGHT" then
 		bars.colorSpec = true
-		if NDuiDB["UFs"]["SortRunes"] then bars.sortOrder = "asc" end
+		bars.sortOrder = "asc"
 		bars.PostUpdate = postUpdateRunes
 		self.Runes = bars
 	else
