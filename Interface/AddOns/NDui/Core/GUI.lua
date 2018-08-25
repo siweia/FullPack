@@ -14,6 +14,7 @@ local defaultSettings = {
 		Style = 1,
 		Bar4Fade = false,
 		Bar5Fade = true,
+		Scale = 1,
 	},
 	Bags = {
 		Enable = true,
@@ -181,6 +182,7 @@ local defaultSettings = {
 		SwapingAlert = false,
 		QuestNotifier = false,
 		QuestProgress = false,
+		OnlyCompleteRing = false,
 	},
 	Settings = {
 		LockUIScale = false,
@@ -240,8 +242,9 @@ local optionList = {		-- type, key, value, name, horizon, doubleline
 		{1, "Actionbar", "Enable", "|cff00cc4c"..L["Enable Actionbar"]},
 		{},--blank
 		{1, "Actionbar", "Bar4Fade", L["Bar4 Fade"]},
-		{1, "Actionbar", "Bar5Fade", L["Bar5 Fade"]},
-		{4, "Actionbar", "Style", L["Actionbar Style"], true, {L["BarStyle1"], L["BarStyle2"], L["BarStyle3"], L["BarStyle4"], L["BarStyle5"]}},
+		{1, "Actionbar", "Bar5Fade", L["Bar5 Fade"], true},
+		{4, "Actionbar", "Style", L["Actionbar Style"], false, {L["BarStyle1"], L["BarStyle2"], L["BarStyle3"], L["BarStyle4"], L["BarStyle5"]}},
+		{3, "Actionbar", "Scale", L["Actionbar Scale"], true, {.8, 1.5, 1}},
 		{},--blank
 		{1, "Actionbar", "Hotkeys", L["Actionbar Hotkey"]},
 		{1, "Actionbar", "Macro", L["Actionbar Macro"], true},
@@ -357,8 +360,10 @@ local optionList = {		-- type, key, value, name, horizon, doubleline
 		{1, "Chat", "GuildInvite", L["Guild Invite Only"], true},
 		{2, "Chat", "Keyword", L["Whisper Keyword"]},
 		{},--blank
-		{1, "Misc", "QuestNotifier", L["QuestNotifier"]},
-		{1, "Misc", "QuestProgress", L["QuestProgress"], true},
+		{1, "Misc", "QuestNotifier", "|cff00cc4c"..L["QuestNotifier"]},
+		{1, "Misc", "QuestProgress", L["QuestProgress"]},
+		{1, "Misc", "OnlyCompleteRing", L["OnlyCompleteRing"], true},
+		{},--blank
 		{1, "Misc", "RareAlerter", L["Rare Alert"]},
 		{1, "Misc", "AlertinChat", L["Alert In Chat"], true},
 		{1, "Misc", "Interrupt", L["Interrupt Alert"]},
