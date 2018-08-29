@@ -224,8 +224,8 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
 	if GameTooltipStatusBar:IsShown() then
 		GameTooltipStatusBar:ClearAllPoints()
-		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 2)
-		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -3, 2)
+		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 2, 3)
+		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -2, 3)
 	end
 end)
 
@@ -234,8 +234,9 @@ do
 	GameTooltipStatusBar:SetStatusBarTexture(DB.normTex)
 	GameTooltipStatusBar:SetHeight(5)
 	B.CreateSD(GameTooltipStatusBar, 3, 3)
-	local bg = B.CreateBG(GameTooltipStatusBar, 3)
+	local bg = B.CreateBG(GameTooltipStatusBar, 1)
 	B.CreateBD(bg, .7)
+	B.CreateSD(bg)
 	B.CreateTex(bg)
 end
 
@@ -263,7 +264,7 @@ hooksecurefunc("GameTooltip_ShowStatusBar", function(self)
 			local _, bd, tex = bar:GetRegions()
 			tex:SetTexture(DB.normTex)
 			bd:Hide()
-			local bg = B.CreateBG(bd)
+			local bg = B.CreateBG(bd, 0)
 			B.CreateBD(bg, .25)
 
 			bar.styled = true
@@ -274,11 +275,14 @@ end)
 hooksecurefunc("GameTooltip_ShowProgressBar", function(self)
 	if self.progressBarPool then
 		local bar = self.progressBarPool:Acquire()
-		B.StripTextures(bar.Bar)
-		select(7, bar.Bar:GetRegions()):Hide()
-		bar.Bar:SetStatusBarTexture(DB.normTex)
-		B.CreateBD(bar, .25, 2)
-		bar:SetSize(219, 19)
+		if bar and not bar.styled then
+			B.StripTextures(bar.Bar, true)
+			bar.Bar:SetStatusBarTexture(DB.normTex)
+			B.CreateBD(bar, .25)
+			bar:SetSize(216, 18)
+
+			bar.styled = true
+		end
 	end
 end)
 
@@ -306,6 +310,7 @@ local function style(self)
 		local bg = B.CreateBG(self, 0)
 		bg:SetFrameLevel(self:GetFrameLevel())
 		B.CreateBD(bg, .7)
+		B.CreateSD(bg)
 		B.CreateTex(bg)
 		self.bg = bg
 
