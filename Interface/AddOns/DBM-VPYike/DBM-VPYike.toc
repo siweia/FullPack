@@ -6,7 +6,7 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: Yike Xia, Mini_Dragon
-## Version: 8.0.0
+## Version: 20180902
 ## Notes: https://github.com/Mini-Dragon/DBM-VoicePack-Yike
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: 夏一可(普通话女)
