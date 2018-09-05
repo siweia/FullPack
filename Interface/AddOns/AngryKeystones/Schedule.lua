@@ -150,7 +150,7 @@ function Mod:CheckInventoryKeystone()
 				local info = { strsplit(":", itemString) }
 				local mapLevel = tonumber(info[3])
 				if mapLevel >= 7 then
-					local affix1, affix2 = tonumber(info[4]), tonumber(info[5])
+					local affix1, affix2 = tonumber(info[5]), tonumber(info[6])
 					for index, affixes in ipairs(affixSchedule) do
 						if affix1 == affixes[1] and affix2 == affixes[2] then
 							currentWeek = index
