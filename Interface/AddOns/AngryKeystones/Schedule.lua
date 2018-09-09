@@ -22,6 +22,11 @@ local affixSchedule = {
 	{ 11, 14, 10 },
 }
 local currentWeek
+local affixOrder = {
+	[1] = 3,
+	[2] = 1,
+	[3] = 2,
+}
 
 local function UpdateAffixes()
 	if requestKeystoneCheck then
@@ -36,7 +41,7 @@ local function UpdateAffixes()
 			local affixes = affixSchedule[scheduleWeek]
 			for j = 1, #affixes do
 				local affix = entry.Affixes[j]
-				affix:SetUp(affixes[j])
+				affix:SetUp(affixes[affixOrder[j]])
 			end
 		end
 		Mod.Frame.Label:Hide()
