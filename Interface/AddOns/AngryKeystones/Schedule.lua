@@ -77,7 +77,7 @@ end
 function Mod:Blizzard_ChallengesUI()
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
 	frame:SetSize(170, 110)
-	frame:SetPoint("BOTTOMLEFT", 6, 70)
+	frame:SetPoint("BOTTOMLEFT", 6, 80)
 	Mod.Frame = frame
 
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
@@ -146,34 +146,20 @@ end
 
 function Mod:CheckInventoryKeystone()
 	currentWeek = nil
-	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		local slots = GetContainerNumSlots(container)
-		for slot=1, slots do
-			local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
-			local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
-			if itemString then
-				local info = { strsplit(":", itemString) }
-				local mapLevel = tonumber(info[3])
-				if mapLevel >= 7 then
-					local affix1, affix2 = tonumber(info[5]), tonumber(info[6])
-					for index, affixes in ipairs(affixSchedule) do
-						if affix1 == affixes[1] and affix2 == affixes[2] then
-							currentWeek = index
-						end
-					end
-				end
-			end
+
+	C_MythicPlus.RequestCurrentAffixes()
+	local affixIds = C_MythicPlus.GetCurrentAffixes()
+	if not affixIds then return end
+	for index, affixes in ipairs(affixSchedule) do
+		if affixIds[1] == affixes[1] and affixIds[2] == affixes[2] then
+			currentWeek = index
 		end
 	end
-	requestKeystoneCheck = false
-end
 
-function Mod:BAG_UPDATE()
-	requestKeystoneCheck = true
+	requestKeystoneCheck = false
 end
 
 function Mod:Startup()
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
-	self:RegisterEvent("BAG_UPDATE")
 	requestKeystoneCheck = true
 end
