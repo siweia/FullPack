@@ -25,6 +25,14 @@ L= DBM:GetModLocalization(2146)
 ---------------------------
 L= DBM:GetModLocalization(2169)
 
+L:SetTimerLocalization({
+	timerOrbLands	= "구슬 (%s) 떨어짐"
+})
+
+L:SetOptionLocalization({
+	timerOrbLands	 =	"타락의 보주가 나오면 타이머 바 보기"
+})
+
 L:SetMiscLocalization({
 	CThunDisc	 =	"원반 접속 완료. 크툰 데이터를 불러옵니다.",
 	YoggDisc	 =	"원반 접속 완료. 요그사론 데이터를 불러옵니다.",
@@ -37,7 +45,7 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(2166)
 
 L:SetOptionLocalization({
-	ShowHighestFirst	 =	"중첩이 높은 순서대로 정보 프레임에 끈질긴 감염 대상자 정렬 (중첩 낮은순 대신)"
+	ShowHighestFirst2	 =	"중첩이 높은 순서대로 정보 프레임에 끈질긴 감염 대상자 정렬 (중첩 낮은순 대신)"
 })
 
 ---------------
