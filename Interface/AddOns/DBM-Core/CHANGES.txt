@@ -1,256 +1,273 @@
-tag 7dfd7f2fa5448c1b4f2f89462251ba2b64612c14 8.0.9
+tag bd12d95f7a351f1f1dd472c2336794198416e952 8.0.10
 Author:	subversion <svn@deadlybossmods.com>
-Date:	Sun Sep 16 21:13:24 2018 +0200
+Date:	Thu Sep 20 17:12:08 2018 +0200
 
-Tagging as 8.0.9
+Tagging as 8.0.10
 
-commit 1c8807d778f05ca9b9f7dd2e3111cb9482af621a
+commit 863ef8b6d3ff99addbb44deaa63fede3fe9c7d39
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 21:13:24 2018 +0200
+Date:   Thu Sep 20 17:12:08 2018 +0200
 
-    increment version number to 8.0.9
+    increment version number to 8.0.10
 
-commit 19fdd1c2b1802fb3cf1437185cbd39c7f3d66576
+commit a545f95ce3055431ab84f71330ea1ec6a6148db5
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 11:05:20 2018 +0200
+Date:   Thu Sep 20 16:52:01 2018 +0200
 
-    Omega via svn r17855:
-    Kr UPdate
+    Omega via svn r17892:
+    Fix lua error with brewfest
 
-commit bf393cfbe717090f306b3fb5c5f0c3b8716c7135
+commit 4c9f76711036bd9119f2c6d29914ae8ff35f3323
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 09:42:52 2018 +0200
+Date:   Thu Sep 20 09:22:00 2018 +0200
 
-    Omega via svn r17854:
-    Kr update
+    Omega via svn r17891:
+    KR update
 
-commit 1ea8bfbd3979b3fc0594f0e3ffad5baece3451ff
+commit 052f4d91ece9dbe869d996aca22d102e22cb83b4
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 07:26:20 2018 +0200
+Date:   Thu Sep 20 07:26:00 2018 +0200
 
-    Omega via svn r17853:
-    Kraulok update
-    Fix bug with bonus roll filter
+    Omega via svn r17890:
+    Fix filter so it doesn?\226?\128?\153t INCLUDE the difficulty you have it to set to (mythic filter was filtering mythic raids, heroic filter was filtering heroic raids, normal filter was filtering normal raids. filter is meant to filter BELOW your setting, not everything including setting)
 
-commit 5b82eb5290aa3465f93a46093a461973ae5d972b
+commit f3a20fac94c37711e04c437800a96524cf91abbf
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 07:06:44 2018 +0200
+Date:   Thu Sep 20 06:19:42 2018 +0200
 
-    Omega via svn r17852:
-    fix
+    Omega via svn r17889:
+    Fix regressions
+    This just needs to be handled in infoframe in an ugly way
 
-commit 07d1a136595f11bac467146591bb8eef6c9dacb9
+commit 05fc4af90a8dd461b5395405cdcee5ca1c7fb704
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 06:28:06 2018 +0200
+Date:   Thu Sep 20 05:56:09 2018 +0200
 
-    Omega via svn r17851:
-    Take 2
+    Omega via svn r17888:
+    Don?\226?\128?\153t use mm here, many ignore marks after first set
 
-commit cb1d5582e2128fe3abcea8e9e33fdf23f4ae18a1
+commit 144de44a20f989ab16f782d2493ba03e7efd8883
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 06:05:43 2018 +0200
+Date:   Thu Sep 20 05:35:29 2018 +0200
 
-    Omega via svn r17850:
-    Longer cd on crawgs for mythic?
-    can?\226?\128?\153t tell for other adds since zerg strat with rogues doesn?\226?\128?\153t get them
+    Omega via svn r17887:
+    Enable optional special warning for cont, for note/CD purposes
 
-commit d51e9d8e6bdf9fb56d2457083faa06bf152522e6
+commit 4efca44117e856c391a7430a2fd96a085e4b7948
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 05:53:57 2018 +0200
+Date:   Thu Sep 20 05:01:33 2018 +0200
 
-    Omega via svn r17849:
-    Make the switch warnings on doom?\226?\128?\153s howl/Lion?\226?\128?\153s roar more clear that engineer is priority
+    Omega via svn r17886:
+    Warn one stack before bad things as well
 
-commit 8bf69856d107308024c657398a3085b0ce917195
+commit 628ecc0b92e1f0250175a17e130dfdf112a01008
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 05:02:22 2018 +0200
+Date:   Thu Sep 20 04:56:30 2018 +0200
 
-    Omega via svn r17848:
-    Comment out rest of unused
+    Omega via svn r17885:
+    Formatting
 
-commit b9bf10ee79c0251352c544de022b50eb677c59cc
+commit eac96196e34515b115cd50098a4f66c25ffac06a
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 04:36:54 2018 +0200
+Date:   Thu Sep 20 04:49:11 2018 +0200
 
-    Omega via svn r17847:
-    Scrap bonus roll feature for now, can?\226?\128?\153t make a feature if none of the fucking events that are supposed to fire, fire for it. BONUS_ROLL_STARTED doesn?\226?\128?\153t fire, BONUS_ROLL_ACTIVATED doesn?\226?\128?\153t fire, SPELL_CONFIRMATION_PROMPT doesn?\226?\128?\153t fire
+    Omega via svn r17884:
+    Move count to timer, so class coloring is restored
 
-commit e206c40e830963451d33515769fc9e53b7f0bd22
+commit 499cb38a9d624cb9809246113adb81a0de7f9d8c
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 04:16:06 2018 +0200
+Date:   Thu Sep 20 04:29:15 2018 +0200
 
-    Omega via svn r17846:
-    Fix change to option default on wrong warning
+    Omega via svn r17883:
+    Fix it so two vectors on same target also shows correctly in infoframe
 
-commit ca65856985d5310dcc598931ca3c49d06b9aefbe
+commit ec43b24e2eb763633791055acf93544f5fc60ce4
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 03:52:54 2018 +0200
+Date:   Thu Sep 20 04:19:05 2018 +0200
 
-    Omega via svn r17845:
-    tweak dooms howl interrupt warning to NOT require target, so damn engineers get interrrupted
+    Omega via svn r17882:
+    Tweak couple timer texts
 
-commit 8c8a581c8416c590d040641cc6dd4f30039d3fbd
+commit 624edbbe6cb410ca87ae8e20ada3f98ad89c4a39
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 03:46:37 2018 +0200
+Date:   Thu Sep 20 04:03:48 2018 +0200
 
-    Omega via svn r17844:
-    debug
+    Omega via svn r17881:
+    Attempt to fix a bug with table entries overwriting other entries, and causing debuff not to show remaining
 
-commit 73ee61af1b031ddedf643469f00decd81ee4197d
+commit 6c6f377281c6bf0327b5bd46e93888433db343f7
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 03:45:34 2018 +0200
+Date:   Thu Sep 20 03:51:32 2018 +0200
 
-    Omega via svn r17843:
-    Fix it not working cause SPELL_CONFIRMATION_PROMPT wasn?\226?\128?\153t registered
+    Omega via svn r17880:
+    Add option to show only your own party on lingering infection stack list
 
-commit 1dac3913e4b7ffa3e6a678a63265096492677d6c
+commit 7cc6bd2806af5be2665482b455c721228c16f986
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Sep 16 03:22:07 2018 +0200
+Date:   Thu Sep 20 03:42:43 2018 +0200
 
-    Omega via svn r17842:
-    Preliminary bonus roll filter code
+    Omega via svn r17879:
+    Clarify messaging further
+    Clean up icon yells when no icons found
 
-commit 9eee91d0f3d8cf7acf071c747500bb8a1cdf54b3
+commit 740f40f6fd0a31161dd0f8d4c860d5ab97f4c1c1
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Sep 15 07:24:05 2018 +0200
+Date:   Thu Sep 20 01:37:03 2018 +0200
 
-    Omega via svn r17841:
+    Omega via svn r17878:
+    Add some Bwon wipe sounds while at it
+
+commit 495d70ed00c962cc80a0c51eba9a0607cfd4ebb1
+Author: subversion <svn@deadlybossmods.com>
+Date:   Thu Sep 20 01:15:48 2018 +0200
+
+    Omega via svn r17877:
+    Add a wipe sound request
+
+commit 707e8be1bdf95924c9f5c29a73688f1b433f05fc
+Author: subversion <svn@deadlybossmods.com>
+Date:   Thu Sep 20 00:59:08 2018 +0200
+
+    Omega via svn r17876:
+    If someone with BW has assist in raid, disable DBMs icon setting for Vectis, preventing conflict.
+    Add missing Ghuun mythic warning. Still no timer update until any willing guild is willing to share logs
+    Disabled some Azurethos timers, since supporting them is a bit complicated (they alternate two times, but since you can engage in progress world bosses, detecting alternation gets ugly and quite frankly isn?\226?\128?\153t needed on such an easy boss)
+
+commit 116d3ac9f04c899cf9a78771281f73c0c5c720ca
+Author: subversion <svn@deadlybossmods.com>
+Date:   Wed Sep 19 06:23:47 2018 +0200
+
+    Omega via svn r17875:
+    Fixed ICD code for Mother, it doesn?\226?\128?\153t appear sanitizing strike is immune to ICD now
+    Add space to infoframe on ectis
+    Tweak bad timer on first orb landing on zekvoz
+    More mythic timer updates for Mythrax from some longer public logs, and fix phase transition trigger since 274230 has stopped being reliable all of a sudden (fades early if both big adds die before intermission ends)
+
+commit b223a2ba4f12666fdb4369f628044dc3e1526632
+Author: subversion <svn@deadlybossmods.com>
+Date:   Tue Sep 18 21:01:57 2018 +0200
+
+    Omega via svn r17874:
+    Switch to enabled for all state for rework
+
+commit f3f00647658ca51f9f81e7d27fc649400389bdb4
+Author: subversion <svn@deadlybossmods.com>
+Date:   Tue Sep 18 20:56:32 2018 +0200
+
+    tandanu via svn r17873:
+    vectis: sort info frame by current state, not last update
+
+commit 5f6bb136e2d1b362bb383658c3b1348bfaff288b
+Author: subversion <svn@deadlybossmods.com>
+Date:   Tue Sep 18 20:53:07 2018 +0200
+
+    tandanu via svn r17872:
+    vectis: fix info frame
+
+commit 44eff6e8ab2dcea71afc850f8f4d7ddf821489e5
+Author: subversion <svn@deadlybossmods.com>
+Date:   Tue Sep 18 06:57:38 2018 +0200
+
+    Omega via svn r17871:
     Kr Update
 
-commit 38817ed5bad5a21356451159095763b231c4c10f
+commit 2066287d99923d5907a3b01e0ff084f058f0f619
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Sep 15 02:11:48 2018 +0200
+Date:   Tue Sep 18 05:41:20 2018 +0200
 
-    Omega via svn r17840:
-    More work on vectis
+    Omega via svn r17870:
+    begin some mythic work from the limitted pulls on WCL for Mythrax
+    Fix another bug on vectis
 
-commit ee284a2c3008517241ccbaaaddefefeab4c828e5
+commit 02500a9acb6c07068b18a9001ccf4549859aedc5
 Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Sep 14 05:25:15 2018 +0200
+Date:   Tue Sep 18 04:29:03 2018 +0200
 
-    Omega via svn r17839:
-    Coding tweak, no reason to count table here.
+    Omega via svn r17869:
+    Disable filter on these warnings
 
-commit eeb89c54c928c30b4ee514937be2636c93b42f5d
+commit 2eac77c652f9d21c0591fa1bc37158fa49b49927
 Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Sep 14 04:44:50 2018 +0200
+Date:   Tue Sep 18 04:07:54 2018 +0200
 
-    Omega via svn r17838:
-    Disable this
+    Omega via svn r17868:
+    Fix icons on infoframe, and add redundancy to table value not existing yet?
 
-commit 4dc39f1a6f11942e88f2d0ccec5cc0ab8a14c4ab
+commit 382bfd2e1d3524807844bd2eba63acbc96c1c404
 Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Sep 14 02:30:21 2018 +0200
+Date:   Tue Sep 18 03:35:23 2018 +0200
 
-    Omega via svn r17837:
-    Public logs finally, YAY
-    **Fetid Update:
-    *Added cast time for Enticing
-    *Optimized infoframe to use boss unit IDs and not nameplates
-    *Acount for fact that Miasma and Paroxyms can stack and updated yell scheduling and warnings for this.
-    *Removed some unused events
+    Omega via svn r17867:
+    Fixed vection icon countdown
 
-commit 31aa7dc339e42c703cf9fc4fdf1a995fa826553f
+commit bc166a54d0912c347aedb622243fbdee47f31231
 Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Sep 14 01:41:05 2018 +0200
+Date:   Tue Sep 18 03:31:51 2018 +0200
 
-    Omega via svn r17836:
-    Update LFR Zekvoz timers
+    Omega via svn r17866:
+    Improve eye beam code, add auto range checker
 
-commit d016ad2909107d9ef30fae8f707e9c5872c006fb
+commit 73cc27bf67052e8096393a08083f6916af40167f
 Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Sep 13 06:43:19 2018 +0200
+Date:   Tue Sep 18 03:24:05 2018 +0200
 
-    Omega via svn r17835:
-    Add two adds remaining warnings
+    Omega via svn r17865:
+    Fix a bug where self.vb.roilingCount never increased
 
-commit 03b8d5f666eeb3d8da5ee5ee9020841572c9c126
+commit 8e7a9a2f790fc08fef89dbc9e396e404d923b258
 Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Sep 13 05:37:17 2018 +0200
+Date:   Tue Sep 18 03:21:20 2018 +0200
 
-    Omega via svn r17834:
-    Add count to eyebeam and roiling target warnings and yells
+    Omega via svn r17864:
+    More user requests, more localizing needed
 
-commit fea096ef4aa17177d82298a3552b6c98a4d285c0
+commit 5007a3f94ae842321bdd2746d66783512234f1a3
 Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Sep 13 00:26:04 2018 +0200
+Date:   Tue Sep 18 03:10:23 2018 +0200
 
-    Omega via svn r17833:
-    Revert to original vectis icon table method and improve upon it for infoframe integration. It?\226?\128?\153s probably not compatible with BW, but that?\226?\128?\153s fine at this point. can?\226?\128?\153t keep redoing my code to be compatible (especially since the first time I did it, it was moving backwards). raids running both mods will simply have to elect which mod will do icons and turn icon option off in other mod.
+    Omega via svn r17863:
+    Add KeepMove and StopMove special warnings that can improve clarity of these types of mechanics
 
-commit df972692edf8f612cea24b37e31a7b3e8dfa1e78
+commit 31a828bdea59b275858c319fede580aeeac1378a
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Sep 12 08:38:27 2018 +0200
+Date:   Tue Sep 18 03:03:28 2018 +0200
 
-    Omega via svn r17832:
-    Remove infoframe from zekvoz for now. it?\226?\128?\153s not useful at all.
+    Omega via svn r17862:
+    Tweak fetid berserk
+    Tweak how balls warning works on zekvozh so it?\226?\128?\153s useful for assignments/notes
 
-commit a671d4de70a5e9941959df1acbab49c789c405e6
+commit c289441384a535325649c38e521d7adfc1433b17
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Sep 12 08:13:38 2018 +0200
+Date:   Mon Sep 17 20:48:24 2018 +0200
 
-    Omega via svn r17831:
-    Don?\226?\128?\153t reset contageon counter, it?\226?\128?\153s useful for healing cds to keep count going on Vectis
-    Changed Oblivion sphere from a bad switch warning to a useful general count warning for CD usage and more raid awareness without confusing ranged dps
-    Fixed Uldir trash warning for Blood Shield so it actually works
-    Added Uldir trash Warning to watch step for Wild Leap
-    Added a Ball Lands timer to Zekvhoz to assist with ball catching
-    Changed ball catch target announces to be a non filtered warning and added count to it on Zekvhoz
-    Added deathwish general announce/counter to assist with CDs, Also added count to timers
+    Omega via svn r17861:
+    Add eyebeam soon warning
 
-commit c0f4302b240ee0aa67ce34cff0dcc72793282a64
+commit 0f29ad799eeca7756954552a30b8d33cf5e59b5d
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Sep 12 06:40:05 2018 +0200
+Date:   Mon Sep 17 20:20:55 2018 +0200
 
-    Omega via svn r17830:
-    Mother has 25 second respawn
+    Omega via svn r17860:
+    Fix lua error on Kraulok
 
-commit bbea8865d7c89357e00c1310c936ac627afb6a9e
+commit fd2333756507dd746adb99a44ad0e606ed239b95
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Sep 12 01:15:22 2018 +0200
+Date:   Sun Sep 16 23:02:46 2018 +0200
 
-    Omega via svn r17829:
-    Reworked Council of Tribes so it doesn?\226?\128?\153t warn to dispel until earth totem is dead.
+    Omega via svn r17859:
+    Antispam fixate warning so it doesn?\226?\128?\153t spam if multiple mobs fixate you at once
 
-commit fb0621f0c1100abbe0926ad99873317f1adf6951
+commit 453c5ed985e5e2999bdd7d99c9419dab9f53a698
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Sep 12 00:32:41 2018 +0200
+Date:   Sun Sep 16 22:57:32 2018 +0200
 
-    Omega via svn r17828:
-    No P3 adds
+    Omega via svn r17858:
+    Fix sandstorm warning
 
-commit b54872bc7b278934a2c9169e10b7161dc8505a07
+commit 4ec28d4b49f2cfd9f1446d77b4389695652066e6
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Sep 12 00:23:59 2018 +0200
+Date:   Sun Sep 16 21:13:39 2018 +0200
 
-    Omega via svn r17827:
-    Update Zekvhozj for mythic
-
-commit 7038a0e0022065d06d35dff153e9770daeffff92
-Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Sep 11 23:56:24 2018 +0200
-
-    Omega via svn r17826:
-    eliminate redundancy on Taloc, and tweak mythic timers
-
-commit ae3b720138a09ff27fb4285100883ee79348fb86
-Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Sep 11 23:16:04 2018 +0200
-
-    Omega via svn r17825:
-    Fix Mythic Mother defense beam timers/warnings
-
-commit 4930ea4b34f32148abed82de52d4d8dcc0291af7
-Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Sep 11 22:56:06 2018 +0200
-
-    Omega via svn r17824:
-    Fix regression that caused normal mode P3 ghuun timers to be wrong after updating them for heroic. the timers between two modes are NOT The same. Now mod will use correct timers in both modes
-
-commit 3d5781feefe3f0e81b6cd263798c5a3d5d1c2559
-Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Sep 11 20:49:38 2018 +0200
-
-    tandanu via svn r17823:
+    tandanu via svn r17857:
     increment alpha version
 
