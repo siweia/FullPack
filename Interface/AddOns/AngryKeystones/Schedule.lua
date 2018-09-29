@@ -97,6 +97,12 @@ local function UpdateFrame()
 	Mod.PartyFrame:Show()
 	Mod.KeystoneText:Show()
 
+	local currentAffixes = C_MythicPlus.GetCurrentAffixes()
+	if currentAffixes and #currentAffixes then
+		ChallengesFrame.WeeklyInfo.Child.Affixes[1]:ClearAllPoints()
+		ChallengesFrame.WeeklyInfo.Child.Affixes[1]:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child.Label, "CENTER", 31 + (-31 * #currentAffixes), -45)
+	end
+
 	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:ClearAllPoints()
 	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:SetPoint("LEFT", 50, -30)
 	if ChallengesFrame.WeeklyInfo.Child.WeeklyChest:IsShown() then
@@ -280,9 +286,6 @@ function Mod:Blizzard_ChallengesUI()
 	keystoneText:SetWidth(220)
 	Mod.KeystoneText = keystoneText
 
-	ChallengesFrame.WeeklyInfo.Child.Affixes[1]:ClearAllPoints()
-	ChallengesFrame.WeeklyInfo.Child.Affixes[1]:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child.Label, "CENTER", -64, -45)
-
 	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)
 end
 
@@ -323,7 +326,7 @@ function Mod:BAG_UPDATE()
 	if not bagUpdateTimerStarted then
 		bagUpdateTimerStarted = true
 		C_Timer.After(1, function()
-			Mod:CheckCurrentKeystone(true)
+			Mod:CheckCurrentKeystone()
 			bagUpdateTimerStarted = false
 		end)
 	end
@@ -353,6 +356,7 @@ function Mod:SendPartyKeystonesRequest()
 	self:SendAddOnComm("request", "PARTY")
 end
 
+local hadKeystone = false
 function Mod:CheckCurrentKeystone(announce)
 	local keystoneMapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID()
 	local keystoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()
@@ -361,13 +365,14 @@ function Mod:CheckCurrentKeystone(announce)
 		currentKeystoneMapID = keystoneMapID
 		currentKeystoneLevel = keystoneLevel
 
-		if announce and Addon.Config.announceKeystones then
+		if hadKeystone and announce ~= false and Addon.Config.announceKeystones then
 			local itemLink = self:GetInventoryKeystone()
 			if itemLink and IsInGroup(LE_PARTY_CATEGORY_HOME) then
 				SendChatMessage(string.format(Addon.Locale.newKeystoneAnnounce, itemLink), "PARTY")
 			end
 		end
 
+		hadKeystone = true
 		self:SendCurrentKeystone()
 	end
 end
@@ -408,12 +413,14 @@ function Mod:ReceiveAddOnComm(message, type, sender)
 end
 
 function Mod:CHALLENGE_MODE_START()
+	self:CheckCurrentKeystone(false)
 	C_Timer.After(2, function() self:CheckCurrentKeystone(false) end)
 	self:SetPartyKeystoneRequest()
 end
 
 function Mod:CHALLENGE_MODE_COMPLETED()
-	C_Timer.After(2, function() self:CheckCurrentKeystone(true) end)
+	self:CheckCurrentKeystone()
+	C_Timer.After(2, function() self:CheckCurrentKeystone() end)
 	self:SetPartyKeystoneRequest()
 end
 
@@ -424,10 +431,18 @@ function Mod:Startup()
 	self:RegisterEvent("CHAT_MSG_LOOT")
 	self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 	self:RegisterEvent("CHALLENGE_MODE_START")
+	self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "CheckCurrentKeystone")
+	self:RegisterEvent("CHALLENGE_MODE_LEADERS_UPDATE", "CheckCurrentKeystone")
+	self:RegisterEvent("CHALLENGE_MODE_MEMBER_INFO_UPDATED", "CheckCurrentKeystone")
 	self:RegisterAddOnComm()
 	self:CheckCurrentKeystone()
 
-	C_Timer.NewTicker(60, function() self:CheckCurrentKeystone(false) end)
+	C_Timer.After(3, function()
+		C_MythicPlus.RequestCurrentAffixes()
+		C_MythicPlus.RequestRewards()
+	end)
+
+	C_Timer.NewTicker(60, function() self:CheckCurrentKeystone() end)
 	
 	requestPartyKeystones = true
 end
