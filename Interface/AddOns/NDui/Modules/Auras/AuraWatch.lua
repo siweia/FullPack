@@ -564,7 +564,7 @@ local function isUnitWeNeed(value, name, flags)
 			return true
 		end
 	elseif value.UnitID:lower() == "player" then
-		if name and name == UnitName("player") or checkPetFlags(flags) then
+		if name and name == DB.MyName or checkPetFlags(flags) then
 			return true
 		end
 	end
@@ -587,7 +587,7 @@ local function UpdateInt(_, ...)
 			if value.IntID == spellID and cache[timestamp] ~= spellID and isAuraTracking(value, eventType, sourceName, sourceFlags, destName, destFlags) then
 
 				local guid, name = destGUID, destName
-				if value.OnSuceess then guid, name = sourceGUID, sourceName end
+				if value.OnSuccess then guid, name = sourceGUID, sourceName end
 				UpdateIntFrame(value.IntID, value.ItemID, value.Duration, value.UnitID, guid, name)
 
 				cache[timestamp] = spellID
