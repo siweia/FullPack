@@ -20,6 +20,22 @@ module.db.demotedPlayers = {}
 
 module.db.sessionInRaid = nil
 
+local GetNumFriends, GetFriendInfo
+if ExRT.clientVersion >= 80100 then
+	function GetNumFriends()
+		return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
+	end
+	function GetFriendInfo(friend)
+		local info = C_FriendList.GetFriendInfoByIndex(friend)
+		if info then
+			return info.name
+		end
+	end
+else
+	GetNumFriends = _G.GetNumFriends
+	GetFriendInfo = _G.GetFriendInfo
+end
+
 hooksecurefunc("DemoteAssistant", function (unit)
 	if not unit then
 		return
@@ -59,7 +75,7 @@ local function InviteBut()
 	for i=1,gplayers do
 		local name,_,rankIndex,level,_,_,_,_,online,_,_,_,_,isMobile = GetGuildRosterInfo(i)
 		local sName = ExRT.F.delUnitNameServer(name)
-		if name and rankIndex < VExRT.InviteTool.Rank and online and (ExRT.SDB.charLevel == 120 and level == 120 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName and not sName:find("麦田稻草") then
+		if name and rankIndex < VExRT.InviteTool.Rank and online and (ExRT.SDB.charLevel == 120 and level == 120 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
 			if inRaid then
 				InviteUnit(name)
 			elseif nowinvnum < 5 then
