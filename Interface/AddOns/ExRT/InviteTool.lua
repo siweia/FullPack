@@ -435,7 +435,7 @@ function module.main:ADDON_LOADED()
 	createInvWordsArray()
 	
 	VExRT.InviteTool.PromoteNames = VExRT.InviteTool.PromoteNames or ""
-	VExRT.InviteTool.PromoteRank = VExRT.InviteTool.PromoteRank or 3
+	VExRT.InviteTool.PromoteRank = VExRT.InviteTool.PromoteRank or 2
 	createPromoteArray()
 	
 	VExRT.InviteTool.RaidDiff = VExRT.InviteTool.RaidDiff or 16
