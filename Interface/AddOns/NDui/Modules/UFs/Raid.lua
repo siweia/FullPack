@@ -256,10 +256,7 @@ local function setupMouseWheelCast(self)
 	end
 end
 
-local indexx = 0
 local function setupClickSets(self)
-	indexx = indexx + 1
-	print(indexx, self:GetName())
 	setupMouseWheelCast(self)
 
 	for _, data in pairs(NDuiDB["RaidClickSets"]) do
