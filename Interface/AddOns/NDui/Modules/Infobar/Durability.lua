@@ -39,7 +39,7 @@ local function getItemDurability()
 	for i = 1, 10 do
 		if GetInventoryItemLink("player", localSlots[i][1]) then
 			local current, max = GetInventoryItemDurability(localSlots[i][1])
-			if current then 
+			if current then
 				localSlots[i][3] = current/max
 				numSlots = numSlots + 1
 			end
@@ -100,8 +100,7 @@ end)
 
 info.onMouseUp = function(self, btn)
 	if btn == "MiddleButton" then
-		NDuiADB["RepairType"] = NDuiADB["RepairType"] + 1
-		if NDuiADB["RepairType"] == 3 then NDuiADB["RepairType"] = 0 end
+		NDuiADB["RepairType"] = mod(NDuiADB["RepairType"] + 1, 3)
 		self:GetScript("OnEnter")(self)
 	else
 		ToggleCharacter("PaperDollFrame")
