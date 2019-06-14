@@ -167,7 +167,7 @@ function module:InterruptAlert()
 			if infoText then
 				if infoText == L["BrokenSpell"] then
 					if not NDuiDB["Misc"]["BrokenSpell"] then return end
-					if auraType and auraType == AURA_TYPE_BUFF or blackList[spellID] then return end	-- need reviewed
+					if auraType and auraType == AURA_TYPE_BUFF or blackList[spellID] then return end
 					SendChatMessage(format(infoText, sourceName..GetSpellLink(extraskillID), destName..GetSpellLink(spellID)), msgChannel())
 				else
 					if NDuiDB["Misc"]["OwnInterrupt"] and sourceName ~= DB.MyName and not isAllyPet(sourceFlags) then return end
@@ -338,7 +338,7 @@ end
 function module:UunatAlert()
 	local data = {}
 	local function isBuffBlock()
-		for i = 1, 40 do
+		for i = 1, 16 do
 			local name, _, _, _, _, _, _, _, _, spellID = UnitDebuff("player", i)
 			if not name then break end
 			if name and spellID == 284733 then
