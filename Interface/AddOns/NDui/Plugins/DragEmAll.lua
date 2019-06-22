@@ -43,16 +43,12 @@ local frames = {
 	["SpellBookFrame"] = false,
 	["SplashFrame"] = false,
 	["StackSplitFrame"] = false,
-	["StaticPopup1"] = false,
 	["TabardFrame"] = false,
 	["TaxiFrame"] = false,
 	["TokenFrame"] = true,
 	["TradeFrame"] = false,
 	["TutorialFrame"] = false,
 	["VideoOptionsFrame"] = false,
-
-	-- Other AddOns
-	["BaudErrorFrame"] = false,
 }
 
 -- Frame Existing Check
@@ -72,6 +68,7 @@ local lodFrames = {
 	Blizzard_ArchaeologyUI		= { ["ArchaeologyFrame"] = false },
 	Blizzard_ArtifactUI			= { ["ArtifactFrame"] = false, ["ArtifactRelicForgeFrame"] = false },
 	Blizzard_AuctionUI			= { ["AuctionFrame"] = false },
+	Blizzard_AzeriteEssenceUI	= { ["AzeriteEssenceUI"] = false },
 	Blizzard_AzeriteRespecUI	= { ["AzeriteRespecFrame"] = false },
 	Blizzard_AzeriteUI			= { ["AzeriteEmpoweredItemUI"] = false },
 	Blizzard_BarbershopUI		= { ["BarberShopFrame"] = false },
