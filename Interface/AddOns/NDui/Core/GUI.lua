@@ -612,7 +612,7 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Map", "WhoPings", L["Show WhoPings"]},
 		{1, "Misc", "ExpRep", L["Show Expbar"], true},
 		{},--blank
-		{3, "Map", "MapScale", L["Map Scale"].."*", false, {1, 2, 1}},
+		{3, "Map", "MapScale", L["Map Scale"], false, {1, 2, 1}},
 		{3, "Map", "MinmapScale", L["Minimap Scale"], true, {1, 2, 1}},
 	},
 	[10] = {
@@ -897,7 +897,7 @@ local function CreateOption(i)
 		else
 			local l = CreateFrame("Frame", nil, parent)
 			l:SetPoint("TOPLEFT", 25, -offset - 12)
-			B.CreateGF(l, 550, C.mult, "Horizontal", 1, 1, 1, .25, .25)
+			B.CreateGF(l, 560, C.mult, "Horizontal", 1, 1, 1, .25, .25)
 			offset = offset + 35
 		end
 	end
