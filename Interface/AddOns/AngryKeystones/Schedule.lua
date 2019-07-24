@@ -7,19 +7,20 @@ local requestPartyKeystones
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 local affixSchedule = {
-	{ 9, 7, 2 },
-	{ 10, 6, 4 },
-	{ 9, 5, 14 },
-	{ 10, 11, 2 },
-	{ 9, 8, 4 },
-	{ 10, 7, 12 },
-	{ 9, 5, 13 },
-	{ 10, 6, 3 },
-	{ 9, 11, 3 },
-	{ 10, 7, 13 },
-	{ 9, 8, 12 },
-	{ 10, 5, 3 },
+	{ 10, 8, 4 },
+	{ 9, 11, 2 },
+	{ 10, 5, 14 },
+	{ 9, 6, 4 },
+	{ 10, 7, 2 },
+	{ 9, 5, 3 },
+	{ 10, 8, 12 },
+	{ 9, 7, 13 },
+	{ 10, 11, 14 },
+	{ 9, 6, 3 },
+	{ 10, 5, 13 },
+	{ 9, 7, 12 },
 }
+local affixScheduleUnknown = true
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
@@ -115,7 +116,7 @@ local function UpdateFrame()
 		Mod.KeystoneText:Hide()
 	end
 
-	if currentWeek then
+	if currentWeek and not affixScheduleUnknown then
 		for i = 1, rowCount do
 			local entry = Mod.AffixFrame.Entries[i]
 			entry:Show()
@@ -222,7 +223,11 @@ function Mod:Blizzard_ChallengesUI()
 	label:SetJustifyV("MIDDLE")
 	label:SetHeight(72)
 	label:SetWordWrap(true)
-	label:SetText(Addon.Locale.scheduleMissingKeystone)
+	if affixScheduleUnknown then
+		label:SetText(Addon.Locale.scheduleUnknown)
+	else
+		label:SetText(Addon.Locale.scheduleMissingKeystone)
+	end
 	frame.Label = label
 
 	local frame2 = CreateFrame("Frame", nil, ChallengesFrame)
