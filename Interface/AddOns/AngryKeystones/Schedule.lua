@@ -7,20 +7,20 @@ local requestPartyKeystones
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 local affixSchedule = {
-	{ 10, 8, 4 },
-	{ 9, 11, 2 },
-	{ 10, 5, 14 },
-	{ 9, 6, 4 },
-	{ 10, 7, 2 },
 	{ 9, 5, 3 },
-	{ 10, 8, 12 },
-	{ 9, 7, 13 },
-	{ 10, 11, 14 },
-	{ 9, 6, 3 },
+	{ 10, 7, 2 },
+	{ 9, 11, 4 },
+	{ 10, 5, 14 },
+	{ 9, 11, 2 },
+	{ 10, 8, 4 },
+	{ 9, 11, 3 },
 	{ 10, 5, 13 },
-	{ 9, 7, 12 },
+	{ 9, 6, 14 },
+	{ 10, 7, 12 },
+	{ 9, 6, 13 },
+	{ 10, 8, 12 },
 }
-local affixScheduleUnknown = true
+local affixScheduleUnknown = false
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
