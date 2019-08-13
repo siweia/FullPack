@@ -1,0 +1,28 @@
+lightweight tag 089b09571903082267fca694ca9990641e2b3e22 1.29-beta
+Author:	Bernhard Saumweber <b.saumweber@gmail.com>
+Date:	Sun Jul 14 00:27:03 2019 +0200
+
+commit 089b09571903082267fca694ca9990641e2b3e22
+Author: Bernhard Saumweber <b.saumweber@gmail.com>
+Date:   Sun Jul 14 00:27:03 2019 +0200
+
+    Fixes missing initialization for riokey20plus
+
+commit 4359ca14860ac21a2186af573700b02f38ce4d59
+Author: Bernhard Saumweber <b.saumweber@gmail.com>
+Date:   Sat Jul 13 23:06:47 2019 +0200
+
+    Removes unused variable defeatedBossNames
+
+commit b8835e6f960d5fb2fac3410517879db8132794c4
+Author: Bernhard Saumweber <b.saumweber@gmail.com>
+Date:   Sat Jul 13 21:49:06 2019 +0200
+
+    Fixes #21: Instead of initializing all non-existing keywords to 0, only keywords which are really valid are initialized. This resolves a bug where all groups would match a filter expression when an invalid keywords was used as a boolean value. Because the non-existing keyword was initialized to 0, the filter would return 0 in some cases which evaluates to true in LUA. This fix also re-enables semantic error messages which were previously suppressed because all possible variables were existing.
+
+commit 527d6dae302714ae6109d84325d57491a931d74d
+Author: Bernhard Saumweber <b.saumweber@gmail.com>
+Date:   Sat Jul 13 18:29:29 2019 +0200
+
+    Set version to next release version: 1.29
+
