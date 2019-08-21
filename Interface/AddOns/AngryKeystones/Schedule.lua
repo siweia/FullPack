@@ -10,7 +10,7 @@ local affixSchedule = {
 	{ 9, 5, 3 },
 	{ 10, 7, 2 },
 	{ 9, 11, 4 },
-	{ 10, 5, 14 },
+	{ 10, 8, 14 },
 	{ 9, 11, 2 },
 	{ 10, 8, 4 },
 	{ 9, 11, 3 },
@@ -20,6 +20,14 @@ local affixSchedule = {
 	{ 9, 6, 13 },
 	{ 10, 8, 12 },
 }
+
+local seasonAffix = 119
+local beguilingInfo = {
+	[1] = 132886,
+	[2] = 132315,
+	[3] = 135735,
+}
+
 local affixScheduleUnknown = false
 local currentWeek
 local currentKeystoneMapID
@@ -127,6 +135,11 @@ local function UpdateFrame()
 				local affix = entry.Affixes[j]
 				affix:SetUp(affixes[j])
 			end
+
+			entry.Affixes[4]:SetUp(seasonAffix)
+			local beguilingWeek = scheduleWeek%3
+			if beguilingWeek == 0 then beguilingWeek = 3 end
+			entry.Affixes[4].Portrait:SetTexture(beguilingInfo[beguilingWeek])
 		end
 		Mod.AffixFrame.Label:Hide()
 	else
@@ -148,7 +161,7 @@ local function makeAffix(parent)
 	frame.Border = border
 
 	local portrait = frame:CreateTexture(nil, "ARTWORK")
-	portrait:SetSize(14, 14)
+	portrait:SetSize(15, 15)
 	portrait:SetPoint("CENTER", border)
 	frame.Portrait = portrait
 
@@ -194,7 +207,7 @@ function Mod:Blizzard_ChallengesUI()
 
 		local affixes = {}
 		local prevAffix
-		for j = 3, 1, -1 do
+		for j = 4, 1, -1 do
 			local affix = makeAffix(entry)
 			if prevAffix then
 				affix:SetPoint("RIGHT", prevAffix, "LEFT", -4, 0)
