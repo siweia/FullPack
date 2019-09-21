@@ -56,10 +56,20 @@
 * Raid Cooldowns: Added essences
 * Raid Inspect: Added essences
 * Can be launched on classic (1.12.1/1.13) client
+
+4040
+* Raid Cooldowns: Fixed Vision of perfection essence
+* Timers: Added new skin
+* Fight log: fixed The Queen's Court encounter healing
+* Invite tools: guild ranks for mass invite can be selected manually
+* Classic: fixed bug with game talents tab
+* Raid Inspect: added new ench/gems
+* WeakAuras checks: added filter
+* Minor fixes
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4030
+ExRT.V = 4040
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

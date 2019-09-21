@@ -7,7 +7,7 @@ local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDe
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
 local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, round, table_wipe2, dtime = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.Round, ExRT.F.table_wipe, ExRT.F.dtime
 
-local GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID = GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo = GetSpellLevelLearned, GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
 local C_SpecializationInfo_GetInspectSelectedPvpTalent
 if ExRT.isClassic then
 	GetSpellLevelLearned = function () return 1 end
@@ -384,7 +384,7 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[52174] = {202163,3},
 	[1719] = {202751,4},
 	[5246] = {275338,4},
-	[31184] = {53376,"*1.25"},
+	[31884] = {286229,5,53376,"*1.25"},
 	[13877] = {272026,3},
 	[185313] = {108208,1},
 	[48707] = {205727,"*1.3",207321,5},
@@ -413,7 +413,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[8122] = {196704,-30},
 	[15286] = {199855,-45},
 	[15487] = {263716,-15},
-	[51533] = {262624,-30},
+	[51533] = {262624,-30,296320,"*0.80"},
 	[79206] = {192088,-60},
 	[48707] = {205727,-15},
 	[108199] = {206970,-30},
@@ -427,9 +427,9 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[109132] = {115173,-5},
 	[119381] = {264348,-10},
 	[22812] = {203965,"*0.67"},
-	[61336] = {203965,"*0.67"},
+	[61336] = {203965,"*0.67",296320,"*0.80"},
 	[18562] = {200383,-3},
-	[740] = {197073,-60},
+	[740] = {197073,-60,296320,"*0.80"},
 	[102342] = {197061,-15},
 	[48792] = {288424,-15},
 	[106898] = {288826,-60},
@@ -438,9 +438,40 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[109304] = {287938,-15},
 	[116849] = {277667,-20},
 
-	[296320] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
-	--[299367] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
-	--[299369] = {34433,"*0.85",123040,"*0.85",64843,"*0.85",31884,"*0.862",108280,"*0.877",51533,"*0.877",198067,"*0.877",192249,"*0.877",115203,"*0.9",115203,"*0.9",115310,"*0.9",137639,"*0.9",152173,"*0.9",194223,"*0.9",106951,"*0.9",61336,"*0.9",740,"*0.9",190319,"*0.9",12042,"*0.9",12472,"*0.9",191427,"*0.9",187827,"*0.9",55233,"*0.9",47568,"*0.9",275699,"*0.9",288613,"*0.9",193530,"*0.9",266779,"*0.9",205180,"*0.9",265187,"*0.9",1122,"*0.9",79140,"*0.9",13750,"*0.9",121471,"*0.9",227847,"*0.9",1719,"*0.9",107574,"*0.9"},
+	[34433] = {296320,"*0.80"},
+	[123040] = {296320,"*0.80"},
+	[64843] = {296320,"*0.80"},
+	[31884] = {296320,"*0.80"},
+	[108280] = {296320,"*0.80"},
+	[198067] = {296320,"*0.80"},
+	[192249] = {296320,"*0.80"},
+	[115203] = {296320,"*0.80"},
+	[115310] = {296320,"*0.80"},
+	[137639] = {296320,"*0.80"},
+	[152173] = {296320,"*0.80"},
+	[194223] = {296320,"*0.80"},
+	[106951] = {296320,"*0.80"},
+	[190319] = {296320,"*0.80"},
+	[12042] = {296320,"*0.80"},
+	[12472] = {296320,"*0.80"},
+	[191427] = {296320,"*0.80"},
+	[187827] = {296320,"*0.80"},
+	[55233] = {296320,"*0.80"},
+	[47568] = {296320,"*0.80"},
+	[275699] = {296320,"*0.80"},
+	[288613] = {296320,"*0.80"},
+	[193530] = {296320,"*0.80"},
+	[266779] = {296320,"*0.80"},
+	[205180] = {296320,"*0.80"},
+	[265187] = {296320,"*0.80"},
+	[1122] = {296320,"*0.80"},
+	[79140] = {296320,"*0.80"},
+	[13750] = {296320,"*0.80"},
+	[121471] = {296320,"*0.80"},
+	[227847] = {296320,"*0.80"},
+	[1719] = {296320,"*0.80"},
+	[107574] = {296320,"*0.80"},
+
 	--Priest, Paladin, Shaman, Monk, Druid, Mage, DH, DK, Hunter, Warlock, Rogue, Warrior
 	[293019] = {298080,-15},
 	[294926] = {300002,-30},
@@ -451,6 +482,16 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[297108] = {298273,-30},
 	[298452] = {299376,-15},
 
+}
+
+module.db.spell_cdByTalent_scalable_data = {
+	[296320] = {
+		[1] = "*0.80",
+	},
+}
+
+module.db.spell_cdByTalent_isScalable = {
+	[296320] = true,
 }
 
 module.db.tierSetsSpells = {}	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
@@ -1229,6 +1270,10 @@ local function BarUpdateText(self)
 	self.textLeft:SetText(string_trim(textLeft))
 	self.textRight:SetText(string_trim(textRight))
 	self.textCenter:SetText(string_trim(textCenter))
+
+	if barParent.optionIconName then
+		self.textIcon:SetText(barData.name)
+	end
 end
 
 local function BarAnimation(self)
@@ -1901,6 +1946,8 @@ local function UpdateBarStyle(self)
 	self:SetAlpha(1)
 	
 	self.cooldown:Hide()
+	self.cooldown:SetHideCountdownNumbers(parent.optionCooldownHideNumbers and true or false)
+	self.cooldown:SetDrawEdge(parent.optionCooldownShowSwipe and true or false)
 
 	self.textIcon:SetText("")
 	
@@ -2033,6 +2080,9 @@ local function CreateBar(parent)
 	cooldown:SetDrawEdge(false)
 	--cooldown:SetAllPoints()
 	cooldown:SetPoint("CENTER")
+	cooldown:SetHideCountdownNumbers(false)
+	cooldown:SetDrawEdge(false)
+	cooldown:SetDrawSwipe(true)
 	self.cooldown = cooldown
 	
 	local background = self:CreateTexture(nil, "BACKGROUND", nil, -7)
@@ -2044,6 +2094,7 @@ local function CreateBar(parent)
 	self.textCenter = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Size(0,0):Point(0,0):Center():Color()
 	self.textIcon = ELib:Text(icon,nil,nil,"GameFontNormal"):Size(0,0):Point(0,0):Center():Bottom():Color()
 	
+	self.textIcon:SetDrawLayer("ARTWORK",3)
 	--[[
 	self.textLeft = self.statusbar:CreateFontString(nil,"ARTWORK")
 	self.textLeft:SetJustifyH("LEFT")
@@ -3126,12 +3177,18 @@ do
 			for j=1,#cdTable,2 do
 				local talentSpellID = cdTable[j]
 				if module.db.session_gGUIDs[fullName][talentSpellID] and (not module.db.spell_isPvpTalent[talentSpellID] or module.IsPvpTalentsOn(fullName)) then
-					local timeReduce = cdTable[j+1]
-					if type(timeReduce) == 'table' then
-						if IsAuraActive(fullName,timeReduce[2]) then
-							timeReduce = timeReduce[1]
-						else
-							timeReduce = 0
+					local timeReduce
+					if module.db.spell_cdByTalent_isScalable[talentSpellID] then
+						local scale_data = module.db.spell_cdByTalent_scalable_data[talentSpellID]
+						timeReduce = scale_data[fullName] or scale_data[1]
+					else
+						timeReduce = cdTable[j+1]
+						if type(timeReduce) == 'table' then
+							if IsAuraActive(fullName,timeReduce[2]) then
+								timeReduce = timeReduce[1]
+							else
+								timeReduce = 0
+							end
 						end
 					end
 					if tonumber(timeReduce) then
@@ -5480,6 +5537,8 @@ function module.options:Load()
 		module.options.optColSet.sliderHeight:SetValue(VExRT.ExCD2.colSet[i].iconSize or module.db.colsDefaults.iconSize)
 		module.options.optColSet.chkGray:SetChecked(VExRT.ExCD2.colSet[i].iconGray)
 		module.options.optColSet.chkCooldown:SetChecked(VExRT.ExCD2.colSet[i].methodsCooldown)	
+		module.options.optColSet.chkCooldownHideNumbers:SetChecked(VExRT.ExCD2.colSet[i].iconCooldownHideNumbers)	
+		module.options.optColSet.chkCooldownShowSwipe:SetChecked(VExRT.ExCD2.colSet[i].iconCooldownShowSwipe)	
 		module.options.optColSet.chkShowTitles:SetChecked(VExRT.ExCD2.colSet[i].iconTitles)	
 		module.options.optColSet.chkHideBlizzardEdges:SetChecked(VExRT.ExCD2.colSet[i].iconHideBlizzardEdges)	
 		module.options.optColSet.chkGeneralIcons:SetChecked(VExRT.ExCD2.colSet[i].iconGeneral)
@@ -5768,8 +5827,26 @@ function module.options:Load()
 		end
 		module:ReloadAllSplits()
 	end)
+
+	self.optColSet.chkCooldownHideNumbers = ELib:Check(self.optColSet.superTabFrame.tab[2],L.BattleResHideTime):Point("TOPLEFT",self.optColSet.chkCooldown,25,-25):Tooltip(L.BattleResHideTimeTooltip):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownHideNumbers = true
+		else
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownHideNumbers = nil
+		end
+		module:ReloadAllSplits()
+	end)
+
+	self.optColSet.chkCooldownShowSwipe = ELib:Check(self.optColSet.superTabFrame.tab[2],"Show edge"):Point("TOPLEFT",self.optColSet.chkCooldownHideNumbers,0,-25):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownShowSwipe = true
+		else
+			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownShowSwipe = nil
+		end
+		module:ReloadAllSplits()
+	end)
 	
-	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point(10,-160):OnClick(function(self) 
+	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point("TOPLEFT",self.optColSet.chkCooldown,0,-75):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconTitles = true
 		else
@@ -5778,7 +5855,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 	
-	self.optColSet.chkHideBlizzardEdges = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetIconHideBlizzardEdges):Point(10,-185):OnClick(function(self) 
+	self.optColSet.chkHideBlizzardEdges = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetIconHideBlizzardEdges):Point("TOPLEFT",self.optColSet.chkShowTitles,0,-25):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconHideBlizzardEdges = true
 		else
@@ -5797,7 +5874,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralIcons:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers)
 	end
 	
 	--> Texture and colors Options
@@ -7642,6 +7719,8 @@ function module:ReloadAllSplits(argScaleFix)
 		columnFrame.optionStyleAnimation = (not VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[i].methodsStyleAnimation) or (VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].methodsStyleAnimation) or module.db.colsDefaults.methodsStyleAnimation
 		columnFrame.optionTimeLineAnimation = (not VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[i].methodsTimeLineAnimation) or (VExRT_ColumnOptions[i].methodsGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].methodsTimeLineAnimation) or module.db.colsDefaults.methodsTimeLineAnimation
 		columnFrame.optionCooldown = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].methodsCooldown) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].methodsCooldown)
+		columnFrame.optionCooldownHideNumbers = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].iconCooldownHideNumbers) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].iconCooldownHideNumbers)
+		columnFrame.optionCooldownShowSwipe = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].iconCooldownShowSwipe) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].iconCooldownShowSwipe)
 		columnFrame.optionIconName = (not VExRT_ColumnOptions[i].textGeneral and VExRT_ColumnOptions[i].textIconName) or (VExRT_ColumnOptions[i].textGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].textIconName)
 		columnFrame.optionHideSpark = (not VExRT_ColumnOptions[i].textureGeneral and VExRT_ColumnOptions[i].textureHideSpark) or (VExRT_ColumnOptions[i].textureGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].textureHideSpark)
 		columnFrame.optionIconTitles = (not VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[i].iconTitles) or (VExRT_ColumnOptions[i].iconGeneral and VExRT_ColumnOptions[module.db.maxColumns+1].iconTitles)
@@ -8865,6 +8944,12 @@ do
 							elseif itemSlotID == 17 then
 								offHandSlot = ilvl
 								ArtifactIlvlSlot2 = ilvl
+							elseif itemSlotID == 2 and select(3,GetItemInfo(itemLink)) == 6 then
+								module.db.spell_cdByTalent_scalable_data[296320][name] = "*"..(1 - ((ilvl - 465) * 0.15 + 19.8) / 100)
+								--[[
+									63: 18.9
+									66: 19.8
+								]]
 							end
 						end
 						

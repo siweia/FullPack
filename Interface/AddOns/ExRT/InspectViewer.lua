@@ -67,10 +67,15 @@ module.db.topEnchGems = {
 	--[5940]="Ring:Mastery:27",
 	--[5941]="Ring:Vers:27",
 
-	[5942]="Ring:Crit:37",
-	[5943]="Ring:Haste:37",
-	[5944]="Ring:Mastery:37",
-	[5945]="Ring:Vers:37",
+	--[5942]="Ring:Crit:37",
+	--[5943]="Ring:Haste:37",
+	--[5944]="Ring:Mastery:37",
+	--[5945]="Ring:Vers:37",
+
+	[6108]="Ring:Crit:60",
+	[6109]="Ring:Haste:60",
+	[6110]="Ring:Mastery:60",
+	[6111]="Ring:Vers:60",
 	
 	[5946]="Weapon:hot",
 	[5965]="Weapon:crit",
@@ -81,6 +86,11 @@ module.db.topEnchGems = {
 	[5966]="Weapon:armor",
 	[5949]="Weapon:elemental",
 	[5962]="Weapon:vers",
+
+	[6112]="Weapon:unk",
+	[6150]="Weapon:unk",
+	[6149]="Weapon:unk",
+	[6148]="Weapon:unk",
 
 	[5955]="HunterWeapon:crit",
 	[5956]="HunterWeapon:haste",
@@ -96,14 +106,24 @@ module.db.topEnchGems = {
 	--[153712]="Gem:vers:30",
 	--[153713]="Gem:mastery:30",
 
-	[153709]="Gem:int:40",
-	[153708]="Gem:agi:40",
-	[153707]="Gem:str:40",
+	--[153709]="Gem:int:40",
+	--[153708]="Gem:agi:40",
+	--[153707]="Gem:str:40",
 
-	[154128]="Gem:vers:40",
-	[154129]="Gem:mastery:40",
-	[154126]="Gem:crit:40",
-	[154127]="Gem:haste:40",
+	[168638]="Gem:int:120",
+	[168637]="Gem:agi:120",
+	[168636]="Gem:str:120",
+
+	--[154128]="Gem:vers:40",
+	--[154129]="Gem:mastery:40",
+	--[154126]="Gem:crit:40",
+	--[154127]="Gem:haste:40",
+
+	[168642]="Gem:vers:50",
+	[168640]="Gem:mastery:50",
+	[168639]="Gem:crit:50",
+	[168641]="Gem:haste:50",
+	[169220]="Gem:movespeed:5",
 }
 
 
@@ -412,8 +432,8 @@ function module.options:Load()
 	module.db.colorizeLowIlvl685 = VExRT.InspectViewer.ColorizeLowIlvl685
 	module.db.colorizeNoValorUpgrade = VExRT.InspectViewer.ColorizeNoValorUpgrade
 	
-	local colorizeLowIlvl630 = 310
-	local colorizeLowIlvl685 = 350
+	local colorizeLowIlvl630 = 385
+	local colorizeLowIlvl685 = 430
 	if UnitLevel'player' <= 110 then
 		colorizeLowIlvl630 = 185
 		colorizeLowIlvl685 = 240	
