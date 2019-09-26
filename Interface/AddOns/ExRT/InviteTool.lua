@@ -87,7 +87,7 @@ local function InviteBut()
 	for i=1,gplayers do
 		local name,_,rankIndex,level,_,_,_,_,online,_,_,_,_,isMobile = GetGuildRosterInfo(i)
 		local sName = ExRT.F.delUnitNameServer(name)
-		if name and rankIndex and VExRT.InviteTool.Ranks[rankIndex+1] and online and (ExRT.SDB.charLevel == 120 and level == 120 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
+		if name and rankIndex and VExRT.InviteTool.Ranks[rankIndex+1] and online and (ExRT.SDB.charLevel >= 120 and level >= 120 or ExRT.isClassic and level >= 60 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
 			if inRaid then
 				InviteUnit(name)
 			elseif nowinvnum < 5 then
@@ -373,7 +373,12 @@ function module.options:Load()
 	end
 	
 	self.dropDownRaidDiffText = ELib:Text(self,L.InviteRaidDiff,11):Size(150,20):Point("TOPLEFT",self.dropDownRaidDiff,-180,0)
-	
+
+	if ExRT.isClassic then
+		self.chkRaidDiff:Hide()
+		self.dropDownRaidDiff:Hide()
+		self.dropDownRaidDiffText:Hide()
+	end	
 
 	
 	self.HelpPlate = {
@@ -536,10 +541,12 @@ local function AutoRaidSetup()
 				module.db.sessionInRaid = true
 				module.db.sessionInRaidLoot = true
 				
-				SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
-				--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
-				--SetLootThreshold(VExRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
-				--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+				if not ExRT.isClassic then
+					SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
+					--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
+					--SetLootThreshold(VExRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
+					--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
+				end
 			end
 		elseif not inRaid and module.db.sessionInRaid then
 			module.db.sessionInRaid = nil
