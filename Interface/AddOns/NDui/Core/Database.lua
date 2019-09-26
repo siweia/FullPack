@@ -5,12 +5,12 @@ DB.Version = GetAddOnMetadata("NDui", "Version")
 DB.Support = GetAddOnMetadata("NDui", "X-Support")
 DB.Client = GetLocale()
 DB.ScreenWidth, DB.ScreenHeight = GetPhysicalScreenSize()
-DB.isNewPatch = GetBuildInfo() == "8.2.5"
 
 -- Colors
 DB.MyName = UnitName("player")
 DB.MyRealm = GetRealmName()
 DB.MyClass = select(2, UnitClass("player"))
+DB.MyFaction = UnitFactionGroup("player")
 DB.ClassList = {}
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 	DB.ClassList[v] = k
