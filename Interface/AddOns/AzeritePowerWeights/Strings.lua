@@ -68,6 +68,8 @@ do -- enUS / enGB
 	L.WeightEditor_RenameText = "Rename"
 	L.WeightEditor_DeleteText = "Delete"
 	L.WeightEditor_TooltipText = "Show in Tooltips"
+	L.WeightEditor_ModeToEssences = "Change to Essences"
+	L.WeightEditor_ModeToTraits = "Change to Traits"
 	L.WeightEditor_TimestampText_Created = "Created %s" -- %s DD.MM.YYYY
 	L.WeightEditor_TimestampText_Imported = "Imported %s" -- %s DD.MM.YYYY
 	L.WeightEditor_TimestampText_Updated = "Updated %s" -- %s DD.MM.YYYY
@@ -156,17 +158,17 @@ L["Config_Score_AddItemLevelToScore"] = "Fügen Sie allen Ergebnissen eine Eleme
 L["Config_Score_AddItemLevelToScore_Desc"] = "Fügen Sie dem aktuellen Punktestand, dem aktuellen Potenzial und der maximalen Punktzahlberechnung den Elementstand Azerite hinzu."
 L["Config_Score_AddPrimaryStatToScore"] = "Fügen Sie den Primär werten alle Ergebnisse hinzu"
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore_Desc"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of primary stat (%s/%s/%s) to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores"] = ""--]] 
+L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores_Desc"] = ""--]] 
+L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 L["Config_Score_RelativeScore"] = "Zeigt relative Werte in Tooltips anstelle von absoluten Werten an"
 L["Config_Score_RelativeScore_Desc"] = "Statt absolute Werte in Tooltips anzuzeigen, berechne die relativen Werte verglichen zum aktuell ausgerüsteten Gegenstand und zeige sie in Prozent an."
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered"] = "Scale itemlevel score by the weight of %s in the scale"
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = "When adding itemlevel to the scores, use the weight of %s of the scale to calculate value of +1 itemlevel instead of using +1 itemlevel = +1 score."
 L["Config_Score_ShowOnlyUpgrades"] = "Zeige Tooltip Information nur bei Upgrades an"
 L["Config_Score_ShowOnlyUpgrades_Desc"] = "Zeige Skalierungswerte nur in Tooltips wenn es eine Aufwertung zum aktuell ausgerüsteten Gegenstand ist. Dies funktioniert nur wenn relative Werte aktiviert sind. "
 L["Config_Score_ShowTooltipLegend"] = "Zeige eine Legende in Tooltips an"
@@ -183,31 +185,32 @@ L["Config_WeightEditor_ShowDefensive"] = "Zeige defensive Fähigkeiten"
 L["Config_WeightEditor_ShowDefensive_Desc"] = "Zeige gemeinsame und klassenspezifische Defensivfähigkeiten im Editor."
 L["Config_WeightEditor_ShowProfession"] = "Zeige berufsspezifische Fähigkeiten "
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowProfession_Desc"] = "Show Profession specific powers in the scale weight editor. These powers can only appear in items created with professions. Currently, these can only appear in Engineering headgear."
 L["Config_WeightEditor_ShowPvP"] = "Zeige PVP spezifische Fähigkeiten "
 L["Config_WeightEditor_ShowPvP_Desc"] = "Zeigen Sie PvP-spezifische Kräfte im Skalengewicht-Editor an. Sie sehen nur die Kräfte Ihrer eigenen Fraktionen, aber die an ihnen vorgenommenen Änderungen werden auf beide Fraktionen gespiegelt."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc_Import"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc_Import"] = [=[When Exporting, the resulting export-string will only include your own factions pvp powers, but they are interchangeable with opposing factions pvp-powerIDs.
+When Importing import-string with pvp powers only from one faction, powers will get their weights mirrored to both factions on Import.]=]
 L["Config_WeightEditor_ShowRole"] = "Rollenspezifische Fähigkeiten anzeigen"
 L["Config_WeightEditor_ShowRole_Desc"] = "Zeigen Sie rollenspezifische Kräfte im Skalengewicht-Editor an."
 L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = "Rollenspezifische Kompetenzen nur für meine eigene Spezialisierungsrolle anzeigen"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = "Show common and current specialization related specific Role specific powers in the scale weight editor. Enabling this setting e.g. hides healer only specific powers from damagers and tanks etc."
 L["Config_WeightEditor_ShowZone"] = "Zonenspezifische Fähigkeiten anzeigen"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc"] = "Show Zone specific powers in the scale weight editor. These powers can only appear in items acquired in particular zones related to the power."
 L["Config_WeightEditor_ShowZone_Desc_Proc"] = [=[Zonenspezifische Kräfte können / proc überall aktivieren, aber Schlachtzugsmächte haben einen sekundären Effekt, der nur aktiviert wird, wenn sie sich innerhalb ihrer zugehörigen Schlachtzugsinstanz befinden (z. B. wird der sekundäre Effekt von Uldir-Kräften nur in der Uldir-Schlachtzugsinstanz ausgeführt.)
 Die Schlachtzugskraft ist im Waagen-Editor mit einem Stern (*) neben ihrem Namen gekennzeichnet.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Title"] = ""--]] 
+L["Config_WeightEditor_Title"] = "Scales weight editor"
 --[[Translation missing --]]
---[[ L["CreatePopup_Desc"] = ""--]] 
+L["CreatePopup_Desc"] = "Creating new scale. Select class and specialization from dropdown and then enter name for the new scale and press %1$s"
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_CreatedNewScale"] = ""--]] 
+L["CreatePopup_Error_CreatedNewScale"] = "Created new scale \"%s\""
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_UnknownError"] = ""--]] 
+L["CreatePopup_Error_UnknownError"] = "ERROR: Something went wrong creating new scale \"%s\"!"
 --[[Translation missing --]]
---[[ L["CreatePopup_Title"] = ""--]] 
+L["CreatePopup_Title"] = "Create Scale"
 L["Debug_CopyToBugReport"] = "Kopiere den obrigen Text in deine Fehlermeldung, wenn du denkst es ist relevant."
 L["DefaultScaleName_Default"] = "Standard"
 L["DefaultScaleName_Defensive"] = "Defensive"
@@ -215,28 +218,33 @@ L["DefaultScaleName_Offensive"] = "Offensive"
 L["DeletePopup_DeletedDefaultScale"] = "Die gelöschte Skala wurde verwendet, sodass Sie für Ihre Klasse und Ihre Spezialisierung wieder auf die Default-Option zurückgreifen können!"
 L["DeletePopup_DeletedScale"] = "Gelöschte Skala \"%s\""
 --[[Translation missing --]]
---[[ L["DeletePopup_Desc"] = ""--]] 
+L["DeletePopup_Desc"] = [=[Deleting scale %1$s
+Press %2$s to confirm.
+All characters using this scale for their specialization will be reverted back to Default scale.]=]
 L["DeletePopup_Title"] = "Skala löschen"
 L["DeletePopup_Warning"] = "! Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden!"
 --[[Translation missing --]]
---[[ L["ExportPopup_Desc"] = ""--]] 
+L["ExportPopup_Desc"] = [=[Exporting scale %1$s
+Press %2$sCtrl+C%3$s to copy the string and %4$sCtrl+V%5$s to paste it somewhere]=]
 L["ExportPopup_Title"] = "Skala exportieren"
 --[[Translation missing --]]
---[[ L["ImportPopup_CreatedNewScale"] = ""--]] 
+L["ImportPopup_CreatedNewScale"] = "Imported new scale \"%s\""
 --[[Translation missing --]]
---[[ L["ImportPopup_Desc"] = ""--]] 
+L["ImportPopup_Desc"] = [=[Importing scale from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 L["ImportPopup_Error_MalformedString"] = "ERROR: Fehlerhafter Import-String!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 L["ImportPopup_Error_OldStringVersion"] = "ERROR: \"Import-String\" -Version ist zu alt oder fehlerhafter Import-String!"
 L["ImportPopup_Title"] = "Importiere Skalierung"
 L["ImportPopup_UpdatedScale"] = "Skalierung \"%s\" wurde aktualisiert"
 L["ItemToolTip_AzeriteLevel"] = "Azeritlevel: %1$d / %2$d"
 L["ItemToolTip_Legend"] = "Aktuelle Wertung / Aktuelles Potenzial / Maximale Wertung"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 L["PowersScoreString"] = [=[Aktuelle Wertung: %1$s/%2$s
 Maximale Wertung: %3$s
 Azeritlevel: %4$d/%5$d]=]
@@ -266,17 +274,21 @@ L["WeightEditor_EnableScaleText"] = "Benutze diese Skalierung"
 L["WeightEditor_ExportText"] = "Exportieren"
 L["WeightEditor_ImportText"] = "Importieren"
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 L["WeightEditor_Minor"] = "Geringer"
+--[[Translation missing --]]
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
+--[[Translation missing --]]
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 L["WeightEditor_RenameText"] = "Umbenennen"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
 L["WeightEditor_TooltipText"] = "Angezeigt im Tooltip"
 L["WeightEditor_VersionText"] = "Version %s"
 
@@ -287,412 +299,446 @@ L["Config_Importing_ImportingCanUpdate_Desc"] = "Cunado importes una escala con 
 L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "Puede haber múltiples escalas con el mismo nombre mientras sean para diferentes especializaciones o clases."
 L["Config_Importing_Title"] = "Importando"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly"] = "List own class Custom-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly_Desc"] = "List Custom-scales for your own class only, instead of listing all of them."
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassDefaultsOnly"] = ""--]] 
+L["Config_Scales_OwnClassDefaultsOnly"] = "List own class Default-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassDefaultsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassDefaultsOnly_Desc"] = "List Default-scales for your own class only, instead of listing all of them."
 --[[Translation missing --]]
---[[ L["Config_Scales_Title"] = ""--]] 
+L["Config_Scales_Title"] = "Scales list"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore"] = ""--]] 
+L["Config_Score_AddItemLevelToScore"] = "Add itemlevel to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore_Desc"] = ""--]] 
+L["Config_Score_AddItemLevelToScore_Desc"] = "Add Azerite items itemlevel to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore"] = "Add primary stat to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore_Desc"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of primary stat (%s/%s/%s) to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores"] = ""--]] 
+L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores_Desc"] = ""--]] 
+L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore"] = ""--]] 
+L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore_Desc"] = ""--]] 
+L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered"] = "Scale itemlevel score by the weight of %s in the scale"
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = "When adding itemlevel to the scores, use the weight of %s of the scale to calculate value of +1 itemlevel instead of using +1 itemlevel = +1 score."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades"] = "Show tooltips only for upgrades"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades_Desc"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades_Desc"] = "Show scales values in tooltips only if it is an upgrade compared to currently equipped item. This works only with relative values enabled."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend"] = ""--]] 
+L["Config_Score_ShowTooltipLegend"] = "Show legend in tooltips"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend_Desc"] = ""--]] 
+L["Config_Score_ShowTooltipLegend_Desc"] = "Show reminder for \"Current score / Current potential / Maximum score\" in tooltips."
 --[[Translation missing --]]
---[[ L["Config_Score_Title"] = ""--]] 
+L["Config_Score_Title"] = "Score"
 --[[Translation missing --]]
---[[ L["Config_SettingsAddonExplanation"] = ""--]] 
+L["Config_SettingsAddonExplanation"] = "This addon calculates \"Current score\", \"Current potential\" and \"Maximum score\" for Azerite gear based on your selected scale's weights."
 --[[Translation missing --]]
---[[ L["Config_SettingsSavedPerChar"] = ""--]] 
+L["Config_SettingsSavedPerChar"] = [=[All these settings here are saved per character.
+Custom scales are shared between all characters.]=]
 --[[Translation missing --]]
---[[ L["Config_SettingsScoreExplanation"] = ""--]] 
+L["Config_SettingsScoreExplanation"] = [=["Current score" is the sum of the currently selected Azerite powers in the item.
+"Current potential" is the sum of the highest weighted Azerite powers from each tier you have access to in the item.
+"Maximum score" is the sum of the highest weighted Azerite powers from each tier, including the locked ones, in the item.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Desc"] = ""--]] 
+L["Config_WeightEditor_Desc"] = "Following settings only affects the powers shown in the scale weight editor. Even if you disable them, all and any Azerite powers will be still scored if they have weight set to them in the active scale."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive"] = "Show Defensive powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive_Desc"] = "Show common and class specific Defensive powers in the scale weight editor."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession"] = ""--]] 
+L["Config_WeightEditor_ShowProfession"] = "Show Profession specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowProfession_Desc"] = "Show Profession specific powers in the scale weight editor. These powers can only appear in items created with professions. Currently, these can only appear in Engineering headgear."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP"] = ""--]] 
+L["Config_WeightEditor_ShowPvP"] = "Show PvP specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc"] = "Show PvP specific powers in the scale weight editor. You'll only see your own factions powers, but changes made to them will be mirrored to both factions."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc_Import"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc_Import"] = [=[When Exporting, the resulting export-string will only include your own factions pvp powers, but they are interchangeable with opposing factions pvp-powerIDs.
+When Importing import-string with pvp powers only from one faction, powers will get their weights mirrored to both factions on Import.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRole"] = ""--]] 
+L["Config_WeightEditor_ShowRole"] = "Show Role specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRole_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRole_Desc"] = "Show Role specific powers in the scale weight editor."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = "Show Role specific powers only for my own specializations role"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = "Show common and current specialization related specific Role specific powers in the scale weight editor. Enabling this setting e.g. hides healer only specific powers from damagers and tanks etc."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone"] = ""--]] 
+L["Config_WeightEditor_ShowZone"] = "Show Zone specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc"] = "Show Zone specific powers in the scale weight editor. These powers can only appear in items acquired in particular zones related to the power."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc_Proc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc_Proc"] = [=[Zone specific powers can activate/proc everywhere, but raid powers have secondary effect which will activate only while inside their related raid instance (e.g. Uldir powers secondary effect will only proc while inside Uldir raid instance).
+Raid powers are marked with an asterisk (*) next to their name in the scale weight editor.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Title"] = ""--]] 
+L["Config_WeightEditor_Title"] = "Scales weight editor"
 --[[Translation missing --]]
---[[ L["CreatePopup_Desc"] = ""--]] 
+L["CreatePopup_Desc"] = "Creating new scale. Select class and specialization from dropdown and then enter name for the new scale and press %1$s"
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_CreatedNewScale"] = ""--]] 
+L["CreatePopup_Error_CreatedNewScale"] = "Created new scale \"%s\""
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_UnknownError"] = ""--]] 
+L["CreatePopup_Error_UnknownError"] = "ERROR: Something went wrong creating new scale \"%s\"!"
 --[[Translation missing --]]
---[[ L["CreatePopup_Title"] = ""--]] 
+L["CreatePopup_Title"] = "Create Scale"
 --[[Translation missing --]]
---[[ L["Debug_CopyToBugReport"] = ""--]] 
+L["Debug_CopyToBugReport"] = "COPY & PASTE the text above to your bug report if you think it is relevant."
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Default"] = ""--]] 
+L["DefaultScaleName_Default"] = "Default"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Defensive"] = ""--]] 
+L["DefaultScaleName_Defensive"] = "Defensive"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Offensive"] = ""--]] 
+L["DefaultScaleName_Offensive"] = "Offensive"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedDefaultScale"] = ""--]] 
+L["DeletePopup_DeletedDefaultScale"] = "Deleted scale was in use, reverting back to Default-option for your class and specialization!"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedScale"] = ""--]] 
+L["DeletePopup_DeletedScale"] = "Deleted scale \"%s\""
 --[[Translation missing --]]
---[[ L["DeletePopup_Desc"] = ""--]] 
+L["DeletePopup_Desc"] = [=[Deleting scale %1$s
+Press %2$s to confirm.
+All characters using this scale for their specialization will be reverted back to Default scale.]=]
 --[[Translation missing --]]
---[[ L["DeletePopup_Title"] = ""--]] 
+L["DeletePopup_Title"] = "Delete Scale"
 --[[Translation missing --]]
---[[ L["DeletePopup_Warning"] = ""--]] 
+L["DeletePopup_Warning"] = " ! This action is permanent and cannot be reversed ! "
 --[[Translation missing --]]
---[[ L["ExportPopup_Desc"] = ""--]] 
+L["ExportPopup_Desc"] = [=[Exporting scale %1$s
+Press %2$sCtrl+C%3$s to copy the string and %4$sCtrl+V%5$s to paste it somewhere]=]
 --[[Translation missing --]]
---[[ L["ExportPopup_Title"] = ""--]] 
+L["ExportPopup_Title"] = "Export Scale"
 --[[Translation missing --]]
---[[ L["ImportPopup_CreatedNewScale"] = ""--]] 
+L["ImportPopup_CreatedNewScale"] = "Imported new scale \"%s\""
 --[[Translation missing --]]
---[[ L["ImportPopup_Desc"] = ""--]] 
+L["ImportPopup_Desc"] = [=[Importing scale from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_MalformedString"] = ""--]] 
+L["ImportPopup_Error_MalformedString"] = "ERROR: Malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringVersion"] = ""--]] 
+L["ImportPopup_Error_OldStringVersion"] = "ERROR: \"Import string\" -version is too old or malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Title"] = ""--]] 
+L["ImportPopup_Title"] = "Import Scale"
 --[[Translation missing --]]
---[[ L["ImportPopup_UpdatedScale"] = ""--]] 
+L["ImportPopup_UpdatedScale"] = "Updated existing scale \"%s\""
 --[[Translation missing --]]
---[[ L["ItemToolTip_AzeriteLevel"] = ""--]] 
+L["ItemToolTip_AzeriteLevel"] = "Azerite level: %1$d / %2$d"
 --[[Translation missing --]]
---[[ L["ItemToolTip_Legend"] = ""--]] 
+L["ItemToolTip_Legend"] = "Current score / Current potential / Maximum score"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 --[[Translation missing --]]
---[[ L["PowersScoreString"] = ""--]] 
+L["PowersScoreString"] = [=[Current score: %1$s/%2$s
+Maximum score: %3$s
+Azerite level: %4$d/%5$d]=]
 --[[Translation missing --]]
---[[ L["PowersTitles_Class"] = ""--]] 
+L["PowersTitles_Class"] = "Class Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Defensive"] = ""--]] 
+L["PowersTitles_Defensive"] = "Defensive Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Profession"] = ""--]] 
+L["PowersTitles_Profession"] = "Profession Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_PvP"] = ""--]] 
+L["PowersTitles_PvP"] = "PvP Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Role"] = ""--]] 
+L["PowersTitles_Role"] = "Role Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Zone"] = ""--]] 
+L["PowersTitles_Zone"] = "Raid and Zone Powers"
 --[[Translation missing --]]
---[[ L["RenamePopup_Desc"] = ""--]] 
+L["RenamePopup_Desc"] = [=[Renaming scale %1$s
+Enter new name to the editbox and press %2$s]=]
 --[[Translation missing --]]
---[[ L["RenamePopup_RenamedScale"] = ""--]] 
+L["RenamePopup_RenamedScale"] = "Renamed scale \"%1$s\" to \"%2$s\""
 --[[Translation missing --]]
---[[ L["RenamePopup_Title"] = ""--]] 
+L["RenamePopup_Title"] = "Rename Scale"
 --[[Translation missing --]]
---[[ L["ScaleName_Unknown"] = ""--]] 
+L["ScaleName_Unknown"] = "Unknown"
 --[[Translation missing --]]
---[[ L["ScaleName_Unnamed"] = ""--]] 
+L["ScaleName_Unnamed"] = "Unnamed"
 --[[Translation missing --]]
---[[ L["ScalesList_CreateImportText"] = ""--]] 
+L["ScalesList_CreateImportText"] = "Create New / Import"
 --[[Translation missing --]]
---[[ L["ScalesList_CustomGroupName"] = ""--]] 
+L["ScalesList_CustomGroupName"] = "Custom Scales"
 --[[Translation missing --]]
---[[ L["ScalesList_DefaultGroupName"] = ""--]] 
+L["ScalesList_DefaultGroupName"] = "Default Scales"
 --[[Translation missing --]]
---[[ L["ScaleWeightEditor_Title"] = ""--]] 
+L["ScaleWeightEditor_Title"] = "%s Scale Weight Editor"
 --[[Translation missing --]]
---[[ L["Slash_Command"] = ""--]] 
+L["Slash_Command"] = "/azerite"
 --[[Translation missing --]]
---[[ L["Slash_Error_Unkown"] = ""--]] 
+L["Slash_Error_Unkown"] = "ERROR: Something went wrong!"
 --[[Translation missing --]]
---[[ L["Slash_RemindConfig"] = ""--]] 
+L["Slash_RemindConfig"] = "Check ESC -> Interface -> AddOns -> %s for settings."
 --[[Translation missing --]]
---[[ L["WeightEditor_CreateNewText"] = ""--]] 
+L["WeightEditor_CreateNewText"] = "Create New"
 --[[Translation missing --]]
---[[ L["WeightEditor_CurrentScale"] = ""--]] 
+L["WeightEditor_CurrentScale"] = "Current scale: %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_DeleteText"] = ""--]] 
+L["WeightEditor_DeleteText"] = "Delete"
 --[[Translation missing --]]
---[[ L["WeightEditor_EnableScaleText"] = ""--]] 
+L["WeightEditor_EnableScaleText"] = "Use this Scale"
 --[[Translation missing --]]
---[[ L["WeightEditor_ExportText"] = ""--]] 
+L["WeightEditor_ExportText"] = "Export"
 --[[Translation missing --]]
---[[ L["WeightEditor_ImportText"] = ""--]] 
+L["WeightEditor_ImportText"] = "Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Minor"] = ""--]] 
+L["WeightEditor_Minor"] = "Minor"
 --[[Translation missing --]]
---[[ L["WeightEditor_RenameText"] = ""--]] 
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_RenameText"] = "Rename"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TooltipText"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_VersionText"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
+--[[Translation missing --]]
+L["WeightEditor_TooltipText"] = "Show in Tooltips"
+--[[Translation missing --]]
+L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "esMX" then
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate"] = "Importing can update existing scales"
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate_Desc"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate_Desc"] = "When importing scale with same name, class and specialization as pre-existing scale, existing scale will be updated with the new weights instead of creating new scale."
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "There can be multiple scales with same name as long as they are for different specializations or classes."
 --[[Translation missing --]]
---[[ L["Config_Importing_Title"] = ""--]] 
+L["Config_Importing_Title"] = "Importing"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly"] = "List own class Custom-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly_Desc"] = "List Custom-scales for your own class only, instead of listing all of them."
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassDefaultsOnly"] = ""--]] 
+L["Config_Scales_OwnClassDefaultsOnly"] = "List own class Default-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassDefaultsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassDefaultsOnly_Desc"] = "List Default-scales for your own class only, instead of listing all of them."
 --[[Translation missing --]]
---[[ L["Config_Scales_Title"] = ""--]] 
+L["Config_Scales_Title"] = "Scales list"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore"] = ""--]] 
+L["Config_Score_AddItemLevelToScore"] = "Add itemlevel to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore_Desc"] = ""--]] 
+L["Config_Score_AddItemLevelToScore_Desc"] = "Add Azerite items itemlevel to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore"] = "Add primary stat to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore_Desc"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of primary stat (%s/%s/%s) to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores"] = ""--]] 
+L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores_Desc"] = ""--]] 
+L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore"] = ""--]] 
+L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore_Desc"] = ""--]] 
+L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered"] = "Scale itemlevel score by the weight of %s in the scale"
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = "When adding itemlevel to the scores, use the weight of %s of the scale to calculate value of +1 itemlevel instead of using +1 itemlevel = +1 score."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades"] = "Show tooltips only for upgrades"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades_Desc"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades_Desc"] = "Show scales values in tooltips only if it is an upgrade compared to currently equipped item. This works only with relative values enabled."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend"] = ""--]] 
+L["Config_Score_ShowTooltipLegend"] = "Show legend in tooltips"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend_Desc"] = ""--]] 
+L["Config_Score_ShowTooltipLegend_Desc"] = "Show reminder for \"Current score / Current potential / Maximum score\" in tooltips."
 --[[Translation missing --]]
---[[ L["Config_Score_Title"] = ""--]] 
+L["Config_Score_Title"] = "Score"
 --[[Translation missing --]]
---[[ L["Config_SettingsAddonExplanation"] = ""--]] 
+L["Config_SettingsAddonExplanation"] = "This addon calculates \"Current score\", \"Current potential\" and \"Maximum score\" for Azerite gear based on your selected scale's weights."
 --[[Translation missing --]]
---[[ L["Config_SettingsSavedPerChar"] = ""--]] 
+L["Config_SettingsSavedPerChar"] = [=[All these settings here are saved per character.
+Custom scales are shared between all characters.]=]
 --[[Translation missing --]]
---[[ L["Config_SettingsScoreExplanation"] = ""--]] 
+L["Config_SettingsScoreExplanation"] = [=["Current score" is the sum of the currently selected Azerite powers in the item.
+"Current potential" is the sum of the highest weighted Azerite powers from each tier you have access to in the item.
+"Maximum score" is the sum of the highest weighted Azerite powers from each tier, including the locked ones, in the item.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Desc"] = ""--]] 
+L["Config_WeightEditor_Desc"] = "Following settings only affects the powers shown in the scale weight editor. Even if you disable them, all and any Azerite powers will be still scored if they have weight set to them in the active scale."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive"] = "Show Defensive powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive_Desc"] = "Show common and class specific Defensive powers in the scale weight editor."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession"] = ""--]] 
+L["Config_WeightEditor_ShowProfession"] = "Show Profession specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowProfession_Desc"] = "Show Profession specific powers in the scale weight editor. These powers can only appear in items created with professions. Currently, these can only appear in Engineering headgear."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP"] = ""--]] 
+L["Config_WeightEditor_ShowPvP"] = "Show PvP specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc"] = "Show PvP specific powers in the scale weight editor. You'll only see your own factions powers, but changes made to them will be mirrored to both factions."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc_Import"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc_Import"] = [=[When Exporting, the resulting export-string will only include your own factions pvp powers, but they are interchangeable with opposing factions pvp-powerIDs.
+When Importing import-string with pvp powers only from one faction, powers will get their weights mirrored to both factions on Import.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRole"] = ""--]] 
+L["Config_WeightEditor_ShowRole"] = "Show Role specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRole_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRole_Desc"] = "Show Role specific powers in the scale weight editor."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = "Show Role specific powers only for my own specializations role"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = "Show common and current specialization related specific Role specific powers in the scale weight editor. Enabling this setting e.g. hides healer only specific powers from damagers and tanks etc."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone"] = ""--]] 
+L["Config_WeightEditor_ShowZone"] = "Show Zone specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc"] = "Show Zone specific powers in the scale weight editor. These powers can only appear in items acquired in particular zones related to the power."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc_Proc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc_Proc"] = [=[Zone specific powers can activate/proc everywhere, but raid powers have secondary effect which will activate only while inside their related raid instance (e.g. Uldir powers secondary effect will only proc while inside Uldir raid instance).
+Raid powers are marked with an asterisk (*) next to their name in the scale weight editor.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Title"] = ""--]] 
+L["Config_WeightEditor_Title"] = "Scales weight editor"
 --[[Translation missing --]]
---[[ L["CreatePopup_Desc"] = ""--]] 
+L["CreatePopup_Desc"] = "Creating new scale. Select class and specialization from dropdown and then enter name for the new scale and press %1$s"
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_CreatedNewScale"] = ""--]] 
+L["CreatePopup_Error_CreatedNewScale"] = "Created new scale \"%s\""
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_UnknownError"] = ""--]] 
+L["CreatePopup_Error_UnknownError"] = "ERROR: Something went wrong creating new scale \"%s\"!"
 --[[Translation missing --]]
---[[ L["CreatePopup_Title"] = ""--]] 
+L["CreatePopup_Title"] = "Create Scale"
 --[[Translation missing --]]
---[[ L["Debug_CopyToBugReport"] = ""--]] 
+L["Debug_CopyToBugReport"] = "COPY & PASTE the text above to your bug report if you think it is relevant."
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Default"] = ""--]] 
+L["DefaultScaleName_Default"] = "Default"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Defensive"] = ""--]] 
+L["DefaultScaleName_Defensive"] = "Defensive"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Offensive"] = ""--]] 
+L["DefaultScaleName_Offensive"] = "Offensive"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedDefaultScale"] = ""--]] 
+L["DeletePopup_DeletedDefaultScale"] = "Deleted scale was in use, reverting back to Default-option for your class and specialization!"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedScale"] = ""--]] 
+L["DeletePopup_DeletedScale"] = "Deleted scale \"%s\""
 --[[Translation missing --]]
---[[ L["DeletePopup_Desc"] = ""--]] 
+L["DeletePopup_Desc"] = [=[Deleting scale %1$s
+Press %2$s to confirm.
+All characters using this scale for their specialization will be reverted back to Default scale.]=]
 --[[Translation missing --]]
---[[ L["DeletePopup_Title"] = ""--]] 
+L["DeletePopup_Title"] = "Delete Scale"
 --[[Translation missing --]]
---[[ L["DeletePopup_Warning"] = ""--]] 
+L["DeletePopup_Warning"] = " ! This action is permanent and cannot be reversed ! "
 --[[Translation missing --]]
---[[ L["ExportPopup_Desc"] = ""--]] 
+L["ExportPopup_Desc"] = [=[Exporting scale %1$s
+Press %2$sCtrl+C%3$s to copy the string and %4$sCtrl+V%5$s to paste it somewhere]=]
 --[[Translation missing --]]
---[[ L["ExportPopup_Title"] = ""--]] 
+L["ExportPopup_Title"] = "Export Scale"
 --[[Translation missing --]]
---[[ L["ImportPopup_CreatedNewScale"] = ""--]] 
+L["ImportPopup_CreatedNewScale"] = "Imported new scale \"%s\""
 --[[Translation missing --]]
---[[ L["ImportPopup_Desc"] = ""--]] 
+L["ImportPopup_Desc"] = [=[Importing scale from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_MalformedString"] = ""--]] 
+L["ImportPopup_Error_MalformedString"] = "ERROR: Malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringVersion"] = ""--]] 
+L["ImportPopup_Error_OldStringVersion"] = "ERROR: \"Import string\" -version is too old or malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Title"] = ""--]] 
+L["ImportPopup_Title"] = "Import Scale"
 --[[Translation missing --]]
---[[ L["ImportPopup_UpdatedScale"] = ""--]] 
+L["ImportPopup_UpdatedScale"] = "Updated existing scale \"%s\""
 --[[Translation missing --]]
---[[ L["ItemToolTip_AzeriteLevel"] = ""--]] 
+L["ItemToolTip_AzeriteLevel"] = "Azerite level: %1$d / %2$d"
 --[[Translation missing --]]
---[[ L["ItemToolTip_Legend"] = ""--]] 
+L["ItemToolTip_Legend"] = "Current score / Current potential / Maximum score"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 --[[Translation missing --]]
---[[ L["PowersScoreString"] = ""--]] 
+L["PowersScoreString"] = [=[Current score: %1$s/%2$s
+Maximum score: %3$s
+Azerite level: %4$d/%5$d]=]
 --[[Translation missing --]]
---[[ L["PowersTitles_Class"] = ""--]] 
+L["PowersTitles_Class"] = "Class Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Defensive"] = ""--]] 
+L["PowersTitles_Defensive"] = "Defensive Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Profession"] = ""--]] 
+L["PowersTitles_Profession"] = "Profession Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_PvP"] = ""--]] 
+L["PowersTitles_PvP"] = "PvP Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Role"] = ""--]] 
+L["PowersTitles_Role"] = "Role Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Zone"] = ""--]] 
+L["PowersTitles_Zone"] = "Raid and Zone Powers"
 --[[Translation missing --]]
---[[ L["RenamePopup_Desc"] = ""--]] 
+L["RenamePopup_Desc"] = [=[Renaming scale %1$s
+Enter new name to the editbox and press %2$s]=]
 --[[Translation missing --]]
---[[ L["RenamePopup_RenamedScale"] = ""--]] 
+L["RenamePopup_RenamedScale"] = "Renamed scale \"%1$s\" to \"%2$s\""
 --[[Translation missing --]]
---[[ L["RenamePopup_Title"] = ""--]] 
+L["RenamePopup_Title"] = "Rename Scale"
 --[[Translation missing --]]
---[[ L["ScaleName_Unknown"] = ""--]] 
+L["ScaleName_Unknown"] = "Unknown"
 --[[Translation missing --]]
---[[ L["ScaleName_Unnamed"] = ""--]] 
+L["ScaleName_Unnamed"] = "Unnamed"
 --[[Translation missing --]]
---[[ L["ScalesList_CreateImportText"] = ""--]] 
+L["ScalesList_CreateImportText"] = "Create New / Import"
 --[[Translation missing --]]
---[[ L["ScalesList_CustomGroupName"] = ""--]] 
+L["ScalesList_CustomGroupName"] = "Custom Scales"
 --[[Translation missing --]]
---[[ L["ScalesList_DefaultGroupName"] = ""--]] 
+L["ScalesList_DefaultGroupName"] = "Default Scales"
 --[[Translation missing --]]
---[[ L["ScaleWeightEditor_Title"] = ""--]] 
+L["ScaleWeightEditor_Title"] = "%s Scale Weight Editor"
 --[[Translation missing --]]
---[[ L["Slash_Command"] = ""--]] 
+L["Slash_Command"] = "/azerite"
 --[[Translation missing --]]
---[[ L["Slash_Error_Unkown"] = ""--]] 
+L["Slash_Error_Unkown"] = "ERROR: Something went wrong!"
 --[[Translation missing --]]
---[[ L["Slash_RemindConfig"] = ""--]] 
+L["Slash_RemindConfig"] = "Check ESC -> Interface -> AddOns -> %s for settings."
 --[[Translation missing --]]
---[[ L["WeightEditor_CreateNewText"] = ""--]] 
+L["WeightEditor_CreateNewText"] = "Create New"
 --[[Translation missing --]]
---[[ L["WeightEditor_CurrentScale"] = ""--]] 
+L["WeightEditor_CurrentScale"] = "Current scale: %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_DeleteText"] = ""--]] 
+L["WeightEditor_DeleteText"] = "Delete"
 --[[Translation missing --]]
---[[ L["WeightEditor_EnableScaleText"] = ""--]] 
+L["WeightEditor_EnableScaleText"] = "Use this Scale"
 --[[Translation missing --]]
---[[ L["WeightEditor_ExportText"] = ""--]] 
+L["WeightEditor_ExportText"] = "Export"
 --[[Translation missing --]]
---[[ L["WeightEditor_ImportText"] = ""--]] 
+L["WeightEditor_ImportText"] = "Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Minor"] = ""--]] 
+L["WeightEditor_Minor"] = "Minor"
 --[[Translation missing --]]
---[[ L["WeightEditor_RenameText"] = ""--]] 
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_RenameText"] = "Rename"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TooltipText"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_VersionText"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
+--[[Translation missing --]]
+L["WeightEditor_TooltipText"] = "Show in Tooltips"
+--[[Translation missing --]]
+L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "frFR" then -- tthegarde (19), Marechoux (9), follower4jas (1)
@@ -721,11 +767,13 @@ L["Config_Score_ShowTooltipLegend"] = "Afficher la légende dans l'infobulle"
 L["Config_Score_ShowTooltipLegend_Desc"] = "Afficher le rappel des \"Score actuel / potentiel / maximal\" dans l'infobulle."
 L["Config_Score_Title"] = "Score"
 --[[Translation missing --]]
---[[ L["Config_SettingsAddonExplanation"] = ""--]] 
+L["Config_SettingsAddonExplanation"] = "This addon calculates \"Current score\", \"Current potential\" and \"Maximum score\" for Azerite gear based on your selected scale's weights."
 L["Config_SettingsSavedPerChar"] = [=[Tous ces réglages sont sauvegardés par personnage.
 Les échelles personnalisées sont partagées entre tous vos personnages.]=]
 --[[Translation missing --]]
---[[ L["Config_SettingsScoreExplanation"] = ""--]] 
+L["Config_SettingsScoreExplanation"] = [=["Current score" is the sum of the currently selected Azerite powers in the item.
+"Current potential" is the sum of the highest weighted Azerite powers from each tier you have access to in the item.
+"Maximum score" is the sum of the highest weighted Azerite powers from each tier, including the locked ones, in the item.]=]
 L["Config_WeightEditor_Desc"] = "Les réglages suivants ne concernent que les traits affichés dans l'éditeur d'échelle. Même si vous les désactivez, chaque trait d'Azérite sera quand même évalué si il a une valeur associée dans l'échelle active."
 L["Config_WeightEditor_ShowDefensive"] = "Afficher les traits Défensifs"
 L["Config_WeightEditor_ShowDefensive_Desc"] = "Affiche les traits Défensifs communs et spécifiques à une classe dans l'éditeur d'échelle."
@@ -739,458 +787,494 @@ L["Config_WeightEditor_ShowRole"] = "Afficher les traits de Rôle"
 L["Config_WeightEditor_ShowRole_Desc"] = "Affiche les traits de Rôle dans l'éditeur d'échelle."
 L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = "Affiche les traits de Rôle uniquement pour votre spécialisation"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = "Show common and current specialization related specific Role specific powers in the scale weight editor. Enabling this setting e.g. hides healer only specific powers from damagers and tanks etc."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone"] = ""--]] 
+L["Config_WeightEditor_ShowZone"] = "Show Zone specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc"] = "Show Zone specific powers in the scale weight editor. These powers can only appear in items acquired in particular zones related to the power."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc_Proc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc_Proc"] = [=[Zone specific powers can activate/proc everywhere, but raid powers have secondary effect which will activate only while inside their related raid instance (e.g. Uldir powers secondary effect will only proc while inside Uldir raid instance).
+Raid powers are marked with an asterisk (*) next to their name in the scale weight editor.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Title"] = ""--]] 
+L["Config_WeightEditor_Title"] = "Scales weight editor"
 --[[Translation missing --]]
---[[ L["CreatePopup_Desc"] = ""--]] 
+L["CreatePopup_Desc"] = "Creating new scale. Select class and specialization from dropdown and then enter name for the new scale and press %1$s"
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_CreatedNewScale"] = ""--]] 
+L["CreatePopup_Error_CreatedNewScale"] = "Created new scale \"%s\""
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_UnknownError"] = ""--]] 
+L["CreatePopup_Error_UnknownError"] = "ERROR: Something went wrong creating new scale \"%s\"!"
 --[[Translation missing --]]
---[[ L["CreatePopup_Title"] = ""--]] 
+L["CreatePopup_Title"] = "Create Scale"
 --[[Translation missing --]]
---[[ L["Debug_CopyToBugReport"] = ""--]] 
+L["Debug_CopyToBugReport"] = "COPY & PASTE the text above to your bug report if you think it is relevant."
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Default"] = ""--]] 
+L["DefaultScaleName_Default"] = "Default"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Defensive"] = ""--]] 
+L["DefaultScaleName_Defensive"] = "Defensive"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Offensive"] = ""--]] 
+L["DefaultScaleName_Offensive"] = "Offensive"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedDefaultScale"] = ""--]] 
+L["DeletePopup_DeletedDefaultScale"] = "Deleted scale was in use, reverting back to Default-option for your class and specialization!"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedScale"] = ""--]] 
+L["DeletePopup_DeletedScale"] = "Deleted scale \"%s\""
 --[[Translation missing --]]
---[[ L["DeletePopup_Desc"] = ""--]] 
+L["DeletePopup_Desc"] = [=[Deleting scale %1$s
+Press %2$s to confirm.
+All characters using this scale for their specialization will be reverted back to Default scale.]=]
 --[[Translation missing --]]
---[[ L["DeletePopup_Title"] = ""--]] 
+L["DeletePopup_Title"] = "Delete Scale"
+L["DeletePopup_Warning"] = "! Cette action est permanente et ne peut pas être annulée !"
 --[[Translation missing --]]
---[[ L["DeletePopup_Warning"] = ""--]] 
---[[Translation missing --]]
---[[ L["ExportPopup_Desc"] = ""--]] 
+L["ExportPopup_Desc"] = [=[Exporting scale %1$s
+Press %2$sCtrl+C%3$s to copy the string and %4$sCtrl+V%5$s to paste it somewhere]=]
 L["ExportPopup_Title"] = "Exporter l'échelle"
 --[[Translation missing --]]
---[[ L["ImportPopup_CreatedNewScale"] = ""--]] 
+L["ImportPopup_CreatedNewScale"] = "Imported new scale \"%s\""
 --[[Translation missing --]]
---[[ L["ImportPopup_Desc"] = ""--]] 
+L["ImportPopup_Desc"] = [=[Importing scale from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_MalformedString"] = ""--]] 
+L["ImportPopup_Error_MalformedString"] = "ERROR: Malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringVersion"] = ""--]] 
+L["ImportPopup_Error_OldStringVersion"] = "ERROR: \"Import string\" -version is too old or malformed import string!"
 L["ImportPopup_Title"] = "Importer l'échelle"
 --[[Translation missing --]]
---[[ L["ImportPopup_UpdatedScale"] = ""--]] 
+L["ImportPopup_UpdatedScale"] = "Updated existing scale \"%s\""
 --[[Translation missing --]]
---[[ L["ItemToolTip_AzeriteLevel"] = ""--]] 
+L["ItemToolTip_AzeriteLevel"] = "Azerite level: %1$d / %2$d"
+L["ItemToolTip_Legend"] = "Score actuel / Potentiel actuel / Score maximum"
 --[[Translation missing --]]
---[[ L["ItemToolTip_Legend"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["PowersScoreString"] = [=[Current score: %1$s/%2$s
+Maximum score: %3$s
+Azerite level: %4$d/%5$d]=]
 --[[Translation missing --]]
---[[ L["PowersScoreString"] = ""--]] 
+L["PowersTitles_Class"] = "Class Powers"
+L["PowersTitles_Defensive"] = "Pouvoirs Défensifs"
 --[[Translation missing --]]
---[[ L["PowersTitles_Class"] = ""--]] 
+L["PowersTitles_Profession"] = "Profession Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Defensive"] = ""--]] 
+L["PowersTitles_PvP"] = "PvP Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Profession"] = ""--]] 
+L["PowersTitles_Role"] = "Role Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_PvP"] = ""--]] 
+L["PowersTitles_Zone"] = "Raid and Zone Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Role"] = ""--]] 
+L["RenamePopup_Desc"] = [=[Renaming scale %1$s
+Enter new name to the editbox and press %2$s]=]
 --[[Translation missing --]]
---[[ L["PowersTitles_Zone"] = ""--]] 
+L["RenamePopup_RenamedScale"] = "Renamed scale \"%1$s\" to \"%2$s\""
 --[[Translation missing --]]
---[[ L["RenamePopup_Desc"] = ""--]] 
+L["RenamePopup_Title"] = "Rename Scale"
 --[[Translation missing --]]
---[[ L["RenamePopup_RenamedScale"] = ""--]] 
+L["ScaleName_Unknown"] = "Unknown"
 --[[Translation missing --]]
---[[ L["RenamePopup_Title"] = ""--]] 
+L["ScaleName_Unnamed"] = "Unnamed"
 --[[Translation missing --]]
---[[ L["ScaleName_Unknown"] = ""--]] 
+L["ScalesList_CreateImportText"] = "Create New / Import"
 --[[Translation missing --]]
---[[ L["ScaleName_Unnamed"] = ""--]] 
+L["ScalesList_CustomGroupName"] = "Custom Scales"
 --[[Translation missing --]]
---[[ L["ScalesList_CreateImportText"] = ""--]] 
+L["ScalesList_DefaultGroupName"] = "Default Scales"
 --[[Translation missing --]]
---[[ L["ScalesList_CustomGroupName"] = ""--]] 
+L["ScaleWeightEditor_Title"] = "%s Scale Weight Editor"
 --[[Translation missing --]]
---[[ L["ScalesList_DefaultGroupName"] = ""--]] 
+L["Slash_Command"] = "/azerite"
 --[[Translation missing --]]
---[[ L["ScaleWeightEditor_Title"] = ""--]] 
+L["Slash_Error_Unkown"] = "ERROR: Something went wrong!"
 --[[Translation missing --]]
---[[ L["Slash_Command"] = ""--]] 
+L["Slash_RemindConfig"] = "Check ESC -> Interface -> AddOns -> %s for settings."
 --[[Translation missing --]]
---[[ L["Slash_Error_Unkown"] = ""--]] 
+L["WeightEditor_CreateNewText"] = "Create New"
 --[[Translation missing --]]
---[[ L["Slash_RemindConfig"] = ""--]] 
+L["WeightEditor_CurrentScale"] = "Current scale: %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_CreateNewText"] = ""--]] 
+L["WeightEditor_DeleteText"] = "Delete"
 --[[Translation missing --]]
---[[ L["WeightEditor_CurrentScale"] = ""--]] 
+L["WeightEditor_EnableScaleText"] = "Use this Scale"
 --[[Translation missing --]]
---[[ L["WeightEditor_DeleteText"] = ""--]] 
+L["WeightEditor_ExportText"] = "Export"
 --[[Translation missing --]]
---[[ L["WeightEditor_EnableScaleText"] = ""--]] 
+L["WeightEditor_ImportText"] = "Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_ExportText"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_ImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Minor"] = "Minor"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
 --[[Translation missing --]]
---[[ L["WeightEditor_Minor"] = ""--]] 
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 --[[Translation missing --]]
---[[ L["WeightEditor_RenameText"] = ""--]] 
+L["WeightEditor_RenameText"] = "Rename"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TooltipText"] = ""--]] 
+L["WeightEditor_TooltipText"] = "Show in Tooltips"
 --[[Translation missing --]]
---[[ L["WeightEditor_VersionText"] = ""--]] 
+L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "itIT" then
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate"] = "Importing can update existing scales"
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate_Desc"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate_Desc"] = "When importing scale with same name, class and specialization as pre-existing scale, existing scale will be updated with the new weights instead of creating new scale."
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "There can be multiple scales with same name as long as they are for different specializations or classes."
 --[[Translation missing --]]
---[[ L["Config_Importing_Title"] = ""--]] 
+L["Config_Importing_Title"] = "Importing"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly"] = "List own class Custom-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly_Desc"] = "List Custom-scales for your own class only, instead of listing all of them."
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassDefaultsOnly"] = ""--]] 
+L["Config_Scales_OwnClassDefaultsOnly"] = "List own class Default-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassDefaultsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassDefaultsOnly_Desc"] = "List Default-scales for your own class only, instead of listing all of them."
 --[[Translation missing --]]
---[[ L["Config_Scales_Title"] = ""--]] 
+L["Config_Scales_Title"] = "Scales list"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore"] = ""--]] 
+L["Config_Score_AddItemLevelToScore"] = "Add itemlevel to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore_Desc"] = ""--]] 
+L["Config_Score_AddItemLevelToScore_Desc"] = "Add Azerite items itemlevel to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore"] = "Add primary stat to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore_Desc"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of primary stat (%s/%s/%s) to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores"] = ""--]] 
+L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores_Desc"] = ""--]] 
+L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore"] = ""--]] 
+L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore_Desc"] = ""--]] 
+L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered"] = "Scale itemlevel score by the weight of %s in the scale"
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = "When adding itemlevel to the scores, use the weight of %s of the scale to calculate value of +1 itemlevel instead of using +1 itemlevel = +1 score."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades"] = "Show tooltips only for upgrades"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades_Desc"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades_Desc"] = "Show scales values in tooltips only if it is an upgrade compared to currently equipped item. This works only with relative values enabled."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend"] = ""--]] 
+L["Config_Score_ShowTooltipLegend"] = "Show legend in tooltips"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend_Desc"] = ""--]] 
+L["Config_Score_ShowTooltipLegend_Desc"] = "Show reminder for \"Current score / Current potential / Maximum score\" in tooltips."
 --[[Translation missing --]]
---[[ L["Config_Score_Title"] = ""--]] 
+L["Config_Score_Title"] = "Score"
 --[[Translation missing --]]
---[[ L["Config_SettingsAddonExplanation"] = ""--]] 
+L["Config_SettingsAddonExplanation"] = "This addon calculates \"Current score\", \"Current potential\" and \"Maximum score\" for Azerite gear based on your selected scale's weights."
 --[[Translation missing --]]
---[[ L["Config_SettingsSavedPerChar"] = ""--]] 
+L["Config_SettingsSavedPerChar"] = [=[All these settings here are saved per character.
+Custom scales are shared between all characters.]=]
 --[[Translation missing --]]
---[[ L["Config_SettingsScoreExplanation"] = ""--]] 
+L["Config_SettingsScoreExplanation"] = [=["Current score" is the sum of the currently selected Azerite powers in the item.
+"Current potential" is the sum of the highest weighted Azerite powers from each tier you have access to in the item.
+"Maximum score" is the sum of the highest weighted Azerite powers from each tier, including the locked ones, in the item.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Desc"] = ""--]] 
+L["Config_WeightEditor_Desc"] = "Following settings only affects the powers shown in the scale weight editor. Even if you disable them, all and any Azerite powers will be still scored if they have weight set to them in the active scale."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive"] = "Show Defensive powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive_Desc"] = "Show common and class specific Defensive powers in the scale weight editor."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession"] = ""--]] 
+L["Config_WeightEditor_ShowProfession"] = "Show Profession specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowProfession_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowProfession_Desc"] = "Show Profession specific powers in the scale weight editor. These powers can only appear in items created with professions. Currently, these can only appear in Engineering headgear."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP"] = ""--]] 
+L["Config_WeightEditor_ShowPvP"] = "Show PvP specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc"] = "Show PvP specific powers in the scale weight editor. You'll only see your own factions powers, but changes made to them will be mirrored to both factions."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc_Import"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc_Import"] = [=[When Exporting, the resulting export-string will only include your own factions pvp powers, but they are interchangeable with opposing factions pvp-powerIDs.
+When Importing import-string with pvp powers only from one faction, powers will get their weights mirrored to both factions on Import.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRole"] = ""--]] 
+L["Config_WeightEditor_ShowRole"] = "Show Role specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRole_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRole_Desc"] = "Show Role specific powers in the scale weight editor."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = "Show Role specific powers only for my own specializations role"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = "Show common and current specialization related specific Role specific powers in the scale weight editor. Enabling this setting e.g. hides healer only specific powers from damagers and tanks etc."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone"] = ""--]] 
+L["Config_WeightEditor_ShowZone"] = "Show Zone specific powers"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc"] = "Show Zone specific powers in the scale weight editor. These powers can only appear in items acquired in particular zones related to the power."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc_Proc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc_Proc"] = [=[Zone specific powers can activate/proc everywhere, but raid powers have secondary effect which will activate only while inside their related raid instance (e.g. Uldir powers secondary effect will only proc while inside Uldir raid instance).
+Raid powers are marked with an asterisk (*) next to their name in the scale weight editor.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Title"] = ""--]] 
+L["Config_WeightEditor_Title"] = "Scales weight editor"
 --[[Translation missing --]]
---[[ L["CreatePopup_Desc"] = ""--]] 
+L["CreatePopup_Desc"] = "Creating new scale. Select class and specialization from dropdown and then enter name for the new scale and press %1$s"
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_CreatedNewScale"] = ""--]] 
+L["CreatePopup_Error_CreatedNewScale"] = "Created new scale \"%s\""
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_UnknownError"] = ""--]] 
+L["CreatePopup_Error_UnknownError"] = "ERROR: Something went wrong creating new scale \"%s\"!"
 --[[Translation missing --]]
---[[ L["CreatePopup_Title"] = ""--]] 
+L["CreatePopup_Title"] = "Create Scale"
 --[[Translation missing --]]
---[[ L["Debug_CopyToBugReport"] = ""--]] 
+L["Debug_CopyToBugReport"] = "COPY & PASTE the text above to your bug report if you think it is relevant."
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Default"] = ""--]] 
+L["DefaultScaleName_Default"] = "Default"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Defensive"] = ""--]] 
+L["DefaultScaleName_Defensive"] = "Defensive"
 --[[Translation missing --]]
---[[ L["DefaultScaleName_Offensive"] = ""--]] 
+L["DefaultScaleName_Offensive"] = "Offensive"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedDefaultScale"] = ""--]] 
+L["DeletePopup_DeletedDefaultScale"] = "Deleted scale was in use, reverting back to Default-option for your class and specialization!"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedScale"] = ""--]] 
+L["DeletePopup_DeletedScale"] = "Deleted scale \"%s\""
 --[[Translation missing --]]
---[[ L["DeletePopup_Desc"] = ""--]] 
+L["DeletePopup_Desc"] = [=[Deleting scale %1$s
+Press %2$s to confirm.
+All characters using this scale for their specialization will be reverted back to Default scale.]=]
 --[[Translation missing --]]
---[[ L["DeletePopup_Title"] = ""--]] 
+L["DeletePopup_Title"] = "Delete Scale"
 --[[Translation missing --]]
---[[ L["DeletePopup_Warning"] = ""--]] 
+L["DeletePopup_Warning"] = " ! This action is permanent and cannot be reversed ! "
 --[[Translation missing --]]
---[[ L["ExportPopup_Desc"] = ""--]] 
+L["ExportPopup_Desc"] = [=[Exporting scale %1$s
+Press %2$sCtrl+C%3$s to copy the string and %4$sCtrl+V%5$s to paste it somewhere]=]
 --[[Translation missing --]]
---[[ L["ExportPopup_Title"] = ""--]] 
+L["ExportPopup_Title"] = "Export Scale"
 --[[Translation missing --]]
---[[ L["ImportPopup_CreatedNewScale"] = ""--]] 
+L["ImportPopup_CreatedNewScale"] = "Imported new scale \"%s\""
 --[[Translation missing --]]
---[[ L["ImportPopup_Desc"] = ""--]] 
+L["ImportPopup_Desc"] = [=[Importing scale from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_MalformedString"] = ""--]] 
+L["ImportPopup_Error_MalformedString"] = "ERROR: Malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringVersion"] = ""--]] 
+L["ImportPopup_Error_OldStringVersion"] = "ERROR: \"Import string\" -version is too old or malformed import string!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Title"] = ""--]] 
+L["ImportPopup_Title"] = "Import Scale"
 --[[Translation missing --]]
---[[ L["ImportPopup_UpdatedScale"] = ""--]] 
+L["ImportPopup_UpdatedScale"] = "Updated existing scale \"%s\""
 --[[Translation missing --]]
---[[ L["ItemToolTip_AzeriteLevel"] = ""--]] 
+L["ItemToolTip_AzeriteLevel"] = "Azerite level: %1$d / %2$d"
 --[[Translation missing --]]
---[[ L["ItemToolTip_Legend"] = ""--]] 
+L["ItemToolTip_Legend"] = "Current score / Current potential / Maximum score"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 --[[Translation missing --]]
---[[ L["PowersScoreString"] = ""--]] 
+L["PowersScoreString"] = [=[Current score: %1$s/%2$s
+Maximum score: %3$s
+Azerite level: %4$d/%5$d]=]
 --[[Translation missing --]]
---[[ L["PowersTitles_Class"] = ""--]] 
+L["PowersTitles_Class"] = "Class Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Defensive"] = ""--]] 
+L["PowersTitles_Defensive"] = "Defensive Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Profession"] = ""--]] 
+L["PowersTitles_Profession"] = "Profession Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_PvP"] = ""--]] 
+L["PowersTitles_PvP"] = "PvP Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Role"] = ""--]] 
+L["PowersTitles_Role"] = "Role Powers"
 --[[Translation missing --]]
---[[ L["PowersTitles_Zone"] = ""--]] 
+L["PowersTitles_Zone"] = "Raid and Zone Powers"
 --[[Translation missing --]]
---[[ L["RenamePopup_Desc"] = ""--]] 
+L["RenamePopup_Desc"] = [=[Renaming scale %1$s
+Enter new name to the editbox and press %2$s]=]
 --[[Translation missing --]]
---[[ L["RenamePopup_RenamedScale"] = ""--]] 
+L["RenamePopup_RenamedScale"] = "Renamed scale \"%1$s\" to \"%2$s\""
 --[[Translation missing --]]
---[[ L["RenamePopup_Title"] = ""--]] 
+L["RenamePopup_Title"] = "Rename Scale"
 --[[Translation missing --]]
---[[ L["ScaleName_Unknown"] = ""--]] 
+L["ScaleName_Unknown"] = "Unknown"
 --[[Translation missing --]]
---[[ L["ScaleName_Unnamed"] = ""--]] 
+L["ScaleName_Unnamed"] = "Unnamed"
 --[[Translation missing --]]
---[[ L["ScalesList_CreateImportText"] = ""--]] 
+L["ScalesList_CreateImportText"] = "Create New / Import"
 --[[Translation missing --]]
---[[ L["ScalesList_CustomGroupName"] = ""--]] 
+L["ScalesList_CustomGroupName"] = "Custom Scales"
 --[[Translation missing --]]
---[[ L["ScalesList_DefaultGroupName"] = ""--]] 
+L["ScalesList_DefaultGroupName"] = "Default Scales"
 --[[Translation missing --]]
---[[ L["ScaleWeightEditor_Title"] = ""--]] 
+L["ScaleWeightEditor_Title"] = "%s Scale Weight Editor"
 --[[Translation missing --]]
---[[ L["Slash_Command"] = ""--]] 
+L["Slash_Command"] = "/azerite"
 --[[Translation missing --]]
---[[ L["Slash_Error_Unkown"] = ""--]] 
+L["Slash_Error_Unkown"] = "ERROR: Something went wrong!"
 --[[Translation missing --]]
---[[ L["Slash_RemindConfig"] = ""--]] 
+L["Slash_RemindConfig"] = "Check ESC -> Interface -> AddOns -> %s for settings."
 --[[Translation missing --]]
---[[ L["WeightEditor_CreateNewText"] = ""--]] 
+L["WeightEditor_CreateNewText"] = "Create New"
 --[[Translation missing --]]
---[[ L["WeightEditor_CurrentScale"] = ""--]] 
+L["WeightEditor_CurrentScale"] = "Current scale: %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_DeleteText"] = ""--]] 
+L["WeightEditor_DeleteText"] = "Delete"
 --[[Translation missing --]]
---[[ L["WeightEditor_EnableScaleText"] = ""--]] 
+L["WeightEditor_EnableScaleText"] = "Use this Scale"
 --[[Translation missing --]]
---[[ L["WeightEditor_ExportText"] = ""--]] 
+L["WeightEditor_ExportText"] = "Export"
 --[[Translation missing --]]
---[[ L["WeightEditor_ImportText"] = ""--]] 
+L["WeightEditor_ImportText"] = "Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Minor"] = ""--]] 
+L["WeightEditor_Minor"] = "Minor"
 --[[Translation missing --]]
---[[ L["WeightEditor_RenameText"] = ""--]] 
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_RenameText"] = "Rename"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TooltipText"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_VersionText"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
+--[[Translation missing --]]
+L["WeightEditor_TooltipText"] = "Show in Tooltips"
+--[[Translation missing --]]
+L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "koKR" then -- Killberos (52)
 L["Config_Importing_ImportingCanUpdate"] = "불러오기로 현재 값을 갱신합니다"
 L["Config_Importing_ImportingCanUpdate_Desc"] = "같은 이름으로 값을 불러올경우, 이미 존재하는 직업과 전문화 값들은 새로운 값으로 만들어 지는 대신에, 갱신 될것 입니다."
 --[[Translation missing --]]
---[[ L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = ""--]] 
+L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "There can be multiple scales with same name as long as they are for different specializations or classes."
 L["Config_Importing_Title"] = "불러오기"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly"] = "List own class Custom-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly_Desc"] = "List Custom-scales for your own class only, instead of listing all of them."
 L["Config_Scales_OwnClassDefaultsOnly"] = "자신 직업의 기본값만 표시"
 L["Config_Scales_OwnClassDefaultsOnly_Desc"] = "모든 직업들의 기본값을 표시하는 대신에, 자신 직업에만 해당되는 기본값을 표시합니다."
 L["Config_Scales_Title"] = "값 목록"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore"] = ""--]] 
+L["Config_Score_AddItemLevelToScore"] = "Add itemlevel to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore_Desc"] = ""--]] 
+L["Config_Score_AddItemLevelToScore_Desc"] = "Add Azerite items itemlevel to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore"] = "Add primary stat to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore_Desc"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of primary stat (%s/%s/%s) to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores"] = ""--]] 
+L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores_Desc"] = ""--]] 
+L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore"] = ""--]] 
+L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore_Desc"] = ""--]] 
+L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered"] = "Scale itemlevel score by the weight of %s in the scale"
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = "When adding itemlevel to the scores, use the weight of %s of the scale to calculate value of +1 itemlevel instead of using +1 itemlevel = +1 score."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades"] = "Show tooltips only for upgrades"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades_Desc"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades_Desc"] = "Show scales values in tooltips only if it is an upgrade compared to currently equipped item. This works only with relative values enabled."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend"] = ""--]] 
+L["Config_Score_ShowTooltipLegend"] = "Show legend in tooltips"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend_Desc"] = ""--]] 
+L["Config_Score_ShowTooltipLegend_Desc"] = "Show reminder for \"Current score / Current potential / Maximum score\" in tooltips."
 --[[Translation missing --]]
---[[ L["Config_Score_Title"] = ""--]] 
+L["Config_Score_Title"] = "Score"
 --[[Translation missing --]]
---[[ L["Config_SettingsAddonExplanation"] = ""--]] 
+L["Config_SettingsAddonExplanation"] = "This addon calculates \"Current score\", \"Current potential\" and \"Maximum score\" for Azerite gear based on your selected scale's weights."
 L["Config_SettingsSavedPerChar"] = [=[이 곳에 모든 설정은 캐릭터별로 저장됩니다.
 사용자 값은 모든 캐릭터에게 공유됩니다.]=]
 --[[Translation missing --]]
---[[ L["Config_SettingsScoreExplanation"] = ""--]] 
+L["Config_SettingsScoreExplanation"] = [=["Current score" is the sum of the currently selected Azerite powers in the item.
+"Current potential" is the sum of the highest weighted Azerite powers from each tier you have access to in the item.
+"Maximum score" is the sum of the highest weighted Azerite powers from each tier, including the locked ones, in the item.]=]
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_Desc"] = ""--]] 
+L["Config_WeightEditor_Desc"] = "Following settings only affects the powers shown in the scale weight editor. Even if you disable them, all and any Azerite powers will be still scored if they have weight set to them in the active scale."
 L["Config_WeightEditor_ShowDefensive"] = "방어적 능력들 표시 "
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowDefensive_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowDefensive_Desc"] = "Show common and class specific Defensive powers in the scale weight editor."
 L["Config_WeightEditor_ShowProfession"] = "특정 전문 능력들 표시"
 L["Config_WeightEditor_ShowProfession_Desc"] = [=[가중치 편집기 안에 있는 특정 전문 능력들을 표시합니다. 
 이 능력들은 전문기술로 만들어진 아이템에서만 나타납니다. 현재 기계공학 머리부위에서만
 나타납니다.]=]
 L["Config_WeightEditor_ShowPvP"] = "PvP 전용 능력 보기"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc"] = "Show PvP specific powers in the scale weight editor. You'll only see your own factions powers, but changes made to them will be mirrored to both factions."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowPvP_Desc_Import"] = ""--]] 
+L["Config_WeightEditor_ShowPvP_Desc_Import"] = [=[When Exporting, the resulting export-string will only include your own factions pvp powers, but they are interchangeable with opposing factions pvp-powerIDs.
+When Importing import-string with pvp powers only from one faction, powers will get their weights mirrored to both factions on Import.]=]
 L["Config_WeightEditor_ShowRole"] = "직업별 능력들 표시"
 L["Config_WeightEditor_ShowRole_Desc"] = "가중치 편집기 안에 있는 직업별 능력들을 표시합니다."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec"] = "Show Role specific powers only for my own specializations role"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowRolesOnlyForOwnSpec_Desc"] = "Show common and current specialization related specific Role specific powers in the scale weight editor. Enabling this setting e.g. hides healer only specific powers from damagers and tanks etc."
 L["Config_WeightEditor_ShowZone"] = "특정 지역 능력"
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc"] = "Show Zone specific powers in the scale weight editor. These powers can only appear in items acquired in particular zones related to the power."
 --[[Translation missing --]]
---[[ L["Config_WeightEditor_ShowZone_Desc_Proc"] = ""--]] 
+L["Config_WeightEditor_ShowZone_Desc_Proc"] = [=[Zone specific powers can activate/proc everywhere, but raid powers have secondary effect which will activate only while inside their related raid instance (e.g. Uldir powers secondary effect will only proc while inside Uldir raid instance).
+Raid powers are marked with an asterisk (*) next to their name in the scale weight editor.]=]
 L["Config_WeightEditor_Title"] = "가중치 편집기"
 --[[Translation missing --]]
---[[ L["CreatePopup_Desc"] = ""--]] 
+L["CreatePopup_Desc"] = "Creating new scale. Select class and specialization from dropdown and then enter name for the new scale and press %1$s"
 L["CreatePopup_Error_CreatedNewScale"] = "만들어진 새로운 값 \"%s\""
 --[[Translation missing --]]
---[[ L["CreatePopup_Error_UnknownError"] = ""--]] 
+L["CreatePopup_Error_UnknownError"] = "ERROR: Something went wrong creating new scale \"%s\"!"
 L["CreatePopup_Title"] = "값 만들기"
 --[[Translation missing --]]
---[[ L["Debug_CopyToBugReport"] = ""--]] 
+L["Debug_CopyToBugReport"] = "COPY & PASTE the text above to your bug report if you think it is relevant."
 L["DefaultScaleName_Default"] = "기본적"
 L["DefaultScaleName_Defensive"] = "방어적"
 L["DefaultScaleName_Offensive"] = "공격적"
 --[[Translation missing --]]
---[[ L["DeletePopup_DeletedDefaultScale"] = ""--]] 
+L["DeletePopup_DeletedDefaultScale"] = "Deleted scale was in use, reverting back to Default-option for your class and specialization!"
 L["DeletePopup_DeletedScale"] = "\"%s\"  값이 삭제 되었습니다."
 --[[Translation missing --]]
---[[ L["DeletePopup_Desc"] = ""--]] 
+L["DeletePopup_Desc"] = [=[Deleting scale %1$s
+Press %2$s to confirm.
+All characters using this scale for their specialization will be reverted back to Default scale.]=]
 L["DeletePopup_Title"] = "값 삭제하기 "
 --[[Translation missing --]]
---[[ L["DeletePopup_Warning"] = ""--]] 
+L["DeletePopup_Warning"] = " ! This action is permanent and cannot be reversed ! "
 --[[Translation missing --]]
---[[ L["ExportPopup_Desc"] = ""--]] 
+L["ExportPopup_Desc"] = [=[Exporting scale %1$s
+Press %2$sCtrl+C%3$s to copy the string and %4$sCtrl+V%5$s to paste it somewhere]=]
 L["ExportPopup_Title"] = "값 내보내기"
 L["ImportPopup_CreatedNewScale"] = "\"%s\" 새로운 값이 입력되었습니다. "
 --[[Translation missing --]]
---[[ L["ImportPopup_Desc"] = ""--]] 
+L["ImportPopup_Desc"] = [=[Importing scale from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 L["ImportPopup_Error_MalformedString"] = "에러: 형식에 맞지 않아 불러올 수 없습니다!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringVersion"] = ""--]] 
+L["ImportPopup_Error_OldStringVersion"] = "ERROR: \"Import string\" -version is too old or malformed import string!"
 L["ImportPopup_Title"] = "값 불러오기 "
 L["ImportPopup_UpdatedScale"] = "\"%s\" 현재 값이 갱신 되었습니다."
 L["ItemToolTip_AzeriteLevel"] = "아제라이트 레벨: %1$d / %2$d "
 --[[Translation missing --]]
---[[ L["ItemToolTip_Legend"] = ""--]] 
+L["ItemToolTip_Legend"] = "Current score / Current potential / Maximum score"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 L["PowersScoreString"] = [=[현재 점수: %1$s/%2$s
 최고 점수: %3$s
 아제라이트 레벨: %4$d/%5$d]=]
@@ -1199,10 +1283,11 @@ L["PowersTitles_Defensive"] = "방어적 능력들"
 L["PowersTitles_Profession"] = "전문기술 능력들"
 L["PowersTitles_PvP"] = "PvP 능력들"
 --[[Translation missing --]]
---[[ L["PowersTitles_Role"] = ""--]] 
+L["PowersTitles_Role"] = "Role Powers"
 L["PowersTitles_Zone"] = "레이드와 지역 능력들 "
 --[[Translation missing --]]
---[[ L["RenamePopup_Desc"] = ""--]] 
+L["RenamePopup_Desc"] = [=[Renaming scale %1$s
+Enter new name to the editbox and press %2$s]=]
 L["RenamePopup_RenamedScale"] = "\"%1$s\" 에서 \"%2$s\" 으로 값 이름이 변경되었습니다."
 L["RenamePopup_Title"] = "값 이름바꾸기 "
 L["ScaleName_Unknown"] = "알수없음 "
@@ -1214,7 +1299,7 @@ L["ScaleWeightEditor_Title"] = "%s 가중치 편집기 "
 L["Slash_Command"] = "/아제라이트 "
 L["Slash_Error_Unkown"] = "에러: 무언가 잘못되었습니다! "
 --[[Translation missing --]]
---[[ L["Slash_RemindConfig"] = ""--]] 
+L["Slash_RemindConfig"] = "Check ESC -> Interface -> AddOns -> %s for settings."
 L["WeightEditor_CreateNewText"] = "새로 만들기  "
 L["WeightEditor_CurrentScale"] = "현재 값: %s "
 L["WeightEditor_DeleteText"] = "삭제 "
@@ -1222,18 +1307,22 @@ L["WeightEditor_EnableScaleText"] = "이 값을 사용 "
 L["WeightEditor_ExportText"] = "내보내기"
 L["WeightEditor_ImportText"] = "불러오기 "
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Minor"] = ""--]] 
+L["WeightEditor_Minor"] = "Minor"
+--[[Translation missing --]]
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
+--[[Translation missing --]]
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 L["WeightEditor_RenameText"] = "이름 바꾸기 "
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
 L["WeightEditor_TooltipText"] = "툴팁에 표시하기 "
 L["WeightEditor_VersionText"] = "버전 %s "
 
@@ -1244,48 +1333,50 @@ L["Config_Importing_ImportingCanUpdate_Desc"] = "Ao importar pesos com o mesmo n
 L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "Você pode ter vários pesos com o mesmo nome, desde que sejam para diferentes especializações ou classes."
 L["Config_Importing_Title"] = "Importando "
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly"] = "List own class Custom-scales only"
 --[[Translation missing --]]
---[[ L["Config_Scales_OwnClassCustomsOnly_Desc"] = ""--]] 
+L["Config_Scales_OwnClassCustomsOnly_Desc"] = "List Custom-scales for your own class only, instead of listing all of them."
 L["Config_Scales_OwnClassDefaultsOnly"] = "Listar apenas os Pesos Padrão da sua classe"
 L["Config_Scales_OwnClassDefaultsOnly_Desc"] = "Lista apenas os Pesos Padrão da sua classe, ao invés de listar todos."
 L["Config_Scales_Title"] = "Lista de Pesos"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore"] = ""--]] 
+L["Config_Score_AddItemLevelToScore"] = "Add itemlevel to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddItemLevelToScore_Desc"] = ""--]] 
+L["Config_Score_AddItemLevelToScore_Desc"] = "Add Azerite items itemlevel to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore"] = "Add primary stat to all scores"
 --[[Translation missing --]]
---[[ L["Config_Score_AddPrimaryStatToScore_Desc"] = ""--]] 
+L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of primary stat (%s/%s/%s) to all current score, current potential and maximum score calculations."
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores"] = ""--]] 
+L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
---[[ L["Config_Score_OutlineScores_Desc"] = ""--]] 
+L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore"] = ""--]] 
+L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
---[[ L["Config_Score_RelativeScore_Desc"] = ""--]] 
+L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered"] = "Scale itemlevel score by the weight of %s in the scale"
 --[[Translation missing --]]
---[[ L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = ""--]] 
+L["Config_Score_ScaleByAzeriteEmpowered_Desc"] = "When adding itemlevel to the scores, use the weight of %s of the scale to calculate value of +1 itemlevel instead of using +1 itemlevel = +1 score."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades"] = "Show tooltips only for upgrades"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowOnlyUpgrades_Desc"] = ""--]] 
+L["Config_Score_ShowOnlyUpgrades_Desc"] = "Show scales values in tooltips only if it is an upgrade compared to currently equipped item. This works only with relative values enabled."
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend"] = ""--]] 
+L["Config_Score_ShowTooltipLegend"] = "Show legend in tooltips"
 --[[Translation missing --]]
---[[ L["Config_Score_ShowTooltipLegend_Desc"] = ""--]] 
+L["Config_Score_ShowTooltipLegend_Desc"] = "Show reminder for \"Current score / Current potential / Maximum score\" in tooltips."
 --[[Translation missing --]]
---[[ L["Config_Score_Title"] = ""--]] 
+L["Config_Score_Title"] = "Score"
 --[[Translation missing --]]
---[[ L["Config_SettingsAddonExplanation"] = ""--]] 
+L["Config_SettingsAddonExplanation"] = "This addon calculates \"Current score\", \"Current potential\" and \"Maximum score\" for Azerite gear based on your selected scale's weights."
 L["Config_SettingsSavedPerChar"] = [=[Todas as configurações aqui são salvas individualmente por personagem.
 Pesos personalizadas são compartilhados entre todos os personagens.]=]
 --[[Translation missing --]]
---[[ L["Config_SettingsScoreExplanation"] = ""--]] 
+L["Config_SettingsScoreExplanation"] = [=["Current score" is the sum of the currently selected Azerite powers in the item.
+"Current potential" is the sum of the highest weighted Azerite powers from each tier you have access to in the item.
+"Maximum score" is the sum of the highest weighted Azerite powers from each tier, including the locked ones, in the item.]=]
 L["Config_WeightEditor_Desc"] = "As configurações a seguir afetam apenas os poderes mostrados no editor de pesos. Mesmo se você desativá-los, todos os poderes de Azerita ainda serão marcados se tiverem peso definido para eles na escala ativa."
 L["Config_WeightEditor_ShowDefensive"] = "Mostrar poderes defensivos"
 L["Config_WeightEditor_ShowDefensive_Desc"] = "Mostrar poderes defensivos genéricos e específicos da classe no editor de pesos de escala"
@@ -1309,7 +1400,7 @@ L["CreatePopup_Error_CreatedNewScale"] = "Nova configuração \"%s\" criada!"
 L["CreatePopup_Error_UnknownError"] = "ERRO:  Algo de errado aconteceu ao criar a configuração \"%s\"!"
 L["CreatePopup_Title"] = "Criar configuração"
 --[[Translation missing --]]
---[[ L["Debug_CopyToBugReport"] = ""--]] 
+L["Debug_CopyToBugReport"] = "COPY & PASTE the text above to your bug report if you think it is relevant."
 L["DefaultScaleName_Default"] = "Padrão"
 L["DefaultScaleName_Defensive"] = "Defensivos"
 L["DefaultScaleName_Offensive"] = "Ofensivos"
@@ -1328,17 +1419,18 @@ L["ImportPopup_Desc"] = [=[Importando configuração à partir do código...
 Pressione %1$sCtrl+V%2$s para colar o código na caixa de edição e pressione %3$s.]=]
 L["ImportPopup_Error_MalformedString"] = "ERRO: Código de importação errado ou imcompleto."
 --[[Translation missing --]]
---[[ L["ImportPopup_Error_OldStringRetry"] = ""--]] 
+L["ImportPopup_Error_OldStringRetry"] = "ERROR: Old or malformed \"Import string\" -version is used, trying to import it anyway as a new scale!"
 L["ImportPopup_Error_OldStringVersion"] = "ERRO: \"Código de Importação\" -Versão muito antiga ou com problemas no código!"
 L["ImportPopup_Title"] = "Importar configuração"
 L["ImportPopup_UpdatedScale"] = "Escala existente \"%s\" atualizada"
 L["ItemToolTip_AzeriteLevel"] = "Nível de Azerita: %1$d / %2$d"
 --[[Translation missing --]]
---[[ L["ItemToolTip_Legend"] = ""--]] 
+L["ItemToolTip_Legend"] = "Current score / Current potential / Maximum score"
 --[[Translation missing --]]
---[[ L["MassImportPopup_Desc"] = ""--]] 
+L["MassImportPopup_Desc"] = [=[Importing multiple scales at once from string
+Press %1$sCtrl+V%2$s to paste string to the editbox and press %3$s]=]
 --[[Translation missing --]]
---[[ L["MassImportPopup_Title"] = ""--]] 
+L["MassImportPopup_Title"] = "Mass Import Scales"
 L["PowersScoreString"] = [=[Pontuação Atual: %1$s/%2$s
 Pontuação Máxima: %3$s
 Nível de Azerita: %4$d/%5$d]=]
@@ -1368,18 +1460,22 @@ L["WeightEditor_EnableScaleText"] = "Usar esta configuração"
 L["WeightEditor_ExportText"] = "Exoprtar"
 L["WeightEditor_ImportText"] = "Importar"
 --[[Translation missing --]]
---[[ L["WeightEditor_Major"] = ""--]] 
+L["WeightEditor_Major"] = "Major"
 --[[Translation missing --]]
---[[ L["WeightEditor_MassImportText"] = ""--]] 
+L["WeightEditor_MassImportText"] = "Mass Import"
 --[[Translation missing --]]
---[[ L["WeightEditor_Minor"] = ""--]] 
+L["WeightEditor_Minor"] = "Minor"
+--[[Translation missing --]]
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
+--[[Translation missing --]]
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 L["WeightEditor_RenameText"] = "Renomear"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Created"] = ""--]] 
+L["WeightEditor_TimestampText_Created"] = "Created %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Imported"] = ""--]] 
+L["WeightEditor_TimestampText_Imported"] = "Imported %s"
 --[[Translation missing --]]
---[[ L["WeightEditor_TimestampText_Updated"] = ""--]] 
+L["WeightEditor_TimestampText_Updated"] = "Updated %s"
 L["WeightEditor_TooltipText"] = "Mostrar na descrição dos itens"
 L["WeightEditor_VersionText"] = "Versão %s"
 
@@ -1495,6 +1591,10 @@ L["WeightEditor_ImportText"] = "Импортировать"
 L["WeightEditor_Major"] = "Макс."
 L["WeightEditor_MassImportText"] = "Импортировать несколько"
 L["WeightEditor_Minor"] = "Мин."
+--[[Translation missing --]]
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
+--[[Translation missing --]]
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 L["WeightEditor_RenameText"] = "Переименовать"
 L["WeightEditor_TimestampText_Created"] = "Создан %s"
 L["WeightEditor_TimestampText_Imported"] = "Импортирован %s"
@@ -1615,6 +1715,10 @@ L["WeightEditor_ImportText"] = "导入"
 L["WeightEditor_Major"] = "主要"
 L["WeightEditor_MassImportText"] = "批量导入"
 L["WeightEditor_Minor"] = "次要"
+--[[Translation missing --]]
+L["WeightEditor_ModeToEssences"] = "Change to Essences"
+--[[Translation missing --]]
+L["WeightEditor_ModeToTraits"] = "Change to Traits"
 L["WeightEditor_RenameText"] = "重命名"
 L["WeightEditor_TimestampText_Created"] = "创建于 %s"
 L["WeightEditor_TimestampText_Imported"] = "导入于 %s"
@@ -1735,6 +1839,8 @@ L["WeightEditor_ImportText"] = "導入"
 L["WeightEditor_Major"] = "主要"
 L["WeightEditor_MassImportText"] = "批量匯入"
 L["WeightEditor_Minor"] = "次要"
+L["WeightEditor_ModeToEssences"] = "切換到精華"
+L["WeightEditor_ModeToTraits"] = "切換到特質"
 L["WeightEditor_RenameText"] = "重命名"
 L["WeightEditor_TimestampText_Created"] = "建立於%s"
 L["WeightEditor_TimestampText_Imported"] = "匯入於%s"
