@@ -1591,10 +1591,8 @@ L["WeightEditor_ImportText"] = "Импортировать"
 L["WeightEditor_Major"] = "Макс."
 L["WeightEditor_MassImportText"] = "Импортировать несколько"
 L["WeightEditor_Minor"] = "Мин."
---[[Translation missing --]]
-L["WeightEditor_ModeToEssences"] = "Change to Essences"
---[[Translation missing --]]
-L["WeightEditor_ModeToTraits"] = "Change to Traits"
+L["WeightEditor_ModeToEssences"] = "Изменить на сущности"
+L["WeightEditor_ModeToTraits"] = "Изменить на Силу Азерита"
 L["WeightEditor_RenameText"] = "Переименовать"
 L["WeightEditor_TimestampText_Created"] = "Создан %s"
 L["WeightEditor_TimestampText_Imported"] = "Импортирован %s"
