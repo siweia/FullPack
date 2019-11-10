@@ -989,9 +989,12 @@ function UF:CreateAddPower(self)
 end
 
 function UF:CreateSwing(self)
+	if not NDuiDB["UFs"]["Castbars"] then return end
+
 	local bar = CreateFrame("StatusBar", nil, self)
-	bar:SetSize(250, 3)
-	bar:SetPoint("TOP", self.Castbar, "BOTTOM", -16, -5)
+	local width = NDuiDB["UFs"]["PlayerCBWidth"] - NDuiDB["UFs"]["PlayerCBHeight"] - 5
+	bar:SetSize(width, 3)
+	bar:SetPoint("TOP", self.Castbar.mover, "BOTTOM", 0, -5)
 
 	local two = CreateFrame("StatusBar", nil, bar)
 	two:Hide()
@@ -1121,7 +1124,7 @@ function UF:InterruptIndicator(self)
 	end
 
 	buttons.__max = maxIcons
-	buttons.PartySpells = C.PartySpells
+	buttons.PartySpells = NDuiADB["PartyWatcherSpells"]
 	buttons.TalentCDFix = C.TalentCDFix
 	self.PartyWatcher = buttons
 end
