@@ -1,3 +1,12 @@
+### 8.2.14
+
+- Last update didn't solve [Issue #47](https://www.curseforge.com/wow/addons/azeritepowerweights/issues/47) so I'm updating some debug tools to help me find the source of the bug.
+
+### 8.2.13
+
+- Fix bug where minor essences got wrong value in potential and maximum calculations. This should fix [Issue #47](https://www.curseforge.com/wow/addons/azeritepowerweights/issues/47)
+- Show both major and minor values in the major slot instead of combined value in EssenceUI.
+
 ### 8.2.12
 
 - Update Russian translations
