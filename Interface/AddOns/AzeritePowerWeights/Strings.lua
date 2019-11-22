@@ -136,6 +136,8 @@ do -- enUS / enGB
 	L.Config_Score_ShowTooltipLegend_Desc = "Show reminder for \"Current score / Current potential / Maximum score\" in tooltips."
 	L.Config_Score_OutlineScores = "Outline Scores"
 	L.Config_Score_OutlineScores_Desc = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
+	L.Config_Score_PreferBiSMajor = "Prefer best major essence"
+	L.Config_Score_PreferBiSMajor_Desc = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 
 	L.Slash_Command = "/azerite" -- If you need localized slash-command, this doesn't replace the existing /azerite
 	L.Slash_RemindConfig = "Check ESC -> Interface -> AddOns -> %s for settings." -- %s = ADDON_NAME
@@ -163,6 +165,10 @@ L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of prim
 L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
 L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 L["Config_Score_RelativeScore"] = "Zeigt relative Werte in Tooltips anstelle von absoluten Werten an"
 L["Config_Score_RelativeScore_Desc"] = "Statt absolute Werte in Tooltips anzuzeigen, berechne die relativen Werte verglichen zum aktuell ausgerüsteten Gegenstand und zeige sie in Prozent an."
 --[[Translation missing --]]
@@ -320,6 +326,10 @@ L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of prim
 L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
 L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 --[[Translation missing --]]
 L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
@@ -547,6 +557,10 @@ L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
 L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
+--[[Translation missing --]]
 L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
 L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
@@ -757,6 +771,10 @@ L["Config_Score_AddPrimaryStatToScore"] = "Ajouter la statistique principale à 
 L["Config_Score_AddPrimaryStatToScore_Desc"] = "Ajoute le montant de la statistique principale de l'objet azérique (%s/%s/%s) à tous les scores actuels, potentiels ainsi qu'au score maximum."
 L["Config_Score_OutlineScores"] = "Scores de configuration"
 L["Config_Score_OutlineScores_Desc"] = "Tracez un petit contour autour des coefficients sur les traits/essences azéritiques pour faciliter la lecture des valeurs sur les icônes de traits/essences de moindre valeur."
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 L["Config_Score_RelativeScore"] = "Afficher des valeurs relatives dans les infobulles à la place des valeurs absolues"
 L["Config_Score_RelativeScore_Desc"] = "À la place de montrer la valeur absolue des échelles dans les infobulles, calculer la valeur relative comparée aux objets actuellement équipés et les montrer en pourcentage."
 L["Config_Score_ScaleByAzeriteEmpowered"] = "Graduation du score du niveau de l'objet par le poids de %s dans le classement"
@@ -957,6 +975,10 @@ L["Config_Score_AddPrimaryStatToScore_Desc"] = "Add Azerite items amount of prim
 L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
 L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 --[[Translation missing --]]
 L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
@@ -1178,6 +1200,10 @@ L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
 L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
+--[[Translation missing --]]
 L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
 L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
@@ -1352,6 +1378,10 @@ L["Config_Score_OutlineScores"] = "Outline Scores"
 --[[Translation missing --]]
 L["Config_Score_OutlineScores_Desc"] = "Draw small outline around the score-numbers on Azerite traits/essences to make it easier to read the numbers on light trait/essence icons."
 --[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
+--[[Translation missing --]]
 L["Config_Score_RelativeScore"] = "Show relative values in tooltips instead of absolute values"
 --[[Translation missing --]]
 L["Config_Score_RelativeScore_Desc"] = "Instead of showing absolute values of scales in tooltips, calculate the relative value compared to currently equipped items and show them in percentages."
@@ -1496,6 +1526,10 @@ L["Config_Score_AddPrimaryStatToScore"] = "Добавить основную х�
 L["Config_Score_AddPrimaryStatToScore_Desc"] = "Добавить количество основных характеристик (%s/%s/%s) азеритового предмета к текущему, потенциальному и максимальному рейтингам."
 L["Config_Score_OutlineScores"] = "Контур рейтингов"
 L["Config_Score_OutlineScores_Desc"] = "Обвести числовые рейтинги азеритовых талантов/сущностей небольшим контуром, чтобы они читались проще на фоне светлых значков."
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 L["Config_Score_RelativeScore"] = "Показывать в подсказке относительные значения вместо абсолютных"
 L["Config_Score_RelativeScore_Desc"] = "Вместо абсолютных значений вычислять относительные (по сравнению с надетыми предметами) значения и показывать их в процентах."
 L["Config_Score_ScaleByAzeriteEmpowered"] = "Масштабировать прибавляемый уровень предмета с помощью ценности %s"
@@ -1617,6 +1651,10 @@ L["Config_Score_AddPrimaryStatToScore"] = "将主属性计入到所有分数中"
 L["Config_Score_AddPrimaryStatToScore_Desc"] = "将艾泽里特护甲的主属性值(%s/%s/%s)计入所有当前已选分数、当前可选最高分和全部解锁最高分的计算中。"
 L["Config_Score_OutlineScores"] = "给分数描边"
 L["Config_Score_OutlineScores_Desc"] = "给艾泽里特特质/精华图标上的分数描绘边框，从而更轻松地阅读艾泽里特特质/精华图标上的数字。"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 L["Config_Score_RelativeScore"] = "在鼠标提示中显示相对值而不是绝对值"
 L["Config_Score_RelativeScore_Desc"] = "不在鼠标提示中显示权值的绝对值，而是计算与当前装备相比的相对值，并以百分比显示。"
 L["Config_Score_ScaleByAzeriteEmpowered"] = "按％s的权值计算物品等级分数"
@@ -1741,6 +1779,10 @@ L["Config_Score_AddPrimaryStatToScore"] = "主屬性計入所有分數"
 L["Config_Score_AddPrimaryStatToScore_Desc"] = "將艾澤萊護甲的主屬性值(%s/%s/%s)計算加入當前分數，當前潛力以及最大分數。"
 L["Config_Score_OutlineScores"] = "分數描邊"
 L["Config_Score_OutlineScores_Desc"] = "在艾澤萊特質/精華上圍繞分數描繪邊框，以便能更輕鬆的閱讀光亮特質/精華圖示上的數字。"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
+--[[Translation missing --]]
+L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
 L["Config_Score_RelativeScore"] = "在工具提示中顯示相對值而不是絕對值"
 L["Config_Score_RelativeScore_Desc"] = "不是在工具提示中顯示比例的絕對值，而是計算與當前裝備物品相比的相對值，並以百分比顯示差異。"
 L["Config_Score_ScaleByAzeriteEmpowered"] = "按比例中的％s權值縮放物品等級計分"
