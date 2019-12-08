@@ -46,6 +46,7 @@ local defaultSettings = {
 		DeleteButton = true,
 		FavouriteItems = {},
 		GatherEmpty = false,
+		ShowNewItem = true,
 	},
 	Auras = {
 		Reminder = true,
@@ -112,6 +113,7 @@ local defaultSettings = {
 		HealthColor = 1,
 		BuffIndicatorType = 1,
 		BI_IconSize = 10,
+		UFTextScale = 1,
 
 		PlayerWidth = 245,
 		PlayerHeight = 24,
@@ -471,6 +473,10 @@ local function updatePlayerPlate()
 	B:GetModule("UnitFrames"):ResizePlayerPlate()
 end
 
+local function updateUFTextScale()
+	B:GetModule("UnitFrames"):UpdateTextScale()
+end
+
 local function updateMinimapScale()
 	B:GetModule("Maps"):UpdateMinimapScale()
 end
@@ -579,6 +585,7 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Bags", "ReverseSort", L["Bags ReverseSort"].."*", true, nil, updateBagSortOrder},
 		{1, "Bags", "BagsiLvl", L["Bags Itemlevel"]},
 		{1, "Bags", "DeleteButton", L["Bags DeleteButton"], true},
+		{1, "Bags", "ShowNewItem", L["Bags ShowNewItem"]},
 		{},--blank
 		{3, "Bags", "BagsScale", L["Bags Scale"], false, {.5, 1.5, 1}},
 		{3, "Bags", "IconSize", L["Bags IconSize"], true, {30, 42, 0}},
@@ -599,8 +606,9 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "ClassPower", L["UFs ClassPower"]},
 		{1, "UFs", "RuneTimer", L["UFs RuneTimer"], true},
 		{1, "UFs", "PlayerDebuff", L["Player Debuff"]},
-		{1, "UFs", "ToTAuras", L["ToT Debuff"]},
-		{4, "UFs", "HealthColor", L["HealthColor"], true, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}},
+		{1, "UFs", "ToTAuras", L["ToT Debuff"], true},
+		{4, "UFs", "HealthColor", L["HealthColor"], nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}},
+		{3, "UFs", "UFTextScale", L["UFTextScale"], true, {.8, 2, 2}, updateUFTextScale},
 		{},--blank
 		{1, "UFs", "CombatText", "|cff00cc4c"..L["UFs CombatText"]},
 		{1, "UFs", "AutoAttack", L["CombatText AutoAttack"]},
