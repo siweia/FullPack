@@ -125,9 +125,9 @@ function A:UpdateAuras(button, index)
 
 		if filter == "HARMFUL" then
 			local color = DebuffTypeColor[debuffType or "none"]
-			button.Shadow:SetBackdropBorderColor(color.r, color.g, color.b)
+			button.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 		else
-			button.Shadow:SetBackdropBorderColor(0, 0, 0)
+			button.bg:SetBackdropBorderColor(0, 0, 0)
 		end
 
 		button.icon:SetTexture(texture)
@@ -256,8 +256,7 @@ function A:CreateAuraIcon(button)
 	button.highlight:SetColorTexture(1, 1, 1, .25)
 	button.highlight:SetAllPoints(button.icon)
 
-	local bg = B.CreateBG(button)
-	button.Shadow = B.CreateSD(bg)
+	button.bg = B.CreateBDFrame(button, nil, true)
 
 	button:SetScript("OnAttributeChanged", A.OnAttributeChanged)
 end

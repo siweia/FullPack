@@ -65,11 +65,10 @@ function module:CreateInfoFrame()
 	search.isGlobal = true
 	search:SetPoint("LEFT", 0, 5)
 	search:DisableDrawLayer("BACKGROUND")
-	local bg = B.CreateBG(search)
+	local bg = B.CreateBDFrame(search, 0)
 	bg:SetPoint("TOPLEFT", -5, -5)
 	bg:SetPoint("BOTTOMRIGHT", 5, 5)
-	B.CreateBD(bg, .3)
-	if F then F.CreateGradient(bg) end
+	B.CreateGradient(bg)
 
 	local tag = self:SpawnPlugin("TagDisplay", "[money]", infoFrame)
 	tag:SetFont(unpack(DB.Font))
@@ -81,7 +80,7 @@ function module:CreateBagBar(settings, columns)
 	local width, height = bagBar:LayoutButtons("grid", columns, 5, 5, -5)
 	bagBar:SetSize(width + 10, height + 10)
 	bagBar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -5)
-	B.SetBackground(bagBar)
+	B.SetBD(bagBar)
 	bagBar.highlightFunction = highlightFunction
 	bagBar.isGlobal = true
 	bagBar:Hide()
@@ -157,8 +156,7 @@ end
 
 function module:CreateDepositButton()
 	local bu = B.CreateButton(self, 24, 24, true, "Atlas:GreenCross")
-	bu.Icon:SetPoint("TOPLEFT", -C.mult, C.mult)
-	bu.Icon:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+	bu.Icon:SetOutside()
 	bu:SetScript("OnClick", DepositReagentBank)
 	bu.title = REAGENTBANK_DEPOSIT
 	B.AddTooltip(bu, "ANCHOR_TOP")
@@ -341,8 +339,8 @@ function module:CreateFreeSlots()
 	slot:SetSize(self.iconSize, self.iconSize)
 	slot:SetHighlightTexture(DB.bdTex)
 	slot:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
-	local bg = B.CreateBG(slot)
-	B.CreateBD(bg, .3)
+	slot.bg = B.CreateBDFrame(slot, .3)
+	slot.bg:SetBackdropColor(.3, .3, .3, .25)
 	slot:SetScript("OnMouseUp", module.FreeSlotOnDrop)
 	slot:SetScript("OnReceiveDrag", module.FreeSlotOnDrop)
 	B.AddTooltip(slot, "ANCHOR_RIGHT", L["FreeSlots"])
@@ -370,7 +368,7 @@ function module:CreateSplitButton()
 	splitFrame:SetSize(100, 50)
 	splitFrame:SetPoint("TOPRIGHT", self, "TOPLEFT", -5, 0)
 	B.CreateFS(splitFrame, 14, L["SplitCount"], "system", "TOP", 1, -5)
-	B.SetBackground(splitFrame)
+	B.SetBD(splitFrame)
 	splitFrame:Hide()
 	local editbox = B.CreateEditBox(splitFrame, 90, 20)
 	editbox:SetPoint("BOTTOMLEFT", 5, 5)
@@ -545,8 +543,7 @@ function module:OnLogin()
 		self.Count:SetPoint("BOTTOMRIGHT", 1, 1)
 		self.Count:SetFont(unpack(DB.Font))
 
-		self.bg = B.CreateBG(self)
-		B.CreateBD(self.bg, .3)
+		self.bg = B.CreateBDFrame(self, .3)
 		self.bg:SetBackdropColor(.3, .3, .3, .25)
 
 		local parentFrame = CreateFrame("Frame", nil, self)
@@ -718,7 +715,7 @@ function module:OnLogin()
 		self:SetParent(settings.Parent or Backpack)
 		self:SetFrameStrata("HIGH")
 		self:SetClampedToScreen(true)
-		B.SetBackground(self)
+		B.SetBD(self)
 		B.CreateMF(self, settings.Parent, true)
 
 		local label
@@ -788,8 +785,7 @@ function module:OnLogin()
 		self:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
 
 		self:SetSize(iconSize, iconSize)
-		self.bg = B.CreateBG(self)
-		B.CreateBD(self.bg, 0)
+		self.bg = B.CreateBDFrame(self, 0)
 		self.Icon:SetAllPoints()
 		self.Icon:SetTexCoord(unpack(DB.TexCoord))
 	end
@@ -824,11 +820,4 @@ function module:OnLogin()
 	-- Sort order
 	SetSortBagsRightToLeft(not NDuiDB["Bags"]["ReverseSort"])
 	SetInsertItemsLeftToRight(false)
-
-	-- Override AuroraClassic
-	if F and AuroraClassicDB then
-		AuroraOptionsBags:SetAlpha(0)
-		AuroraOptionsBags:Disable()
-		AuroraClassicDB.Bags = false
-	end
 end

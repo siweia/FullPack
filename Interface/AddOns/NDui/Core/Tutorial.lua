@@ -45,7 +45,7 @@ local function GetBestScale()
 	return max(.4, min(1.15, scale))
 end
 
-local function SetupUIScale(init)
+function B:SetupUIScale(init)
 	if NDuiADB["LockUIScale"] then NDuiADB["UIScale"] = GetBestScale() end
 	local scale = NDuiADB["UIScale"]
 	if init then
@@ -65,8 +65,8 @@ local function UpdatePixelScale(event)
 	if event == "UI_SCALE_CHANGED" then
 		DB.ScreenWidth, DB.ScreenHeight = GetPhysicalScreenSize()
 	end
-	SetupUIScale(true)
-	SetupUIScale()
+	B:SetupUIScale(true)
+	B:SetupUIScale()
 
 	isScaling = false
 end
@@ -302,9 +302,7 @@ local function YesTutor()
 	tutor:SetFrameStrata("HIGH")
 	tutor:SetScale(1.2)
 	B.CreateMF(tutor)
-	B.CreateBD(tutor)
-	B.CreateSD(tutor)
-	B.CreateTex(tutor)
+	B.SetBD(tutor)
 	B.CreateFS(tutor, 30, "NDui", true, "TOPLEFT", 10, 25)
 	local ll = CreateFrame("Frame", nil, tutor)
 	ll:SetPoint("TOP", -40, -32)
@@ -387,9 +385,7 @@ local function HelloWorld()
 	welcome:SetScale(1.2)
 	welcome:SetFrameStrata("HIGH")
 	B.CreateMF(welcome)
-	B.CreateBD(welcome)
-	B.CreateSD(welcome)
-	B.CreateTex(welcome)
+	B.SetBD(welcome)
 	B.CreateFS(welcome, 30, "NDui", true, "TOPLEFT", 10, 25)
 	B.CreateFS(welcome, 14, DB.Version, true, "TOPLEFT", 90, 13)
 	B.CreateFS(welcome, 16, L["Help Title"], true, "TOP", 0, -10)
@@ -442,7 +438,7 @@ function module:OnLogin()
 	B.HideOption(Advanced_UIScaleSlider)
 
 	-- Update UIScale
-	UpdatePixelScale()
+	B:SetupUIScale()
 	B:RegisterEvent("UI_SCALE_CHANGED", UpdatePixelScale)
 
 	-- Tutorial and settings
