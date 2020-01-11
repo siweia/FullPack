@@ -219,14 +219,16 @@ function UF.UpdateColor(element, unit)
 
 	if isCustomUnit or (not NDuiDB["Nameplate"]["TankMode"] and DB.Role ~= "Tank") then
 		if status and status == 3 then
-			element.backdrop:SetBackdropBorderColor(1, 0, 0)
+			self.ThreatIndicator:SetBackdropBorderColor(1, 0, 0)
+			self.ThreatIndicator:Show()
 		elseif status and (status == 2 or status == 1) then
-			element.backdrop:SetBackdropBorderColor(1, 1, 0)
+			self.ThreatIndicator:SetBackdropBorderColor(1, 1, 0)
+			self.ThreatIndicator:Show()
 		else
-			element.backdrop:SetBackdropBorderColor(0, 0, 0)
+			self.ThreatIndicator:Hide()
 		end
 	else
-		element.backdrop:SetBackdropBorderColor(0, 0, 0)
+		self.ThreatIndicator:Hide()
 	end
 end
 
@@ -238,8 +240,11 @@ function UF:UpdateThreatColor(_, unit)
 end
 
 function UF:CreateThreatColor(self)
-	local frame = CreateFrame("Frame", nil, self)
-	self.ThreatIndicator = frame
+	local threatIndicator = B.CreateSD(self, 3, true)
+	threatIndicator:SetOutside(self.Health.backdrop, 3, 3)
+	threatIndicator:Hide()
+
+	self.ThreatIndicator = threatIndicator
 	self.ThreatIndicator.Override = UF.UpdateThreatColor
 end
 
@@ -401,10 +406,10 @@ function UF:AddQuestIcon(self)
 
 	local qicon = self:CreateTexture(nil, "OVERLAY", nil, 2)
 	qicon:SetPoint("LEFT", self, "RIGHT", -1, 0)
-	qicon:SetSize(20, 20)
+	qicon:SetSize(28, 28)
 	qicon:SetAtlas(DB.questTex)
 	qicon:Hide()
-	local count = B.CreateFS(self, 12, "", nil, "LEFT", 0, 0)
+	local count = B.CreateFS(self, 16, "", nil, "LEFT", 0, 0)
 	count:SetPoint("LEFT", qicon, "RIGHT", -4, 0)
 	count:SetTextColor(.6, .8, 1)
 
@@ -417,7 +422,7 @@ end
 function UF:AddDungeonProgress(self)
 	if not NDuiDB["Nameplate"]["AKSProgress"] then return end
 
-	self.progressText = B.CreateFS(self, 12, "", false, "LEFT", 0, 0)
+	self.progressText = B.CreateFS(self, 16, "", false, "LEFT", 0, 0)
 	self.progressText:SetPoint("LEFT", self, "RIGHT", 5, 0)
 end
 
@@ -475,8 +480,8 @@ function UF:AddCreatureIcon(self)
 
 	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
 	icon:SetAtlas("VignetteKill")
-	icon:SetPoint("BOTTOMLEFT", self, "LEFT", 0, -4)
-	icon:SetSize(18, 18)
+	icon:SetPoint("BOTTOMLEFT", self, "LEFT", 0, -6)
+	icon:SetSize(24, 24)
 	icon:Hide()
 
 	self.creatureIcon = icon
@@ -591,7 +596,7 @@ function UF:AddFollowerXP(self)
 	bar:SetSize(NDuiDB["Nameplate"]["PlateWidth"]*.75, NDuiDB["Nameplate"]["PlateHeight"])
 	bar:SetPoint("TOP", self.Castbar, "BOTTOM", 0, -5)
 	B.CreateSB(bar, false, 0, .7, 1)
-	bar.progressText = B.CreateFS(bar, 9)
+	bar.progressText = B.CreateFS(bar, 12)
 
 	self.NazjatarFollowerXP = bar
 end
@@ -623,12 +628,14 @@ function UF:CreatePlates()
 	self.mystyle = "nameplate"
 	self:SetSize(NDuiDB["Nameplate"]["PlateWidth"], NDuiDB["Nameplate"]["PlateHeight"])
 	self:SetPoint("CENTER")
+	self:SetScale(NDuiADB["UIScale"])
 
 	local health = CreateFrame("StatusBar", nil, self)
 	health:SetAllPoints()
 	health:SetStatusBarTexture(DB.normTex)
-	health.backdrop = B.CreateBDFrame(health) -- don't mess up with libs
+	health.backdrop = B.CreateBDFrame(health, nil, true) -- don't mess up with libs
 	B.SmoothBar(health)
+
 	self.Health = health
 	self.Health.frequentUpdates = true
 	self.Health.UpdateColor = UF.UpdateColor
@@ -641,7 +648,7 @@ function UF:CreatePlates()
 	UF:CreatePVPClassify(self)
 	UF:CreateThreatColor(self)
 
-	self.powerText = B.CreateFS(self, 15)
+	self.powerText = B.CreateFS(self, 22)
 	self.powerText:ClearAllPoints()
 	self.powerText:SetPoint("TOP", self.Castbar, "BOTTOM", 0, -4)
 	self:Tag(self.powerText, "[nppp]")
@@ -696,6 +703,8 @@ function UF:RefreshAllPlates()
 	for nameplate in pairs(platesList) do
 		nameplate:SetSize(NDuiDB["Nameplate"]["PlateWidth"], NDuiDB["Nameplate"]["PlateHeight"])
 		nameplate.nameText:SetFont(DB.Font[1], NDuiDB["Nameplate"]["NameTextSize"], DB.Font[3])
+		nameplate.Castbar.Time:SetFont(DB.Font[1], NDuiDB["Nameplate"]["NameTextSize"], DB.Font[3])
+		nameplate.Castbar.Text:SetFont(DB.Font[1], NDuiDB["Nameplate"]["NameTextSize"], DB.Font[3])
 		nameplate.healthValue:SetFont(DB.Font[1], NDuiDB["Nameplate"]["HealthTextSize"], DB.Font[3])
 		nameplate.healthValue:UpdateTag()
 		nameplate.Auras.showDebuffType = NDuiDB["Nameplate"]["ColorBorder"]

@@ -62,6 +62,7 @@ function UF:CreateHealthBar(self)
 	health:SetStatusBarColor(.1, .1, .1)
 	health:SetFrameLevel(self:GetFrameLevel() - 2)
 	health.backdrop = B.CreateBDFrame(health, 0, true) -- don't mess up with libs
+	health.shadow = health.backdrop.Shadow
 	B.SmoothBar(health)
 
 	local bg = health:CreateTexture(nil, "BACKGROUND")
@@ -115,18 +116,19 @@ function UF:CreateHealthText(self)
 		name:SetWidth(self:GetWidth()*.55)
 	end
 
+	local colorStr = self.Health.colorClass and "" or "[color]"
 	if mystyle == "player" then
-		self:Tag(name, " [color][name]")
+		self:Tag(name, " "..colorStr.."[name]")
 	elseif mystyle == "target" then
-		self:Tag(name, "[fulllevel] [color][name][afkdnd]")
+		self:Tag(name, "[fulllevel] "..colorStr.."[name][afkdnd]")
 	elseif mystyle == "focus" then
-		self:Tag(name, "[color][name][afkdnd]")
+		self:Tag(name, colorStr.."[name][afkdnd]")
 	elseif mystyle == "nameplate" then
 		self:Tag(name, "[nplevel][name]")
 	elseif mystyle == "arena" then
-		self:Tag(name, "[arenaspec] [color][name]")
+		self:Tag(name, "[arenaspec] "..colorStr.."[name]")
 	else
-		self:Tag(name, "[color][name]")
+		self:Tag(name, colorStr.."[name]")
 	end
 
 	local hpval = B.CreateFS(textFrame, retVal(self, 14, 13, 13, 13, NDuiDB["Nameplate"]["HealthTextSize"]), "", false, "RIGHT", -3, -1)
@@ -200,11 +202,15 @@ function UF:CreatePowerBar(self)
 	end
 	power:SetHeight(powerHeight)
 	power:SetWidth(self:GetWidth())
-	power:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)
-	power:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
+	power:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -C.mult)
+	power:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -C.mult)
 	power:SetFrameLevel(self:GetFrameLevel() - 2)
-	B.CreateBDFrame(power, 0, true)
+	power.backdrop = B.CreateBDFrame(power, 0)
 	B.SmoothBar(power)
+
+	if self.Health.shadow then
+		self.Health.shadow:SetPoint("BOTTOMRIGHT", power.backdrop, C.mult+3, -C.mult-3)
+	end
 
 	local bg = power:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
@@ -347,7 +353,7 @@ function UF:CreateRaidMark(self)
 end
 
 local function createBarMover(bar, text, value, anchor)
-	local mover = B.Mover(bar, text, value, anchor, bar:GetHeight()+bar:GetWidth()+5, bar:GetHeight()+5)
+	local mover = B.Mover(bar, text, value, anchor, bar:GetHeight()+bar:GetWidth()+3, bar:GetHeight()+3)
 	bar:ClearAllPoints()
 	bar:SetPoint("RIGHT", mover)
 	bar.mover = mover
@@ -380,15 +386,15 @@ function UF:CreateCastBar(self)
 		cb:SetHeight(self:GetHeight())
 	end
 
-	local timer = B.CreateFS(cb, retVal(self, 12, 12, 12, 12, 10), "", false, "RIGHT", -2, 0)
-	local name = B.CreateFS(cb, retVal(self, 12, 12, 12, 12, 10), "", false, "LEFT", 2, 0)
+	local timer = B.CreateFS(cb, retVal(self, 12, 12, 12, 12, NDuiDB["Nameplate"]["NameTextSize"]), "11", false, "RIGHT", -2, 0)
+	local name = B.CreateFS(cb, retVal(self, 12, 12, 12, 12, NDuiDB["Nameplate"]["NameTextSize"]), "11", false, "LEFT", 2, 0)
 	name:SetPoint("RIGHT", timer, "LEFT", -5, 0)
 	name:SetJustifyH("LEFT")
 
 	if mystyle ~= "boss" and mystyle ~= "arena" then
 		cb.Icon = cb:CreateTexture(nil, "ARTWORK")
 		cb.Icon:SetSize(cb:GetHeight(), cb:GetHeight())
-		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -5, 0)
+		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -3, 0)
 		cb.Icon:SetTexCoord(unpack(DB.TexCoord))
 		B.SetBD(cb.Icon)
 	end
@@ -413,12 +419,13 @@ function UF:CreateCastBar(self)
 
 		local shield = cb:CreateTexture(nil, "OVERLAY")
 		shield:SetAtlas("nameplates-InterruptShield")
-		shield:SetSize(14, 14)
+		shield:SetSize(18, 18)
 		shield:SetPoint("CENTER", 0, -5)
 		cb.Shield = shield
 
 		local iconSize = self:GetHeight()*2 + 5
 		cb.Icon:SetSize(iconSize, iconSize)
+		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -5, 0)
 		cb.timeToHold = .5
 	end
 
@@ -609,7 +616,7 @@ function UF:CreateAuras(self)
 	bu.gap = true
 	bu.initialAnchor = "TOPLEFT"
 	bu["growth-y"] = "DOWN"
-	bu.spacing = 5
+	bu.spacing = 3
 	if mystyle == "target" then
 		bu:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -10)
 		bu.numBuffs = 20
@@ -649,7 +656,6 @@ function UF:CreateAuras(self)
 			bu:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 20)
 		end
 		bu.numTotal = NDuiDB["Nameplate"]["maxAuras"]
-		bu.spacing = 3
 		bu.size = NDuiDB["Nameplate"]["AuraSize"]
 		bu.showDebuffType = NDuiDB["Nameplate"]["ColorBorder"]
 		bu.gap = false
@@ -681,7 +687,7 @@ function UF:CreateBuffs(self)
 	bu["growth-x"] = "RIGHT"
 	bu["growth-y"] = "UP"
 	bu.num = 6
-	bu.spacing = 5
+	bu.spacing = 3
 	bu.iconsPerRow = 6
 	bu.onlyShowPlayer = false
 
@@ -700,7 +706,7 @@ end
 function UF:CreateDebuffs(self)
 	local mystyle = self.mystyle
 	local bu = CreateFrame("Frame", nil, self)
-	bu.spacing = 5
+	bu.spacing = 3
 	bu.initialAnchor = "TOPRIGHT"
 	bu["growth-x"] = "LEFT"
 	bu["growth-y"] = "DOWN"
@@ -735,12 +741,10 @@ function UF.PostUpdateClassPower(element, cur, max, diff, powerType)
 	if not cur or cur == 0 then
 		for i = 1, 6 do
 			element[i].bg:Hide()
-			if element[i].bg.Shadow then element[i].bg.Shadow:Hide() end
 		end
 	else
 		for i = 1, max do
 			element[i].bg:Show()
-			if element[i].bg.Shadow then element[i].bg.Shadow:Show() end
 		end
 	end
 
@@ -750,7 +754,6 @@ function UF.PostUpdateClassPower(element, cur, max, diff, powerType)
 		end
 		for i = max + 1, 6 do
 			element[i].bg:Hide()
-			if element[i].bg.Shadow then element[i].bg.Shadow:Hide() end
 		end
 	end
 
@@ -819,6 +822,7 @@ function UF:CreateClassPower(self)
 		bars[i]:SetWidth((barWidth - 5*margin) / 6)
 		bars[i]:SetStatusBarTexture(DB.normTex)
 		bars[i]:SetFrameLevel(self:GetFrameLevel() + 5)
+		B.CreateBDFrame(bars[i], 0, true)
 		if i == 1 then
 			bars[i]:SetPoint("BOTTOMLEFT")
 		else
@@ -829,7 +833,6 @@ function UF:CreateClassPower(self)
 		bars[i].bg:SetAllPoints(bars[i])
 		bars[i].bg:SetTexture(DB.normTex)
 		bars[i].bg.multiplier = .25
-		B.CreateBDFrame(bars[i].bg, 0)
 
 		if DB.MyClass == "DEATHKNIGHT" and NDuiDB["UFs"]["RuneTimer"] then
 			bars[i].timer = B.CreateFS(bars[i], 13, "")
@@ -861,7 +864,7 @@ function UF:StaggerBar(self)
 	stagger:SetPoint(unpack(C.UFs.BarPoint))
 	stagger:SetStatusBarTexture(DB.normTex)
 	stagger:SetFrameLevel(self:GetFrameLevel() + 5)
-	B.CreateBDFrame(stagger, 0)
+	B.CreateBDFrame(stagger, 0, true)
 
 	local bg = stagger:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
@@ -895,7 +898,7 @@ function UF:CreateAltPower(self)
 	bar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
 	bar:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -3)
 	bar:SetHeight(2)
-	B.CreateBDFrame(bar, 0)
+	B.CreateBDFrame(bar, 0, true)
 
 	local text = B.CreateFS(bar, 14, "")
 	text:SetJustifyH("CENTER")
@@ -965,6 +968,7 @@ function UF:CreatePrediction(self)
 	ohg:SetWidth(15)
 	ohg:SetTexture("Interface\\RaidFrame\\Absorb-Overabsorb")
 	ohg:SetBlendMode("ADD")
+	ohg:SetAlpha(.5)
 	ohg:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", 5, 2)
 	ohg:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMLEFT", 5, -2)
 
@@ -999,7 +1003,7 @@ function UF:CreateAddPower(self)
 	bar:SetSize(150, 4)
 	bar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -10)
 	bar:SetStatusBarTexture(DB.normTex)
-	B.CreateBDFrame(bar, 0)
+	B.CreateBDFrame(bar, 0, true)
 	bar.colorPower = true
 
 	local bg = bar:CreateTexture(nil, "BACKGROUND")
@@ -1065,8 +1069,8 @@ function UF:CreateQuakeTimer(self)
 
 	local icon = bar:CreateTexture(nil, "ARTWORK")
 	icon:SetSize(bar:GetHeight(), bar:GetHeight())
-	icon:SetPoint("RIGHT", bar, "LEFT", -5, 0)
-	B.ReskinIcon(icon)
+	icon:SetPoint("RIGHT", bar, "LEFT", -3, 0)
+	B.ReskinIcon(icon, true)
 	bar.Icon = icon
 
 	self.QuakeTimer = bar

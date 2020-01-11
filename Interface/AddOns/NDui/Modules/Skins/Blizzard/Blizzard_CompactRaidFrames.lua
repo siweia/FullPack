@@ -2,8 +2,8 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not IsAddOnLoaded("Blizzard_CUFProfiles") then return end
-	if not IsAddOnLoaded("Blizzard_CompactRaidFrames") then return end
+	if not NDuiDB["Skins"]["BlizzardSkins"] then return end
+
 	if not CompactRaidFrameManagerToggleButton then return end
 
 	CompactRaidFrameManagerToggleButton:SetNormalTexture("Interface\\Buttons\\UI-ColorPicker-Buttons")
@@ -50,10 +50,9 @@ tinsert(C.themes["AuroraClassic"], function()
 	select(1, CompactRaidFrameManagerDisplayFrame:GetRegions()):SetAlpha(0)
 	select(4, CompactRaidFrameManagerDisplayFrame:GetRegions()):SetAlpha(0)
 
-	local bd = B.CreateBDFrame(CompactRaidFrameManager)
+	local bd = B.CreateBDFrame(CompactRaidFrameManager, nil, true)
 	bd:SetPoint("TOPLEFT")
 	bd:SetPoint("BOTTOMRIGHT", -9, 9)
-	B.CreateSD(bd)
 	B.ReskinDropDown(CompactRaidFrameManagerDisplayFrameProfileSelector)
 	B.ReskinCheck(CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButton)
 end)

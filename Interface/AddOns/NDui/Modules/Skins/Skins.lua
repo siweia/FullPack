@@ -1,12 +1,22 @@
 local _, ns = ...
-local B, C, L, DB, F = unpack(ns)
+local B, C, L, DB = unpack(ns)
 local S = B:RegisterModule("Skins")
+
+-- Add quality colour for Poor items
+BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_POOR] = {r = .61, g = .61, b = .61}
+-- Change Common from grey to black
+BAG_ITEM_QUALITY_COLORS[-1] = {r = 0, g = 0, b = 0}
+BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_COMMON] = {r = 0, g = 0, b = 0}
+
+NORMAL_QUEST_DISPLAY = gsub(NORMAL_QUEST_DISPLAY, "000000", "ffffff")
+TRIVIAL_QUEST_DISPLAY = gsub(TRIVIAL_QUEST_DISPLAY, "000000", "ffffff")
+IGNORED_QUEST_DISPLAY = gsub(IGNORED_QUEST_DISPLAY, "000000", "ffffff")
 
 C.themes = {}
 C.themes["AuroraClassic"] = {}
 
 function S:OnLogin()
-	if not F then
+	if not IsAddOnLoaded("AuroraClassic") and not IsAddOnLoaded("Aurora") then
 		-- Reskin Blizzard UIs
 		for _, func in pairs(C.themes["AuroraClassic"]) do
 			func()
@@ -54,15 +64,20 @@ end
 
 local toggleFrames = {}
 
+local function CreateToggleButton(parent)
+	local bu = CreateFrame("Button", nil, parent)
+	bu:SetSize(20, 80)
+	bu.text = B.CreateFS(bu, 18, nil, true)
+	B.ReskinMenuButton(bu)
+
+	return bu
+end
+
 function S:CreateToggle(frame)
-	local close = B.CreateButton(frame, 20, 80, ">", 18)
-	B.CreateSD(close)
-	B.CreateTex(close)
+	local close = CreateToggleButton(frame)
 	frame.closeButton = close
 
-	local open = B.CreateButton(UIParent, 20, 80, "<", 18)
-	B.CreateSD(open)
-	B.CreateTex(open)
+	local open = CreateToggleButton(UIParent)
 	open:Hide()
 	frame.openButton = open
 

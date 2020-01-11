@@ -179,15 +179,15 @@ local defaultSettings = {
 	Nameplate = {
 		Enable = true,
 		maxAuras = 5,
-		AuraSize = 22,
+		AuraSize = 28,
 		FriendlyCC = false,
 		HostileCC = true,
 		TankMode = false,
 		TargetIndicator = 5,
 		InsideView = true,
 		Distance = 42,
-		PlateWidth = 135,
-		PlateHeight = 5,
+		PlateWidth = 190,
+		PlateHeight = 8,
 		CustomUnitColor = true,
 		CustomColor = {r=0, g=.8, b=.3},
 		UnitList = "",
@@ -209,8 +209,8 @@ local defaultSettings = {
 		PPHideOOC = true,
 		NameplateClassPower = false,
 		MaxPowerGlow = true,
-		NameTextSize = 10,
-		HealthTextSize = 12,
+		NameTextSize = 14,
+		HealthTextSize = 16,
 		MinScale = 1,
 		MinAlpha = 1,
 		ColorBorder = false,
@@ -246,7 +246,6 @@ local defaultSettings = {
 		FontOutline = true,
 		Loot = true,
 		Shadow = true,
-		ObjectiveTracker = true,
 		AlertFrames = true,
 	},
 	Tooltip = {
@@ -715,10 +714,10 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Nameplate", "Distance", L["Nameplate Distance"].."*", true, {20, 100, 0}, updatePlateRange},
 		{3, "Nameplate", "MinScale", L["Nameplate MinScale"].."*", false, {.5, 1, 1}, updatePlateScale},
 		{3, "Nameplate", "MinAlpha", L["Nameplate MinAlpha"].."*", true, {.5, 1, 1}, updatePlateAlpha},
-		{3, "Nameplate", "PlateWidth", L["NP Width"].."*(135)", false, {50, 200, 0}, refreshNameplates},
-		{3, "Nameplate", "PlateHeight", L["NP Height"].."*(5)", true, {5, 20, 0}, refreshNameplates},
-		{3, "Nameplate", "NameTextSize", L["NameTextSize"].."*", false, {8, 16, 0}, refreshNameplates},
-		{3, "Nameplate", "HealthTextSize", L["HealthTextSize"].."*", true, {8, 16, 0}, refreshNameplates},
+		{3, "Nameplate", "PlateWidth", L["NP Width"].."*(190)", false, {50, 250, 0}, refreshNameplates},
+		{3, "Nameplate", "PlateHeight", L["NP Height"].."*(8)", true, {5, 30, 0}, refreshNameplates},
+		{3, "Nameplate", "NameTextSize", L["NameTextSize"].."*", false, {10, 30, 0}, refreshNameplates},
+		{3, "Nameplate", "HealthTextSize", L["HealthTextSize"].."*", true, {10, 30, 0}, refreshNameplates},
 		{3, "Nameplate", "maxAuras", L["Max Auras"], false, {0, 10, 0}},
 		{3, "Nameplate", "AuraSize", L["Auras Size"], true, {18, 40, 0}},
 	},
@@ -810,16 +809,15 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Map", "MinmapScale", L["Minimap Scale"].."*", true, {1, 2, 1}, updateMinimapScale},
 	},
 	[10] = {
-		{1, "Skins", "FlatMode", "FlatMode"},
-		{1, "Skins", "Shadow", "Shadow"},
-		{3, "Skins", "SkinAlpha", "SkinAlpha".."*", true, {0, 1, 1}, updateSkinAlpha},
-		{1, "Skins", "FontOutline", "FontOutline"},
-		{1, "Skins", "BlizzardSkins", "BlizzardSkins", true},
-		{1, "Skins", "ChatBubbles", "ChatBubbles"},
-		{1, "Skins", "DefaultBags", "DefaultBags", true},
-		{1, "Skins", "Loot", "Loot"},
-		{1, "Skins", "ObjectiveTracker", "ObjectiveTracker", true},
-		{1, "Skins", "AlertFrames", "AlertFrames"},
+		{1, "Skins", "FlatMode", L["FlatMode"]},
+		{1, "Skins", "Shadow", L["Shadow"]},
+		{3, "Skins", "SkinAlpha", L["SkinAlpha"].."*", true, {0, 1, 1}, updateSkinAlpha},
+		{1, "Skins", "FontOutline", L["FontOutline"]},
+		{1, "Skins", "AlertFrames", L["AlertFrames"], true},
+		{1, "Skins", "ChatBubbles", L["ChatBubbles"]},
+		{1, "Skins", "DefaultBags", L["DefaultBags"], true, nil, nil, L["DefaultBagsTips"]},
+		{1, "Skins", "Loot", L["Loot"]},
+		{1, "Skins", "BlizzardSkins", L["BlizzardSkins"], true, nil, nil, L["BlizzardSkinsTips"]},
 		{},--blank
 
 		{1, "Skins", "BarLine", L["Bar Line"]},
@@ -881,7 +879,7 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{1, "ACCOUNT", "VersionCheck", L["Version Check"]},
 		{1, "ACCOUNT", "DisableInfobars", L["DisableInfobars"], true},
 		{},--blank
-		{3, "ACCOUNT", "UIScale", L["Setup UIScale"], false, {.4, 1.15, 15}},
+		{3, "ACCOUNT", "UIScale", L["Setup UIScale"], false, {.4, 1.15, 2}},
 		{1, "ACCOUNT", "LockUIScale", "|cff00cc4c"..L["Lock UIScale"], true},
 		{},--blank
 		{4, "ACCOUNT", "TexStyle", L["Texture Style"], false, {L["Highlight"], L["Gradient"], L["Flat"]}},
@@ -1320,7 +1318,7 @@ local function createDataFrame()
 	dataFrame:SetSize(500, 500)
 	dataFrame:SetFrameStrata("DIALOG")
 	B.CreateMF(dataFrame)
-	B.SetBackground(dataFrame)
+	B.SetBD(dataFrame)
 	dataFrame.Header = B.CreateFS(dataFrame, 16, L["Export Header"], true, "TOP", 0, -5)
 
 	local scrollArea = CreateFrame("ScrollFrame", nil, dataFrame, "UIPanelScrollFrameTemplate")
@@ -1389,7 +1387,7 @@ local function OpenGUI()
 	f:SetFrameStrata("HIGH")
 	f:SetFrameLevel(10)
 	B.CreateMF(f)
-	B.SetBackground(f)
+	B.SetBD(f)
 	B.CreateFS(f, 18, L["NDui Console"], true, "TOP", 0, -10)
 	B.CreateFS(f, 16, DB.Version.." ("..DB.Support..")", false, "TOP", 0, -30)
 

@@ -1,5 +1,5 @@
 local _, ns = ...
-local B, C, L, DB, F = unpack(ns)
+local B, C, L, DB = unpack(ns)
 local G = B:GetModule("GUI")
 
 local r, g, b = DB.r, DB.g, DB.b
@@ -124,7 +124,7 @@ local function CreatePanel()
 	f = CreateFrame("Frame", "NDui_AWConfig", UIParent)
 	f:SetPoint("CENTER")
 	f:SetSize(800, 500)
-	B.SetBackground(f)
+	B.SetBD(f)
 	B.CreateMF(f)
 	B.CreateFS(f, 17, L["AWConfig Title"], true, "TOP", 0, -10)
 	B.CreateFS(f, 15, L["Groups"], true, "TOPLEFT", 30, -50)

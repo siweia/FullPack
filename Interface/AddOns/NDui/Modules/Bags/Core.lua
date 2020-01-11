@@ -1,5 +1,5 @@
 ﻿local _, ns = ...
-local B, C, L, DB, F = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local module = B:RegisterModule("Bags")
 local cargBags = ns.cargBags
@@ -339,8 +339,9 @@ function module:CreateFreeSlots()
 	slot:SetSize(self.iconSize, self.iconSize)
 	slot:SetHighlightTexture(DB.bdTex)
 	slot:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
-	slot.bg = B.CreateBDFrame(slot, .3)
-	slot.bg:SetBackdropColor(.3, .3, .3, .25)
+	slot:GetHighlightTexture():SetInside()
+	B.CreateBD(slot, .3)
+	slot:SetBackdropColor(.3, .3, .3, .3)
 	slot:SetScript("OnMouseUp", module.FreeSlotOnDrop)
 	slot:SetScript("OnReceiveDrag", module.FreeSlotOnDrop)
 	B.AddTooltip(slot, "ANCHOR_RIGHT", L["FreeSlots"])
@@ -536,15 +537,17 @@ function module:OnLogin()
 		self:SetPushedTexture(nil)
 		self:SetHighlightTexture(DB.bdTex)
 		self:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
+		self:GetHighlightTexture():SetInside()
 		self:SetSize(iconSize, iconSize)
 
-		self.Icon:SetAllPoints()
+		self.Icon:SetInside()
 		self.Icon:SetTexCoord(unpack(DB.TexCoord))
 		self.Count:SetPoint("BOTTOMRIGHT", 1, 1)
 		self.Count:SetFont(unpack(DB.Font))
+		self.Cooldown:SetInside()
 
-		self.bg = B.CreateBDFrame(self, .3)
-		self.bg:SetBackdropColor(.3, .3, .3, .25)
+		B.CreateBD(self, .3)
+		self:SetBackdropColor(.3, .3, .3, .3)
 
 		local parentFrame = CreateFrame("Frame", nil, self)
 		parentFrame:SetAllPoints()
@@ -557,7 +560,7 @@ function module:OnLogin()
 
 		self.Azerite = self:CreateTexture(nil, "ARTWORK")
 		self.Azerite:SetAtlas("AzeriteIconFrame")
-		self.Azerite:SetAllPoints()
+		self.Azerite:SetInside()
 
 		self.Favourite = parentFrame:CreateTexture(nil, "ARTWORK")
 		self.Favourite:SetAtlas("collections-icon-favorites")
@@ -565,11 +568,10 @@ function module:OnLogin()
 		self.Favourite:SetPoint("TOPLEFT", -12, 9)
 
 		self.Quest = B.CreateFS(self, 30, "!", "system", "LEFT", 3, 0)
-		self.iLvl = B.CreateFS(self, 12, "", false, "BOTTOMLEFT", 1, 1)
+		self.iLvl = B.CreateFS(self, 12, "", false, "BOTTOMLEFT", 1, 2)
 
 		if showNewItem then
-			self.glowFrame = B.CreateBG(self, 4)
-			self.glowFrame:SetSize(iconSize+8, iconSize+8)
+			self.glowFrame = B.CreateGlowFrame(self, iconSize)
 		end
 
 		self:HookScript("OnClick", module.ButtonOnClick)
@@ -583,7 +585,7 @@ function module:OnLogin()
 	end
 
 	local bagTypeColor = {
-		[0] = {0, 0, 0, .25},		-- 容器
+		[0] = {.3, .3, .3, .3},	-- 容器
 		[1] = false,				-- 弹药袋
 		[2] = {0, .5, 0, .25},		-- 草药袋
 		[3] = {.8, 0, .8, .25},		-- 附魔袋
@@ -648,9 +650,9 @@ function module:OnLogin()
 		if NDuiDB["Bags"]["SpecialBagsColor"] then
 			local bagType = module.BagsType[item.bagID]
 			local color = bagTypeColor[bagType] or bagTypeColor[0]
-			self.bg:SetBackdropColor(unpack(color))
+			self:SetBackdropColor(unpack(color))
 		else
-			self.bg:SetBackdropColor(.3, .3, .3, .25)
+			self:SetBackdropColor(.3, .3, .3, .3)
 		end
 	end
 
@@ -662,12 +664,12 @@ function module:OnLogin()
 		end
 
 		if item.questID or item.isQuestItem then
-			self.bg:SetBackdropBorderColor(.8, .8, 0)
+			self:SetBackdropBorderColor(.8, .8, 0)
 		elseif item.rarity and item.rarity > -1 then
 			local color = BAG_ITEM_QUALITY_COLORS[item.rarity]
-			self.bg:SetBackdropBorderColor(color.r, color.g, color.b)
+			self:SetBackdropBorderColor(color.r, color.g, color.b)
 		else
-			self.bg:SetBackdropBorderColor(0, 0, 0)
+			self:SetBackdropBorderColor(0, 0, 0)
 		end
 	end
 
@@ -677,9 +679,9 @@ function module:OnLogin()
 
 		local columns = self.Settings.Columns
 		local offset = 38
-		local spacing = 5
+		local spacing = 3
 		local xOffset = 5
-		local yOffset = -offset + spacing
+		local yOffset = -offset + xOffset
 		local _, height = self:LayoutButtons("grid", columns, spacing, xOffset, yOffset)
 		local width = columns * (iconSize+spacing)-spacing
 		if self.freeSlot then
@@ -783,9 +785,10 @@ function module:OnLogin()
 		self:SetPushedTexture(nil)
 		self:SetHighlightTexture(DB.bdTex)
 		self:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
+		self:GetHighlightTexture():SetInside()
 
 		self:SetSize(iconSize, iconSize)
-		self.bg = B.CreateBDFrame(self, 0)
+		B.CreateBD(self, .25)
 		self.Icon:SetAllPoints()
 		self.Icon:SetTexCoord(unpack(DB.TexCoord))
 	end
@@ -797,9 +800,9 @@ function module:OnLogin()
 		if not quality or quality == 1 then quality = 0 end
 		local color = BAG_ITEM_QUALITY_COLORS[quality]
 		if not self.hidden and not self.notBought then
-			self.bg:SetBackdropBorderColor(color.r, color.g, color.b)
+			self:SetBackdropBorderColor(color.r, color.g, color.b)
 		else
-			self.bg:SetBackdropBorderColor(0, 0, 0)
+			self:SetBackdropBorderColor(0, 0, 0)
 		end
 
 		if classID == LE_ITEM_CLASS_CONTAINER then

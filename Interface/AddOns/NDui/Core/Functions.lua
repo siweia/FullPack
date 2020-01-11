@@ -45,13 +45,11 @@ function B:CreateSD(size, override)
 	local frame = self
 	if self:GetObjectType() == "Texture" then frame = self:GetParent() end
 	local lvl = frame:GetFrameLevel()
-	local offset = size or 5
 
 	self.Shadow = CreateFrame("Frame", nil, frame)
-	self.Shadow:SetPoint("TOPLEFT", self, -offset, offset)
-	self.Shadow:SetPoint("BOTTOMRIGHT", self, offset, -offset)
-	self.Shadow:SetBackdrop({edgeFile = DB.glowTex, edgeSize = B:Scale(size or 6)})
-	self.Shadow:SetBackdropBorderColor(0, 0, 0, .35)
+	self.Shadow:SetOutside(self, size or 4, size or 4)
+	self.Shadow:SetBackdrop({edgeFile = DB.glowTex, edgeSize = B:Scale(size or 5)})
+	self.Shadow:SetBackdropBorderColor(0, 0, 0, size and 1 or .4)
 	self.Shadow:SetFrameLevel(lvl == 0 and 0 or lvl - 1)
 
 	return self.Shadow
@@ -92,7 +90,7 @@ end
 function B:SetBackdropBorderColor(frame, r, g, b, a)
 	if frame.pixelBorders then
 		for _, v in pairs(PIXEL_BORDERS) do
-			frame.pixelBorders[v]:SetVertexColor(r or 0, g or 0, b or 0, a or 1)
+			frame.pixelBorders[v]:SetVertexColor(r or 0, g or 0, b or 0, a)
 		end
 	end
 end
@@ -116,22 +114,22 @@ function B:PixelBorders(frame)
 		borders.CENTER = frame:CreateTexture(nil, "BACKGROUND", nil, -1)
 		borders.CENTER:SetTexture(DB.bdTex)
 
-		borders.TOPLEFT:SetPoint("BOTTOMRIGHT", borders.CENTER, "TOPLEFT", 1, -1)
-		borders.TOPRIGHT:SetPoint("BOTTOMLEFT", borders.CENTER, "TOPRIGHT", -1, -1)
-		borders.BOTTOMLEFT:SetPoint("TOPRIGHT", borders.CENTER, "BOTTOMLEFT", 1, 1)
-		borders.BOTTOMRIGHT:SetPoint("TOPLEFT", borders.CENTER, "BOTTOMRIGHT", -1, 1)
+		borders.TOPLEFT:Point("BOTTOMRIGHT", borders.CENTER, "TOPLEFT", 1, -1)
+		borders.TOPRIGHT:Point("BOTTOMLEFT", borders.CENTER, "TOPRIGHT", -1, -1)
+		borders.BOTTOMLEFT:Point("TOPRIGHT", borders.CENTER, "BOTTOMLEFT", 1, 1)
+		borders.BOTTOMRIGHT:Point("TOPLEFT", borders.CENTER, "BOTTOMRIGHT", -1, 1)
 
-		borders.TOP:SetPoint("TOPLEFT", borders.TOPLEFT, "TOPRIGHT", 0, 0)
-		borders.TOP:SetPoint("TOPRIGHT", borders.TOPRIGHT, "TOPLEFT", 0, 0)
+		borders.TOP:Point("TOPLEFT", borders.TOPLEFT, "TOPRIGHT", 0, 0)
+		borders.TOP:Point("TOPRIGHT", borders.TOPRIGHT, "TOPLEFT", 0, 0)
 
-		borders.BOTTOM:SetPoint("BOTTOMLEFT", borders.BOTTOMLEFT, "BOTTOMRIGHT", 0, 0)
-		borders.BOTTOM:SetPoint("BOTTOMRIGHT", borders.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0)
+		borders.BOTTOM:Point("BOTTOMLEFT", borders.BOTTOMLEFT, "BOTTOMRIGHT", 0, 0)
+		borders.BOTTOM:Point("BOTTOMRIGHT", borders.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0)
 
-		borders.LEFT:SetPoint("TOPLEFT", borders.TOPLEFT, "BOTTOMLEFT", 0, 0)
-		borders.LEFT:SetPoint("BOTTOMLEFT", borders.BOTTOMLEFT, "TOPLEFT", 0, 0)
+		borders.LEFT:Point("TOPLEFT", borders.TOPLEFT, "BOTTOMLEFT", 0, 0)
+		borders.LEFT:Point("BOTTOMLEFT", borders.BOTTOMLEFT, "TOPLEFT", 0, 0)
 
-		borders.RIGHT:SetPoint("TOPRIGHT", borders.TOPRIGHT, "BOTTOMRIGHT", 0, 0)
-		borders.RIGHT:SetPoint("BOTTOMRIGHT", borders.BOTTOMRIGHT, "TOPRIGHT", 0, 0)
+		borders.RIGHT:Point("TOPRIGHT", borders.TOPRIGHT, "BOTTOMRIGHT", 0, 0)
+		borders.RIGHT:Point("BOTTOMRIGHT", borders.BOTTOMRIGHT, "TOPRIGHT", 0, 0)
 
 		hooksecurefunc(frame, "SetBackdropColor", B.SetBackdropColor_Hook)
 		hooksecurefunc(frame, "SetBackdropBorderColor", B.SetBackdropBorderColor_Hook)
@@ -163,17 +161,6 @@ function B:CreateGradient()
 end
 
 -- Create Background
-function B:CreateBG(offset)
-	local frame = self
-	if self:GetObjectType() == "Texture" then frame = self:GetParent() end
-	local lvl = frame:GetFrameLevel()
-
-	local bg = CreateFrame("Frame", nil, frame)
-	bg:SetOutside(self, offset, offset)
-	bg:SetFrameLevel(lvl == 0 and 0 or lvl - 1)
-	return bg
-end
-
 function B:CreateBDFrame(a, shadow)
 	local frame = self
 	if self:GetObjectType() == "Texture" then frame = self:GetParent() end
@@ -188,17 +175,15 @@ function B:CreateBDFrame(a, shadow)
 end
 
 function B:SetBD(x, y, x2, y2)
-	local bg = B.CreateBDFrame(self)
+	local bg = B.CreateBDFrame(self, nil, true)
 	if x then
 		bg:SetPoint("TOPLEFT", x, y)
 		bg:SetPoint("BOTTOMRIGHT", x2, y2)
 	end
-	B.CreateSD(bg)
 	B.CreateTex(bg)
 
 	return bg
 end
-B.SetBackground = B.SetBD
 
 -- Frame Text
 function B:CreateFS(size, text, classcolor, anchor, x, y)
@@ -405,7 +390,27 @@ function B:Reskin(noHighlight)
  		self:HookScript("OnLeave", buttonOnLeave)
 	end
 end
-B.CreateBC = function() end
+
+local function menuOnEnter(self)
+	self.bg:SetBackdropBorderColor(cr, cg, cb)
+end
+local function menuOnLeave(self)
+	self.bg:SetBackdropBorderColor(0, 0, 0)
+end
+local function onMouseDown(self)
+	self.bg:SetBackdropColor(cr, cg, cb, .25)
+end
+local function onMouseUp(self)
+	self.bg:SetBackdropColor(0, 0, 0, NDuiDB["Skins"]["SkinAlpha"])
+end
+function B:ReskinMenuButton()
+	B.StripTextures(self)
+	self.bg = B.SetBD(self)
+	self:SetScript("OnEnter", menuOnEnter)
+	self:SetScript("OnLeave", menuOnLeave)
+	self:SetScript("OnMouseUp", onMouseUp)
+	self:SetScript("OnMouseDown", onMouseDown)
+end
 
 -- Tabs
 function B:ReskinTab()
@@ -665,14 +670,6 @@ hooksecurefunc("TriStateCheckbox_SetState", function(_, checkButton)
 	end
 end)
 
-local function radioOnEnter(self)
-	self.bg:SetBackdropBorderColor(cr, cg, cb)
-end
-
-local function radioOnLeave(self)
-	self.bg:SetBackdropBorderColor(0, 0, 0)
-end
-
 function B:ReskinRadio()
 	self:SetNormalTexture("")
 	self:SetHighlightTexture("")
@@ -689,8 +686,8 @@ function B:ReskinRadio()
 	B.CreateGradient(bg)
 	self.bg = bg
 
-	self:HookScript("OnEnter", radioOnEnter)
-	self:HookScript("OnLeave", radioOnLeave)
+	self:HookScript("OnEnter", menuOnEnter)
+	self:HookScript("OnLeave", menuOnLeave)
 end
 
 -- Swatch
@@ -880,6 +877,14 @@ function B:AffixesSetup()
 			frame.Portrait:SetTexture(filedataid)
 		end
 	end
+end
+
+function B:CreateGlowFrame(size)
+	local frame = CreateFrame("Frame", nil, self)
+	frame:SetPoint("CENTER")
+	frame:SetSize(size+8, size+8)
+
+	return frame
 end
 
 -- Role Icons
@@ -1342,6 +1347,17 @@ local function DisablePixelSnap(frame)
 	end
 end
 
+local function Point(frame, arg1, arg2, arg3, arg4, arg5, ...)
+	if arg2 == nil then arg2 = frame:GetParent() end
+
+	if type(arg2) == "number" then arg2 = B:Scale(arg2) end
+	if type(arg3) == "number" then arg3 = B:Scale(arg3) end
+	if type(arg4) == "number" then arg4 = B:Scale(arg4) end
+	if type(arg5) == "number" then arg5 = B:Scale(arg5) end
+
+	frame:SetPoint(arg1, arg2, arg3, arg4, arg5, ...)
+end
+
 local function SetInside(frame, anchor, xOffset, yOffset, anchor2)
 	xOffset = xOffset or C.mult
 	yOffset = yOffset or C.mult
@@ -1349,8 +1365,8 @@ local function SetInside(frame, anchor, xOffset, yOffset, anchor2)
 
 	DisablePixelSnap(frame)
 	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", xOffset, -yOffset)
-	frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", -xOffset, yOffset)
+	frame:Point("TOPLEFT", anchor, "TOPLEFT", xOffset, -yOffset)
+	frame:Point("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", -xOffset, yOffset)
 end
 
 local function SetOutside(frame, anchor, xOffset, yOffset, anchor2)
@@ -1360,12 +1376,13 @@ local function SetOutside(frame, anchor, xOffset, yOffset, anchor2)
 
 	DisablePixelSnap(frame)
 	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -xOffset, yOffset)
-	frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", xOffset, -yOffset)
+	frame:Point("TOPLEFT", anchor, "TOPLEFT", -xOffset, yOffset)
+	frame:Point("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", xOffset, -yOffset)
 end
 
 local function addapi(object)
 	local mt = getmetatable(object).__index
+	if not object.Point then mt.Point = Point end
 	if not object.SetInside then mt.SetInside = SetInside end
 	if not object.SetOutside then mt.SetOutside = SetOutside end
 	if not object.DisabledPixelSnap then
