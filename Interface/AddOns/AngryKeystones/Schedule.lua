@@ -7,31 +7,24 @@ local requestPartyKeystones
 
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 local affixScheduleText = {
-	{"Fortified", "Bolstering", "Grievous"},
-	{"Tyrannical", "Raging", "Explosive"},
-	{"Fortified", "Sanguine", "Grievous"},
-	{"Tyrannical", "Teeming", "Volcanic"},
-	{"Fortified", "Bolstering", "Skittish"},
-	{"Tyrannical", "Bursting", "Necrotic"},
-	{"Fortified", "Sanguine", "Quaking"},
-	{"Tyrannical", "Bolstering", "Explosive"},
-	{"Fortified", "Bursting", "Volcanic"},
-	{"Tyrannical", "Raging", "Necrotic"},
-	{"Fortified", "Teeming", "Quaking"},
-	{"Tyrannical", "Bursting", "Skittish"},
+	{"Fortified",	"Bolstering",	"Grievous"},
+	{"Tyrannical",	"Raging",	"Explosive"},
+	{"Fortified",	"Sanguine",	"Grievous"},
+	{"Tyrannical",	"Teeming",	"Volcanic"},
+	{"Fortified",	"Bolstering",	"Skittish"},
+	{"Tyrannical",	"Bursting",	"Necrotic"},
+	{"Fortified",	"Sanguine",	"Quaking"},
+	{"Tyrannical",	"Bolstering",	"Explosive"},
+	{"Fortified",	"Bursting",	"Volcanic"},
+	{"Tyrannical",	"Raging",	"Necrotic"},
+	{"Fortified",	"Teeming",	"Quaking"},
+	{"Tyrannical",	"Bursting",	"Skittish"}
 }
 local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14 }
 local affixSchedule = {}
 for i,v in ipairs(affixScheduleText) do
 	affixSchedule[i] = { affixScheduleKeys[v[1]], affixScheduleKeys[v[2]], affixScheduleKeys[v[3]] }
 end
-
-local seasonAffix = 119
-local beguilingInfo = {
-	[1] = 132886,
-	[2] = 132315,
-	[3] = 135735,
-}
 
 local affixScheduleUnknown = false
 local currentWeek
@@ -140,11 +133,6 @@ local function UpdateFrame()
 				local affix = entry.Affixes[j]
 				affix:SetUp(affixes[j])
 			end
-
-			entry.Affixes[4]:SetUp(seasonAffix)
-			local beguilingWeek = scheduleWeek%3
-			if beguilingWeek == 0 then beguilingWeek = 3 end
-			entry.Affixes[4].Portrait:SetTexture(beguilingInfo[beguilingWeek])
 		end
 		Mod.AffixFrame.Label:Hide()
 	else
@@ -166,7 +154,7 @@ local function makeAffix(parent)
 	frame.Border = border
 
 	local portrait = frame:CreateTexture(nil, "ARTWORK")
-	portrait:SetSize(15, 15)
+	portrait:SetSize(14, 14)
 	portrait:SetPoint("CENTER", border)
 	frame.Portrait = portrait
 
@@ -212,7 +200,7 @@ function Mod:Blizzard_ChallengesUI()
 
 		local affixes = {}
 		local prevAffix
-		for j = 4, 1, -1 do
+		for j = 3, 1, -1 do
 			local affix = makeAffix(entry)
 			if prevAffix then
 				affix:SetPoint("RIGHT", prevAffix, "LEFT", -4, 0)
