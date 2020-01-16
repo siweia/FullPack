@@ -186,7 +186,8 @@
 		if (engClass) then
 			novo_objeto.classe = engClass
 			return
-		else	
+		else
+			flag = tonumber(flag)
 			if (flag) then
 				--> conferir se o jogador � um player
 				if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
@@ -498,6 +499,7 @@
 			pet_blacklist [serial] = true
 		
 			--> try to find the owner
+			flag = tonumber(flag)
 			if (flag and _bit_band (flag, OBJECT_TYPE_PETGUARDIAN) ~= 0) then
 			
 				--[[statistics]]-- _detalhes.statistics.container_unknow_pet = _detalhes.statistics.container_unknow_pet + 1
