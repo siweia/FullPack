@@ -1661,6 +1661,7 @@
 			--cura_efetiva = absorbed + amount - overhealing
 			cura_efetiva = cura_efetiva + amount - overhealing
 		end
+		if not cura_efetiva then return end
 		
 		_current_heal_container.need_refresh = true
 	
