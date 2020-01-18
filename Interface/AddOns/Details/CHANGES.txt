@@ -1,14 +1,30 @@
-lightweight tag c0ee4a7f9e38ff5ade61165d752833cd3678731d v8.2.5.7229.140
-Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sun Dec 15 11:02:12 2019 -0300
+Changes since tag v8.2.5.7229.140
 
-commit c0ee4a7f9e38ff5ade61165d752833cd3678731d
+commit baf7d2f3b2111e398402995bb544cc8bb71e824d
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Dec 15 11:02:12 2019 -0300
+Date:   Thu Jan 16 13:40:14 2020 -0300
 
-    Removed the chat message Details! sent everytime after a logon
+    General 8.3 Update
     
-    - Removed the chat message Details! sent everytime after a logon
-    - Using Ace3 lib from Aug 12, 2019.
-    - Using Details! Framework v161 for Retail.
+    - ToC Bump.
+    - Fixed the '_bit_band' bug.
+    - Framwork update from 161 to 164.
+
+commit 88ec99df16749fbe594df7cda511373a5d3ba2cd
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon Jan 6 20:53:20 2020 -0300
+
+    Changelog file
+
+commit 4acf897eb5bc0a79d441e60963f0f3efcaeb9bb1
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon Jan 6 20:53:09 2020 -0300
+
+    Added a list of Details! plugins to download in the plugin management section
+
+commit a193b29907c31c5ff26315c6807802eb92f0f519
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon Jan 6 20:52:30 2020 -0300
+
+    Healers can now heal training dummies without the need to be in combat; Added stormstrike to consolidaded spells
 
