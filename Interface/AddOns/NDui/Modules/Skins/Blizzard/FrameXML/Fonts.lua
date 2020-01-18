@@ -2,6 +2,7 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 
 tinsert(C.themes["AuroraClassic"], function()
+	if not NDuiDB["Skins"]["BlizzardSkins"] then return end
 	if not NDuiDB["Skins"]["FontOutline"] then return end
 
 	local function ReskinFont(font, size)
@@ -41,10 +42,12 @@ tinsert(C.themes["AuroraClassic"], function()
 	ReskinFont(NumberFont_Outline_Large)
 	ReskinFont(NumberFont_Shadow_Med)
 	ReskinFont(NumberFont_Shadow_Small)
+	ReskinFont(Number12Font, 12)
 	ReskinFont(Number13FontYellow)
 	ReskinFont(Number13FontWhite)
 	ReskinFont(Number13FontGray)
 	ReskinFont(Number14FontWhite)
+	ReskinFont(Number15FontWhite)
 	ReskinFont(Number18FontWhite)
 	ReskinFont(QuestFont_Shadow_Small)
 	ReskinFont(QuestFont_Large)
@@ -128,6 +131,11 @@ tinsert(C.themes["AuroraClassic"], function()
 	ReskinFont(SplashHeaderFont)
 	ReskinFont(ChatBubbleFont, 13)
 	ReskinFont(GameFontNormalHuge2)
+	ReskinFont(PriceFont)
+	ReskinFont(PriceFontWhite)
+	ReskinFont(PriceFontGray)
+	ReskinFont(PriceFontGreen)
+	ReskinFont(PriceFontRed)
 
 	-- Refont RaidFrame Health
 	hooksecurefunc("CompactUnitFrame_UpdateStatusText", function(frame)
