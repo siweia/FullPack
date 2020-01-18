@@ -1777,10 +1777,8 @@ L["Config_Score_AddPrimaryStatToScore"] = "主屬性計入所有分數"
 L["Config_Score_AddPrimaryStatToScore_Desc"] = "將艾澤萊護甲的主屬性值(%s/%s/%s)計算加入當前分數，當前潛力以及最大分數。"
 L["Config_Score_OutlineScores"] = "分數描邊"
 L["Config_Score_OutlineScores_Desc"] = "在艾澤萊特質/精華上圍繞分數描繪邊框，以便能更輕鬆的閱讀光亮特質/精華圖示上的數字。"
---[[Translation missing --]]
-L["Config_Score_PreferBiSMajor"] = "Prefer best major essence"
---[[Translation missing --]]
-L["Config_Score_PreferBiSMajor_Desc"] = "Always pick the highest scored major essence even when sometimes you could get better overall score by not selecting the best major essence. When this setting is disabled, the addon will calculate few different score combinations and will pick the best overall score."
+L["Config_Score_PreferBiSMajor"] = "首選最佳主精華"
+L["Config_Score_PreferBiSMajor_Desc"] = "總是選擇得分最高的主要精華，即使有時你可以通過不選擇最好的主要精華來獲得更好的總分。禁用此設置後，插件將計算出幾種不同的分數組合，並選擇最佳的總體分數。"
 L["Config_Score_RelativeScore"] = "在工具提示中顯示相對值而不是絕對值"
 L["Config_Score_RelativeScore_Desc"] = "不是在工具提示中顯示比例的絕對值，而是計算與當前裝備物品相比的相對值，並以百分比顯示差異。"
 L["Config_Score_ScaleByAzeriteEmpowered"] = "按比例中的％s權值縮放物品等級計分"
