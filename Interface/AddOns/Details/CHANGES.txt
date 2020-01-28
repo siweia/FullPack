@@ -1,12 +1,10 @@
-lightweight tag 6161cc451722a6f780b676cd72b0914dbeea1e7d DetailsRetail.8.3.0.7255.140
+lightweight tag 2519ea0b9668ef9680be43f59cb83b6eb5bf6bfa DetailsRetail.8.3.0.7259.140
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Mon Jan 20 19:05:59 2020 -0300
+Date:	Mon Jan 27 20:43:18 2020 -0300
 
-commit 6161cc451722a6f780b676cd72b0914dbeea1e7d
+commit 2519ea0b9668ef9680be43f59cb83b6eb5bf6bfa
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Jan 20 19:05:59 2020 -0300
+Date:   Mon Jan 27 20:43:18 2020 -0300
 
-    - Fixed Eye of Corruption and Grand Delusions
-    
-    Also Segment Lockdown is now enabled by default on new installs.
+    Framework Update
 
