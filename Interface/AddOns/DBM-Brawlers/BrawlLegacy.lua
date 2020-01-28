@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlLegacy", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191213230407")
+mod:SetRevision("20191219144959")
 mod:SetModelID(48465)--Blind Hero
 mod:SetZone()
 

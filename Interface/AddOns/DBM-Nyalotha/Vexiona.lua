@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200126211630")
+mod:SetRevision("20200127182636")
 mod:SetCreatureID(151798)
 mod:SetEncounterID(2336)
 mod:SetZone()
@@ -195,7 +195,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnTwilightBreath:Show()
 			specWarnTwilightBreath:Play("breathsoon")
 		end
-	elseif spellId == 307403 or spellId == 306982 then--Enemy, Player
+	elseif (spellId == 307403 or spellId == 306982) and self:AntiSpam(3, args.sourceName) then--Enemy, Player
 		specWarnAnnihilation:Show(args.sourceName)
 		specWarnAnnihilation:Play("shockwave")
 		if spellId == 307403 then--Cast by mob not player

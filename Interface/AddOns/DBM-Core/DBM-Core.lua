@@ -68,9 +68,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200127014728"),
-	DisplayVersion = "8.3.6", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 1, 26) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200128043030"),
+	DisplayVersion = "8.3.7", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 1, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -451,7 +451,7 @@ local dataBroker
 local voiceSessionDisabled = false
 local handleSync
 
-local fakeBWVersion, fakeBWHash = 175, "ce6bf29"
+local fakeBWVersion, fakeBWHash = 178, "4a8bec2"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -10312,7 +10312,7 @@ do
 			msg = msg:gsub(">.-<", stripServerName)
 			bar:SetText(msg, self.inlineIcon)
 			--ID: Internal DBM timer ID
-			--msg: Timer Text
+			--msg: Timer Text (Do not use msg has an event trigger, it varies language to language or based on user timer options. Use this to DISPLAY only (such as timer replacement UI). use spellId field 99% of time
 			--timer: Raw timer value (number).
 			--Icon: Texture Path for Icon
 			--type: Timer type (Cooldowns: cd, cdcount, nextcount, nextsource, cdspecial, nextspecial, stage, ai. Durations: target, active, fades, roleplay. Casting: cast)

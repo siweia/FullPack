@@ -1,54 +1,23 @@
 # Deadly Boss Mods Core
 
-## [8.3.6](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/8.3.6) (2020-01-27)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/8.3.5...8.3.6)
+## [8.3.7](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/8.3.7) (2020-01-28)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/8.3.6...8.3.7)
 
-- Prep new tag  
-- Change harvest thoughts special warning from an instruction warning to a basic count warning. this is one of those things that really should leave instruction up to RL or own personal judgement multiple factors (current sanity, number of players alive, boss health %).  
-- Added support for tentacles/shadows in Stage 3 carapace. Heroic ones are verified, normal ones are guessed to be same (please report if they are not)  
-    Fixed a bug in ra-den icon code do to a typoed variable name  
-    Fixed a bug on Nzoth where the ego count did not properly reset on engage, causing phase detection to be a little wonky for additional pulls after the first.  
-    Completely reworked the Stage 3 timers on Nzoth to account for fact that normal and heroic are sequenced differently. This should make timers much more accurate now.  
-    Began scheduling work of Stupefying Glare timers in Stage 3 Nzoth as well. Problem is, knowing heroic and normal are definitely sequenced differently, this work has only begun on heroic and not yet on normal. It's also far from complete as the vod I pulled up on fight was a very short one. If you have a video of a kill that saw multiple Stupefying glare casts (with clear view) on normal or heroic, Please reach out. Sadly since blizzard decided not put an in game event for this cast so this is only way to make timers for it.  
-    Switched Nzoth Stage 3 trigger to the actual stage 3 cast. Even though it is slightly slower, it's more likely to be mythic compatible.  
-- Disabled Evoke Anguish chat SAY messages by default on Nzoth, as it can feel spammy and doesn't qualify for all strats.  
-    Updated Mine timer on Tussle Tonks in Mechagon dungeon with new 8.3 timer.  
-    Big Nyalotha Berserk update  
-     - Removed Carapace of Nzoth berserk timer, if this fight still has one, it's much higher now and not being seen yet.  
-     - Added Berserk timer for Xanesh (normal and heroic confirmed same)  
-     - Added Berserk timer for Drestagath normal and heroic (normal and heroic confirmed same)  
-     - Added Berserk timer for Ilgynoth (normal and heroic confirmed same)  
-     - Added Berserk timers for Maut (normal and heroic confirmed different, both supported)  
-     - Disabled Berserk timer on Shadhar for normal. It is NOT same as heroic berserk (which is confirmed). Normal berserk is currently unknown.  
-     - Added Berserk timer for Prophet Skitra (normal and heroic confirmed same). Currently berserk on this fight is undertuned and can be safely survived for several minutes (don't be surprised if they fix this later, it looks like a mistake, since boss activates ilgynoth's berserk instead of his own)  
-     - Added Berserk timer for Vexiona (normal confirmed, heroic could not be confirmed. Still using confirmed normal berserk on heroic for now though since it's unlikely heroic would have a higher one than normal)  
-- Play "targetchange" when lightning shield changes boss (#120)  
-- Add Broadside warning to Boralus trash, closes #119  
-- Update localization.tw.lua (#118)  
-- Disable run out warning on Yazma if you are the tank  
-- Fixed a bug on Alunza where a Demon Hunter tank would get double warnings to both dispel the boss and pop a defensive. Now, they'll only get the dispel warning since it's better of two options  
-    Fixed a bug that caused Volkaal's toxic leap timer/warning to NEVER work (and somehow not a single user noticed/reported it since expansion launch, NANI?)  
-    Updated Shadhar's schedule timers with latest data  
-- Adjusted harvest thoughts timers from about 6 more kills worth of data  
-    Fixed Shadhar breath timer, the UNIT\_SPELLCAST\_SUCCEEDED event, wasn't cast finish event. SUCCEEDED ~= SUCCESS in all cases :D  
-- Notes  
-- Fixed a regression from earlier where charged bonds was warning everyone by mistake instead of only affected players  
-    Added Vexiona Respawn time  
-    Changed InfoFrame on Wrathion to only show during mirrors phase instead of whole fight.  
-- KR Update (#117)  
-    * KR Update  
-- Ensure the umbral loop code runs  if Umbral Mantle activates before ENCOUNTER\_START event on Shad'har  
-- and bump hotfix revision  
-- Fix a bug in last  
-- Updated icon marking on Ra-den to be more weak aura compatible.  
-    Updated Icon code on Dark inquisitor to be more interrupt compatible and to fix bugs  
-- Actually, only set set icon on anchor makes most sense, so revert change of setting icons on other targets.  
-- Fixed charged bonds so all players get warned, not just the anchor. Also fixed icon marking so icons get cleared and get set on all targets not just parent tether  
-- Fixed hivemind darter and drone timers not showing by registering spellids I forgot to register  
-    Add guessed/approx respawn time to hivemind too, it's at least 29 seconds.  
-- Resolve possible conflicts between cast timers and next timers if next is stripped  
-    Shorten generic adds timers too if short timer text enabled.  
-- Couple vexiona timer tweaks  
-- Vexiona Update  
-     - Fixed missing count in twlight decimator (1)  
-     - Fixed Spiteful Assault showing multiple times if multiple adds cast it. Now multiple casts within 3 seconds will be aggregated  
+- Bump Hotfix revision on Shadhar and bump DBM revision. Just one final tag before mythic starts  
+- Fixed option default for Mandible Slam so it's only on by default for tanks instead of everyone. Also disabled countdown on it by default since it happens pretty often.  
+    Changed countdown for abyssal strike to count down from 3 instead of 4 on Xanesh  
+    Changed Countdown on Volatile Seed to start counting down at 3 instead of 4 on Drestagath  
+    Changed Eyes of Nzoth countdown to start counting down from 3 instead of 4 on ILgynoth  
+    Changed Crush countdown to start counting down from 3 instead of 4 on Shadhar  
+    Changed Echoing void to start counting dwom from 4 instead of 5 on Hivemind  
+- Fixed a bug where Mandible Slam and Adaptive Membrade were overwriting each other and this is actually what was causing odd countdown behavior in Stage 1 carapace.  
+- Fixed creatureID for Xanesh  
+    Added new option to Ra-den to only show special warning for Charged Bonds if you are the parent point. off by default. If this option is not enabled all charged bonds get warned.  
+    Fixes to Shadhar energy updater to attempt to fix the incorrect energy generation still.  
+    Fixed bug where Nullification Blast timer was on for everyone by default instead of just tanks on Hivemind. Option default for this timer has been reset to push this fix.  
+- Expanded Heroic Nzoth timer data from latest public logs of questionable kill times  
+    Moved Thought harvester timers/spawn alerts to IEEU, however keep slower CLEU event as well just in case they have so many harvesters up at once they run out of boss unitIDs (yes I found a log like this).  
+    Added debug code to help discover harvester timers based on IEEU since not everyone is gonna run transcriptor and CLEU is not as accurate.  
+- Throttle annihilation casts if two of mobs casting it are up at once  
+- Updated Mindwrack handling to be more in line with actual needs of spell. Showing interrupt warnings if it can be interrupted and taunt warnings if it can't be (or raid fails to do so) IF the other tank is free. If other tank is not free and it is not interrupted then show a general target warning to at least inform of increased damage. Closes #121  
+- Add mauts approx respawn time (abou 20, give or take)  
