@@ -70,6 +70,10 @@ L= DBM:GetModLocalization(2370)
 ---------------------------
 L= DBM:GetModLocalization(2364)
 
+L:SetOptionLocalization({
+	OnlyParentBondMoves		= "충전된 결속의 기준점이 될 때만 특수 경고 표시"
+})
+
 L:SetMiscLocalization({
 	Furthest	= "제일 먼 대상",
 	Closest		= "가장 가까운 대상"
@@ -100,7 +104,7 @@ L= DBM:GetModLocalization(2366)
 L= DBM:GetModLocalization(2375)
 
 L:SetMiscLocalization({
-	ExitMind		= "정신세계 탈출",
+	ExitMind		= "정신세계 출구",
 	Away			= "뒤로",
 	Toward			= "앞으로"
 })
