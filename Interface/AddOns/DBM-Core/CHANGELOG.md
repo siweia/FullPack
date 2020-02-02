@@ -1,41 +1,44 @@
 # Deadly Boss Mods Core
 
-## [8.3.8](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/8.3.8) (2020-01-29)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/8.3.7...8.3.8)
+## [8.3.9](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/8.3.9) (2020-02-01)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/8.3.8...8.3.9)
 
-- Fixed bug where enforcer counter didn't reset between pulls on Vexiona  
-    Added timer/warning support to Stage 3 mythic Vexiona Twlight Decimator  
-- Update GUI zhTW (#126)  
-- Add chain lightning yell and warnings using target scan  
-    Changed how Throws of Dismemberment works on Drestagath since other method wasn't working do to obfuscation. besides if other way HAD been working it probably would have been spammy.  
-- Re-enable the nameplate aura. even though it doesn't work, it should be there, in case it does work one day. :D  
-- adjusted muttering timer back up to 50, until i see that elusive 46 again on live.  
-- Fixed lua error in vexiona trash and lowered throttle for brutal smash  
-- Push the mythic hivemind timers.  
-- Code cleanup xanesh  
-- Scrapped nameplate aura on Drestagath for now. Every entity still has same GUID. yes the aura could work purely off nameplate..i unitIDs but there'd be reliablity issues if IDs change do to moving in and out of range of various plates. Blizz clearly obfuscated the GUIDs of tentacles for a reason as well so it's safe to assume they do not want auto marking or auras above these tentacles.  
-    Fixed mythic add marking on Xanesh  
-    Fixed tank swap warnings on mythic Xanesh  
-    Fixed a few timers on Mythic Xanesh  
-    Removed Summon Ritual Obelisk timer. For one, it's not that useful and 2 it's annoying to update on all difficulties since it's not in combat log.  
-- Fixed mismatching variable names on mythic Ra-den  
-    Updated mythic ra-den darkness icon marking code to match vita icon marking code behavior  
-    Enabled the Chain Lightning timer on Ra-den  
-    Made Void Woken icon option off by default on Xanesh  
-- Redid tanking code on Shadhar to account for 3 casts on heroic and mythic. It'll basically never tell anyone to taunt first cast, and 2nd or 3rd cast it'll tell you to taunt if you do not have debuff and not already tanking.  
-    Fixed the fixate timer on mythic Shadhar  
-    More fixes to shadhar breath timer (still untested). Difficult issue to nail down not being in raid myself.  
-    Updated initial Xanesh timers from live changes  
-- Fix error  
-- Shorten end countdown too  
-- Fix ancient curse applied yell, only countdown one is needed by default. I thought I had done this already, sorry about the spam :D  
-- Fixed mythic incineration timers, only cast twice, not 3x, with diff timing on Wrathion  
-    Fixed Burning Madness so mythic version is announced, gets icons, and shows on infoframe for Wrathion  
-- Vuklaz update  
-- Update Nyalotha zhTW (#124)  
-- KR Update (#125)  
-    * KR Update  
-- Add new interupt filter option to just ALWAYS filter them period, for those that might just want to globally squelch interrupt type warnings  
-- Update zhTW (#123)  
-- KR Update (#122)  
-    * KR Update  
+- Prep new Tag  
+- Release the ilgynoth mod  
+- KR Update (#130)  
+    * KR Update  
+- Updated the Black Scar taunt stack amount (#129)  
+    Taunting at 2 stacks is not enough time for a tank to drop his/her stacks.  
+- Make sure the locals don't prevent retail DBM from notifying classic users they installed wrong mod  
+- Actually handle SendSync code better for mods by improved SetRevision code  
+- Core will now more robustly handle if revision is sent as a number instead of expected string  
+- Core will now send DBM.Revision revision instead of 0,  when a mod is missing it's own revision (such as when using github checkout)  
+    Tweaked Ra-den respawn  
+- Re-enabled fading anguish fades yell by default, but initial apply stuff off by default on Nzoth  
+    Shortened yell text and removed unneeded count from it for shred Psyche on Skitra  
+- Just enable harvester timer collection on all clients, regardless of spawn count or debug mode. This will get actual data the fastest  
+- Another fix  
+- Fixed tank check on Shadhar again because i'm bad at > vs >=  
+- Fixed a bug that caused basher tentacle spawn timer not to work on Nzoth  
+- Fixed a bug where Twilight Decimator timer didn't stop on phase 3 push for non mythic Vexiona  
+- Cleanup shadhar code a little  
+- Changed DBM GUI frame size from 800 x 510 to 800 x 600, extending height of frame a bit.  
+- Open up CheckNearby function access to 3rd party mods  
+- Show count in void eruption timer  
+- Shorten SAY countdown text on muttering.  
+- Tweaks to option defaults for ra-den add switch warnings and tweaks to raden respawn time  
+- Tweaks to improve Drestagath antispam for multiple tentacles dying at once  
+- Tone down descolation hand holding a litte. telling entire raid to help soak is incorrect advice. the help soak warning is now off by default and you can enable it if you're one of people who's job is to do this. Otherwise, a general target warning will be shown in it's place to rest of raid.  
+- Fixed logic in breath update. because I was using :Update method instead of starting a new timer, I was forgetting a step, where I needed timer progress value not timer remaining one.  
+    Also floor values to 10th deciminal for good measure so it doesn't start anything obnoxious like a 17.326262362 timer. Hopefully no further issues from this. If this still doesn't work I'll scrap fancy update method and just use fresh timers which will definitely work, but I want to try this last test of live updating an existing timer instead of replacing with new one.  
+- Pre warn when Hentai's energy is high and agony is 1-2 tentacle deaths away  
+    Added Hentai's mythic berserk.  
+- Sometimes, it's not clear that some warnings only apply to heroic, or mythic. So now, special warnings that are only going to appear on heroic or mythic difficulty will show heroic or mythic difficulty dungeon journal icon next to special warning option in GUI (if supported by the mod. This was already done for Nyalotha mods).  
+- Re-added the 3 dodge special warnings, but made them off by default. mythic raiders might want extra spam for the adds dying triggering these things, but it should be opt in. It's actually not that spammy either so my reaction to remove them entirely might have been premature kneejerk  
+- Fix infoframe option text for Hentai boss  
+- Added likely ra-den respawn time  
+    Added cast count to charged bonds, gorge essence, and corrupted existence timers  
+- Insanity bomb yell off by default to reduce spam. it sitll does countdown yell which makes sense, but initial apply not needed  
+- Updated most encounters to use spell substitutions for shorter timer names where possible. Remember, this can always be disabled in timer options so timers always display original spell names.  
+    Changed Ra-den to use earlier P2 trigger and improved initial P2 timers  
+- Add carapaces new berserk  

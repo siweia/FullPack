@@ -1,7 +1,7 @@
 DBM_DEADLY_BOSS_MODS				= "Deadly Boss Mods"
 DBM_DBM								= "DBM"
-local day, _, month = C_DateAndTime.GetCurrentCalendarTime()
-if day == 1 and month == 4 then
+local day, _, month = C_DateAndTime and C_DateAndTime.GetCurrentCalendarTime()
+if day and month and  day == 1 and month == 4 then
 	DBM_DEADLY_BOSS_MODS				= "Harmless Boss Mods"
 	DBM_DBM								= "HBM"
 end
@@ -286,6 +286,7 @@ DBM_CORE_NORTH						= "North"
 DBM_CORE_SOUTH						= "South"
 DBM_CORE_INTERMISSION				= "Intermission"--No blizz global for this, and will probably be used in most end tier fights with intermission phases
 DBM_CORE_ORB						= "Orb"
+DBM_CORE_ORBS						= "Orbs"
 DBM_CHEST							= "Chest"--As in Treasure 'Chest'. Not Chest as in body part.
 DBM_NO_DEBUFF						= "Not %s"--For use in places like info frame where you put "Not Spellname"
 DBM_ALLY							= "Ally"--Such as "Move to Ally"
