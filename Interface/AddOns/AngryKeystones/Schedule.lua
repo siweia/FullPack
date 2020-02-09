@@ -76,6 +76,10 @@ local function UpdatePartyKeystones()
 					entry.Text:SetText(name)
 					entry.Text:SetTextColor(color:GetRGBA())
 
+					local _, suffix = strsplit("-", keystoneName)
+					if suffix then
+						keystoneName = suffix
+					end
 					entry.Text2:SetText(keystoneName)
 
 					e = e + 1
