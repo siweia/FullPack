@@ -1,3 +1,13 @@
+### 8.3.6
+- Fix bug where you get error when you close Azerite UI when scores for that UI is disabled or something else went wrong. This fixes [Issue #63](https://www.curseforge.com/wow/addons/azeritepowerweights/issues/63).
+- Update Traditional Chinese translations.
+
+### 8.3.5
+- Added new feature to enable/disable the scores for Azerite Traits and Azerite Essences as requested in [Issue #60](https://www.curseforge.com/wow/addons/azeritepowerweights/issues/60).
+   - You can find these new settings by checking out the config at `ESC -> Interface -> AddOns -> AzeritePowerWeights`.
+   - This means 4 new lines for translators to translate at  [Curseforge Localization tool](https://www.curseforge.com/wow/addons/azeritepowerweights/localization).
+- Also made other small bug and QoL fixes in order to make the scores show and update more reliably.
+
 ### 8.3.4
 - Added missing Retribution Paladin Default-scales.
    - Thanks to both Retribution Paladin -players who actually read the change log and didn't report me them missing!
