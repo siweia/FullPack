@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200214232418")
+mod:SetRevision("20200311192042")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
 mod:SetZone()
-mod:SetHotfixNoticeRev(20200206000001)--2020, 2, 06
-mod:SetMinSyncRevision(20200206000001)
+mod:SetHotfixNoticeRev(20200311000001)--2020, 3, 11
+mod:SetMinSyncRevision(20200311000001)
 mod.respawnTime = 49
 
 mod:RegisterCombat("combat")
@@ -87,6 +87,7 @@ local specWarnMentalDecay					= mod:NewSpecialWarningInterrupt(313611, "HasInter
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(309991, nil, nil, nil, 1, 8)
 --Stage 1: Dominant Mind
 ----Psychus
+local specWarnCreepingAnguish				= mod:NewSpecialWarningMove(310184, "Tank", nil, nil, 3, 2)
 local specWarnMindwrack						= mod:NewSpecialWarningInterruptCount(316711, "HasInterrupt", nil, nil, 1, 2)
 local specWarnMindwrackTaunt				= mod:NewSpecialWarningTaunt(316711, nil, nil, nil, 1, 2)
 local specWarnManifestMadness				= mod:NewSpecialWarningSpell(310134, nil, nil, nil, 3)--Basically an automatic wipe unless Psychus was like sub 1% health, no voice because there isn't really one that says "you're fucked"
@@ -218,67 +219,67 @@ local ParanoiaTargets = {}
 local castsPerGUID = {}
 local allTimers = {
 	["lfr"] = {
-		[2] = {--Unknown, using same ones as normal
+		[2] = {--Same as Normal and Heroic
 			--Basher tentacles
 			[318714] = {23, 55.0, 50.0},
 			--Paranoia
 			[315927] = {50, 56.1, 48.6},
 			--Eternal Torment
-			[318449] = {35.3, 56, 29.3, 19.5},
+			[318449] = {35.3, 55.8, 29.3, 19.5, 29.1},
 		},
-		[3] = {--Unknown, using same ones as normal
+		[3] = {--Different from heroic and normal
 			--Eternal Torment
-			[318449] = {32.8, 70.9, 10.9, 34.1, 60.7, 10.5, 33.2},
+			[318449] = {32.7, 70.9, 44.9, 60.7},--Unique to LFR
 			--Thought Harvester spawns
-			[316711] = {15, 27, 45},
+			[316711] = {15, 25.6, 44.9, 29.7, 30.1, 43, 30.5, 30.4},--16, 27, 45, 31, 30, 44, 30 in one LFR stream, so seems same
 			--Evoke Anquish
-			[317102] = {15.3, 46.2, 31.6, 44.9, 37.7, 15.8, 51, 37.7},
+			[317102] = {15.3, 46.1, 30.4, 44.9, 36.4, 15.8, 51, 37.7},
 			--Stupefying Glare
-			[317874] = {},
+			[317874] = {40.5, 67.5, 105.5},
 		},
 	},
 	["normal"] = {
-		[2] = {--Same as heroic
+		[2] = {--Same as heroic and LFR
 			--Basher tentacles
 			[318714] = {23, 55.0, 50.0},
 			--Paranoia
 			[315927] = {50, 56.1, 48.6},
 			--Eternal Torment
-			[318449] = {35.3, 56, 29.3, 19.5},
+			[318449] = {35.3, 55.8, 29.3, 19.5, 29.1},
 		},
-		[3] = {--Different from heroic
+		[3] = {--Different from heroic and lfr
 			--Eternal Torment
-			[318449] = {32.8, 70.9, 10.9, 34.1, 60.7, 10.5, 33.2},
+			[318449] = {32.7, 70.9, 10.9, 34.1, 60.7, 10.5, 33.2},
 			--Thought Harvester spawns
-			[316711] = {15, 25.6, 44.9, 29.7, 30.1},--, 43, 31.7
+			[316711] = {15, 25.6, 44.9, 29.7, 30.1, 43, 30.5, 30.4},
 			--Evoke Anquish
-			[317102] = {15.3, 46.2, 31.6, 44.9, 37.7, 15.8, 51, 37.7},
+			[317102] = {15.3, 46.1, 31.6, 44.9, 37.7, 15.8, 51, 37.7},
 			--Stupefying Glare
-			[317874] = {},
+			[317874] = {40.5, 67.5, 105.5},
 		},
 	},
 	["heroic"] = {
-		[2] = {--TODO: Stage 2 timer sequences likely all go longer if a successful shattered ego doesn't trigger to restart the shattered ego timer cycles
+		[2] = {--Same as Normal and LFR
 			--Basher tentacles
 			[318714] = {23, 55.0, 50.0},
 			--Paranoia
 			[315927] = {50, 56.1, 48.6},
 			--Eternal Torment
-			[318449] = {35.3, 56, 29.3, 19.5},
+			[318449] = {35.3, 55.8, 29.3, 19.5, 29.1},
 		},
 		[3] = {
 			--Eternal Torment
-			[318449] = {32.8, 70.9, 10.5, 24.5, 10.9, 23.2, 11, 23.1},--It might be that after first two casts it just alternates between 10.5 and 23.1?
+			[318449] = {32.7, 70.9, 10.5, 24.5, 10.9, 23.2, 11, 23.1},--It might be that after first two casts it just alternates between 10.5 and 23.1?
 			--Thought Harvester spawns
-			[316711] = {15.1, 25.1, 45, 31, 3.3, 30.2, 3.8},--, 31.6, 3.7, 30.4, 4.8 It might be that after 3rd cast, it just alternates between 29-30 and 3.7-4.8
+			[316711] = {15.1, 25.1, 45, 29.4, 3.3, 30.2, 3.8},--, 31.6, 3.7, 30.4, 4.8 It might be that after 3rd cast, it just alternates between 29-30 and 3.7-4.8
 			--Evoke Anquish
 			[317102] = {15.3, 45.2, 32.6, 30.6, 35.3, 35.3},
 			--Stupefying Glare
-			[317874] = {40.5, 67.5},
+			[317874] = {40.5, 67.5, 105.5},
 		},
 	},
 	["mythic"] = {
-		[1] = {--TODO: Stage 1 timer sequences likely all go longer if a successful shattered ego doesn't trigger to restart the shattered ego timer cycles
+		[1] = {--Unique to Mythic
 			--Basher tentacles
 			[318714] = {0, 35, 35, 50, 35},
 			--Paranoia
@@ -286,7 +287,7 @@ local allTimers = {
 			--Eternal Torment
 			[318449] = {25, 25, 25, 50, 25},
 		},
-		[2] = {
+		[2] = {--Unique to Mythic
 			--Thought Harvester spawns
 			[316711] = {9.5, 76.9, 26.7},
 			--Evoke Anquish
@@ -296,11 +297,11 @@ local allTimers = {
 			--Paranoia
 			[315927] = {56.6, 65.7},
 		},
-		[3] = {
+		[3] = {--Unique to Mythic
 			--Eternal Torment (Nzoth)
 			[318449] = {20, 6.1},--6.1 repeating
 			--Cleansing Protocol (Chamber)
-			[318449] = {25, 16, 12, 27, 29.9},
+			[316970] = {25, 16, 12, 27, 29.9},
 			--Event Horizon (Chamber)
 			[318196] = {20, 30, 30, 30},
 			--Dark Matter (Chamber)
@@ -381,13 +382,14 @@ local function stupefyingGlareLoop(self)
 				direction = DBM_CORE_RIGHT--ie Clockwise
 			end
 		end
-	--else--Not mythic
-		--Guessed same as mythic stage 2, but if wrong I'm sure i'll get feedback quickly
-	--	if self.vb.stupefyingGlareCount % 2 == 0 then
-	--		direction = DBM_CORE_LEFT--ie Clockwise
-	--	else
-	--		direction = DBM_CORE_RIGHT--ie counter clockwise
-	--	end
+	else--Not mythic
+		--Right, Left, Left (for LFR at least), assumed rest same since timers are
+		--TODO, verify normal and heroic one day, or maybe users will at least report it if it's wrong
+		if self.vb.stupefyingGlareCount == 1 then
+			direction = DBM_CORE_RIGHT--ie counter clockwise
+		elseif self.vb.stupefyingGlareCount == 2 or self.vb.stupefyingGlareCount == 3 then
+			direction = DBM_CORE_LEFT--ie Clockwise
+		end
 	end
 	specWarnStupefyingGlare:Show(self.vb.stupefyingGlareCount .. direction)
 	specWarnStupefyingGlare:Play("farfromline")
@@ -401,11 +403,19 @@ local function stupefyingGlareLoop(self)
 	end
 	local timer = allTimers[self.vb.difficultyName][self.vb.phase][317874][self.vb.stupefyingGlareCount+1]
 	if timer then
-		--Flip direction for next timer
-		if direction == DBM_CORE_RIGHT then
-			direction = DBM_CORE_LEFT
-		elseif direction == DBM_CORE_LEFT then
-			direction = DBM_CORE_RIGHT
+		if self:IsMythic() then
+			--Flip direction for next timer
+			if direction == DBM_CORE_RIGHT then
+				direction = DBM_CORE_LEFT
+			elseif direction == DBM_CORE_LEFT then
+				direction = DBM_CORE_RIGHT
+			end
+		else
+			--Right, Left, Left for LFR at least, assumed rest same since timers are
+			--TODO, verify normal and heroic one day, or maybe users will at least report it if it's wrong
+			if self.vb.stupefyingGlareCount == 1 or self.vb.stupefyingGlareCount == 2 then
+				direction = DBM_CORE_LEFT--ie counter clockwise for next one
+			end
 		end
 		warnStupefyingGlareSoon:Countdown(timer, 5)
 		timerStupefyingGlareCD:Start(timer, self.vb.stupefyingGlareCount+1 .. "-" .. direction)
@@ -486,13 +496,13 @@ function mod:OnCombatStart(delay)
 	else
 		if self:IsHeroic() then
 			self.vb.difficultyName = "heroic"
+			berserkTimer:Start(720-delay)
 		elseif self:IsNormal() then
 			self.vb.difficultyName = "normal"
 		else
 			self.vb.difficultyName = "lfr"
 		end
 		self.vb.phase = 0
-		berserkTimer:Start(720-delay)
 	end
 	UpdateTimerFades(self)
 	if UnitIsGroupLeader("player") and not self:IsLFR() then
@@ -587,7 +597,12 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 310184 then
 		if selfInMind then
-			warnCreepingAnguish:Show()
+			if self.Options.SpecWarn310184move then
+				specWarnCreepingAnguish:Show()
+				specWarnCreepingAnguish:Play("moveboss")
+			else
+				warnCreepingAnguish:Show()
+			end
 		end
 		timerCreepingAnguishCD:Start(self:IsMythic() and 26.6 or 28.2)
 	elseif spellId == 310134 then
@@ -720,11 +735,9 @@ function mod:SPELL_CAST_START(args)
 			timerThoughtHarvesterCD:Start(15, 1)
 			timerEternalTormentCD:Start(32.8, 1)
 			timerMindgraspCD:Start(71.7)
-			if self:IsHeroic() then--Only place I've verified, need to find some normal videos/vods
-				warnStupefyingGlareSoon:Countdown(40.5, 5)
-				timerStupefyingGlareCD:Start(40.5, 1 .. "L")--direction not confirmed
-				self:Schedule(40.5, stupefyingGlareLoop, self)
-			end
+			warnStupefyingGlareSoon:Countdown(40.5, 5)
+			timerStupefyingGlareCD:Start(40.5, 1 .. "R")--direction confirmed in LFR, but not in other difficulties
+			self:Schedule(40.5, stupefyingGlareLoop, self)
 		end
 	elseif spellId == 316463 then
 		warnMindGate:Show()
@@ -867,7 +880,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnParanoia:Play("gather")
 				playerIsInPair = true
 			end
-			if not self:IsLFR() and playerIsInPair then--Only repeat yell on mythic and mythic+
+			if playerIsInPair then--Only repeat yell on mythic and mythic+
 				self:Unschedule(paranoiaYellRepeater)
 				if type(icon) == "number" then icon = DBM_CORE_AUTO_YELL_CUSTOM_POSITION:format(icon, "") end
 				self:Schedule(2, paranoiaYellRepeater, self, icon)
@@ -1109,7 +1122,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 				end
 			elseif cid == 162933 then--Thought Harvester
 				self.vb.harvestersAlive = self.vb.harvestersAlive + 1
-				if self:AntiSpam(3, 1) then
+				if self:IsMythic() and self:AntiSpam(5, 1) or self:AntiSpam(3, 1) then
 					self.vb.harvesterCount = self.vb.harvesterCount + 1
 					if self.Options.SpecWarnej21308switch then
 						specWarnThoughtHarvester:Show(self.vb.harvesterCount)
@@ -1177,7 +1190,11 @@ function mod:UNIT_POWER_FREQUENT(uId)
 		return
 	end
 	if self:AntiSpam(5, 6) then--Additional throttle in case you lose sanity VERY rapidly with increased ICD for special warning
-		if currentSanity == 15 and lastSanity > 15 then
+		if currentSanity == 5 and lastSanity > 5 then
+			lastSanity = 5
+			specwarnSanity:Show(lastSanity)
+			specwarnSanity:Play("lowsanity")
+		elseif currentSanity == 15 and lastSanity > 15 then
 			lastSanity = 15
 			specwarnSanity:Show(lastSanity)
 			specwarnSanity:Play("lowsanity")

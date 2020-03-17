@@ -1,35 +1,15 @@
 # Deadly Boss Mods Core
 
-## [8.3.14](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/8.3.14) (2020-02-18)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/8.3.13...8.3.14)
+## [8.3.17](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/8.3.17) (2020-03-11)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/8.3.16...8.3.17)
 
-- Prep Tag, since there been a few fixes since then  
-- Prevent GetSpellInfo from being queried on phase announces, to eliminate false debug reports  
-- Some minor sync code cleanup, no changes  
-- Further optimize guild communication by no longer sending version information in guild comms if our version is out of date (since guild version comms are ONLY used by update notification). This is miniscule at best, but it's still a better practice.  
-    Fixed a bug where mod hotfix notification never actually notified that a newer RELEASE was available with mod fixes, it only ever notified alpha  
-- Fix another shadhar lua error  
-- harvester spawn data tweaks  
-- Fix a nil error (#153)  
-    Another lowercase start :P  
-- Attempt to fix black volley, gaze, and cataclysmic flames timers continuing when a psychus phase has ended with additional blocks from the timers starting if a CLEU occures after psychus death.  
-    Moved flash checkbox over 10 pixels in special warning GUI so it's less likely to be slightly covered when users have long file name sounds installed  
-- Fix error on nil value (#152)  
-- One last attempt to fix shadhar taunt warnings. If this still doesn't work I'll be removing the taunt warnings since I can't personally get into raid and run debug code myself on it.  
-- Fix lua error on ra-den  
-- Cleaned up hivemind now that it's confirmed LFR timers are in fact identical to normal. Fight only has 3 energy rates, not 4  
-- Re-Add more heroic harvester timer data  
-- KR Update (#151)  
-    * KR Update  
-- Improved logic for Annihilation on Vexiona  
-     - If you are tanking the mob casting it, dbm will no longer incorrectly tell you to dodge it. Instead it'll show you defensive warning instead.  
-     - If you are the player CASTING it, dbm will no longer tell you to dodge it, because obviously you're the caster. you need no warning for that.  
-- Update GUI zhTW.lua (#150)  
-- Added interrupt rotation control to Xanesh to allow raiders to control how many people they want in reach rotation  
-- Added icon marking option for Thought Harvesters, using same icons as corruptors earlier in fight.  
-    Finished cleaning up dungeons of unused stuff.  
-- Add more normal harvester data  
-- Fix vexiona's creature Id so boss health reporting works  
-- Reverted second thought harvester timer on phase 3 mythic back to old timer, the wierd 82 timer was a fluke and the 76.9 feels more accurate.  
-    Fixed missing stage 2 paranoia timer that accidentally got removed when managing mod in offline mode  
-    Began dungeon mod cleanup of unused stuff, starting with shrine of the storms  
+- Carapace of Nzoth Update  
+     - Updated all timers for carapace for LFR difficulty.  
+     - Added debug collection code for remaining timers that simply cannot be updated without special logs from transcriptor (or this debug). It'll work similar ot harvester collection code does. if DBM prints any timers out during carapace, please report it in DBM's discord or @deadlybossmods on twitter.  
+     - Added timer auto correction to heroic carapace at true start of phase 2 (fury reaching P2 position) that'll attempt to correct the initial Phase 2 timers that start on application of synthesis (not true phase 2 start, just most practical place to start timers). This will improve initial timer accuracy while still providing the earlier triggered estimates still. this is a behavior that mythic version off fight already did.  
+- Updated Nzoth timer data with launch of LFR.  
+     - Normal and LFR should now have Glare/beam timers.  
+     - Heroic (based on parallel to normal/LFR) should have one additional beam timer  
+     - Arrows and directions for glares should now be present in LFR, Normal, and Heroic (hopefully correct, if not, report it).  
+- Remove Paranoia Yell restriction in LFR. players need all the help they can get in LFR  
+- Update localization.cn.lua (#160)  
