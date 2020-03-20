@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200311230502")
+mod:SetRevision("20200317034546")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetZone()
-mod:SetHotfixNoticeRev(20200131000000)--2020, 1, 31
-mod:SetMinSyncRevision(20200131000000)
+mod:SetHotfixNoticeRev(20200315000000)--2020, 3, 15
+mod:SetMinSyncRevision(20200315000000)--2020, 3, 15
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -117,20 +117,19 @@ local lastSanity = 100
 --Debug
 local lastGazeTime = 0
 local debugSpawnTable = {}
-local lastGrowthTime = 0
-local debugSpawnTable2 = {}
 
 local function thrashingTentacleLoop(self)
 	self.vb.TentacleCount = self.vb.TentacleCount + 1
 	specWarnThrashingTentacle:Show(self.vb.TentacleCount)
 	specWarnThrashingTentacle:Play("watchstep")
 	timerThrashingTentacleCD:Start(20, self.vb.TentacleCount+1)
-	self:Schedule(20, thrashingTentacleLoop, self)
+	--LFR confirmed, mythic confirmed. heroic and normal iffy
+	self:Schedule(self:IsLFR() and 28 or self:IsNormal() and 24 or 20, thrashingTentacleLoop, self)
 end
 
 local function phaseOneTentacleLoop(self)
 	self.vb.TentacleCount = self.vb.TentacleCount + 1
-	local timer = self:IsHard() and 63.5 or 73.1
+	local timer = self:IsMythic() and 63.5 or self:IsHeroic() and 60 or self:IsNormal() and 74.9 or 85.6
 	specWarnGrowthCoveredTentacle:Show(self.vb.TentacleCount)
 	specWarnGrowthCoveredTentacle:Play("watchstep")
 	timerGrowthCoveredTentacleCD:Start(timer, self.vb.TentacleCount+1)
@@ -149,8 +148,6 @@ function mod:OnCombatStart(delay)
 	lastSanity = 100
 	lastGazeTime = GetTime()
 	table.wipe(debugSpawnTable)
-	lastGrowthTime = GetTime()
-	table.wipe(debugSpawnTable2)
 	if self:IsMythic() then
 		timerMentalDecayCD:Start(9.1-delay)--SUCCESS
 		timerMandibleSlamCD:Start(9.3-delay)
@@ -171,20 +168,20 @@ function mod:OnCombatStart(delay)
 		timerGrowthCoveredTentacleCD:Start(30-delay, 1)
 	elseif self:IsNormal() then--Normal confirmed, LFR assumed
 		timerMadnessBombCD:Start(5.8-delay, 1)--SUCCESS
-		timerGazeofMadnessCD:Start(12.1-delay, 1)--Unknown, guessed by 0.82 adjustment
+		--timerGazeofMadnessCD:Start(12.1-delay, 1)--Unknown, guessed by 0.82 adjustment
 		timerMentalDecayCD:Start(14.8-delay)--SUCCESS 12.1?
 		timerAdaptiveMembraneCD:Start(19.5-delay, 1)--SUCCESS
 		timerMandibleSlamCD:Start(20-delay)
-		timerGrowthCoveredTentacleCD:Start(36-delay, 1)--Unknown, guessed by 0.82 adjustment
+		timerGrowthCoveredTentacleCD:Start(37.5-delay, 1)--Confirmed via debug
 	else--LFR
 		timerMadnessBombCD:Start(6.3-delay, 1)--SUCCESS
-		timerGazeofMadnessCD:Start(13.7-delay, 1)--Unknown, guessed by 0.88 adjustment
+		--timerGazeofMadnessCD:Start(13.7-delay, 1)--Not in LFR?
 		timerMentalDecayCD:Start(16.7-delay)--SUCCESS 12.1?
 		timerAdaptiveMembraneCD:Start(22-delay, 1)--SUCCESS
 		timerMandibleSlamCD:Start(22.8-delay)
-		timerGrowthCoveredTentacleCD:Start(41-delay, 1)--Unknown, guessed by 0.88 adjustment
+		timerGrowthCoveredTentacleCD:Start(43-delay, 1)--Confirmed via debug
 	end
-	berserkTimer:Start(780-delay)
+	berserkTimer:Start(self:IsEasy() and 840 or 780)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
 		DBM.InfoFrame:Show(8, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, 2)--Sorting lowest to highest
@@ -208,10 +205,6 @@ function mod:OnCombatEnd()
 	if #debugSpawnTable > 0 then
 		local message = table.concat(debugSpawnTable, ", ")
 		DBM:AddMsg("Gaze Spawns collected. Please report these numbers and raid difficulty to DBM author: "..message)
-	end
-	if #debugSpawnTable2 > 0 then
-		local message = table.concat(debugSpawnTable2, ", ")
-		DBM:AddMsg("Growth Spawns collected. Please report these numbers and raid difficulty to DBM author: "..message)
 	end
 end
 
@@ -530,13 +523,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		self.vb.TentacleCount = self.vb.TentacleCount + 1
 		specWarnGrowthCoveredTentacle:Show(self.vb.TentacleCount)
 		specWarnGrowthCoveredTentacle:Play("watchstep")
-		if self:IsHard() then
-			timerGrowthCoveredTentacleCD:Start(60, self.vb.TentacleCount+1)
-		else
-			local currentTime = GetTime() - lastGrowthTime
-			debugSpawnTable2[#debugSpawnTable2 + 1] = math.floor(currentTime*10)/10--Floored but only after trying to preserve at least one decimal place
-			lastGrowthTime = GetTime()
-		end
+		timerGrowthCoveredTentacleCD:Start(self:IsMythic() and 63.5 or self:IsHeroic() and 60 or self:IsNormal() and 74.9 or 85.6, self.vb.TentacleCount+1)
 	end
 end
 
@@ -613,8 +600,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 				timerMentalDecayCD:Start(14.5)--SUCCESS
 				timerMandibleSlamCD:Start(20.9)
 				timerInsanityBombCD:Start(26.1)--SUCCESS
-				timerThrashingTentacleCD:Start(32, 1)--Probably wrong
-				self:Schedule(32, thrashingTentacleLoop, self)--Probably wrong
+				timerThrashingTentacleCD:Start(39, 1)--Probably wrong (Guessed by 0.82 calculation from heroic)
+				self:Schedule(39, thrashingTentacleLoop, self)--Probably wrong
 				timerAdaptiveMembraneCD:Start(46.6, 1)--SUCCESS
 				timerEternalDarknessCD:Start(67, 1)
 			else--LFR
@@ -622,8 +609,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 				timerMentalDecayCD:Start(14.3)--SUCCESS
 				timerMandibleSlamCD:Start(21.8)
 				timerInsanityBombCD:Start(27.6)--SUCCESS
-				timerThrashingTentacleCD:Start(32, 1)--Probably wrong
-				self:Schedule(32, thrashingTentacleLoop, self)--Probably wrong
+				timerThrashingTentacleCD:Start(43, 1)
+				self:Schedule(43, thrashingTentacleLoop, self)
 				timerAdaptiveMembraneCD:Start(51, 1)--SUCCESS
 				timerEternalDarknessCD:Start(74.7, 1)
 			end
