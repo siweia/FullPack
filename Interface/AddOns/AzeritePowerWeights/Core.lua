@@ -3435,8 +3435,8 @@ local SlashHandlers = {
 		--ReloadUI()
 	end,
 	["ticket"] = function()
-		local text = ("%s %s/%d/%s (%s)\nSettings: "):format(ADDON_NAME, GetAddOnMetadata(ADDON_NAME, "Version"), C_CVar.GetCVar("scriptErrors"), cfg.specScales[playerSpecID].scaleName or L.ScaleName_Unknown, cfg.specScales[playerSpecID].scaleID)
-		local first = true
+		local text = ("%s %s/%d/%s (%s)\nSettings: Locale: %s"):format(ADDON_NAME, GetAddOnMetadata(ADDON_NAME, "Version"), C_CVar.GetCVar("scriptErrors"), cfg.specScales[playerSpecID].scaleName or L.ScaleName_Unknown, cfg.specScales[playerSpecID].scaleID, GetLocale() or "n/a")
+		--local first = true
 		local skip = {
 			["debug"] = true,
 			["enableTraits"] = false,
@@ -3463,12 +3463,12 @@ local SlashHandlers = {
 		}
 		for key, _ in pairs(charDefaults) do
 			if not skip[key] then
-				if first then
-					first = false
-					text = text .. ("%s: %s"):format(key, tostring(cfg[key]))
-				else
+				--if first then
+				--	first = false
+				--	text = text .. ("%s: %s"):format(key, tostring(cfg[key]))
+				--else
 					text = text .. (", %s: %s"):format(key, tostring(cfg[key]))
-				end
+				--end
 			end
 		end
 		if n.Tstring then
@@ -3654,7 +3654,7 @@ local SlashHandlers = {
 			[2] =	3	+	1	-	1	-	0, -- Paladin (+1 for TMI, -1 for Holy)
 			[3] =	3	+	0	-	0	-	0, -- Hunter
 			[4] =	3	+	0	-	0	-	0, -- Rogue
-			[5] =	3	+	0	-	2	-	0, -- Priest (-1 for Disc, -1 for Holy)
+			[5] =	3	+	0	-	1	-	0, -- Priest (-1 for Disc)
 			[6] =	3	+	1	-	0	-	0, -- Death Knight (+1 for TMI)
 			[7] =	3	+	1	-	1	-	0, -- Shaman (+1 for Resto Off, -1 for Resto)
 			[8] =	3	+	0	-	0	-	0, -- Mage
@@ -3666,13 +3666,13 @@ local SlashHandlers = {
 		--[[
 			Holy Paladin
 			Disc Priest
-			Holy Priest
+			---Holy Priest---
 			Restoratio Shaman
 			Mistweaver Monk
 			Restoration Druid
 			---
 		]]--
-		local emptySpecs = 6
+		local emptySpecs = 5
 		for _, v in ipairs(n.defaultScalesData) do
 			if next(v[4]) or next(v[5]) then -- Check for not empty scales
 				numSpecs[v[2]] = numSpecs[v[2]] - 1
