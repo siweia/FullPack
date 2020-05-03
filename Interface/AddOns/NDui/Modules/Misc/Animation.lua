@@ -10,7 +10,7 @@ local needAnimation
 function M:Logo_PlayAnimation()
 	if needAnimation then
 		M.logoFrame:Show()
-		B:UnregisterEvent("LOADING_SCREEN_DISABLED", M.Logo_PlayAnimation)
+		B:UnregisterEvent(self, M.Logo_PlayAnimation)
 		needAnimation = false
 	end
 end
@@ -19,16 +19,15 @@ function M:Logo_CheckStatus(isInitialLogin)
 	if isInitialLogin and not (IsInInstance() and InCombatLockdown()) then
 		needAnimation = true
 		M:Logo_Create()
-	else
-		B:UnregisterEvent("LOADING_SCREEN_DISABLED", M.Logo_PlayAnimation)
+		B:RegisterEvent("PLAYER_STARTED_MOVING", M.Logo_PlayAnimation)
 	end
-	B:UnregisterEvent("PLAYER_ENTERING_WORLD", M.Logo_CheckStatus)
+	B:UnregisterEvent(self, M.Logo_CheckStatus)
 end
 
 function M:Logo_Create()
 	local frame = CreateFrame("Frame", nil, UIParent)
-	frame:SetSize(200, 100)
-	frame:SetPoint("CENTER", -500, 350)
+	frame:SetSize(300, 150)
+	frame:SetPoint("BOTTOM", -500, GetScreenHeight()*.618)
 	frame:SetFrameStrata("HIGH")
 	frame:SetAlpha(0)
 	frame:Hide()
@@ -37,7 +36,7 @@ function M:Logo_Create()
 	tex:SetAllPoints()
 	tex:SetTexture(DB.logoTex)
 
-	local delayTime = 3
+	local delayTime = 0
 	local timer1 = .5
 	local timer2 = 2.5
 	local timer3 = .2
@@ -99,12 +98,12 @@ end
 
 function M:LoginAnimation()
 	B:RegisterEvent("PLAYER_ENTERING_WORLD", M.Logo_CheckStatus)
-	B:RegisterEvent("LOADING_SCREEN_DISABLED", M.Logo_PlayAnimation)
 
 	function PlayNDuiLogo()
 		if not M.logoFrame then
 			M:Logo_Create()
 		end
 		M.logoFrame:Show()
+		if DB.isDeveloper then print("Play logo") end
 	end
 end
