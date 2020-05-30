@@ -1,10 +1,22 @@
-lightweight tag 646732e0a6bcbcbde4a5969a85ddd1be5d2bad41 DetailsRetail.8.3.0.7330.140
+lightweight tag 2ccc88cf31796e95dba0647b63479a7ec22a51c9 DetailsRetail.8.3.0.7334.140
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sun May 24 12:42:43 2020 -0300
+Date:	Sat May 30 11:24:31 2020 -0300
 
-commit 646732e0a6bcbcbde4a5969a85ddd1be5d2bad41
+commit 2ccc88cf31796e95dba0647b63479a7ec22a51c9
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 24 12:42:43 2020 -0300
+Date:   Sat May 30 11:24:31 2020 -0300
 
-    Fixed AutoHide in Battlegrounds
+    Players can now ignore spells from the Spells List, to access go to Options Panel > Spell List > All Spells
+
+commit d51dfc336a6a471d454e070f5ed49ae6faaff54d
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri May 29 19:14:43 2020 -0300
+
+    Increase revision
+
+commit 8667265b2475144428ab7c2667903dcba5927582
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri May 29 13:02:32 2020 -0300
+
+    Added a Ignore field into the Spell List so users can blacklist spells from there
 
