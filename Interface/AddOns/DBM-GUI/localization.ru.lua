@@ -229,20 +229,23 @@ L.EventFilterMythicMusic	= "Не проигрывать музыку боя на
 
 -- Tab: Global Filter
 L.Panel_SpamFilter			= "Глобальные отключения и фильтры"
-L.Area_SpamFilter_Outgoing	= "Настройки глобальных отключений и фильтров"
+L.Area_SpamFilter_Anounces	= "Announce Global Disable & Filter Options"
 L.SpamBlockNoShowAnnounce	= "Не показывать текст или проигрывать звук для ЛЮБЫХ общих объявлений"
 L.SpamBlockNoShowTgtAnnounce= "Не показывать текст или проигрывать звук для общих объявлений ЦЕЛИ (фильтр выше переопределяет этот)"
-L.SpamBlockNoSpecWarn		= "Не показывать спец-предупреждения и не проигрывать звуки для них"
 L.SpamBlockNoSpecWarnText	= "Не показывать текст спец-предупреждений, но разрешить голосовые пакеты (фильтр выше переопределяет этот)"
+
+L.Area_SpamFilter_Timers	= "Timer Global Disable & Filter Options"
 L.SpamBlockNoShowTimers		= "Не показывать таймеры (отсчет времени)"
 L.SpamBlockNoShowUTimers	= "Не показывать таймеры, отправленные пользователями (пользов./пул/отдых)"
+L.SpamBlockNoCountdowns		= "Не воспроизводить звуки обратного отсчета"
+
+L.Area_SpamFilter_Misc		= "Misc Global Disable & Filter Options"
 L.SpamBlockNoSetIcon		= "Не устанавливать метки на цели"
 L.SpamBlockNoRangeFrame		= "Не показывать окно проверки дистанции"
 L.SpamBlockNoInfoFrame		= "Не показывать информационное окно"
 L.SpamBlockNoHudMap			= "Не показывать HudMap"
 L.SpamBlockNoNameplate		= "Не показывать Nameplate Auras (отключает полностью)"
 L.SpamBlockNoNameplateLines	= "Не показывать линии Nameplate Aura (иконки аур будут отображаться)"
-L.SpamBlockNoCountdowns		= "Не воспроизводить звуки обратного отсчета"
 L.SpamBlockNoYells			= "Не отправлять крики в чат"
 L.SpamBlockNoNoteSync		= "Не принимать заметки"
 L.SpamBlockNoReminders		= "Не показывать никаких сообшений при входе в игру, рекомендаций или об обновлениях (НЕ рекомендуется)"
@@ -286,7 +289,6 @@ L.DisableSFX				= "Отключить канал звуковых эффекто
 L.DisableCinematics			= "Отключить внутриигровые ролики"
 L.OnlyFight					= "Только во время боя, после того как ролик был показан один раз"
 L.AfterFirst				= "После одного просмотра"
-L.Always					= "Всегда"
 L.CombatOnly				= "Отключить в бою (любом)"
 L.RaidCombat				= "Отключить в бою (только боссы)"
 
