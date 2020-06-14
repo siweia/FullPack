@@ -606,8 +606,7 @@ L["STRING_OPTIONS_COMBAT_ALPHA_4"] = "Enquanto fora de um grupo"
 L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "Quando não Estiver Em Instância"
 L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "Quando Estiver em Instância"
 L["STRING_OPTIONS_COMBAT_ALPHA_7"] = "Raid Debug"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_COMBAT_ALPHA_8"] = ""--]] 
+L["STRING_OPTIONS_COMBAT_ALPHA_8"] = "No Campo de batalha"
 L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[Seleciona a forma como o combate afeta a transparência da janela.
 
 |cFFFFFF00Nenhuma modificação|r: Não modifica o alpha.
@@ -845,8 +844,8 @@ L["STRING_OPTIONS_OVERALL_DUNGEONCLEAN"] = "'Trash' de Masmorra"
 L["STRING_OPTIONS_OVERALL_DUNGEONCLEAN_DESC"] = "Segmentos de limpeza de 'trash mobs' em masmorras são adicionados aos dados globais."
 L["STRING_OPTIONS_OVERALL_LOGOFF"] = "Limpar ao Deslogar"
 L["STRING_OPTIONS_OVERALL_LOGOFF_DESC"] = "Quando ativado, os dados gerais de combate são automaticamente apagados quando seu personagem efetua logoff."
-L["STRING_OPTIONS_OVERALL_MYTHICPLUS"] = "Limpar ao Iniciar Dungeon Mítica+"
-L["STRING_OPTIONS_OVERALL_MYTHICPLUS_DESC"] = "Limpa os dados do overall quando iniciar uma dungeon mítica+."
+L["STRING_OPTIONS_OVERALL_MYTHICPLUS"] = "Limpar ao Iniciar Masmorra Mítica+"
+L["STRING_OPTIONS_OVERALL_MYTHICPLUS_DESC"] = "Limpa os dados do overall quando iniciar uma masmorra mítica+."
 L["STRING_OPTIONS_OVERALL_NEWBOSS"] = "Limpar em um novo chefe de raide"
 L["STRING_OPTIONS_OVERALL_NEWBOSS_DESC"] = "Quando habilitado, os dados gerais são limpos automaticamente quando enfrentando um novo chefe."
 L["STRING_OPTIONS_OVERALL_RAIDBOSS"] = "Chefes de raide"
@@ -1549,7 +1548,7 @@ L["STRING_TOTAL"] = "Total"
 L["STRING_TRANSLATE_LANGUAGE"] = "Ajude a traduzir o Details!"
 L["STRING_TUTORIAL_FULLY_DELETE_WINDOW"] = [=[Você fechou uma janela e pode reabri-la quando quiser.
 Para deleta-la por completo, vá nas opções -> Janela: Geral -> Deletar.]=]
-L["STRING_TUTORIAL_OVERALL1"] = "ajuste o overall no painel de opções > PvE/PvP."
+L["STRING_TUTORIAL_OVERALL1"] = "A Data Overall atualiza apenas após o combate, clique com o botão direito na barra de título e escolha 'Dynamic Overall Damage' se você desejar atualizações regulares. "
 L["STRING_UNKNOW"] = "Desconhecido"
 L["STRING_UNKNOWSPELL"] = "Magia Desconhecida"
 L["STRING_UNLOCK"] = [=[Separe as janelas

@@ -602,8 +602,7 @@ L["STRING_OPTIONS_COMBAT_ALPHA_4"] = "파티가 아닐 때"
 L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "인스턴스 밖에 있을 때"
 L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "인스턴스 안에 있을 때"
 L["STRING_OPTIONS_COMBAT_ALPHA_7"] = "공격대 디버그"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_COMBAT_ALPHA_8"] = ""--]] 
+L["STRING_OPTIONS_COMBAT_ALPHA_8"] = "전장"
 L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[전투 상태가 창 투명도를 어떻게 변경할 지 선택하세요.
 
 |cFFFFFF00변경 없음|r: 투명도를 변경하지 않습니다.
@@ -1557,7 +1556,8 @@ L["STRING_TOTAL"] = "총량"
 L["STRING_TRANSLATE_LANGUAGE"] = "Details의 번역을 도와주세요!"
 L["STRING_TUTORIAL_FULLY_DELETE_WINDOW"] = [=[창을 닫았지만 언제든 다시 열수 있습니다.
 창을 완전히 삭제하려면 옵션 -> 창: 일반 -> 삭제 항목을 찾아보세요.]=]
-L["STRING_TUTORIAL_OVERALL1"] = "옵션 창 > PvE/PvP에서 종합 데이터 설정"
+--[[Translation missing --]]
+--[[ L["STRING_TUTORIAL_OVERALL1"] = ""--]] 
 L["STRING_UNKNOW"] = "알 수 없음"
 L["STRING_UNKNOWSPELL"] = "알 수 없는 주문"
 L["STRING_UNLOCK"] = [=[이 버튼으로

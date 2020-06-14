@@ -1,22 +1,28 @@
-lightweight tag 2ccc88cf31796e95dba0647b63479a7ec22a51c9 DetailsRetail.8.3.0.7334.140
+lightweight tag fe702cf97f9b718fc51a5c43555deaab72ce2b36 DetailsRetail.8.3.0.7336.141
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sat May 30 11:24:31 2020 -0300
+Date:	Mon Jun 8 19:40:11 2020 -0300
 
-commit 2ccc88cf31796e95dba0647b63479a7ec22a51c9
+commit fe702cf97f9b718fc51a5c43555deaab72ce2b36
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat May 30 11:24:31 2020 -0300
+Date:   Mon Jun 8 19:40:11 2020 -0300
 
-    Players can now ignore spells from the Spells List, to access go to Options Panel > Spell List > All Spells
+    Bump version
 
-commit d51dfc336a6a471d454e070f5ed49ae6faaff54d
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Fri May 29 19:14:43 2020 -0300
+commit b04b3473296f986f856c40a7a744cd0c4206699e
+Author: Cistoran <ivan017@gmail.com>
+Date:   Mon Jun 8 02:07:00 2020 -0600
 
-    Increase revision
+    Remove print messages for Spell Reflect spell info
 
-commit 8667265b2475144428ab7c2667903dcba5927582
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Fri May 29 13:02:32 2020 -0300
+commit b04b3473296f986f856c40a7a744cd0c4206699e
+Author: Cistoran <ivan017@gmail.com>
+Date:   Mon Jun 8 02:07:00 2020 -0600
 
-    Added a Ignore field into the Spell List so users can blacklist spells from there
+    Remove print messages for Spell Reflect spell info
+
+commit b04b3473296f986f856c40a7a744cd0c4206699e
+Author: Cistoran <ivan017@gmail.com>
+Date:   Mon Jun 8 02:07:00 2020 -0600
+
+    Remove print messages for Spell Reflect spell info
 
