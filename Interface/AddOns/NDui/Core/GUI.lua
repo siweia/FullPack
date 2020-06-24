@@ -3,7 +3,7 @@ local B, C, L, DB = unpack(ns)
 local G = B:RegisterModule("GUI")
 
 local tonumber, tostring, pairs, ipairs, next, select, type = tonumber, tostring, pairs, ipairs, next, select, type
-local tinsert, format, strsplit, strfind = table.insert, string.format, string.split, string.find
+local tinsert, strsplit, strfind = table.insert, string.split, string.find
 local cr, cg, cb = DB.r, DB.g, DB.b
 local guiTab, guiPage, f, dataFrame = {}, {}
 
@@ -139,6 +139,8 @@ local defaultSettings = {
 		PartyWatcherSync = true,
 		SmoothAmount = .3,
 		RaidTextScale = 1,
+		FrequentHealth = false,
+		HealthFrequency = .25,
 
 		PlayerWidth = 245,
 		PlayerHeight = 24,
@@ -549,6 +551,10 @@ local function updateSimpleModeGroupBy()
 	end
 end
 
+local function updateRaidHealthMethod()
+	B:GetModule("UnitFrames"):UpdateRaidHealthMethod()
+end
+
 local function updateSmoothingAmount()
 	B:SetSmoothingAmount(NDuiDB["UFs"]["SmoothAmount"])
 end
@@ -723,7 +729,9 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{4, "UFs", "RaidHealthColor", L["HealthColor"], nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}},
 		{4, "UFs", "RaidHPMode", L["RaidHPMode"].."*", true, {L["DisableRaidHP"], L["RaidHPPercent"], L["RaidHPCurrent"], L["RaidHPLost"]}, updateRaidNameText},
 		{3, "UFs", "NumGroups", L["Num Groups"], nil, {4, 8, 1}},
-		{3, "UFs", "RaidTextScale", L["UFTextScale"], true, {.8, 1.5, .05}, updateRaidTextScale},
+		{1, "UFs", "FrequentHealth", "|cff00cc4c"..L["FrequentHealth"].."*", true, nil, updateRaidHealthMethod, L["FrequentHealthTip"]},
+		{3, "UFs", "RaidTextScale", L["UFTextScale"], nil, {.8, 1.5, .05}, updateRaidTextScale},
+		{3, "UFs", "HealthFrequency", L["HealthFrequency"].."*", true, {.1, .5, .05}, updateRaidHealthMethod, L["HealthFrequencyTip"]},
 		{},--blank
 		{1, "UFs", "SimpleMode", "|cff00cc4c"..L["SimpleRaidFrame"], nil, nil, nil, L["SimpleRaidFrameTip"]},
 		{3, "UFs", "SMUnitsPerColumn", L["SimpleMode Column"], nil, {10, 40, 1}},
@@ -865,8 +873,8 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Skins", "FlatMode", L["FlatMode"], true},
 		{1, "Skins", "Shadow", L["Shadow"]},
 		{1, "Skins", "FontOutline", L["FontOutline"], true},
-		{3, "Skins", "SkinAlpha", L["SkinAlpha"].."*", nil, {0, 1, .1}, updateSkinAlpha},
-		{3, "Skins", "FontScale", L["GlobalFontScale"], true, {.5, 1.5, .1}},
+		{3, "Skins", "SkinAlpha", L["SkinAlpha"].."*", nil, {0, 1, .05}, updateSkinAlpha},
+		{3, "Skins", "FontScale", L["GlobalFontScale"], true, {.5, 1.5, .05}},
 		{},--blank
 		{1, "Skins", "ClassLine", L["ClassColor Line"]},
 		{1, "Skins", "InfobarLine", L["Infobar Line"], true},
