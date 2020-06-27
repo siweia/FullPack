@@ -24,25 +24,18 @@ tinsert(C.defaultThemes, function()
 	B.ReskinInput(BankItemSearchBox)
 
 	local function styleBankButton(bu)
-		local border = bu.IconBorder
-		local questTexture = bu.IconQuestTexture
-		local searchOverlay = bu.searchOverlay
-
-		questTexture:SetDrawLayer("BACKGROUND")
-		questTexture:SetSize(1, 1)
-
-		border:SetTexture(DB.bdTex)
-		border.SetTexture = B.Dummy
-		border:SetOutside()
-		border:SetDrawLayer("BACKGROUND", 1)
-		searchOverlay:SetOutside()
-
 		bu:SetNormalTexture("")
 		bu:SetPushedTexture("")
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		bu.searchOverlay:SetOutside()
 
 		bu.icon:SetTexCoord(unpack(DB.TexCoord))
-		B.CreateBDFrame(bu, .25)
+		bu.bg = B.CreateBDFrame(bu.icon, .25)
+		B.HookIconBorderColor(bu.IconBorder)
+
+		local questTexture = bu.IconQuestTexture
+		questTexture:SetDrawLayer("BACKGROUND")
+		questTexture:SetSize(1, 1)
 	end
 
 	for i = 1, 28 do
@@ -51,22 +44,15 @@ tinsert(C.defaultThemes, function()
 
 	for i = 1, 7 do
 		local bag = BankSlotsFrame["Bag"..i]
-		local border = bag.IconBorder
-		local searchOverlay = bag.searchOverlay
-
 		bag:SetNormalTexture("")
 		bag:SetPushedTexture("")
 		bag:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		bag.SlotHighlightTexture:SetTexture(DB.textures.pushed)
-
-		border:SetTexture(DB.bdTex)
-		border.SetTexture = B.Dummy
-		border:SetOutside()
-		border:SetDrawLayer("BACKGROUND", 1)
-		searchOverlay:SetOutside()
+		bag.SlotHighlightTexture:SetColorTexture(1, .8, 0, .25)
+		bag.searchOverlay:SetOutside()
 
 		bag.icon:SetTexCoord(unpack(DB.TexCoord))
-		B.CreateBDFrame(bag, .25)
+		bag.bg = B.CreateBDFrame(bag.icon, .25)
+		B.HookIconBorderColor(bag.IconBorder)
 	end
 
 	BankItemAutoSortButton:GetNormalTexture():SetTexCoord(.17, .83, .17, .83)
@@ -99,7 +85,9 @@ tinsert(C.defaultThemes, function()
 	ReagentBankFrame:HookScript("OnShow", function()
 		if not reagentButtonsStyled then
 			for i = 1, 98 do
-				styleBankButton(_G["ReagentBankFrameItem"..i])
+				local button = _G["ReagentBankFrameItem"..i]
+				styleBankButton(button)
+				BankFrameItemButton_Update(button)
 			end
 			reagentButtonsStyled = true
 		end
