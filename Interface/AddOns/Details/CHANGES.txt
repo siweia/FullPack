@@ -1,28 +1,16 @@
-lightweight tag fe702cf97f9b718fc51a5c43555deaab72ce2b36 DetailsRetail.8.3.0.7336.141
+lightweight tag f04ee964d9239fdb9ab69ccb77d902339c0a7b1f DetailsRetail.8.3.0.7345.141
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Mon Jun 8 19:40:11 2020 -0300
+Date:	Sun Jun 28 15:43:53 2020 -0300
 
-commit fe702cf97f9b718fc51a5c43555deaab72ce2b36
+commit f04ee964d9239fdb9ab69ccb77d902339c0a7b1f
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Jun 8 19:40:11 2020 -0300
+Date:   Sun Jun 28 15:43:53 2020 -0300
 
-    Bump version
+    More fixes for the Auto Hide feature
 
-commit b04b3473296f986f856c40a7a744cd0c4206699e
-Author: Cistoran <ivan017@gmail.com>
-Date:   Mon Jun 8 02:07:00 2020 -0600
+commit d545f1216ed75faa60606e6904d57d94cbabd7bc
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun Jun 28 15:23:50 2020 -0300
 
-    Remove print messages for Spell Reflect spell info
-
-commit b04b3473296f986f856c40a7a744cd0c4206699e
-Author: Cistoran <ivan017@gmail.com>
-Date:   Mon Jun 8 02:07:00 2020 -0600
-
-    Remove print messages for Spell Reflect spell info
-
-commit b04b3473296f986f856c40a7a744cd0c4206699e
-Author: Cistoran <ivan017@gmail.com>
-Date:   Mon Jun 8 02:07:00 2020 -0600
-
-    Remove print messages for Spell Reflect spell info
+    Fixes on the new feature Auto Hide
 
