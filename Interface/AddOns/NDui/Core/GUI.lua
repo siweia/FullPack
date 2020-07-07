@@ -145,9 +145,11 @@ local defaultSettings = {
 		PlayerWidth = 245,
 		PlayerHeight = 24,
 		PlayerPowerHeight = 4,
+		PlayerPowerOffset = 2,
 		FocusWidth = 200,
 		FocusHeight = 22,
 		FocusPowerHeight = 3,
+		FocusPowerOffset = 2,
 		PetWidth = 120,
 		PetHeight = 18,
 		PetPowerHeight = 2,
@@ -336,7 +338,7 @@ local accountSettings = {
 	DetectVersion = DB.Version,
 	ResetDetails = true,
 	LockUIScale = false,
-	UIScale = .8,
+	UIScale = .71,
 	NumberFormat = 1,
 	VersionCheck = true,
 	DBMRequest = false,
@@ -767,12 +769,12 @@ local optionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Nameplate", "Distance", L["Nameplate Distance"].."*", true, {20, 100, 1}, updatePlateRange},
 		{3, "Nameplate", "MinScale", L["Nameplate MinScale"].."*", false, {.5, 1, .1}, updatePlateScale},
 		{3, "Nameplate", "MinAlpha", L["Nameplate MinAlpha"].."*", true, {.5, 1, .1}, updatePlateAlpha},
-		{3, "Nameplate", "PlateWidth", L["NP Width"].."*(190)", false, {50, 250, 1}, refreshNameplates},
-		{3, "Nameplate", "PlateHeight", L["NP Height"].."*(8)", true, {5, 30, 1}, refreshNameplates},
-		{3, "Nameplate", "NameTextSize", L["NameTextSize"].."*(14)", false, {10, 30, 1}, refreshNameplates},
-		{3, "Nameplate", "HealthTextSize", L["HealthTextSize"].."*(16)", true, {10, 30, 1}, refreshNameplates},
+		{3, "Nameplate", "PlateWidth", L["NP Width"].."*", false, {50, 250, 1}, refreshNameplates},
+		{3, "Nameplate", "PlateHeight", L["NP Height"].."*", true, {5, 30, 1}, refreshNameplates},
+		{3, "Nameplate", "NameTextSize", L["NameTextSize"].."*", false, {10, 30, 1}, refreshNameplates},
+		{3, "Nameplate", "HealthTextSize", L["HealthTextSize"].."*", true, {10, 30, 1}, refreshNameplates},
 		{3, "Nameplate", "maxAuras", L["Max Auras"], false, {0, 10, 1}},
-		{3, "Nameplate", "AuraSize", L["Auras Size"].."(28)", true, {18, 40, 1}},
+		{3, "Nameplate", "AuraSize", L["Auras Size"], true, {18, 40, 1}},
 	},
 	[6] = {
 		{1, "AuraWatch", "Enable", "|cff00cc4c"..L["Enable AuraWatch"], nil, setupAuraWatch},
@@ -1066,6 +1068,7 @@ local function CreateOption(i)
 				offset = offset + 70
 			end
 			local s = B.CreateSlider(parent, name, min, max, step, x, y)
+			s.__default = (key == "ACCOUNT" and accountSettings[value]) or defaultSettings[key][value]
 			s:SetValue(NDUI_VARIABLE(key, value))
 			s:SetScript("OnValueChanged", function(_, v)
 				local current = B:Round(tonumber(v), 2)
@@ -1512,19 +1515,34 @@ local function OpenGUI()
 		exportData()
 	end)
 
-	local optTip = B.CreateFS(f, 14, L["Option* Tips"], "system", "LEFT", 0, 0)
-	optTip:SetPoint("LEFT", reset, "RIGHT", 15, 0)
+	local optTip = CreateFrame("Button", nil, f)
+	optTip:SetPoint("TOPLEFT", 20, -5)
+	optTip:SetSize(45, 45)
+	optTip.Icon = optTip:CreateTexture(nil, "ARTWORK")
+	optTip.Icon:SetAllPoints()
+	optTip.Icon:SetTexture(616343)
+	optTip:SetHighlightTexture(616343)
+	optTip:SetScript("OnEnter", function()
+		GameTooltip:ClearLines()
+		GameTooltip:SetOwner(f, "ANCHOR_NONE")
+		GameTooltip:SetPoint("TOPRIGHT", f, "TOPLEFT", -5, -3)
+		GameTooltip:AddLine(L["Tips"])
+		GameTooltip:AddLine(L["Option* Tips"], .6,.8,1, 1)
+		GameTooltip:Show()
+	end)
+	optTip:SetScript("OnLeave", B.HideTooltip)
 
 	local credit = CreateFrame("Button", nil, f)
-	credit:SetPoint("TOPRIGHT", -20, -15)
-	credit:SetSize(35, 35)
+	credit:SetPoint("TOPRIGHT", -20, -5)
+	credit:SetSize(45, 45)
 	credit.Icon = credit:CreateTexture(nil, "ARTWORK")
 	credit.Icon:SetAllPoints()
 	credit.Icon:SetTexture(DB.creditTex)
 	credit:SetHighlightTexture(DB.creditTex)
 	credit:SetScript("OnEnter", function()
 		GameTooltip:ClearLines()
-		GameTooltip:SetOwner(f, "ANCHOR_TOPRIGHT", 0, 3)
+		GameTooltip:SetOwner(f, "ANCHOR_NONE")
+		GameTooltip:SetPoint("TOPLEFT", f, "TOPRIGHT", 5, -3)
 		GameTooltip:AddLine("Credits:")
 		GameTooltip:AddLine(GetAddOnMetadata("NDui", "X-Credits"), .6,.8,1, 1)
 		GameTooltip:Show()
