@@ -2,7 +2,7 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local module = B:GetModule("Chat")
 
-local strfind, strmatch, gsub = string.find, string.match, string.gsub
+local strfind, strmatch, gsub, strrep = string.find, string.match, string.gsub, string.rep
 local pairs, ipairs, tonumber = pairs, ipairs, tonumber
 local min, max, tremove = math.min, math.max, table.remove
 local IsGuildMember, C_FriendList_IsFriend, IsGUIDInGroup, C_Timer_After = IsGuildMember, C_FriendList.IsFriend, IsGUIDInGroup, C_Timer.After
@@ -132,7 +132,7 @@ end
 
 -- Block addon msg
 local addonBlockList = {
-	"任务进度提示", "%[接受任务%]", "%(任务完成%)", "<大脚", "【爱不易】", "EUI[:_]", "打断:.+|Hspell", "PS 死亡: .+>", "%*%*.+%*%*", "<iLvl>", ("%-"):rep(20),
+	"任务进度提示", "%[接受任务%]", "%(任务完成%)", "<大脚", "【爱不易】", "EUI[:_]", "打断:.+|Hspell", "PS 死亡: .+>", "%*%*.+%*%*", "<iLvl>", strrep("%-", 20),
 	"<小队物品等级:.+>", "<LFG>", "进度:", "属性通报", "汐寒", "wow.+兑换码", "wow.+验证码", "【有爱插件】", "：.+>", "|Hspell.+=>"
 }
 
@@ -188,18 +188,25 @@ local function isItemHasLevel(link)
 	end
 end
 
-local function isItemHasGem(link)
-	local stats = GetItemStats(link)
-	for index in pairs(stats) do
-		if strfind(index, "EMPTY_SOCKET_") then
-			return "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t"
-		end
-	end
-	return ""
+local function GetSocketTexture(socket, count)
+	return strrep("|TInterface\\ItemSocketingFrame\\UI-EmptySocket-"..socket..":0|t", count)
 end
 
+local function isItemHasGem(link)
+	local text = ""
+	local stats = GetItemStats(link)
+	for stat, count in pairs(stats) do
+		local socket = strmatch(stat, "EMPTY_SOCKET_(%S+)")
+		if socket then
+			text = text..GetSocketTexture(socket, count)
+		end
+	end
+	return text
+end
+
+local corruptedString = "|T3004126:0:0:0:0:64:64:5:59:5:59|t"
 local function isItemCorrupted(link)
-	return IsCorruptedItem(link) and "|T3004126:0:0:0:0:64:64:5:59:5:59|t" or ""
+	return IsCorruptedItem(link) and corruptedString or ""
 end
 
 local itemCache = {}
