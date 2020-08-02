@@ -1,10 +1,22 @@
-lightweight tag 899ac439a17c19a799d30a6a2a0e2faf5cc215e1 DetailsRetail.8.3.0.7348.141
+lightweight tag 1923659ce1d5b394910d90ae0f501697450afdac DetailsRetail.8.3.0.7354.141
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Mon Jul 6 11:27:35 2020 -0300
+Date:	Thu Jul 30 13:04:49 2020 -0300
 
-commit 899ac439a17c19a799d30a6a2a0e2faf5cc215e1
+commit 1923659ce1d5b394910d90ae0f501697450afdac
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Jul 6 11:27:35 2020 -0300
+Date:   Thu Jul 30 13:04:49 2020 -0300
 
-    Fixed an issue affecting the Auto Hide for some users
+    More fixes
+
+commit 49c0742a07876d2d2c36b1ce61f3f9839d0f6781
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun Jul 12 13:41:42 2020 -0300
+
+    Cleanup debug prints
+
+commit 5070641626ad6f59b3ae2ad07e204ce95c58e969
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Jul 9 14:36:39 2020 -0300
+
+    Fixed the Auto Hide from the title bar buttons
 
