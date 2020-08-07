@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200730031826")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
-mod:SetZone()
 mod:SetUsedIcons(1)
 mod.onlyHighest = true--Instructs DBM health tracking to literally only store highest value seen during fight, even if it drops below that
 mod.noBossDeathKill = true--Instructs mod to ignore 165759 deaths, since goal is to heal kael, not kill him
