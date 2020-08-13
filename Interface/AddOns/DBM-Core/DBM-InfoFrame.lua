@@ -3,24 +3,23 @@
 ---------------
 DBM.InfoFrame = {}
 
--------------------
--- Local Globals --
--------------------
-local DBM = DBM
-local L = DBM_CORE_L
-local GetRaidTargetIndex, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit, UIDropDownMenu_CreateInfo, UIDropDownMenu_AddButton = GetRaidTargetIndex, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit, UIDropDownMenu_CreateInfo, UIDropDownMenu_AddButton
-local pairs, ipairs, select, tonumber, tsort, twipe, mfloor, mmax, mmin = pairs, ipairs, select, tonumber, table.sort, table.wipe, math.floor, math.max, math.min
-local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS-- for Phanx' Class Colors
-
 --------------
 --  Locals  --
 --------------
+local L = DBM_CORE_L
 local infoFrame = DBM.InfoFrame
 local frame, initializeDropdown, currentMapId, currentEvent, createFrame
-local maxLines, modLines, maxCols, modCols = 5, 5, 1, 1
+local maxlines, modLines = 5, 5
 local sortMethod = 1--1 Default, 2 SortAsc, 3 GroupId
 local lines, sortedLines, icons, value = {}, {}, {}, {}
 local playerName = UnitName("player")
+
+-------------------
+-- Local Globals --
+-------------------
+local GetRaidTargetIndex, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit = GetRaidTargetIndex, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit
+local select, tonumber, twipe, mfloor, mmax = select, tonumber, table.wipe, math.floor, math.max
+local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS-- for Phanx' Class Colors
 
 ---------------------
 --  Dropdown Menu  --
@@ -35,20 +34,23 @@ do
 	end
 
 	local function setLines(_, line)
+		if not frame then
+			--Probably not needed here, but for good measure, mods would never call this method directly
+			if DBM.Options.DontShowInfoFrame then
+				return
+			end
+			createFrame()
+		end
+		if line > #frame.lines then
+			for i = #frame.lines + 1, line * 2 + 1 do
+				infoFrame:CreateLine(i)
+			end
+		end
 		DBM.Options.InfoFrameLines = line
 		if line ~= 0 then
-			maxLines = line
+			maxlines = line
 		else
-			maxLines = modLines or 5
-		end
-	end
-
-	local function setCols(_, col)
-		DBM.Options.InfoFrameCols = col
-		if col ~= 0 then
-			maxCols = col
-		else
-			maxCols = modCols or 5
+			maxlines = modLines or 5
 		end
 	end
 
@@ -79,14 +81,6 @@ do
 			info.hasArrow = true
 			info.keepShownOnClick = true
 			info.menuList = "lines"
-			UIDropDownMenu_AddButton(info, 1)
-
-			info = UIDropDownMenu_CreateInfo()
-			info.text = L.INFOFRAME_SETCOLS
-			info.notCheckable = true
-			info.hasArrow = true
-			info.keepShownOnClick = true
-			info.menuList = "cols"
 			UIDropDownMenu_AddButton(info, 1)
 
 			info = UIDropDownMenu_CreateInfo()
@@ -144,48 +138,6 @@ do
 				info.func = setLines
 				info.arg1 = 20
 				info.checked = (DBM.Options.InfoFrameLines == 20)
-				UIDropDownMenu_AddButton(info, 2)
-			elseif menu == "cols" then
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.INFOFRAME_LINESDEFAULT
-				info.func = setCols
-				info.arg1 = 0
-				info.checked = (DBM.Options.InfoFrameCols == 0)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.INFOFRAME_COLS_TO:format(1)
-				info.func = setCols
-				info.arg1 = 1
-				info.checked = (DBM.Options.InfoFrameCols == 1)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.INFOFRAME_COLS_TO:format(2)
-				info.func = setCols
-				info.arg1 = 2
-				info.checked = (DBM.Options.InfoFrameCols == 2)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.INFOFRAME_COLS_TO:format(3)
-				info.func = setCols
-				info.arg1 = 3
-				info.checked = (DBM.Options.InfoFrameCols == 3)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.INFOFRAME_COLS_TO:format(4)
-				info.func = setCols
-				info.arg1 = 4
-				info.checked = (DBM.Options.InfoFrameCols == 4)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.INFOFRAME_COLS_TO:format(5)
-				info.func = setCols
-				info.arg1 = 5
-				info.checked = (DBM.Options.InfoFrameCols == 5)
 				UIDropDownMenu_AddButton(info, 2)
 			end
 		end
@@ -248,6 +200,9 @@ function createFrame()
 	infoFrame:SetHeader()
 
 	frame.lines = {}
+	for i = 1, (DBM.Options.InfoFrameLines or 5) * 2 do
+		infoFrame:CreateLine(i)
+	end
 end
 
 ------------------------
@@ -279,11 +234,11 @@ local function updateLines(preSorted)
 			sortedLines[#sortedLines + 1] = i
 		end
 		if sortMethod == 3 then
-			tsort(sortedLines, sortGroupId)
+			table.sort(sortedLines, sortGroupId)
 		elseif sortMethod == 2 then
-			tsort(sortedLines, sortFuncAsc)
+			table.sort(sortedLines, sortFuncAsc)
 		else
-			tsort(sortedLines, sortFuncDesc)
+			table.sort(sortedLines, sortFuncDesc)
 		end
 	end
 	for _, v in ipairs(updateCallbacks) do
@@ -755,25 +710,6 @@ local function updateTest()
 	updateLines()
 end
 
-local test2Table
-local function updateTest2()
-	twipe(lines)
-	if not test2Table then
-		test2Table = {}
-		for _ = 1, 40 do
-			local ident = ""
-			for _ = 1, math.random(5, 12) do
-				ident = ident .. string.char(math.random(65, 90))
-			end
-			test2Table[ident] = math.random(1, 10) * 10
-		end
-	end
-	for k, v in pairs(test2Table) do
-		lines[k] = v
-	end
-	updateLines()
-end
-
 local events = {
 	["health"] = updateHealth,
 	["playerpower"] = updatePlayerPower,
@@ -793,15 +729,12 @@ local events = {
 	["playertargets"] = updatePlayerTargets,
 	["function"] = updateByFunction,
 	["table"] = updateByTable,
-	["test"] = updateTest,
-	["test2"] = updateTest2
+	["test"] = updateTest
 }
 
 ----------------
 --  OnUpdate  --
 ----------------
-local freshUpdate = false
-
 local friendlyEvents = {
 	["health"] = true,
 	["playerpower"] = true,
@@ -830,7 +763,7 @@ local function onUpdate(frame, table)
 	infoFrame:ClearLines()
 	local linesShown = 0
 	for i = 1, #sortedLines do
-		if linesShown >= maxLines * maxCols then
+		if linesShown >= maxlines then
 			break
 		end
 		local leftText = sortedLines[i]
@@ -917,51 +850,31 @@ local function onUpdate(frame, table)
 			infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, color2.r, color2.g, color2.b)
 		end
 	end
-	local maxWidth1, maxWidth2 = {}, {}
+	local maxWidth1, maxWidth2 = 0, 0
 	for i = 1, linesShown do
-		local m = mfloor(i / maxLines + 0.99)
-		maxWidth1[m] = mmax(maxWidth1[m] or 0, frame.lines[i * 2 - 1]:GetStringWidth())
-		maxWidth2[m] = mmax(maxWidth2[m] or 0, frame.lines[i * 2]:GetStringWidth())
+		maxWidth1 = mmax(maxWidth1, frame.lines[i * 2 - 1]:GetStringWidth())
+		maxWidth2 = mmax(maxWidth2, frame.lines[i * 2]:GetStringWidth())
 	end
-	local width = 0
-	local iiNum = mmin(maxLines, linesShown)
-	for i, _ in pairs(maxWidth1) do
-		width = width + maxWidth1[i] + maxWidth2[i] + 18
-		local maxWid = maxWidth1[i]
-		for ii = 1, iiNum do
-			local m = ((i - 1) * maxLines * 2) + (ii * 2)
-			frame.lines[m - 1]:SetSize(maxWid, 12)
-			frame.lines[m]:SetSize(maxWid, 12)
-		end
+	for i = 1, linesShown do
+		frame.lines[i * 2 - 1]:SetSize(maxWidth1+12, 12)
+		frame.lines[i * 2]:SetSize(maxWidth2+12, 12)
 	end
-	frame:SetSize(width, (mmin(linesShown, maxLines) * 12) + 12)
+	frame:SetSize(maxWidth1 + maxWidth2 + 24, (linesShown * 12) + 12)
 	frame:Show()
-	freshUpdate = false
 end
 
 ---------------
 --  Methods  --
 ---------------
 --Arg 1: spellName, health/powervalue, customfunction, table type. Arg 2: TankIgnore, Powertype, SortFunction, totalAbsorb, sortmethod (table/stacks). Arg 3: SpellFilter, UseIcon. Arg 4: disable onUpdate. Arg 5: sortmethod (playerpower)
-function infoFrame:Show(modMaxLines, event, ...)
-	if DBM.Options.DontShowInfoFrame and not (event or ""):find("test") then
-		print("Invalid event: " .. event or "nil")
-		return
-	end
-	freshUpdate = true
+function infoFrame:Show(maxLines, event, ...)
+	if DBM.Options.DontShowInfoFrame and (event or 0) ~= "test" then return end
 	currentMapId = select(4, UnitPosition("player"))
-	modLines = modMaxLines
+	modLines = maxLines
 	if DBM.Options.InfoFrameLines and DBM.Options.InfoFrameLines ~= 0 then
-		maxLines = DBM.Options.InfoFrameLines
+		maxlines = DBM.Options.InfoFrameLines
 	else
-		maxLines = modMaxLines or 5
-	end
-	if DBM.Options.InfoFrameCols and DBM.Options.InfoFrameCols ~= 0 then
-		maxCols = DBM.Options.InfoFrameCols
-	else
-		--TODO, still needs more finite control via gui later on
-		--I think dynamic options modMaxLines/10 modMaxLines/5 are both valid options, as well as just capping at 2 >= 10
-		maxCols = modMaxLines and modMaxLines >= 10 and 2 or 1
+		maxlines = maxLines or 5
 	end
 	table.wipe(value)
 	for i = 1, select("#", ...) do
@@ -979,7 +892,7 @@ function infoFrame:Show(modMaxLines, event, ...)
 		end
 	--If spellId is given as value one and it's not a byspellid event, convert to spellname
 	--this also allows spell name to be given by mod, since value 1 verifies it's a number
-	elseif type(value[1]) == "number" and event ~= "health" and event ~= "function" and event ~= "table" and event ~= "playertargets" and event ~= "playeraggro" and event ~= "playerpower" and event ~= "enemypower" and event ~= "test" and event ~= "test2" then
+	elseif type(value[1]) == "number" and event ~= "health" and event ~= "function" and event ~= "table" and event ~= "playertargets" and event ~= "playeraggro" and event ~= "playerpower" and event ~= "enemypower" and event ~= "test" then
 		--Outside of "byspellid" functions, typical frames will still use spell NAME matching not spellID.
 		--This just determines if we convert the spell input to a spell Name, if a spellId was provided for a non byspellid infoframe
 		value[1] = DBM:GetSpellInfo(value[1])
@@ -1025,9 +938,7 @@ function infoFrame:Update(time)
 	end
 	if frame:IsShown() then
 		if time then
-			C_Timer.After(time, function()
-				onUpdate(frame)
-			end)
+			C_Timer.After(time, function() onUpdate(frame) end)
 		else
 			onUpdate(frame)
 		end
@@ -1061,24 +972,19 @@ function infoFrame:ClearLines()
 end
 
 function infoFrame:CreateLine(lineNum)
-	frame.lines[lineNum] = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	self:AlignLine(lineNum)
-end
-
-function infoFrame:AlignLine(lineNum)
-	local line = frame.lines[lineNum]
-	line:SetJustifyH(lineNum % 2 == 0 and "RIGHT" or "LEFT")
+	local line = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	line:SetSize(32, 12)
 	if lineNum == 1 then -- 1st entry left
 		line:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -6)
+		line:SetJustifyH("LEFT")
 	elseif lineNum == 2 then -- 1st entry right
-		line:SetPoint("TOPLEFT", frame.lines[1], "TOPRIGHT", 6, 0)
-	elseif lineNum % (maxLines * 2) == 1 then -- Column 2-x, 1st entry left
-		line:SetPoint("TOPLEFT", frame.lines[lineNum - (maxLines * 2) + 1], "TOPRIGHT", 12, 0)
-	elseif lineNum % (maxLines * 2) == 2 then -- Column 2-x, 1nd entry right
-		line:SetPoint("TOPLEFT", frame.lines[lineNum - 1], "TOPRIGHT", 6, 0)
+		line:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -6)
+		line:SetJustifyH("RIGHT")
 	else
 		line:SetPoint("TOPLEFT", frame.lines[lineNum - 2], "LEFT", 0, -6)
+		line:SetJustifyH(lineNum % 2 == 0 and "RIGHT" or "LEFT")
 	end
+	frame.lines[lineNum] = line
 end
 
 function infoFrame:SetLine(lineNum, leftText, rightText, colorR, colorG, colorB, color2R, color2G, color2B)
@@ -1087,10 +993,8 @@ function infoFrame:SetLine(lineNum, leftText, rightText, colorR, colorG, colorB,
 	end
 	lineNum = lineNum * 2 - 1
 	if not frame.lines[lineNum] then
-		self:CreateLine(lineNum)
-		self:CreateLine(lineNum + 1)
-	elseif freshUpdate then
-		self:AlignLine(lineNum)
+		infoFrame:CreateLine(lineNum)
+		infoFrame:CreateLine(lineNum + 1)
 	end
 	frame.lines[lineNum]:SetText(leftText)
 	frame.lines[lineNum]:SetTextColor(colorR or 255, colorG or 255, colorB or 255)
@@ -1116,14 +1020,6 @@ function infoFrame:Hide()
 	end
 	currentEvent = nil
 	sortMethod = 1
-end
-
-function infoFrame:SetLines(lines)
-	modLines = lines
-end
-
-function infoFrame:SetColumns(columns)
-	modCols = columns
 end
 
 function infoFrame:IsShown()

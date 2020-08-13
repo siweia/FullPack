@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200805233308"),
-	DisplayVersion = "8.3.30", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 8, 5) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200812194130"),
+	DisplayVersion = "8.3.31", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 8, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -438,7 +438,7 @@ local watchFrameRestore = false
 local bossHealth = {}
 local bossHealthuIdCache = {}
 local bossuIdCache = {}
-local savedDifficulty, difficultyText, difficultyIndex, difficultyModifier
+local savedDifficulty, difficultyText, difficultyIndex, difficultyModifier = nil, nil, nil, 0
 local lastBossEngage = {}
 local lastBossDefeat = {}
 local bossuIdFound = false
@@ -6478,7 +6478,7 @@ do
 	local autoTLog = false
 
 	local function isCurrentContent()
-		if LastInstanceMapID == 1861 or LastInstanceMapID == 2070 or LastInstanceMapID == 2096 or LastInstanceMapID == 2164 or LastInstanceMapID == 2217 or LastInstanceMapID == 2296 or difficultyModifier > 0 then--BfA/Shadowlands raids and any M+ dungeon
+		if LastInstanceMapID == 1861 or LastInstanceMapID == 2070 or LastInstanceMapID == 2096 or LastInstanceMapID == 2164 or LastInstanceMapID == 2217 or LastInstanceMapID == 2296 or (difficultyModifier or 0) > 0 then--BfA/Shadowlands raids and any M+ dungeon
 			return true
 		end
 		return false
@@ -11746,7 +11746,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200805233308" then
+	if not revision or revision == "20200812194130" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end
