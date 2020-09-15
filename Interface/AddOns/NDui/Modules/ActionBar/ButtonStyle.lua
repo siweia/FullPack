@@ -43,7 +43,7 @@ local function ApplyPoints(self, points)
 end
 
 local function ApplyTexCoord(texture, texCoord)
-	if not texCoord then return end
+	if texture.__lockdown or not texCoord then return end
 	texture:SetTexCoord(unpack(texCoord))
 end
 
@@ -343,6 +343,8 @@ function Bar:StyleAllActionButtons(cfg)
 	for i = 1, NUM_POSSESS_SLOTS do
 		Bar:StyleActionButton(_G["PossessButton"..i], cfg)
 	end
+	--leave vehicle
+	Bar:StyleActionButton(_G["NDui_LeaveVehicleButton"], cfg)
 	--extra action button
 	Bar:StyleExtraActionButton(cfg)
 	--spell flyout
