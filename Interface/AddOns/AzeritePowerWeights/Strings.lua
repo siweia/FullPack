@@ -150,12 +150,15 @@ do -- enUS / enGB
 
 	L.Debug_CopyToBugReport = "COPY & PASTE the text above to your bug report if you think it is relevant."
 end
+-- 111 Phrases
 
 if LOCALE == "deDE" then -- Sinusquell (39), Tiggi2702 (5), Vivan (2), pas06 (2), Cytoph (1), imna1975 (17), Aurielqt (6)
-L["Config_Enable_Essences"] = "Azerit Essenz"
-L["Config_Enable_Essences_Desc"] = "Aktiviere %s für Azerit Essenzen"
-L["Config_Enable_Traits"] = "Azerit Fähigkeiten"
-L["Config_Enable_Traits_Desc"] = "Aktiviere %s für Azerit verstärke Gegenstände"
+	-- 2 + 17 + 42 + 30 = 91
+	-- 72.97% translated
+L["Config_Enable_Essences"] = "Azerit Essenz(en)"
+L["Config_Enable_Essences_Desc"] = "Aktiviere %s für Azerit Essenzen."
+L["Config_Enable_Traits"] = "Azerit Fähigkeiten."
+L["Config_Enable_Traits_Desc"] = "Aktiviere %s für Azerit verstärkte Gegenstände"
 L["Config_Importing_ImportingCanUpdate"] = "Beim Importieren können vorhandene Skalierungen aktualisiert werden."
 L["Config_Importing_ImportingCanUpdate_Desc"] = "Wenn Sie eine Skalierung mit demselben Namen, derselben Klasse und Spezialisierung wie eine bereits vorhandene Skalierung importieren, wird die vorhandene Skalierung mit den neuen Gewichtungen aktualisiert, anstatt eine neue Skalierung zu erstellen. "
 L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "Es kann mehrere Skalierungen mit demselben Namen geben, solange sie für verschiedene Spezialisierungen oder Klassen gelten. "
@@ -293,6 +296,8 @@ L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "esES" then -- isaracho (4)
+	-- 110 + 1 = 111
+	-- 100% translated
 L["Config_Enable_Essences"] = "Esencias de Azerita "
 L["Config_Enable_Essences_Desc"] = "Activa %s para las Esencias de Azerita."
 L["Config_Enable_Traits"] = "Rasgos de Azerita"
@@ -409,6 +414,8 @@ L["WeightEditor_VersionText"] = "Versión %s"
 
 
 elseif LOCALE == "esMX" then
+	-- 0 = 0
+	-- 0% translated
 --[[Translation missing --]]
 L["Config_Enable_Essences"] = "Azerite Essences"
 --[[Translation missing --]]
@@ -647,19 +654,21 @@ L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "frFR" then -- tthegarde (19), Marechoux (9), follower4jas (1)
-L["Config_Enable_Essences"] = "Essences d'azérites"
-L["Config_Enable_Essences_Desc"] = "Active %s par essences d'azérites"
-L["Config_Enable_Traits"] = "Trait d'azérite"
-L["Config_Enable_Traits_Desc"] = "Active %s pour les objets dotés d'azérites"
-L["Config_Importing_ImportingCanUpdate"] = "L'importation pourra mettre à jour les coefficients existants."
-L["Config_Importing_ImportingCanUpdate_Desc"] = "Quand vous importez les coefficients avec les mêmes nom, classe et spécialisation qu'un coefficient prédéfini, celui-ci sera mise à jour avec les nouveaux coefficients au lieu qu'un nouveau coefficient soit créée."
-L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "Il peut y avoir plusieurs coefficients avec le même nom tant qu'elles sont pour des classes ou spécialisations différentes."
+	-- 11 + 3 + 8 + 10 + 66 + 13 = 111
+	--  101 under review
+L["Config_Enable_Essences"] = "Essences d'azérite"
+L["Config_Enable_Essences_Desc"] = "Active %s pour essences d'azérite"
+L["Config_Enable_Traits"] = "Traits d'azérite"
+L["Config_Enable_Traits_Desc"] = "Active %s pour les objets renforcés par l'azérite"
+L["Config_Importing_ImportingCanUpdate"] = "L'importation peut mettre à jour les coefficients existants."
+L["Config_Importing_ImportingCanUpdate_Desc"] = "Quand vous importez un profil avec les mêmes nom, classe et spécialisation qu'un profil pré-existanti, celui-ci sera mis à jour avec les nouveaux coefficients au lieu qu'un nouveau profil soit créé."
+L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "Il peut y avoir plusieurs profils avec le même nom tant qu'ils sont pour des classes ou spécialisations différentes."
 L["Config_Importing_Title"] = "Import"
-L["Config_Scales_OwnClassCustomsOnly"] = "Uniquement pour lister ses propres coefficients de classe "
-L["Config_Scales_OwnClassCustomsOnly_Desc"] = "Répertorie uniquement les coefficients de votre propre classe, à la place de toutes les énumérer."
-L["Config_Scales_OwnClassDefaultsOnly"] = "N'afficher que les coefficients par défaut de votre classe"
+L["Config_Scales_OwnClassCustomsOnly"] = "Lister uniquement ses propres profils de classe personnalisés"
+L["Config_Scales_OwnClassCustomsOnly_Desc"] = "Lister les profils personnalisés de votre propre classe uniquement, au lieu de les lister tous."
+L["Config_Scales_OwnClassDefaultsOnly"] = "Ne lister que les profils par défaut de votre classe"
 L["Config_Scales_OwnClassDefaultsOnly_Desc"] = "Cache les coefficients par défaut qui ne correspondent pas à votre classe au lieu de toutes les afficher."
-L["Config_Scales_Title"] = "Liste des coefficients"
+L["Config_Scales_Title"] = "Liste des profils"
 L["Config_Score_AddItemLevelToScore"] = "Ajouter le niveau d'objet à tous les scores"
 L["Config_Score_AddItemLevelToScore_Desc"] = "Ajouter le niveau d'objet des objets azéritiques au calcul des scores actuels, potentiels et maximaux."
 L["Config_Score_AddPrimaryStatToScore"] = "Ajouter la statistique principale à tous les scores"
@@ -767,6 +776,8 @@ L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "itIT" then
+	-- 0 = 0
+	-- 0% translated
 --[[Translation missing --]]
 L["Config_Enable_Essences"] = "Azerite Essences"
 --[[Translation missing --]]
@@ -1005,6 +1016,8 @@ L["WeightEditor_VersionText"] = "Version %s"
 
 
 elseif LOCALE == "koKR" then -- Killberos (52)
+	-- 1 + 52 = 53
+	-- 30.63% translated
 --[[Translation missing --]]
 L["Config_Enable_Essences"] = "Azerite Essences"
 --[[Translation missing --]]
@@ -1192,6 +1205,8 @@ L["WeightEditor_VersionText"] = "버전 %s "
 
 
 elseif LOCALE == "ptBR" then -- mariogusman (73)
+	-- 73 = 73
+	-- 49.55% translated
 --[[Translation missing --]]
 L["Config_Enable_Essences"] = "Azerite Essences"
 --[[Translation missing --]]
@@ -1357,14 +1372,12 @@ L["WeightEditor_VersionText"] = "Versão %s"
 
 
 elseif LOCALE == "ruRU" then -- dartraiden (78), Hubbotu (18), rtim0905 (0), Wolfeg (1), lorientalas (1)
---[[Translation missing --]]
-L["Config_Enable_Essences"] = "Azerite Essences"
---[[Translation missing --]]
-L["Config_Enable_Essences_Desc"] = "Enable %s for Azerite Essences."
---[[Translation missing --]]
-L["Config_Enable_Traits"] = "Azerite Traits"
---[[Translation missing --]]
-L["Config_Enable_Traits_Desc"] = "Enable %s for Azerite Empowered items."
+	-- 83 + 24 + 1 + 3 = 111
+	-- 100% translated
+L["Config_Enable_Essences"] = "Азеритовые сущности"
+L["Config_Enable_Essences_Desc"] = "Включите %s для азеритовых сущностей."
+L["Config_Enable_Traits"] = "Азеритовые таланты"
+L["Config_Enable_Traits_Desc"] = "Включите %s для предметов, c Азеритовым усилением."
 L["Config_Importing_ImportingCanUpdate"] = "Обновлять уже существующие наборы при импорте"
 L["Config_Importing_ImportingCanUpdate_Desc"] = "При импорте набора, совпадающего с существующим по имени, классу и специализации, вместо создания нового набора будет обновлён уже существующий набор."
 L["Config_Importing_ImportingCanUpdate_Desc_Clarification"] = "Допустимы наборы с одинаковыми названиями, если они предназначены для разных специализаций или классов."
@@ -1488,6 +1501,8 @@ L["WeightEditor_VersionText"] = "Версия %s"
 
 
 elseif LOCALE == "zhCN" then -- plok245 (27), riggzh (29), xlfd2008 (33)
+	-- 27 + 29 + 47 = 103
+	-- 0% translated
 --[[Translation missing --]]
 L["Config_Enable_Essences"] = "Azerite Essences"
 --[[Translation missing --]]
@@ -1624,6 +1639,8 @@ L["WeightEditor_VersionText"] = "版本 %s"
 
 
 elseif LOCALE == "zhTW" then -- BNSSNB (96), Sinusquell (1)
+	-- 1 + 109 + 1 = 111
+	-- 18 under review
 L["Config_Enable_Essences"] = "艾澤萊精華"
 L["Config_Enable_Essences_Desc"] = "啟用 %s 的艾澤萊精華。"
 L["Config_Enable_Traits"] = "艾澤萊特質"
