@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheaterofPainTrash", "DBM-Party-Shadowlands", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200812192304")
+mod:SetRevision("20200907150556")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true

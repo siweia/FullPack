@@ -89,6 +89,7 @@ L.MPROFILE_DELETE_SELF_ERROR	= "No se puede borrar una configuración que está 
 L.MPROFILE_DELETE_S_ERROR	= "La configuración de origen está corrupta. Es posible que la configuración se haya borrado a medias o haya fallado por completo."
 
 L.NOTE_SHARE_SUCCESS			= "%s está compartiendo su nota para %s."
+L.NOTE_SHARE_LINK			= "Haz clic aquí para abrir la nota"
 L.NOTE_SHARE_FAIL			= "%s está intentando compartir su nota para %s. Sin embargo, el módulo asociado con esta facultad no está instalado o cargado. Si necesitas esta nota, asegúrate de que tienes el módulo asociado cargado y pídele que vuelva a compartirla."
 
 L.NOTEHEADER					= "Introduce tu nota para %s. Los nombres de jugador entre '>' y '<' se mostrarán con el color de su clase. Para alertas con varias notas, sepáralas con '/'."
@@ -187,8 +188,8 @@ L.RETAIL_ONLY					= "AVISO: esta versión de DBM está pensada para la versión 
 
 L.MOVABLE_BAR				= "¡Muéveme!"
 
---L.PIZZA_SYNC_INFO					= "|Hplayer:%1$s|h[%1$s]|h ha compartido un temporizador de DBM: '%2$s'\n|HDBM:cancel:%2$s:nil|h|cff3588ff[Cancelar este temporizador]|r|h  |HDBM:ignore:%2$s:%1$s|h|cff3588ff[Ignorar temporizadores de %1$s]|r|h"
 L.PIZZA_SYNC_INFO					= "|Hplayer:%1$s|h[%1$s]|h ha compartido un temporizador de DBM: '%2$s'\n|HDBM:cancel:%2$s:nil|h|cff3588ff[Cancelar este temporizador]|r|h  |HDBM:ignore:%2$s:%1$s|h|cff3588ff[Ignorar temporizadores de %1$s]|r|h"
+--L.PIZZA_SYNC_INFO					= "|Hplayer:%1$s|h[%1$s]|h ha compartido un temporizador de DBM: '%2$s'\n|HDBM:cancel:%2$s:nil|h|cff3588ff[Cancelar este temporizador]|r|h  |HDBM:ignore:%2$s:%1$s|h|cff3588ff[Ignorar temporizadores de %1$s]|r|h"
 L.PIZZA_CONFIRM_IGNORE			= "¿Seguro que quieres ignorar los temporizadores de %s para esta sesión?"
 L.PIZZA_ERROR_USAGE				= "Uso: /dbm [broadcast] timer <seg> <texto>. <seg> debe ser mayor que 1."
 
@@ -578,8 +579,8 @@ L.INSTANCE_INFO_STATS_DENIED		= "Petición rechazada: %s"
 L.INSTANCE_INFO_STATS_AWAY		= "Ausente: %s"
 L.INSTANCE_INFO_STATS_NO_RESPONSE	= "Sin versión de DBM compatible: %s"
 L.INSTANCE_INFO_RESULTS			= "Resultados de la comprobación de registros de estancia. Ten en cuenta que una misma estancia puede salir varias veces si hay jugadores en tu banda con el cliente de juego en un idioma distinto."
---L.INSTANCE_INFO_SHOW_RESULTS		= "Jugadores que todavía no han respondido: %s\n|HDBM:showRaidIdResults|h|cff3588ff[Mostrar resultados]|r|h"
-L.INSTANCE_INFO_SHOW_RESULTS		= "Jugadores que todavía no han respondido: %s"
+L.INSTANCE_INFO_SHOW_RESULTS		= "Jugadores que todavía no han respondido: %s\n|HDBM:showRaidIdResults|h|cff3588ff[Mostrar resultados]|r|h"
+--L.INSTANCE_INFO_SHOW_RESULTS		= "Jugadores que todavía no han respondido: %s"
 
 L.LAG_CHECKING				= "Comprobando latencia de la banda..."
 L.LAG_HEADER					= "Deadly Boss Mods - Resultados de latencia"

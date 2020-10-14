@@ -1,3 +1,7 @@
+--Mini Dragon <流浪者酒馆-Brilla@金色平原> 20200920
+--夏一可，暴雪娱乐
+
+if GetLocale() ~= "zhCN" then return end
 local L
 
 -----------------------
@@ -29,7 +33,7 @@ local L
 L = DBM:GetModLocalization("NecroticWakeTrash")
 
 L:SetGeneralLocalization({
-	name =	"Necrotic Wake Trash"
+	name =	"通灵战潮小怪"
 })
 
 -----------------------
@@ -61,7 +65,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("PlaguefallTrash")
 
 L:SetGeneralLocalization({
-	name =	"Plaguefall Trash"
+	name =	"凋魂之殇小怪"
 })
 
 -----------------------
@@ -80,24 +84,24 @@ L:SetGeneralLocalization({
 -----------------------
 -- Tred'ova --
 -----------------------
-L= DBM:GetModLocalization(2405)
+--L= DBM:GetModLocalization(2405)
 
 L:SetWarningLocalization({
-	specWarnParasiticInfester	= "Parasitic Infester on YOU"
+	specWarnParasiticInfester	= "你被虫子寄生"
 })
 
 L:SetTimerLocalization{
-	timerParasiticInfesterCD	= "~Infester"
+	timerParasiticInfesterCD	= "~寄生"
 }
 
 L:SetOptionLocalization({
-	specWarnParasiticInfester	= "Show special warning when you are affected by Parasitic Infester",
-	timerParasiticInfesterCD	= "Show timer for Parasitic Infester",
-	yellParasiticInfester		= "Yell when you are affected by Parasitic Infester"
+	specWarnParasiticInfester	= "当你受到寄生感染时显示特别警告",
+	timerParasiticInfesterCD	= "显示寄生计时器",
+	yellParasiticInfester		= "当受到寄生感染时大喊"
 })
 
 L:SetMiscLocalization({
-	Infester					= "Infester"
+	Infester					= "寄生"
 })
 
 ---------
@@ -106,7 +110,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("TirnaScitheTrash")
 
 L:SetGeneralLocalization({
-	name =	"Tirna Scithe Trash"--Or MOTS Trash?
+	name =	"塞兹仙林的迷雾小怪"
 })
 
 -----------------------
@@ -138,7 +142,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("AtonementTrash")
 
 L:SetGeneralLocalization({
-	name =	"Halls of Atonement Trash"--HoA Trash?
+	name =	"赎罪大厅小怪"
 })
 
 -----------------------
@@ -150,7 +154,7 @@ L:SetGeneralLocalization({
 L= DBM:GetModLocalization(2399)
 
 L:SetMiscLocalization({
-	Flight	= "Your doom takes flight!"
+	Flight	= "畏惧天空吧！"
 })
 
 -----------------------
@@ -169,7 +173,7 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(2412)
 
 L:SetMiscLocalization({
-	RunThrough	= "This spear shall pierce your heart!"
+	RunThrough	= "长矛会刺穿你的心脏！"
 })
 
 ---------
@@ -178,7 +182,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("SpiresofAscensionTrash")
 
 L:SetGeneralLocalization({
-	name =	"Spires of Ascension Trash"--SoA Trash?
+	name =	"晋升天塔小怪"
 })
 
 -----------------------
@@ -215,7 +219,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("TheaterofPainTrash")
 
 L:SetGeneralLocalization({
-	name =	"Theater of Pain Trash"
+	name =	"伤逝剧场小怪"
 })
 
 -----------------------
@@ -232,7 +236,7 @@ L:SetGeneralLocalization({
 --L= DBM:GetModLocalization(2409)
 
 -----------------------
--- Dealer Xy'exa --
+-- Dealer G'exa --
 -----------------------
 --L= DBM:GetModLocalization(2398)
 
@@ -247,7 +251,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("DeOtherSideTrash")
 
 L:SetGeneralLocalization({
-	name =	"De Other Side Trash"
+	name =	"彼界小怪"
 })
 
 -----------------------
@@ -279,5 +283,5 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("SanguineDepthsTrash")
 
 L:SetGeneralLocalization({
-	name =	"Sanguine Depths Trash"
+	name =	"赤红深渊小怪"
 })

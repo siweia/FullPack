@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2398, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200905173332")
+mod:SetRevision("20201011235416")
 mod:SetCreatureID(164450)
 mod:SetEncounterID(2400)
 
@@ -51,7 +51,8 @@ function mod:OnCombatStart(delay)
 	timerLocalizedExplosiveCD:Start(9.6-delay)
 	timerDisplacedBlastwaveCD:Start(11.1-delay)
 	timerExplosiveContrivanceCD:Start(31.6-delay)
-	if self:IsDifficulty("challenge5") then
+--	if self:IsDifficulty("challenge5") then
+	if self:IsMythic() then--TODO, verify
 		timerArcaneLightningCD:Start(7.2)
 	end
 end
