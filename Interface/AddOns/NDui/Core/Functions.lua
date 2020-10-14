@@ -756,6 +756,7 @@ do
 		end
 
 		self.__bg = B.CreateBDFrame(self, 0, true)
+		self.__bg:SetFrameLevel(self:GetFrameLevel())
 		self.__bg:SetAllPoints()
 
 		if not noHighlight then
@@ -793,6 +794,7 @@ do
 		local bg = B.CreateBDFrame(self)
 		bg:SetPoint("TOPLEFT", 8, -3)
 		bg:SetPoint("BOTTOMRIGHT", -8, 0)
+		self.bg = bg
 
 		self:SetHighlightTexture(DB.bdTex)
 		local hl = self:GetHighlightTexture()
