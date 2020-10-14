@@ -1,11 +1,9 @@
 # BagSync
 
-## [v13.6](https://github.com/Xruptor/BagSync/tree/v13.6) (2020-04-14)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v13.5...v13.6)
+## [v14.1](https://github.com/Xruptor/BagSync/tree/v14.1) (2020-10-14)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v14.0...v14.1) 
 
-- Added a final fix for certain tokens not displaying tooltips at merchant vendors.  
-    Updated the toc for Classic WOW.  
-    Finalized all changes for additional checks to prevent crashes at the AH scan.  (Fixes #101)  
-- -Final cleanup on token currency bugfix on vendors.  
-- -Attempting to add more checks for the Auction House scan.  To prevent crashes and breaking the Auction House.  
-    -Fixing an issue where sometimes the currency on the merchants do not show the properly BagSync currency info.  
+- ARGH I missed one...  
+- Revert "Revert "ARGH I missed one.  Fix for currency.""  
+- Revert "ARGH I missed one.  Fix for currency."  
+- ARGH I missed one.  Fix for currency.  
