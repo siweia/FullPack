@@ -4,6 +4,9 @@ local _, RE = ...
 --local TOAST = LibStub("LibToast-1.0")
 _G.RENovate = RE
 
+local LE_GARRISON_TYPE_8_0 = Enum.GarrisonType.Type_8_0
+local LE_FOLLOWER_TYPE_GARRISON_8_0 = Enum.GarrisonFollowerType.FollowerType_8_0
+
 --GLOBALS: SLASH_RENOVATE1, LE_GARRISON_TYPE_8_0, LE_FOLLOWER_TYPE_GARRISON_8_0, GARRISON_LONG_MISSION_TIME, GARRISON_LONG_MISSION_TIME_FORMAT, WAR_MISSIONS, WAR_FOLLOWERS, WINTERGRASP_IN_PROGRESS, GARRISON_MISSION_ADDED_TOAST1, BONUS_ROLL_REWARD_MONEY, XP, ARTIFACT_POWER, OTHER, HIGHLIGHT_FONT_COLOR, COPPER_PER_GOLD, Fancy18Font, Game13Font, Game13FontShadow
 local string, tostring, abs, format, tsort, strcmputf8i, select, pairs, hooksecurefunc, floor, collectgarbage, type, getmetatable, setmetatable = _G.string, _G.tostring, _G.abs, _G.format, _G.table.sort, _G.strcmputf8i, _G.select, _G.pairs, _G.hooksecurefunc, _G.floor, _G.collectgarbage, _G.type, _G.getmetatable, _G.setmetatable
 local GetCVar = _G.GetCVar
@@ -11,7 +14,7 @@ local GetTime = _G.GetTime
 local GetItemInfo = _G.GetItemInfo
 local GetLandingPageGarrisonType = _G.C_Garrison.GetLandingPageGarrisonType
 local GetAvailableMissions = _G.C_Garrison.GetAvailableMissions
-local GetMissionInfo = _G.C_Garrison.GetMissionInfo
+local GetMissionDeploymentInfo = _G.C_Garrison.GetMissionDeploymentInfo
 local GetMissionLink = _G.C_Garrison.GetMissionLink
 local GetMissionCost = _G.C_Garrison.GetMissionCost
 local GetInProgressMissions = _G.C_Garrison.GetInProgressMissions
@@ -212,7 +215,8 @@ function RE:GetMissionThreats(missionID, parentFrame)
 		RE.MF.abilityCountersForMechanicTypes = GetFollowerAbilityCountersForMechanicTypes(RE.MF.followerTypeID)
 	end
 
-	local enemies = select(8, GetMissionInfo(missionID))
+	local missionDeploymentInfo = GetMissionDeploymentInfo(missionID)
+	local enemies = missionDeploymentInfo.enemies
 	local counterableThreats = _G.GarrisonMission_DetermineCounterableThreats(missionID, RE.MF.followerTypeID)
 	local numThreats = 0
 
@@ -221,9 +225,10 @@ function RE:GetMissionThreats(missionID, parentFrame)
 	end
 	for i = 1, #enemies do
 		local enemy = enemies[i]
-		for mechanicID, _ in pairs(enemy.mechanics) do
+		for _, mechanic in pairs(enemy.mechanics) do
 			numThreats = numThreats + 1
 			local threatFrame = parentFrame.Threat[numThreats]
+			local mechanicID = mechanic.mechanicTypeID
 			local ability = RE.MF.abilityCountersForMechanicTypes[mechanicID]
 			threatFrame.Border:SetShown(_G.ShouldShowFollowerAbilityBorder(RE.MF.followerTypeID, ability))
 			threatFrame.Icon:SetTexture(ability.icon)
@@ -271,7 +276,8 @@ function RE:GetMissionCounteredThreats(followersOrg, enemies, newFollower)
 end
 
 function RE:GetMissonSlowdown(missionID)
-	local enemies = select(8, GetMissionInfo(missionID))
+	local missionDeploymentInfo = GetMissionDeploymentInfo(missionID)
+	local enemies = missionDeploymentInfo.enemies
 	local slowicons = " "
 	for i = 1, #enemies do
 		local enemy = enemies[i]
