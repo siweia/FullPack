@@ -341,7 +341,7 @@ function Scanner:SaveCurrency()
 		local currencyID = BSYC:GetCurrencyID(link)
 		
 		if currencyinfo.name then
-			if(currencyinfo.isHeader and not currencyinfo.isExpanded) then
+			if(currencyinfo.isHeader and not currencyinfo.isHeaderExpanded) then
 				C_CurrencyInfo.ExpandCurrencyList(i,1)
 				lastHeader = currencyinfo.name
 				limit = C_CurrencyInfo.GetCurrencyListSize()
@@ -351,9 +351,9 @@ function Scanner:SaveCurrency()
 			if (not currencyinfo.isHeader) then
 				slotItems[currencyID] = slotItems[currencyID] or {}
 				slotItems[currencyID].name = currencyinfo.name
-				slotItems[currencyID].header = currencyinfo.lastHeader
-				slotItems[currencyID].count = currencyinfo.count
-				slotItems[currencyID].icon = currencyinfo.icon
+				slotItems[currencyID].header = lastHeader
+				slotItems[currencyID].count = currencyinfo.quantity
+				slotItems[currencyID].icon = currencyinfo.iconFileID
 			end
 		end
 	end
@@ -414,9 +414,12 @@ function Scanner:SaveProfessions()
 		--store the recipes
 		for i = 1, #recipeIDs do
 		
-			if C_TradeSkillUI.GetRecipeInfo(recipeIDs[i], recipeData) then
+			if C_TradeSkillUI.GetRecipeInfo(recipeIDs[i]) then
+			
+				--grab the info in a table
+				recipeData = C_TradeSkillUI.GetRecipeInfo(recipeIDs[i])
+				
 				local categoryID = recipeData.categoryID
-
 				local categoryData = C_TradeSkillUI.GetCategoryInfo(categoryID)
 
 				--grab the parent name, Engineering, Herbalism, Blacksmithing, etc...
