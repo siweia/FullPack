@@ -175,14 +175,14 @@ local function TitleButton_OnClick(self, button)
 				QuestMapFrame:GetParent():SetMapID(self.mapID)
 			end
 		elseif IsShiftKeyDown() then
-			if IsWorldQuestHardWatched(self.questID) or (IsWorldQuestWatched(self.questID) and GetSuperTrackedQuestID() == self.questID) then
+			if WorldMap_IsWorldQuestEffectivelyTracked(self.questID) then
 				BonusObjectiveTracker_UntrackWorldQuest(self.questID);
 			else
 				BonusObjectiveTracker_TrackWorldQuest(self.questID, true)
 			end
 		else
-			if IsWorldQuestHardWatched(self.questID) then
-				SetSuperTrackedQuestID(self.questID);
+			if WorldMap_IsWorldQuestEffectivelyTracked(self.questID) then
+				C_SuperTrack.SetSuperTrackedQuestID(self.questID);
 			else
 				BonusObjectiveTracker_TrackWorldQuest(self.questID)
 			end
