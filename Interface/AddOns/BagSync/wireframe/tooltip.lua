@@ -20,7 +20,13 @@ local function Debug(...)
 	end
 end
 
+local function CanAccessObject(obj)
+    return issecure() or not obj:IsForbidden();
+end
+
 local function comma_value(n)
+	if not n then return "?" end
+	n = tostring(n)
 	local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
 end
@@ -276,7 +282,7 @@ end
 
 function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	if not BSYC.options.enableTooltips then return end
-	if not (issecure() or not objTooltip:IsForbidden()) then return end
+	if not CanAccessObject(objTooltip) then return end
 	
 	--only show tooltips in search frame if the option is enabled
 	if BSYC.options.tooltipOnlySearch and objTooltip:GetOwner() and objTooltip:GetOwner():GetName() and not string.find(objTooltip:GetOwner():GetName(), "BagSyncSearchRow") then
@@ -497,7 +503,9 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	end
 
 	for i=1, table.getn(usrData) do
-		objTooltip:AddDoubleLine(usrData[i].colorized, comma_value(usrData[i].count), 1, 1, 1, 1, 1, 1)
+		if usrData[i].count then
+			objTooltip:AddDoubleLine(usrData[i].colorized, comma_value(usrData[i].count), 1, 1, 1, 1, 1, 1)
+		end
 	end
 
 	objTooltip.__tooltipUpdated = true
