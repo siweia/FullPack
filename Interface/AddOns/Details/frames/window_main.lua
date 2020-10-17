@@ -2193,7 +2193,9 @@ local icon_frame_on_enter = function (self)
 			local spec_id, spec_name, spec_description, spec_icon, spec_role, spec_class = DetailsFramework.GetSpecializationInfoByID (spec or 0) --thanks pas06
 			local spec_L, spec_R, spec_T, spec_B 
 			if (spec_id) then
-				spec_L, spec_R, spec_T, spec_B  = unpack (_detalhes.class_specs_coords [spec])
+				if (_detalhes.class_specs_coords [spec_id]) then
+					spec_L, spec_R, spec_T, spec_B  = unpack (_detalhes.class_specs_coords [spec_id])
+				end
 			end
 			
 			GameCooltip:AddLine (name, spec_name)

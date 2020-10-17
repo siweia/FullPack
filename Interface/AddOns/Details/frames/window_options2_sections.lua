@@ -477,10 +477,10 @@ do
                 name = Loc ["STRING_OPTIONS_WC_UNSNAP"],
                 desc = Loc ["STRING_OPTIONS_WC_UNSNAP_DESC"],
             },
-            {--close instance
+            {--close instance close window
                 type = "execute",
                 func = function(self)
-                    currentInstance:CloseInstance()
+                    currentInstance:Shutdown()
                 end,
                 icontexture = [[Interface\Buttons\UI-Panel-MinimizeButton-Up]],
                 icontexcoords = {0.143125, 0.8653125, 0.1446875, 0.8653125},
