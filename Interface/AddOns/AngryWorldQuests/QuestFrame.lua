@@ -169,22 +169,22 @@ local function TitleButton_OnClick(self, button)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	if ( not ChatEdit_TryInsertQuestLinkForQuestID(self.questID) ) then
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-		
+		local watchType = C_QuestLog.GetQuestWatchType(self.questID);
 		if ( button == "RightButton" ) then
 			if ( self.mapID ) then
 				QuestMapFrame:GetParent():SetMapID(self.mapID)
 			end
 		elseif IsShiftKeyDown() then
-			if WorldMap_IsWorldQuestEffectivelyTracked(self.questID) then
+			if watchType == Enum.QuestWatchType.Manual or (watchType == Enum.QuestWatchType.Automatic and C_SuperTrack.GetSuperTrackedQuestID() == self.questID) then
 				BonusObjectiveTracker_UntrackWorldQuest(self.questID);
 			else
-				BonusObjectiveTracker_TrackWorldQuest(self.questID, true)
+				BonusObjectiveTracker_TrackWorldQuest(self.questID, Enum.QuestWatchType.Manual);
 			end
 		else
-			if WorldMap_IsWorldQuestEffectivelyTracked(self.questID) then
+			if watchType == Enum.QuestWatchType.Manual then
 				C_SuperTrack.SetSuperTrackedQuestID(self.questID);
 			else
-				BonusObjectiveTracker_TrackWorldQuest(self.questID)
+				BonusObjectiveTracker_TrackWorldQuest(self.questID, Enum.QuestWatchType.Automatic);
 			end
 		end
 	end
@@ -695,7 +695,7 @@ local function TaskPOI_IsFiltered(info, displayMapID)
 
 	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID(info.questId)
 	local questTagInfo = C_QuestLog.GetQuestTagInfo(info.questId)
-	if not questTagInfo then return end
+	if not questTagInfo then return end -- fix for nil tag
 	local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(info.questId)
 	C_TaskQuest.RequestPreloadRewardData(info.questId)
 
