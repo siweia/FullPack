@@ -23,7 +23,7 @@ local GetFollowers = _G.C_Garrison.GetFollowers
 local GetFollowerAbilities = _G.C_Garrison.GetFollowerAbilities
 local GetFollowerAbilityCountersForMechanicTypes = _G.C_Garrison.GetFollowerAbilityCountersForMechanicTypes
 local GetMoneyString = _G.GetMoneyString
-local GetCurrencyInfo = _G.GetCurrencyInfo
+local GetCurrencyInfo = _G.C_CurrencyInfo.GetCurrencyInfo
 local GetColorForCurrencyReward = _G.GetColorForCurrencyReward
 local GetCurrencyContainerInfo = _G.CurrencyContainerUtil.GetCurrencyContainerInfo
 local GetBasicCurrencyInfo  = _G.C_CurrencyInfo.GetBasicCurrencyInfo
@@ -40,7 +40,7 @@ local ReloadUI = _G.ReloadUI
 local Timer = _G.C_Timer
 --local ElvUI = _G.ElvUI
 
-RE.Version = 211
+RE.Version = 901
 RE.ParsingInProgress = false
 RE.ItemNeeded = false
 RE.ThreatAnchors = {"LEFT", "CENTER", "RIGHT"}
@@ -543,7 +543,8 @@ function RE:LandingMissionRewardParse(rewardButton, reward)
 				rewardButton.Quantity:SetText(BreakUpLargeNumbers(floor(reward.quantity / COPPER_PER_GOLD)))
 				rewardButton.Quantity:Show()
 			else
-				local _, _, currencyTexture = GetCurrencyInfo(reward.currencyID)
+				local info = GetCurrencyInfo(reward.currencyID)
+				local currencyTexture = info.iconFileID
 				local currencyColor = GetColorForCurrencyReward(reward.currencyID, reward.quantity)
 				rewardButton.tooltip = BreakUpLargeNumbers(reward.quantity).." |T"..currencyTexture..":0:0:0:-1|t "
 				rewardButton.currencyID = reward.currencyID
