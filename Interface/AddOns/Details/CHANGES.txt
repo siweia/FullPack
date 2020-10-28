@@ -1,10 +1,10 @@
-lightweight tag a50a49bf0b0eec014ee21cf5df35db9e0e3aa832 DetailsRetail.9.0.1.7933.143
+lightweight tag fd09d77331559d4e1c1122a7840cf6368c1aa3f6 DetailsRetail.9.0.1.7935.143
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sun Oct 25 20:51:04 2020 -0300
+Date:	Wed Oct 28 12:59:30 2020 -0300
 
-commit a50a49bf0b0eec014ee21cf5df35db9e0e3aa832
+commit fd09d77331559d4e1c1122a7840cf6368c1aa3f6
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Oct 25 20:51:04 2020 -0300
+Date:   Wed Oct 28 12:59:30 2020 -0300
 
-    Fixed customs
+    Fixed title bar text reseting position and code cleanups
 
