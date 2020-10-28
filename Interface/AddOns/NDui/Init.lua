@@ -4,7 +4,7 @@ ns[2] = {}			-- C, Config
 ns[3] = {}			-- L, Locales
 ns[4] = {}			-- DB, Database
 
-NDuiDB, NDuiADB = {}, {}
+NDuiDB, NDuiADB, NDuiPDB = {}, {}, {}
 
 local B, C, L, DB = unpack(ns)
 local pairs, next, tinsert = pairs, next, table.insert
@@ -115,7 +115,7 @@ B:RegisterEvent("PLAYER_LOGIN", function()
 	-- Initial
 	B:SetupUIScale()
 	B:RegisterEvent("UI_SCALE_CHANGED", UpdatePixelScale)
-	B:SetSmoothingAmount(NDuiDB["UFs"]["SmoothAmount"])
+	B:SetSmoothingAmount(C.db["UFs"]["SmoothAmount"])
 	C.margin = 3
 
 	for _, module in next, initQueue do
