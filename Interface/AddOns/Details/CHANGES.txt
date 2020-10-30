@@ -1,10 +1,10 @@
-lightweight tag fd09d77331559d4e1c1122a7840cf6368c1aa3f6 DetailsRetail.9.0.1.7935.143
+lightweight tag 262f11511411710a627e793ecf4edc255f3f3a52 DetailsRetail.9.0.1.7938.143
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Wed Oct 28 12:59:30 2020 -0300
+Date:	Thu Oct 29 15:41:42 2020 -0300
 
-commit fd09d77331559d4e1c1122a7840cf6368c1aa3f6
+commit 262f11511411710a627e793ecf4edc255f3f3a52
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Oct 28 12:59:30 2020 -0300
+Date:   Thu Oct 29 15:41:42 2020 -0300
 
-    Fixed title bar text reseting position and code cleanups
+    - Added option to select the title bar icons
 
