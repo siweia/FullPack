@@ -532,7 +532,6 @@ local IncompatibleAddOns = {
 	["BigFoot"] = true,
 	["_ShiGuang"] = true,
 	["!!!163UI!!!"] = true,
-	["AzeriteTooltip"] = true,
 }
 local AddonDependency = {
 	["BigFoot"] = "!!!Libs",
