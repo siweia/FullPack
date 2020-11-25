@@ -6,6 +6,7 @@ local select, pairs = select, pairs
 
 local function reskinQuestIcon(button)
 	if not button then return end
+	if not button.SetNormalTexture then return end
 
 	if not button.styled then
 		button:SetSize(24, 24)
@@ -108,6 +109,8 @@ local function reskinMinimizeButton(button)
 end
 
 tinsert(C.defaultThemes, function()
+	if IsAddOnLoaded("!KalielsTracker") then return end
+
 	-- QuestIcons
 	hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", reskinQuestIcons)
 	hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "AddObjective", reskinQuestIcons)
