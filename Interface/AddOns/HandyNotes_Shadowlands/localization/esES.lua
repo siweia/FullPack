@@ -20,7 +20,13 @@ L["faeflayer_note"] = "En una cueva pequeña oculta tras una cascada."
 L["gormtamer_tizo_note"] = "Mata a los {npc:166735} y a los {npc:166736} que los montan hasta que aparezca {npc:164110}. Cuando lo mates aparecerá {npc:164107}."
 L["humongozz_note"] = "Planta un {item:175247} en la Marga Húmeda para hacer aparecer un {npc:164122}. Tras un minuto de {spell:319367}, aparecerá {npc=164112}. El champiñón cae de muchos enemigos de la zona."
 L["lehgo_note"] = "Destruye los Huevos de Gorm Temblorosos y mata {npc:171827} hasta que aparezca el {npc:167851}. En una cueva (entrada al sureste de las Madrigueras Polvorientas)."
-L["macabre_note"] = nil
+L["macabre_note"] = [[
+Aparece en varios sitios. Para invocar a {npc:164093}, espera en el Anillo de Champiñón Misterioso con otros 2 jugadores y bailad juntos.
+
+• El Jugador 1 baila con el Jugador 2
+• El Jugador 2 baila con el Jugador 3
+• El Jugador 3 baila con el Jugador 1
+]]
 L["mymaen_note"] = "Mata duendes Pudrezarza en el área hasta que aparezca {npc:165053}."
 L["rainbowhorn_note"] = "\n|cffff4800¡|r|cffff9100P|r|cffffda00r|r|cffdaff00u|r|cff91ff00e|r|cff48ff00b|r|cff00ff00a|r |cff00ff91e|r|cff00ffdal|r |cff0091ffA|r|cff0048ffr|r|cff0000ffc|r|cff4800ffo|r |cffda00ffI|r|cffff00dar|r|cffff0091i|r|cffff0048s|r|cffff0000!|r"
 L["rootwrithe_note"] = "Haz click en las {npc:167928} hasta que aparezca el {npc=167726}."
@@ -35,12 +41,16 @@ Viaja a Tirna Scithe y sigue el camino por la raíz, en el acantilado noroeste, 
 
 Lleva ese objeto a la {npc:165704} a la Cuenca Brillocascada. Te dará una {item:181242} a cambio de 10 {item:173204}. |cFFFF8C00Si ella no está aquí, tienes que completar las cadenas de misiones |cFFFFFD00Problemas en el Corral de Gormitos|r y |cFFFFFD00Spriggans marrulleros|r.|r
 
-Después, habla con {npc:160262} en el Corazón del Bosque para cambiarle la {item:181242} por un {item:178675}. Usa este objeto para conseguir el buff {spell:327083}, que te permite ver a la {npc:168135}.
+Después, habla con {npc:160262} en el Corazón del Bosque para cambiarle la {item:181242} por un {item:178675}. Habla con los guardias para hacerla salir si no perteneces a las Sílfides Nocturnas. Usa el {item:178675} para conseguir el buff {spell:327083}, que te permite ver a la {npc:168135}.
 ]]
 
 L["star_lake"] = "Anfiteatro del Lago Estrellado"
-L["star_lake_note"] = "Habla con {npc:171743} para iniciar uno de los combates especiales."
-L["guldan"] = nil
+L["star_lake_note"] = [[
+Habla con {npc:171743}, el Director de Escena, para iniciar uno de los combates especiales. El adversario cambia cada día.
+
+Participa en los siete combates distintos para desbloquear la {item:180748} del {npc:163714}.
+]]
+L["guldan"] = "Gul'dan"
 
 L["cache_of_the_moon"] = "Recoge las cinco herramientas perdidas de {npc:171360} en el Jardín de la Noche y combínalas para crear las {item:180753}. Dáselas y ella te lanzará {spell:334353}, permitiéndote ver el cofre."
 L["cache_of_the_night"] = "Recoge una {item:180656}, un {item:180654} y {item:180655} por toda la zona y combínalo todo para crear un {item:180652}."
@@ -75,6 +85,10 @@ Si tomas el camino equivocado y desaparece el {npc:171699}, cuando llegues al fi
 L["faryl_note"] = "Deja que la defensa de Ardenweald la dirijan las criaturas de los cielos."
 L["glitterdust_note"] = "Puede que las criaturas de Ardenweald parezcan dóciles, pero defenderán su territorio con una fuerza y coraje dignas de los campeones más poderosos que hayas visto. ¿Crees que puedes plantarles cara?"
 
+L["lost_book_note"] = nil
+L["options_icons_faerie_tales"] = "{achievement:14788}"
+L["options_icons_faerie_tales_desc"] = nil
+
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
@@ -88,7 +102,7 @@ L["beasts_of_bastion_note"] = "Habla con la {npc:161441} para invocar una de las
 L["bookkeeper_mnemis_note"] = "Tiene la posibilidad de aparecer en lugar de las {npc:166867} del sitio."
 L["cloudfeather_patriarch_note"] = "Mata {npc:158110} en el aŕea hasta que el {npc:170932} te ataque."
 L["collector_astor_note"] = "Lee los seis capítulos de El Legado de Mercia dispersos por la habitación y recibirás un susurro del {npc:157979}. Habla con ella para recibir {spell:333779} la cual te permitirá encontrar {item:180569} al noroeste. Al devolvérselo, aparecerá el {npc:171014}."
-L["corrupted_clawguard_note"] = "Despoja un {item:180651} en Avanzada Forjafuego subiendo la colina y úsalo para reparar el {npc:171300}."
+L["corrupted_clawguard_note"] = "Despoja un {item:180651} en la habitación o en Avanzada Forjafuego subiendo la colina y úsalo para reparar el {npc:171300}."
 L["dark_watcher_note"] = "Sólo puede verse estando muerto. Habla con la {npc:170623} y te lanzará {spell:332830} antes de que seas atacado."
 L["demi_hoarder_note"] = "Comienza con 99 acumulaciones de {spell:333874}, reduciendo el daño recibido. Las acumulaciones bajan lentamente con el daño. {npc:171011} seguirá una ruta. Desaparecerá si alcanza el final."
 L["dionae_note"] = "Cuando {npc:163460} se hace immune, haz click en las cuatro {npc:163747} para romperle el escudo."
@@ -218,10 +232,11 @@ L["forgotten_mementos"] = "Tira de la Cadena del Rastrillo en la cámara al oest
 L["gieger_note"] = "Tira del {npc:162815} para activar a {npc:162741}."
 L["gristlebeak_note"] = "Rompe los {npc:162761} cercanos para provocar a {npc:162588}."
 L["leeda_note"] = "Mata a los dos {npc:162220} hasta que aparezca la {npc:162180}."
-L["nirvaska_note"] = nil
+L["nirvaska_note"] = "Soloa aparece cuando la misión del mundo {wq:Recordatorio Letal} está activa."
 L["sabriel_note"] = "Puede aparecer como uno de los campeones del Teatro del Dolor."
 L["schmitd_note"] = "Usa un {spell:313451} cercano para romper su escudo."
 L["taskmaster_xox_note"] = "Comparte el lugar de aparición con {npc:160204}, {npc:160230} y {npc:160226}."
+L["theater_of_pain_note"] = "El primer boss que mates cada día tiene una probabilidad de soltar la montura."
 L["zargox_the_reborn_note"] = "Usa el {item:175841} encima del {npc:157124} para invocar a {npc:157125}. Para conseguir el {item:175841} tienes que completar la misión {quest:57245} que da {npc:157076} y vuelve a hablar con él de nuevo."
 L["mixed_pool_note"] = [[
 Recoge ingredientes de los enemigos de alrededor y tíralos en la poza. Cuando hayan sido añadidos 30 ingredientes, aparecerá uno de los siete raros dependiendo de la combinación usada.
@@ -231,6 +246,8 @@ Recoge ingredientes de los enemigos de alrededor y tíralos en la poza. Cuando h
 • Recoge {spell:306719} de {npc:165015} y de {npc:171142} al sur.
 
 • Recoge {spell:306722} de {npc:165027} y de {npc:166438} al sur.
+
+Mata a todos los raros una vez para ganar el juguete {item:183903}.
 ]]
 L["Boneslurp"] = nil
 L["Corrupted"] = nil
@@ -239,7 +256,7 @@ L["Pulsing"] = nil
 L["Violet"] = nil
 
 L["blackhound_cache"] = "Alijo Sabueso Negro"
-L["blackhound_cache_note"] = nil
+L["blackhound_cache_note"] = "Invoca a {npc:157843} en la Fábrica de Abominaciones. Después escóltalo a la Avanzada Sabueso Negro."
 L["bladesworn_supply_cache"] = "Alijo de Suministros Juraespadas"
 L["cache_of_eyes"] = "Alijo de Ojos"
 L["cache_of_eyes_note"] = "Aparece en varios sitios dentro del Bastión Invidente."
@@ -363,6 +380,12 @@ L["addius_note"] = "No debería perder el tiempo con criaturas de mente débil, 
 L["eyegor_note"] = "¡Jojobado listo para el combate!"
 L["sylla_note"] = "En esta zona tan horrible, una batalla honorable es lo último que cabe esperar, pero, bueno, aquí estamos. No me hagas perder el tiempo."
 
+L["avowed_ritualist_note"] = nil
+L["fugitive_soul_note"] = nil
+L["souls_absolved"] = nil
+L["options_icons_fugitives"] = "{achievement:14274}"
+L["options_icons_fugitives_desc"] = nil
+
 L["grand_inquisitor_note"] = "Entrega 10 {item:180451} al {npc:160248} para tener una oportunidad en esta piedra del pecado."
 L["high_inquisitor_note"] = "Entrega 250 {currency:1816} al {npc:160248} para tener una oportunidad en esta piedra del pecado."
 L["inquisitor_note"] = "Entrega 100 {currency:1816} al {npc:160248} para tener una oportunidad en esta piedra del pecado."
@@ -378,6 +401,7 @@ L["maw_intro_note"] = "Comienza la cadena de misiones introductoria de {npc:1628
 
 L["apholeias_note"] = "Con otros 3 jugadores, situaos en las esquinas de la plataforma y lanzad la {spell:331783} para hacer aparecer a {npc:170301}."
 L["dekaris_note"] = "Encima de una gran roca que sobresale."
+L["drifting_sorrow_note"] = "Mata {npc:175246} cerca del orbe flotante para activar el boss."
 L["ekphoras_note"] = "Con otros 3 jugadores, situaos en las esquinas de la plataforma y lanzad la {spell:330650} para hacer aparecer a {npc:169827}."
 L["ikras_note"] = "Vuela alrededor del Bastión de la Perdición. Este es un buen sitio para pullearlo."
 L["orophea_note"] = "Coge el {spell:337143} al sureste y ofréceselo a {npc:172577} para que se active."

@@ -20,7 +20,13 @@ L["faeflayer_note"] = "Dans une petite grotte cachée derrière une chute d'eau.
 L["gormtamer_tizo_note"] = "Tuez les {npc:166735s} et les {npc:166736s} qui les chevauchent jusqu'à ce que {npc:164110} apparaisse."
 L["humongozz_note"] = "Plantez un {item:175247} dans le Terreau humide pour y faire apparaître un {npc:164122}. Après une minute de {spell:319367}, le rare apparaîtra. Le champignon peut être récupéré sur de nombreux monstres de la zone."
 L["lehgo_note"] = "Détruisez les œufs de Gorm frémissants et tuez des {npc:171827} jusqu'à ce qu'il apparaisse. Dans une grotte (entrée au sud-est dans les Terriers poussiéreux)."
-L["macabre_note"] = nil
+L["macabre_note"] = [[
+Apparaît en plusieurs endroits. Pour l'invoquer, placez-vous dans le mystérieux anneau de champignons avec deux autres joueurs et dansez ensemble.
+
+• Le joueur 1 danse avec le joueur 2
+• Le joueur 2 danse avec le joueur 3
+• Le joueur 3 danse avec le joueur 1
+]]
 L["mymaen_note"] = "Tuez les lutins putréronce dans la zone jusqu'à ce qu'il lance une émote et apparaisse."
 L["rainbowhorn_note"] = "\n|cffff5400T|r|cffffaa00A|r|cffffff00S|r|cffaaff00T|r|cff54ff00E|r |cff00ff55T|r|cff00ffa9H|r|cff00ffffE|r |cff0055ffR|r|cff0000ffA|r|cff5400ffI|r|cffaa00ffN|r|cffff00ffB|r|cffff00aaO|r|cffff0054W|r|cffff0000!|r"
 L["rootwrithe_note"] = "Tapez sur les {npc:167928} jusqu'à ce que le rare apparaisse."
@@ -39,8 +45,12 @@ Ensuite, parlez à {npc:160262} au Coeur de la forêt pour échanger l'{item:181
 ]]
 
 L["star_lake"] = "Amphithéâtre du Lac étoilé"
-L["star_lake_note"] = "Parlez à {npc:171743}, le metteur en scène, pour commencer l'une des rencontres spéciales."
-L["guldan"] = nil
+L["star_lake_note"] = [[
+Parlez à {npc:171743}, le metteur en scène, pour commencer l'une des rencontres spéciales. Le combat change chaque jour.
+
+Participez aux sept combats pour débloquer {item:180748} de {npc:163714}.
+]]
+L["guldan"] = "Gul'dan"
 
 L["cache_of_the_moon"] = "Rassemblez les cinq outils manquants de {npc:171360} dans le Jardin de la nuit et combinez-les pour créer {item:180753}. Rendez-lui sa boîte à outils et elle vous lancera {spell:334353}, ce qui vous permettra de voir la cache."
 L["cache_of_the_night"] = "Rassemblez {item:180656}, {item:180654} et {item:180655}, trouvables dans l'ensemble de la zone et combinez-les pour créer {item:180652}."
@@ -75,6 +85,10 @@ Si vous prenez un mauvais chemin et que {npc:171699} disparaît lorsque vous arr
 L["faryl_note"] = "Que la défense de Sylvarden soit menée par les créatures du ciel."
 L["glitterdust_note"] = "Les créatures de Sylvarden peuvent paraître dociles, mais elles défendront leur territoire avec la force et le courage des plus grands champions jamais connus. Avez-vous ce qu'il faut ?"
 
+L["lost_book_note"] = nil
+L["options_icons_faerie_tales"] = "{achievement:14788}"
+L["options_icons_faerie_tales_desc"] = nil
+
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
@@ -84,15 +98,11 @@ L["aspirant_eolis_note"] = "Prenez un {item:180613} à proximité et lisez-le av
 L["baedos_note"] = "Transportez les fûts de fruits de purian fermentés des alentours vers {npc:161536} jusqu'à son activation."
 L["basilofos_note"] = "Déplacez-vous autour du rocher jusqu'à ce qu'un repère violet apparaisse au-dessus de votre tête. Ne bougez pas et attendez que quatre émotes apparaissent, puis il apparaîtra."
 L["beasts_of_bastion"] = "Bêtes du Bastion"
-L["beasts_of_bastion_note"] = [[
-Parlez à {npc:161441} pour invoquer l'une des quatre bêtes.
-
-|cFFFF0000NOTE|r : Le PNJ est souvent buggé et ne vous parlera pas.
-]]
+L["beasts_of_bastion_note"] = "Parlez à {npc:161441} pour invoquer l'une des quatre bêtes."
 L["bookkeeper_mnemis_note"] = "A une chance d'apparaître à la place des unités {npc:166867} de la zone."
 L["cloudfeather_patriarch_note"] = "Tuez {npc:158110} dans la région jusqu'à ce que le rare lance une emote et apparaisse."
 L["collector_astor_note"] = "Lisez les six chapitres de L'héritage de Mercia éparpillés dans la salle, après quoi vous recevrez un murmure de {npc:157979}. Parlez-lui pour recevoir {spell:333779}, ce qui vous permettra de trouver le {item:180569} caché au nord-ouest. Rendre le chapitre fera apparaître le rare."
-L["corrupted_clawguard_note"] = "Procurez-vous un {item:180651} à l'avant-poste de Forgefeu en haut de la colline et utilisez-le pour réparer le {npc:171300}."
+L["corrupted_clawguard_note"] = "Procurez-vous un {item:180651} dans la pièce ou à l'avant-poste de Forgefeu en haut de la colline et utilisez-le pour réparer le {npc:171300}."
 L["dark_watcher_note"] = "Ne peut être vu qu'en étant mort. Parlez-lui et elle vous lancera {spell:332830} avant d'attaquer."
 L["demi_hoarder_note"] = "Commence avec 99 charges de {spell:333874}, réduisant les dégâts subis. Les charges sont lentement retirées par les dégâts. Le rare suivra un chemin et disparaîtra s'il atteint la fin."
 L["dionae_note"] = "Lorsqu'elle est immunisée, cliquez sur les quatre {npc:163747} pour briser son bouclier."
@@ -222,10 +232,11 @@ L["forgotten_mementos"] = "Tirez la chaîne de la herse de la chambre forte, dan
 L["gieger_note"] = "Tirez sur le {npc:162815} pour activer le rare."
 L["gristlebeak_note"] = "Brisez tout les {npc:162761} à proximité pour affronter le rare."
 L["leeda_note"] = "Tuez les deux {npc:162220} jusqu'à ce que le rare apparaisse."
-L["nirvaska_note"] = nil
+L["nirvaska_note"] = "N'apparaît que lorsque l'expédition {wq:Rappel Mortel} est active."
 L["sabriel_note"] = "Peut apparaître comme l'un des champions du Théâtre de la souffrance."
 L["schmitd_note"] = "Utilisez la {spell:313451} proche pour briser son bouclier."
 L["taskmaster_xox_note"] = "Partage son apparition avec {npc:160204}, {npc:160230} et {npc:160226}."
+L["theater_of_pain_note"] = nil
 L["zargox_the_reborn_note"] = "Utilisez {item:175841} en plus de la {npc:157124}. Pour obtenir l'orbe, vous devez compléter la quête {quest:57245} de {npc:157076} et lui parler à nouveau."
 L["mixed_pool_note"] = [[
 Rassemblez des ingrédients des monstres environnants et jetez-les dans la bassine. Une fois que 30 ingrédients ont été ajoutés, un des sept rares apparaîtra selon la combinaison utilisée.
@@ -243,7 +254,7 @@ L["Pulsing"] = nil
 L["Violet"] = nil
 
 L["blackhound_cache"] = "Cache de Noir-Mâtin"
-L["blackhound_cache_note"] = nil
+L["blackhound_cache_note"] = "Invoquez {npc:157843} à la Fabrique à Abominations, puis escortez-le jusqu'à l'Avant-poste de Noir-Mâtin."
 L["bladesworn_supply_cache"] = "Cache de fournitures des ligelames"
 L["cache_of_eyes"] = "Cache des yeux"
 L["cache_of_eyes_note"] = "Apparaît à plusieurs endroits dans la Forteresse Aveugle."
@@ -257,7 +268,7 @@ Placez-vous dans la bave verte (nécessite de se soigner !) pour obtenir 10 char
 
 Une fois transformé, visitez la grotte située sous la plate-forme de {npc:158406} (entrée du côté est) et cliquez sur le tuyau pour être transporté jusqu'au coffre.
 ]]
-L["ritualists_cache_note"] = "Ramassez des {item:181558} sur un tas d'os (plusieurs lieux d'apparition). Utilisez-les pour compléter le Livre des Rituels de Liaison sur le pupitre derrière {npc:174386} et recevoir le buff {spell:337041}." --Correction : Nom du livre possiblement erroné
+L["ritualists_cache_note"] = "Ramassez les {item:181558} au sol et utilisez-les pour compléter le Livre des rituels de lien."
 L["runespeakers_trove_note"] = "Trouvez {npc:170563} à l'est et tuez-le pour obtenir la {item:181777}."
 L["stolen_jar_note"] = "Dans une grotte sous le champignon géant."
 L["strange_growth_note"] = "Tirez sur l'{npc:165037} pour révéler le trésor."
@@ -308,7 +319,7 @@ L["rotgut_note"] = "Tord-Tripes. Les restes. Pièces supplémentaires. Battez-vo
 L["amalgamation_of_filth_note"] = "Quand l'expédition {wq:Sale boulot : équipe de démolition} est disponible, cliquez sur une Boîte à ordures et utilisez {spell:324115} dans l'eau."
 L["amalgamation_of_light_note"] = "Déplacez les trois Miroirs piégés pour libérer le rare."
 L["amalgamation_of_sin_note"] = "Utilisez le Catalyseur de puissance pour obtenir {item:180376} lors de l'expédition {wq:Invocation de vices}, puis utilisez l'objet pour invoquer le rare."
-L["bog_beast_note"] = "A une chance d'apparaître pendant l'expédition {wq:Foire aux idées} après avoir utilisé {item:177880} sur une {npc:166206}." --Correction : Doute sur le nom de l'expédition
+L["bog_beast_note"] = "A une chance d'apparaître pendant l'expédition {wq:Bourbe à gogo} après avoir utilisé {item:177880} sur une {npc:166206}."
 L["endlurker_note"] = "Cliquez sur le Pieu d'Anima près du cadavre de {npc:165229} et utilisez {spell:321826} au sommet de la Faille chatoyante."
 L["executioner_aatron_note"] = "Tuez les trois PNJ proches {npc:166715} pour retirer {spell:324872}."
 L["famu_note"] = "Parlez à {npc:166483} pour déclencher l'événement."
@@ -331,7 +342,7 @@ L["tomb_burster_note"] = "Peut être invoqué si {npc:155777} est piégé dans u
 L["worldedge_gorger_note"] = [[
 Obtenez un {item:173939} sur les Mange-monde, Dévoreurs et Acarus dans le Malbois et le Marais des Affres. Utilisez-le pour allumer les braseros garde-âme et invoquer le rare.
 
-A une chance de lâcher un {item:180583}, qui commence une ligne de quête de 7 jours pour obtenir la monture {spell:333027}.
+A une chance de lâcher un {item:180583}, qui commence une suite de quête de 7 jours pour obtenir la monture {spell:333027}.
 ]]
 
 L["dredglaive_note"] = "Sous le pont, dans le cadavre de {npc:173671}."
@@ -367,6 +378,12 @@ L["addius_note"] = "Les êtres faibles d'esprit ne devraient pas me faire perdre
 L["eyegor_note"] = "Carnœil prêt pour la bataille !"
 L["sylla_note"] = "On ne peut jamais s'attendre à avoir une bataille distinguée ici dans cette terrible région, mais hélas, nous y sommes. Ne me faites pas perdre mon temps."
 
+L["avowed_ritualist_note"] = nil
+L["fugitive_soul_note"] = nil
+L["souls_absolved"] = nil
+L["options_icons_fugitives"] = "{achievement:14274}"
+L["options_icons_fugitives_desc"] = nil
+
 L["grand_inquisitor_note"] = "Donnez 10 {item:180451} à {npc:160248} pour avoir une chance d'obtenir cette stèle du vice."
 L["high_inquisitor_note"] = "Donnez 250 {currency:1816} à {npc:160248} pour avoir une chance d'obtenir cette stèle du vice."
 L["inquisitor_note"] = "Donnez 100 {currency:1816} à {npc:160248} our avoir une chance d'obtenir cette stèle du vice."
@@ -386,6 +403,7 @@ Jusqu'à ce que vous rameniez {npc:170651} à Oribos, vous serez séparé de la 
 
 L["apholeias_note"] = "Avec 3 autres joueurs, placez-vous sur les coins de la plateforme et lancez {spell:331783} pour invoquer le rare."
 L["dekaris_note"] = "Au sommet d'un gros rocher en saillie."
+L["drifting_sorrow_note"] = "Tuez des {npc:175246s} près de l'orbe flottante pour activer le boss."
 L["ekphoras_note"] = "Avec 3 autres joueurs, placez-vous sur les coins de la plateforme et lancez {spell:330650} pour invoquer le rare."
 L["ikras_note"] = "Vole autour du Fort de la Perdition. C'est un bon endroit pour l'attirer."
 L["orophea_note"] = "Ramassez {spell:337143} au sud-est et proposez-le à {npc:172577} pour l'activer."

@@ -18,9 +18,15 @@ L["faeflayer_note"] = "In einer kleinen Höhle, versteckt hinter einem Wasserfal
 L["gormtamer_tizo_note"] = "Töte {npc:166735} und die {npc:166736}, die auf ihm reiten, bis {npc:164110} erscheint."
 L["humongozz_note"] = "Pflanze einen {item:175247} in den feuchten Lehm, um einen {npc:164122} erscheinen zu lassen. Nach einer Minute {spell:319367} wird {npc:164112} erscheinen. Der Pilz wird von mehreren Gegnern in diesem Gebiet fallen gelassen."
 L["lehgo_note"] = "Zerstöre Zitternde Gormeier und töte |CFFFFFF00Wütende Eipfleger|r bis {npc:167851} erscheint. In einer Höhle. (Eingang nach Südosten (58.5, 31.9))." --{npc:171827}
-L["macabre_note"] = nil
+L["macabre_note"] = [[
+Erscheint an verschiedenen Positionen. Zum Beschwören, stelle dich mit 2 anderen Spielern in den Mysteriösen Pilzring und tanzt miteinander.
+
+• Spieler 1 tanzt mit Spieler 2
+• Spieler 2 tanzt mit Spieler 3
+• Spieler 3 tanzt mit Spieler 1
+]]
 L["mymaen_note"] = "Töte Gegner in dem Gebiet, bis {npc:165053} schreit und erscheint."
-L["rainbowhorn_note"] = "Wenn er nicht da sein sollte, klicke das Große Horn des Runenhirsches an. \n\n|cffff4200S|r|cffff8500C|r|cffffc700H|r|cfff3ff00M|r|cffb1ff00E|r|cff6eff00C|r|cff2cff00K|r |cff00ff58D|r|cff00ff9bE|r|cff00ffddN|r |cff009bffR|r|cff0058ffE|r|cff0016ffG|r|cff2c00ffE|r|cff6e00ffN|r|cffb100ffB|r|cfff300ffO|r|cffff00c7G|r|cffff0085E|r|cffff0042N|r|cffff0000!|r"
+L["rainbowhorn_note"] = "\n|cffff4200S|r|cffff8500C|r|cffffc700H|r|cfff3ff00M|r|cffb1ff00E|r|cff6eff00C|r|cff2cff00K|r |cff00ff58D|r|cff00ff9bE|r|cff00ffddN|r |cff009bffR|r|cff0058ffE|r|cff0016ffG|r|cff2c00ffE|r|cff6e00ffN|r|cffb100ffB|r|cfff300ffO|r|cffff00c7G|r|cffff0085E|r|cffff0042N|r|cffff0000!|r"
 L["rootwrithe_note"] = "Pike die |CFFFFFF00Inaktiven Blüten|r an, bis {npc:167726} erscheint." --{npc:167928}
 L["rotbriar_note"] = "Sprich mit {npc:171684} in der Nähe, um {npc:167724} nach einem Dialog zu beschwören."
 L["slumbering_note"] = "In den Nebel zu laufen wird dich betäuben und wieder herausteleportieren. Verwende ein Leuchtfeuer oder Begleiter mit Flächenschaden, um ihn aus dem Nebel zu stoßen."
@@ -34,12 +40,16 @@ Reise nach Tirna Scithe und folge dem Wurzelpfad an der nordwestlichen Klippe zu
 Bring diesen Gegenstand zu {npc:165704} im Schimmerkaskaden Becken.
 Sie wird dir ein {item:181242} im Austausch gegen 10 {item:173204} geben. |cFFFF8C00Wenn sie nicht da ist, musst du die Questreihen |cFFFFFD00Ärger am Gormlingpferch|r und |cFFFFFD00Listige Spriggans|r zuerst abschließen.|r
 
-Danach sprich mit {npc:160262} im Herz des Waldes, um {item:181242} gegen einen {item:178675} auszutauschen. Verwende diesen Gegenstand, um den Stärkungszauber {spell:327083} zu erhalten, der es dir erlaubt {npc:168135} zu sehen.
+Danach sprich mit {npc:160262} im Herz des Waldes, um {item:181242} gegen einen {item:178675} auszutauschen. Sprich mit den Wachen, damit sie nach draußen kommt, wenn du nicht den Nachtfae angehörst. Verwende diesen Gegenstand, um den Stärkungszauber {spell:327083} zu erhalten, der es dir erlaubt {npc:168135} zu sehen.
 ]]
 
 L["star_lake"] = "Sternseeamphitheater"
-L["star_lake_note"] = "Sprich mit {npc:171743}, um eine der besonderen Begegnungen zu beginnen."
-L["guldan"] = nil
+L["star_lake_note"] = [[
+Sprich mit {npc:171743}, um eine der besonderen Begegnungen zu beginnen. Die Begegnung ändert sich jeden Tag.
+
+Nimm an allen sieben Begegnungen teil, um die {item:180748} von {npc:163714} freizuschalten.
+]]
+L["guldan"] = "Gul'dan"
 
 L["cache_of_the_moon"] = "Sammel {npc:171360s} fünf verlorene Werkzeuge im Garten der Nacht und kombiniere diese zu {item:180753}. Bring dieses zu ihr zurück und sie wird dir die {spell:334353} gewähren, um die Truhe sehen zu können."
 L["cache_of_the_night"] = "Sammel {item:180656}, {item:180654} und {item:180655} aus der ganzen Zone und kombiniere diese zu einem {item:180652}."
@@ -74,6 +84,10 @@ Wenn du den falschen Pfad nimmst und {npc:171699} verschwindet, wenn du das Ende
 L["faryl_note"] = "Lasst die Kreaturen des Himmels die Verteidigung des Ardenwalds anführen."
 L["glitterdust_note"] = "Die Kreaturen des Ardenwalds wirken vielleicht friedlich, aber sie verteidigen ihr Revier mit der Kraft und dem Mut der mächtigsten Champions aller Zeiten. Seid Ihr stark genug für diese Aufgabe?"
 
+L["lost_book_note"] = nil
+L["options_icons_faerie_tales"] = "{achievement:14788}"
+L["options_icons_faerie_tales_desc"] = nil
+
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
@@ -87,7 +101,7 @@ L["beasts_of_bastion_note"] = "Sprich mit {npc:161441}, um eine der vier Bestien
 L["bookkeeper_mnemis_note"] = "Hat die Chance anstelle von {npc:166867} in diesem Gebiet zu erscheinen."
 L["cloudfeather_patriarch_note"] = "Töte {npc:158110n} in diesem Gebiet, bis der Wächter dich angreift."
 L["collector_astor_note"] = "Lies alle sechs Kapitel von Mercias Vermächtnis, die im Raum verstreut sind und das {npc:157979} wird zu dir flüstern. Sprich mit ihr, um {spell:333779} zu erhalten, der es dir erlaubt {item:180569} im Nordwesten zu finden. Wenn das Kapitel zurückgeben wird, erscheint {npc:171014}."
-L["corrupted_clawguard_note"] = "Plündere {item:180651} im Schmiedefeueraußenposten (54.9, 41.0) und verwende es, um die {npc:171300} zu reparieren."
+L["corrupted_clawguard_note"] = "Plündere {item:180651} in dem Raum oder im Schmiedefeueraußenposten (54.9, 41.0) und verwende es, um die {npc:171300} zu reparieren."
 L["dark_watcher_note"] = "Kann nur während des Todes gesehen werden. Sprich mit ihr und sie wird {spell:332830} auf dich wirken, bevor sie angreift."
 L["demi_hoarder_note"] = "Startet mit 99 Stapeln von {spell:333874} (Reduzierung des erlittenen Schadens). Stapel werden langsam durch Schaden entfernt. {npc:171011} folgt einem Pfad und verschwindet wenn sie das Ende erreicht."
 L["dionae_note"] = "\nWenn sie immun wird, klicke auf die vier {npc:163747e}, um ihr Schild zu brechen."
@@ -217,10 +231,11 @@ L["forgotten_mementos"] = "Ziehe am Kerkerkettenzug in der Kammer westlich des S
 L["gieger_note"] = "Ziehe an {npc:162815}, um {npc:162741} zu aktivieren."
 L["gristlebeak_note"] = "Zerbrich jedes {npc:162761} in der Nähe, daraufhin wird {npc:162588} zu euch herunter geflogen kommen."
 L["leeda_note"] = "Töte die zwei {npc:162220} bis {npc:162180} erscheint."
-L["nirvaska_note"] = nil
+L["nirvaska_note"] = "Erscheint nur, wenn die Weltquest {wq:Tödliche Erinnerung} aktiv ist."
 L["sabriel_note"] = "Kann als einer der Champions im Theater der Schmerzen auftreten."
 L["schmitd_note"] = "Benutze nahegelegene {spell:313451}, um sein Schild zu brechen."
 L["taskmaster_xox_note"] = "Teilt sich einen spawn mit {npc:160204}, {npc:160230} und {npc:160226}."
+L["theater_of_pain_note"] = "Bei der ersten Tötung am Tag, besteht die Chance, dass das Reittier fallen gelassen wird."
 L["zargox_the_reborn_note"] = "Verwende die {item:175841} auf der {npc:157124}. Die {item:175841} erhälst du, wenn du die Quest {quest:57245} von {npc:157076} abschließen und nochmal mit ihm sprichst."
 L["mixed_pool_note"] = [[
 Sammel Materialien von umliegenden Gegnern und wirf diese in den Teich. Sobald 30 Materialien hinzugefügt wurden, erscheint je nach verwendeter Kombination einer von sieben seltenen Gegnern.
@@ -230,15 +245,17 @@ Sammel Materialien von umliegenden Gegnern und wirf diese in den Teich. Sobald 3
 • Sammel {spell:306719} von {npc:165015} und {npc:171142} aus dem Süden.
 
 • Sammel {spell:306722} von {npc:165027} und {npc:166438} aus dem Süden.
+
+Töte jeden der seltenen Gegner einmal, um das Spielzeug {item:183903} zu erhalten.
 ]]
-L["Boneslurp"] = nil
-L["Corrupted"] = nil
+L["Boneslurp"] = "Knochenschlürfer"
+L["Corrupted"] = "Verderbtes Sediment"
 L["Oily"] = "Öliger Invertebrat"
-L["Pulsing"] = nil
+L["Pulsing"] = "Pulsierender Egel"
 L["Violet"] = "Violetter Fehler"
 
 L["blackhound_cache"] = "Schwarzhundtruhe"
-L["blackhound_cache_note"] = nil
+L["blackhound_cache_note"] = "Beschwöre {npc:157843} bei der Monstrositätenfabrik (Sanktumaufwertung der Necrolords), und eskortiere ihn zum Schwarzhundaußenposten."
 L["bladesworn_supply_cache"] = "Vorräte des Klingenschwurs"
 L["cache_of_eyes"] = "Augenlager"
 L["cache_of_eyes_note"] = "Erscheint an mehreren Positionen in der Augenlosen Festung."
@@ -307,7 +324,7 @@ L["rotgut_note"] = "Faulwanst. Reste. Mehr Teile. Ihr kämpft."
 
 L["amalgamation_of_filth_note"] = "Wenn die Weltquest {wq:Drecksarbeit: Abrisstrupp} verfügbar ist, klicke auf die Abfallkiste und verwende {spell:324115} nahe des Wassers."
 L["amalgamation_of_light_note"] = "Bewege alle drei Spiegelfallen, um {npc:164388} freizulassen."
-L["amalgamation_of_sin_note"] = "Verwende den Catalyst of Power, um von der Weltquest {wq:Ruft Eure Sünden Herbei} einen {item:180376} zu erhalten und verwende es, um den {npc:170434} zu beschwören." --review Blizzard Translation
+L["amalgamation_of_sin_note"] = "Verwende den Katalysator der Kraft, um von der Weltquest {wq:Ruft Eure Sünden Herbei} einen {item:180376} zu erhalten und verwende es, um den {npc:170434} zu beschwören."
 L["bog_beast_note"] = "Hat eine Chance zu erscheinen, wenn während der Weltquest {wq:Losgeschmuddelt} auf einen {npc:166206} {item:177880} angewendet wird."
 L["endlurker_note"] = "Klicke den Animapflock neben {npc:165229s} Leiche (65.4, 60.0) an und verwende den {spell:321826} an einem Schimmerndem Riss."
 L["executioner_aatron_note"] = "Töte die drei {npc:166715} in der Nähe, um die {spell:324872} zu entfernen."
@@ -367,6 +384,12 @@ L["addius_note"] = "Willensschwache Wesen sollten nicht meine Zeit vergeuden, do
 L["eyegor_note"] = "Iiihgor kampfbereit!"
 L["sylla_note"] = "Hier an diesem grässlichen Ort sollte man keinen Kampf erwarten, der es wert ist, und doch stehen wir nun hier. Vergeudet nicht meine Zeit."
 
+L["avowed_ritualist_note"] = nil
+L["fugitive_soul_note"] = nil
+L["souls_absolved"] = nil
+L["options_icons_fugitives"] = "{achievement:14274}"
+L["options_icons_fugitives_desc"] = nil
+
 L["grand_inquisitor_note"] = "Gib 10 {item:180451} bei {npc:160248} ab, um eine Chance auf diesen Sündenstein zu erhalten."
 L["high_inquisitor_note"] = "Gib 250 {currency:1816} bei {npc:160248} ab, um eine Chance auf diesen Sündenstein zu erhalten."
 L["inquisitor_note"] = "Gib 100 {currency:1816} bei {npc:160248} ab, um eine Chance auf diesen Sündenstein zu erhalten."
@@ -382,6 +405,7 @@ L["maw_intro_note"] = "Beginne die Einführungsquestreihe bei {npc:162804}, um i
 
 L["apholeias_note"] = "Stelle dich mit drei anderen Spielern in die Ecken der Plattform und wirkt {spell:331783}, um {npc:170301} zu beschwören."
 L["dekaris_note"] = "Auf einem großen hervorstehenden Felsen."
+L["drifting_sorrow_note"] = "Töte {npc:175246} in der Nähe der schwebenden Kugel, um den Boss zu aktivieren."
 L["ekphoras_note"] = "Stelle dich mit drei anderen Spielern in die Ecken der Plattform und wirkt {spell:330650}, um {npc:169827} zu beschwören."
 L["ikras_note"] = "Fliegt um die Verdammnisfestung herum. Das ist ein guter Platz ihn anzugreifen."
 L["orophea_note"] = "Hebe das {spell:337143} im Südosten auf und biete es {npc:172577} an, zum aktivieren." --review
