@@ -85,9 +85,9 @@ Si tomas el camino equivocado y desaparece el {npc:171699}, cuando llegues al fi
 L["faryl_note"] = "Deja que la defensa de Ardenweald la dirijan las criaturas de los cielos."
 L["glitterdust_note"] = "Puede que las criaturas de Ardenweald parezcan dóciles, pero defenderán su territorio con una fuerza y coraje dignas de los campeones más poderosos que hayas visto. ¿Crees que puedes plantarles cara?"
 
-L["lost_book_note"] = nil
+L["lost_book_note"] = "Devuelve este libro perdido al {npc:165867} en la Arboleda de la Memoria."
 L["options_icons_faerie_tales"] = "{achievement:14788}"
-L["options_icons_faerie_tales_desc"] = nil
+L["options_icons_faerie_tales_desc"] = "Muestra las localizaciones de los libros perdidos para el logro {achievement:14788}."
 
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
@@ -122,7 +122,7 @@ L["wingflayer_note"] = "Para invocar a {npc:167078}, haz click en el Cuerno de C
 
 L["broken_flute"] = "Mata a las {npc:170009} cercanas hasta que una suelte la {item:180536}. Usa las herramientas para repararla."
 L["cloudwalkers_coffer"] = "Arca de Caminanubes"
-L["cloudwalkers_coffer_note"] = "usa las grandes flores lilas para saltar a la plataforma."
+L["cloudwalkers_coffer_note"] = "Usa las grandes flores lilas para saltar a la plataforma."
 L["experimental_construct_part"] = "Despoja un {item:180534} cercano y úsalo para reparar la Pieza de Ensamblaje Experimental. El ánima tiene varios sitios de aparición."
 L["larion_harness"] = "Localizado dentro de la Sala de las Bestias."
 L["memorial_offering"] = "Encuentra a {npc:171526} en uno de estos lugares de Bastión y cómprale una botella de {item:180788}. Colócala en la bandeja de bebidas que hay cerca del cofre para conseguir la {item:180797}."
@@ -237,7 +237,11 @@ L["sabriel_note"] = "Puede aparecer como uno de los campeones del Teatro del Dol
 L["schmitd_note"] = "Usa un {spell:313451} cercano para romper su escudo."
 L["taskmaster_xox_note"] = "Comparte el lugar de aparición con {npc:160204}, {npc:160230} y {npc:160226}."
 L["theater_of_pain_note"] = "El primer boss que mates cada día tiene una probabilidad de soltar la montura."
-L["zargox_the_reborn_note"] = "Usa el {item:175841} encima del {npc:157124} para invocar a {npc:157125}. Para conseguir el {item:175841} tienes que completar la misión {quest:57245} que da {npc:157076} y vuelve a hablar con él de nuevo."
+L["zargox_the_reborn_note"] = [[
+Usa el {item:175841} encima de la {npc:157124}. Para conseguir el {item:175841} tienes que completar la misión {quest:57245} que da {npc:157076} y volver a hablar con él de nuevo.
+
+Si la {npc:157124} no está, reanima los {npc:157132} del aŕea hasta que aparezca.
+]]
 L["mixed_pool_note"] = [[
 Recoge ingredientes de los enemigos de alrededor y tíralos en la poza. Cuando hayan sido añadidos 30 ingredientes, aparecerá uno de los siete raros dependiendo de la combinación usada.
 
@@ -380,11 +384,11 @@ L["addius_note"] = "No debería perder el tiempo con criaturas de mente débil, 
 L["eyegor_note"] = "¡Jojobado listo para el combate!"
 L["sylla_note"] = "En esta zona tan horrible, una batalla honorable es lo último que cabe esperar, pero, bueno, aquí estamos. No me hagas perder el tiempo."
 
-L["avowed_ritualist_note"] = nil
-L["fugitive_soul_note"] = nil
-L["souls_absolved"] = nil
+L["avowed_ritualist_note"] = "Trae aquí las {npc:160149} cercanas para absolverlas."
+L["fugitive_soul_note"] = "Trae las {npc:160149} a una {npc:166150} cercana para comenzar el ritual de absolución."
+L["souls_absolved"] = "almas absueltas"
 L["options_icons_fugitives"] = "{achievement:14274}"
-L["options_icons_fugitives_desc"] = nil
+L["options_icons_fugitives_desc"] = "Muestra las localizaciones de las almas fugitivas para el logro {achievement:14274}."
 
 L["grand_inquisitor_note"] = "Entrega 10 {item:180451} al {npc:160248} para tener una oportunidad en esta piedra del pecado."
 L["high_inquisitor_note"] = "Entrega 250 {currency:1816} al {npc:160248} para tener una oportunidad en esta piedra del pecado."
@@ -428,8 +432,17 @@ Activa el {spell:344157} para cruzar rápidamente por Las Fauces.
 
 Require la mejora {item:184613} de {npc:162804}.
 ]]
-L["venari_note"] = "Usa {currency:1767} para comprar mejoras en Las Fauces y Torghast."
+L["venari_note"] = [[
+Usa {currency:1767} para comprar mejoras en Las Fauces y Torghast.
+
+¡El estado de finalización se actualizará a continuación a medida que las desbloqueemos!
+]]
 L["venari_upgrade"] = "Mejora de {npc:162804}"
+L["Ambivalent"] = nil
+L["Appreciative"] = nil
+L["Apprehensive"] = nil
+L["Cordial"] = nil
+L["Tentative"] = nil
 
 L["options_icons_bonus_boss"] = "Élites de Bonificación"
 L["options_icons_bonus_boss_desc"] = "Muestra las localizaciones de los élites de bonificación."

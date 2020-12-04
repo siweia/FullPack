@@ -84,9 +84,9 @@ Wenn du den falschen Pfad nimmst und {npc:171699} verschwindet, wenn du das Ende
 L["faryl_note"] = "Lasst die Kreaturen des Himmels die Verteidigung des Ardenwalds anführen."
 L["glitterdust_note"] = "Die Kreaturen des Ardenwalds wirken vielleicht friedlich, aber sie verteidigen ihr Revier mit der Kraft und dem Mut der mächtigsten Champions aller Zeiten. Seid Ihr stark genug für diese Aufgabe?"
 
-L["lost_book_note"] = nil
+L["lost_book_note"] = "Bringe dieses verlorene Buch zu {npc:165867} in den Hain der Erinnerung zurück."
 L["options_icons_faerie_tales"] = "{achievement:14788}"
-L["options_icons_faerie_tales_desc"] = nil
+L["options_icons_faerie_tales_desc"] = "Zeigt die verlorenen Bücher für den Erfolg {achievement:14788} an."
 
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
@@ -152,7 +152,7 @@ L["gift_of_vesiphone"] = "Läute an den Glocken, um eine {npc:170849} erscheinen
 
 L["count_your_blessings_note"] = "Platziere eine {item:178915} in der Tributschale, um den Segen zu erhalten."
 L["options_icons_blessings"] = "{achievement:14767}"
-L["options_icons_blessings_desc"] = "Zeigt die Positionen der Tribute für den Erfolg {achievement:14767} an."
+L["options_icons_blessings_desc"] = "Zeigt die Tribute für den Erfolg {achievement:14767} an."
 
 L["vesper_of_courage"] = "Vesperglocke des Mutes"
 L["vesper_of_humility"] = "Vesperglocke der Demut"
@@ -161,7 +161,7 @@ L["vesper_of_purity"] = "Vesperglocke der Reinheit"
 L["vesper_of_wisdom"] = "Vesperglocke der Weisheit"
 L["vespers_ascended_note"] = "Läute diese Vesperglocke gleichzeitig mit den anderen vier Glocken, um den {npc:170899} beim Prüfstein des Aspiranten zu beschworen."
 L["options_icons_vespers"] = "{achievement:14734}"
-L["options_icons_vespers_desc"] = "Zeigt die Positionen der Vesperglocken für den Erfolg {achievement:14734} an."
+L["options_icons_vespers_desc"] = "Zeigt die Vesperglocken für den Erfolg {achievement:14734} an."
 
 L["anima_shard"] = "Verlorener Animakristallsplitter"
 L["anima_shard_61225"] = "Auf einer tiefer gelegenen Plattform unterhalb der Brücke."
@@ -215,7 +215,7 @@ L["anima_shard_61298"] = "Hinter einem Liegestuhl."
 L["anima_shard_61299"] = "Hinter einer großen Fackel versteckt."
 L["anima_shard_61300"] = "An der Kante des mittleren Brunnens."
 L["options_icons_anima_shard"] = "Splitterpartie"
-L["options_icons_anima_shard_desc"] = "Zeigt die Positionen aller 50 verlorener Animakristallsplitter für den Erfolg {achievement:14339} an."
+L["options_icons_anima_shard_desc"] = "Zeigt alle 50 verlorenen Animakristallsplitter für den Erfolg {achievement:14339} an."
 
 L["stratios_note"] = "Auch die kleinst Schlacht sollte mit Bedacht und Ehre geschlagen werden. Präsentiert Euer Team, wenn Ihr bereit seid."
 L["thenia_note"] = "Welch prachtvolle weite Ebene. Einfach wunderbar für einen Kampf. Seid ihr bereit?"
@@ -236,7 +236,11 @@ L["sabriel_note"] = "Kann als einer der Champions im Theater der Schmerzen auftr
 L["schmitd_note"] = "Benutze nahegelegene {spell:313451}, um sein Schild zu brechen."
 L["taskmaster_xox_note"] = "Teilt sich einen spawn mit {npc:160204}, {npc:160230} und {npc:160226}."
 L["theater_of_pain_note"] = "Bei der ersten Tötung am Tag, besteht die Chance, dass das Reittier fallen gelassen wird."
-L["zargox_the_reborn_note"] = "Verwende die {item:175841} auf der {npc:157124}. Die {item:175841} erhälst du, wenn du die Quest {quest:57245} von {npc:157076} abschließen und nochmal mit ihm sprichst."
+L["zargox_the_reborn_note"] = [[
+Verwende die {item:175841} auf der {npc:157124}. Die {item:175841} erhälst du, wenn du die Quest {quest:57245} von {npc:157076} abschließen und nochmal mit ihm sprichst.
+
+Wenn die {npc:157124} nicht da ist, belebe {npc:157132} in dem Gebiet, bis diese erscheint.
+]]
 L["mixed_pool_note"] = [[
 Sammel Materialien von umliegenden Gegnern und wirf diese in den Teich. Sobald 30 Materialien hinzugefügt wurden, erscheint je nach verwendeter Kombination einer von sieben seltenen Gegnern.
 
@@ -312,7 +316,7 @@ L["moldstopheles"] = "Laufe um den Stiel herum und springe auf die Pilzplattform
 L["pus_in_boots"] = "Befindet sich unter der Brücke."
 
 L["options_icons_slime_cat"] = "Neun jenseitige Leben"
-L["options_icons_slime_cat_desc"] = "Zeigt die Positionen der Kätzchen für den Erfolg {achievement:14634} an."
+L["options_icons_slime_cat_desc"] = "Zeigt die Kätzchen für den Erfolg {achievement:14634} an."
 
 L["dundley_note"] = "Ich erkämpfe mir den Sieg und den Respekt, den ich verdiene! Der einzige Nachteil ist, dass jetzt alles was ich besitze, klebrig ist. Alles"
 L["maximillian_note"] = "Dutzende von Jahren habe ich auf würdige Gegner gewartet. Dem Sieger die Beute!"
@@ -384,17 +388,17 @@ L["addius_note"] = "Willensschwache Wesen sollten nicht meine Zeit vergeuden, do
 L["eyegor_note"] = "Iiihgor kampfbereit!"
 L["sylla_note"] = "Hier an diesem grässlichen Ort sollte man keinen Kampf erwarten, der es wert ist, und doch stehen wir nun hier. Vergeudet nicht meine Zeit."
 
-L["avowed_ritualist_note"] = nil
-L["fugitive_soul_note"] = nil
-L["souls_absolved"] = nil
+L["avowed_ritualist_note"] = "Bringe {npc:160149n} aus der Nähe hier her, um sie von ihren Sünden freizusprechen."
+L["fugitive_soul_note"] = "Bringe diese {npc:160149} zu einem nahegelegenen {npc:166150}, um ein Ritual der Absolution zu beginnen."
+L["souls_absolved"] = "Seelen freigesprochen"
 L["options_icons_fugitives"] = "{achievement:14274}"
-L["options_icons_fugitives_desc"] = nil
+L["options_icons_fugitives_desc"] = "Zeigt die flüchtigen Seelen für den Erfolg {achievement:14274} an."
 
 L["grand_inquisitor_note"] = "Gib 10 {item:180451} bei {npc:160248} ab, um eine Chance auf diesen Sündenstein zu erhalten."
 L["high_inquisitor_note"] = "Gib 250 {currency:1816} bei {npc:160248} ab, um eine Chance auf diesen Sündenstein zu erhalten."
 L["inquisitor_note"] = "Gib 100 {currency:1816} bei {npc:160248} ab, um eine Chance auf diesen Sündenstein zu erhalten."
 L["options_icons_inquisitors"] = "{achievement:14276}"
-L["options_icons_inquisitors_desc"] = "Zeigt die Positionen der Inquisitoren für den Erfolg {achievement:14276} an."
+L["options_icons_inquisitors_desc"] = "Zeigt die Inquisitoren für den Erfolg {achievement:14276} an."
 
 -------------------------------------------------------------------------------
 ----------------------------------- THE MAW -----------------------------------
@@ -424,7 +428,7 @@ Töte die anderen drei Herolde der Trauer, der Pein und des Verlusts um ihre dre
 Kombiniere alle drei Gravuren, um den {item:182329} herzustellen, welcher am Altar der Herrschaft verwendet werden kann, um den seltenen Gegner zu beschwören. Verwende das {npc:173892}, um in die obere Etage zu gelangen.
 ]]
 
-L["soul_well_note"] = "Fange den Stygia ausbruch aus dem Seelenbrunnen." --review Blizzard translation
+L["soul_well_note"] = "Fangt die aus dem Seelenbrunnen ausbrechende Stygia."
 L["obliterated_soul_shards_note"] = "Sammel Ausgelöschte Seelensplitter auf den Brücken." --review Blizzard translation
 
 L["chaotic_riftstone_note"] = [[
@@ -432,8 +436,17 @@ Aktiviere ihn, um mit einem {spell:344157} schnell durch den Schlund zu reisen.
 
 Benötigt die Aufwertung {item:184613} von {npc:162804}.
 ]]
-L["venari_note"] = "Verwende {currency:1767} dazu, um dauerhafte Aufwertungen für den Schlund und Torghast freizuschalten."
+L["venari_note"] = [[
+Verwende {currency:1767} dazu, um dauerhafte Aufwertungen für den Schlund und Torghast freizuschalten.
+
+Der Status für die Vervollständigung unten, wird aktualisiert, sobald wir sie freischalten!
+]]
 L["venari_upgrade"] = "eine Aufwertung von {npc:162804}"
+L["Ambivalent"] = "Zwiespältig"
+L["Appreciative"] = "Wertschätzend"
+L["Apprehensive"] = "Besorgt"
+L["Cordial"] = "Herzlich"
+L["Tentative"] = "Unverbindlich"
 
 L["options_icons_bonus_boss"] = "Bonus Elitegegner"
 L["options_icons_bonus_boss_desc"] = "Zeigt die Positionen von Bonus Elitegegnern."
