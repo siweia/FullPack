@@ -17,6 +17,7 @@ function module:CreatePulse()
 	if not C.db["Map"]["CombatPulse"] then return end
 
 	local bg = B.SetBD(Minimap)
+	bg:SetFrameStrata("BACKGROUND")
 	local anim = bg:CreateAnimationGroup()
 	anim:SetLooping("BOUNCE")
 	anim.fader = anim:CreateAnimation("Alpha")
@@ -451,7 +452,6 @@ function module:Minimap_OnMouseUp(btn)
 end
 
 function module:SetupHybridMinimap()
-	HybridMinimap:SetFrameStrata("LOW")
 	HybridMinimap.CircleMask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
 end
 
