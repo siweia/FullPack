@@ -87,7 +87,7 @@ local function UpdatePartyKeystones()
 		Mod.PartyFrame:Hide()
 	else
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 130, 55)
+		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 130, 65)
 		Mod.PartyFrame:Show()
 	end
 	while e <= 4 do
