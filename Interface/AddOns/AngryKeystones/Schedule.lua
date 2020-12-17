@@ -21,7 +21,7 @@ local affixSchedule = {
 	[12] = {[1]=9,  [2]=6,   [3]=14,  [4]=seasonAffix},
 }
 
-local affixScheduleUnknown = not next(affixSchedule)
+local affixScheduleUnknown = true or not next(affixSchedule)
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
