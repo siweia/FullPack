@@ -35,21 +35,21 @@ Details.Coach = {
 function Details.Coach.AskRLForCoachStatus(raidLeaderName)
     Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CIEA"), "WHISPER", raidLeaderName)
     if (_detalhes.debug) then
-        Details:Msg("asked the raid leader the coach status.")
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] asked the raid leader the coach status.")
     end
 end
 
 function Details.Coach.SendRLCombatStartNotify(raidLeaderName)
     Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CCS"), "WHISPER", raidLeaderName)
     if (_detalhes.debug) then
-        Details:Msg("sent to raid leader a combat start notification.")
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] sent to raid leader a combat start notification.")
     end
 end
 
 function Details.Coach.SendRLCombatEndNotify(raidLeaderName)
     Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CCE"), "WHISPER", raidLeaderName)
     if (_detalhes.debug) then
-        Details:Msg("sent to raid leader a combat end notification.")
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] sent to raid leader a combat end notification.")
     end
 end
 
@@ -57,7 +57,7 @@ end
 function Details.Coach.SendRaidCoachEndNotify()
     Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CE"), "RAID")
     if (_detalhes.debug) then
-        Details:Msg("sent to raid a coach end notification.")
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] sent to raid a coach end notification.")
     end
 end
 
@@ -65,7 +65,15 @@ end
 function Details.Coach.SendRaidCoachStartNotify()
     Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CS"), "RAID")
     if (_detalhes.debug) then
-        Details:Msg("sent to raid a coach start notification.")
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] sent to raid a coach start notification.")
+    end
+end
+
+--player send his death to the raid leader
+function Details.Coach.SendDeathToRL(deathTable)
+    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CDD", deathTable), "RAID")
+    if (_detalhes.debug) then
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] your death has been sent to coach.")
     end
 end
 
@@ -98,7 +106,7 @@ function Details.Coach.StartUp()
                 if (raidLeaderName) then
                     --client ask for the raid leader if the Coach is enabled, GetRaidLeader returns nil is the user isn't in raid
                     if (_detalhes.debug) then
-                        Details:Msg("sent ask to raid leader, is coach?")
+                        Details:Msg("[|cFFAAFFAADetails! Coach|r] sent ask to raid leader, is coach?")
                     end
                     Details.Coach.AskRLForCoachStatus(raidLeaderName)
                 end
@@ -117,7 +125,7 @@ function Details.Coach.StartUp()
                     local raidLeaderName = Details:GetRaidLeader()
                     if (raidLeaderName) then
                         if (_detalhes.debug) then
-                            Details:Msg("sent ask to raid leader, is coach?")
+                            Details:Msg("[|cFFAAFFAADetails! Coach|r] sent ask to raid leader, is coach?")
                         end
                         Details.Coach.AskRLForCoachStatus(raidLeaderName)
                     end
@@ -142,7 +150,7 @@ function Details.Coach.StartUp()
                     local raidLeaderName = Details.Coach.Client.GetLeaderName()
                     if (raidLeaderName) then
                         if (_detalhes.debug) then
-                            Details:Msg("i'm a raid assistant, sent combat start notification to raid leader.")
+                            Details:Msg("[|cFFAAFFAADetails! Coach|r] i'm a raid assistant, sent combat start notification to raid leader.")
                         end
                         Details.Coach.SendRLCombatStartNotify(raidLeaderName)
                     end
@@ -165,7 +173,7 @@ function Details.Coach.StartUp()
                     local raidLeaderName = Details.Coach.Client.GetLeaderName()
                     if (raidLeaderName) then
                         if (_detalhes.debug) then
-                            Details:Msg("i'm a raid assistant, sent combat end notification to raid leader.")
+                            Details:Msg("[|cFFAAFFAADetails! Coach|r] i'm a raid assistant, sent combat end notification to raid leader.")
                         end
                         Details.Coach.SendRLCombatEndNotify(raidLeaderName)
                     end
@@ -183,7 +191,7 @@ function Details.Coach.StartUp()
                 --the raid leader entered a raid instance
                 Details.Coach.Disable()
                 if (_detalhes.debug) then
-                    Details:Msg("Coach feature stopped: you entered in a raid instance.")
+                    Details:Msg("[|cFFAAFFAADetails! Coach|r] Coach feature stopped: you entered in a raid instance.")
                 end
             end
             return
@@ -194,7 +202,7 @@ function Details.Coach.StartUp()
                     if (not Details.Coach.Server.IsEnabled()) then --the coach feature isn't running
                         Details.Coach.Server.EnableCoach()
                         if (_detalhes.debug) then
-                            Details:Msg("Coach feature is now running, if this come as surprise, use '/details coach' to disable.")
+                            Details:Msg("[|cFFAAFFAADetails! Coach|r] Coach feature is now running, if this come as surprise, use '/details coach' to disable.")
                         end
                     end
                 end
@@ -210,7 +218,7 @@ function Details.Coach.StartUp()
                         local raidLeaderName = Details:GetRaidLeader()
                         if (raidLeaderName) then
                             if (_detalhes.debug) then
-                                Details:Msg("sent ask to raid leader, is coach?")
+                                Details:Msg("[|cFFAAFFAADetails! Coach|r] sent ask to raid leader, is coach?")
                             end
                             Details.Coach.AskRLForCoachStatus(raidLeaderName)
                             return
@@ -239,13 +247,30 @@ function Details.Coach.StartUp()
     eventListener:RegisterEvent("ZONE_TYPE_CHANGED", "OnZoneChanged")
 end
 
+C_Timer.After(0.1, function()
+    --Details.debug = true
+end)
+
 --received an answer from server telling if the raidleader has the coach feature enabled
 --the request is made when the player enters a new group or reconnects
 function Details.Coach.Client.CoachIsEnabled_Response(isCoachEnabled, raidLeaderName)
+    if (_detalhes.debug) then
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] Raid Leader sent response about the status of Coach Mode:", isCoachEnabled, raidLeaderName)
+    end
+
     if (isCoachEnabled) then
         --raid leader confirmed the coach feature is enabled and running
         Details.Coach.Client.EnableCoach(raidLeaderName)
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] current coach:", raidLeaderName)
     end
+end
+
+function Details.Coach.Server.CoachIsEnabled_Answer(sourcePlayer)
+    if (not UnitIsGroupLeader("player")) then
+        return
+    end
+    --send the answer
+    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, sourcePlayer, GetRealmName(), Details.realversion, "CIER", Details.Coach.Server.IsEnabled()), "WHISPER", sourcePlayer)
 end
 
 function Details.Coach.Disable()
@@ -267,7 +292,7 @@ end
 function Details.Coach.Server.EnableCoach(fromStartup)
     if (not IsInRaid()) then
         if (_detalhes.debug) then
-            Details:Msg("cannot enabled coach: not in raid.")
+            Details:Msg("[|cFFAAFFAADetails! Coach|r] cannot enabled coach: not in raid.")
         end
         Details.coach.enabled = false
         Details.Coach.Server.enabled = false
@@ -275,7 +300,7 @@ function Details.Coach.Server.EnableCoach(fromStartup)
 
     elseif (not UnitIsGroupLeader("player")) then
         if (_detalhes.debug) then
-            Details:Msg("cannot enabled coach: you aren't the raid leader.")
+            Details:Msg("[|cFFAAFFAADetails! Coach|r] cannot enabled coach: you aren't the raid leader.")
         end
         Details.coach.enabled = false
         Details.Coach.Server.enabled = false
@@ -283,7 +308,7 @@ function Details.Coach.Server.EnableCoach(fromStartup)
 
     elseif (isInRaidZone()) then
         if (_detalhes.debug) then
-            Details:Msg("cannot enabled coach: you are inside a raid zone.")
+            Details:Msg("[|cFFAAFFAADetails! Coach|r] cannot enabled coach: you are inside a raid zone.")
         end
         Details.coach.enabled = false
         Details.Coach.Server.enabled = false
@@ -301,7 +326,7 @@ function Details.Coach.Server.EnableCoach(fromStartup)
 
     if (fromStartup) then
         if (_detalhes.debug) then
-            Details:Msg("coach feature enabled, welcome back captain!")
+            Details:Msg("[|cFFAAFFAADetails! Coach|r] coach feature enabled, welcome back captain!")
         end
     end
 end
@@ -335,8 +360,10 @@ function Details.Coach.Client.EnableCoach(raidLeaderName)
     Details.Coach.EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 
     if (_detalhes.debug) then
-        Details:Msg("there's a new coach: ", raidLeaderName)
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] there's a new coach: ", raidLeaderName)
     end
+
+    Details:Msg("[|cFFAAFFAADetails! Coach|r] current coach:", raidLeaderName)
 end
 
 --raid leader received a notification that a new combat has started
@@ -396,7 +423,7 @@ Details.Coach.EventFrame:SetScript("OnEvent", function(event, ...)
                         if (_G.Ambiguate(unitName .. "-" .. GetRealmName(), "none") ~= Details.Coach.Client.coachName) then
                             --the raid leader has changed, finish the coach feature on the client
                             if (_detalhes.debug) then
-                                Details:Msg("raid leader has changed, coach feature has been disabled.")
+                                Details:Msg("[|cFFAAFFAADetails! Coach|r] raid leader has changed, coach feature has been disabled.")
                             end
                             Details.Coach.Client.CoachEnd()
                         end
@@ -413,7 +440,7 @@ Details.Coach.EventFrame:SetScript("OnEvent", function(event, ...)
                     if (IsInRaid()) then
                         if (not isInRaidZone()) then
                             if (_detalhes.debug) then
-                                Details:Msg("you're now the coach of the group.")
+                                Details:Msg("[|cFFAAFFAADetails! Coach|r] you're now the coach of the group.")
                             end
                             --delay to set the new leader to give time for SendRaidCoachEndNotify()
                             _G.C_Timer.After(3, Details.Coach.Server.EnableCoach)
@@ -426,7 +453,7 @@ Details.Coach.EventFrame:SetScript("OnEvent", function(event, ...)
             if (Details.Coach.IsEnabled()) then
                 if (Details.Coach.Server.IsEnabled()) then
                     if (_detalhes.debug) then
-                        Details:Msg("you're not the raid leader, disabling the coach feature.")
+                        Details:Msg("[|cFFAAFFAADetails! Coach|r] you're not the raid leader, disabling the coach feature.")
                     end
                     Details.Coach.Disable()
                 end
@@ -434,3 +461,162 @@ Details.Coach.EventFrame:SetScript("OnEvent", function(event, ...)
         end
     end
 end)
+
+function Details.Coach.Client.SendMyDeath(_, _, _, _, _, _, playerGUID, _, playerFlag, deathTable)
+    if (Details.Coach.Client.enabled) then
+        if (Details.Coach.Client.coachName) then
+            if (Details.in_combat) then
+                if (playerGUID == UnitGUID("player")) then
+                    Details.Coach.SendDeathToRL({deathTable, playerGUID, playerFlag})
+                end
+            end
+        end
+    end
+end
+
+function Details.Coach.Server.AddPlayerDeath(playerName, data)
+    local currentCombat = Details:GetCurrentCombat()
+    local utilityContainer = currentCombat[4]
+
+    local deathLog = data[1]
+    local playerGUID = data[2]
+    local playerFlag = data[3]
+
+    local utilityActorObject = utilityContainer:GetOrCreateActor(playerGUID, playerName, playerFlag, true)
+
+    if (utilityActorObject) then
+        tinsert(currentCombat.last_events_tables, deathLog)
+        --tag the misc container as need refresh
+        currentCombat[DETAILS_ATTRIBUTE_MISC].need_refresh = true
+    end
+end
+
+function Details.Coach.WelcomePanel()
+    local welcomePanel = _G.DETAILSCOACHPANEL
+    if (not welcomePanel) then
+		welcomePanel = DetailsFramework:CreateSimplePanel(UIParent)
+		welcomePanel:SetSize (400, 280)
+		welcomePanel:SetTitle ("Details! Coach")
+		welcomePanel:ClearAllPoints()
+		welcomePanel:SetPoint ("left", UIParent, "left", 10, 0)
+        welcomePanel:Hide()
+        DetailsFramework:ApplyStandardBackdrop(welcomePanel)
+		
+		local LibWindow = _G.LibStub("LibWindow-1.1")
+		welcomePanel:SetScript("OnMouseDown", nil)
+		welcomePanel:SetScript("OnMouseUp", nil)
+		LibWindow.RegisterConfig(welcomePanel, Details.coach.welcome_panel_pos)
+		LibWindow.MakeDraggable(welcomePanel)
+        LibWindow.RestorePosition(welcomePanel)
+        
+        local detailsLogo = DetailsFramework:CreateImage(welcomePanel, [[Interface\AddOns\Details\images\logotipo]])
+        detailsLogo:SetPoint("topleft", welcomePanel, "topleft", 5, -30)
+        detailsLogo:SetSize(200, 50)
+        detailsLogo:SetTexCoord(36/512, 380/512, 128/256, 227/256)
+
+        local isLeaderTexture = DetailsFramework:CreateImage(welcomePanel, [[Interface\GLUES\LOADINGSCREENS\DynamicElements]], 32, 32)
+        isLeaderTexture:SetTexCoord(0, 0.5, 0, 0.5)
+        isLeaderTexture:SetPoint("topleft", detailsLogo, "topleft", 0, -60)
+        local isLeaderText = DetailsFramework:CreateLabel(welcomePanel, "In raid and You're the leader of the group.")
+        isLeaderText:SetPoint("left", isLeaderTexture, "right", 10, 0)
+
+        local isOutsideTexture = DetailsFramework:CreateImage(welcomePanel, [[Interface\GLUES\LOADINGSCREENS\DynamicElements]], 32, 32)
+        isOutsideTexture:SetTexCoord(0, 0.5, 0, 0.5)
+        isOutsideTexture:SetPoint("topleft", isLeaderTexture, "bottomleft", 0, -5)
+        local isOutsideText = DetailsFramework:CreateLabel(welcomePanel, "You're outside of the instance.")
+        isOutsideText:SetPoint("left", isOutsideTexture, "right", 10, 0)
+
+        local hasAssistantsTexture = DetailsFramework:CreateImage(welcomePanel, [[Interface\GLUES\LOADINGSCREENS\DynamicElements]], 32, 32)
+        hasAssistantsTexture:SetTexCoord(0, 0.5, 0, 0.5)
+        hasAssistantsTexture:SetPoint("topleft", isOutsideTexture, "bottomleft", 0, -5)
+        local hasAssistantsText = DetailsFramework:CreateLabel(welcomePanel, "There's an 'raid assistant' inside the raid.")
+        hasAssistantsText:SetPoint("left", hasAssistantsTexture, "right", 10, 0)
+
+        local beInGroupSevenTexture = DetailsFramework:CreateImage(welcomePanel, [[Interface\GLUES\LOADINGSCREENS\DynamicElements]], 32, 32)
+        beInGroupSevenTexture:SetTexCoord(0, 0.5, 0, 0.5)
+        beInGroupSevenTexture:SetPoint("topleft", hasAssistantsTexture, "bottomleft", 0, -5)
+        local beInGroupSevenText = DetailsFramework:CreateLabel(welcomePanel, "Stay in group 7 or 8.")
+        beInGroupSevenText:SetPoint("left", beInGroupSevenTexture, "right", 10, 0)
+
+        local startCoachButton = DetailsFramework:CreateButton(welcomePanel, function() 
+            Details.coach.enabled = true
+            Details.Coach.Server.EnableCoach()
+            welcomePanel:Hide()
+            Details:Msg("welcome aboard commander!")
+
+        end, 80, 20, "Start Coaching!")
+        startCoachButton:SetPoint("bottomright", welcomePanel, "bottomright", -10, 10)
+        startCoachButton:SetTemplate(DetailsFramework:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+
+        function welcomePanel.Update()
+            local good = 0
+
+            if (IsInRaid() and UnitIsGroupLeader("player")) then
+                isLeaderTexture:SetTexture([[Interface\COMMON\Indicator-Green]])
+                isLeaderTexture:SetTexCoord(0, 1, 0, 1)
+                good = good + 1
+            else
+                isLeaderTexture:SetTexture([[Interface\GLUES\LOADINGSCREENS\DynamicElements]])
+                isLeaderTexture:SetTexCoord(0, 0.5, 0, 0.5)
+            end
+
+            if (not IsInInstance()) then
+                isOutsideTexture:SetTexture([[Interface\COMMON\Indicator-Green]])
+                isOutsideTexture:SetTexCoord(0, 1, 0, 1)
+                good = good + 1
+            else
+                isOutsideTexture:SetTexture([[Interface\GLUES\LOADINGSCREENS\DynamicElements]])
+                isOutsideTexture:SetTexCoord(0, 0.5, 0, 0.5)
+            end
+
+            local hasAssistant = false
+            for i = 1, GetNumGroupMembers() do
+                if (UnitIsGroupAssistant("raid" .. i) and UnitName("raid" .. i) ~= UnitName("player")) then
+                    hasAssistant = true
+                    break
+                end
+            end
+
+            if (hasAssistant) then
+                hasAssistantsTexture:SetTexture([[Interface\COMMON\Indicator-Green]])
+                hasAssistantsTexture:SetTexCoord(0, 1, 0, 1)
+                good = good + 1
+            else
+                hasAssistantsTexture:SetTexture([[Interface\GLUES\LOADINGSCREENS\DynamicElements]])
+                hasAssistantsTexture:SetTexCoord(0, 0.5, 0, 0.5)
+            end
+
+            local isInCorrectGroup = false
+            for i = 1, GetNumGroupMembers() do
+                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(i)
+                if (rank == 2) then
+                    if (subgroup == 7 or subgroup == 8) then
+                        isInCorrectGroup = true
+                        break
+                    end
+                end
+            end
+
+            if (isInCorrectGroup) then
+                beInGroupSevenTexture:SetTexture([[Interface\COMMON\Indicator-Green]])
+                beInGroupSevenTexture:SetTexCoord(0, 1, 0, 1)
+                good = good + 1
+            else
+                beInGroupSevenTexture:SetTexture([[Interface\GLUES\LOADINGSCREENS\DynamicElements]])
+                beInGroupSevenTexture:SetTexCoord(0, 0.5, 0, 0.5)
+            end
+
+            if (good == 4) then
+                startCoachButton:Enable()
+            else
+                startCoachButton:Disable()
+            end
+        end
+    end
+
+    welcomePanel:SetScript("OnUpdate", function()
+        welcomePanel:Update()
+    end)
+
+    welcomePanel:Show()
+end
