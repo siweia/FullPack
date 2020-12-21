@@ -1,118 +1,16 @@
-lightweight tag ec5fad443ab2d9cce061a8566b3efce2ae9da580 DetailsRetail.9.0.2.8093.144
+lightweight tag b3e907dbcac7b5f460d4afd883e318eae686026f DetailsRetail.9.0.2.8097.144
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sat Dec 19 19:25:11 2020 -0300
+Date:	Sun Dec 20 17:46:39 2020 -0300
 
-commit ec5fad443ab2d9cce061a8566b3efce2ae9da580
+commit b3e907dbcac7b5f460d4afd883e318eae686026f
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Dec 19 19:25:11 2020 -0300
+Date:   Sun Dec 20 17:46:39 2020 -0300
 
-    Finished the first 'Alpha Version' of the Coach feature
+    Update boot.lua
 
-commit 4d1747f8a8a1d490fdce4488d431b94840447ca6
+commit 9b972e41f9ae9d13859b389d1b601c086685bf70
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Dec 17 18:49:02 2020 -0300
+Date:   Sun Dec 20 17:44:09 2020 -0300
 
-    fix
-
-commit 818d31bcdc05b52006b4802e8b02ddc0de872c21
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Dec 17 18:41:23 2020 -0300
-
-    Passing the coach deploy to debug only
-
-commit 3842c0a9f65a34edc15722e2a1a742ea630f956c
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Dec 17 18:30:56 2020 -0300
-
-    Testing Coach Deaths
-
-commit da6972d1c11f4a45d06cea26759489dbbb488384
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Dec 16 11:19:20 2020 -0300
-
-    DeleteActor fix
-
-commit bc7df39d6f7d614216666e84645412bc12133a72
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Dec 15 18:32:10 2020 -0300
-
-    Druid Kyrian TANK Kindred Spirits
-
-commit f00e839624a3f441dfc01981718b88828237c1e9
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Dec 15 16:07:36 2020 -0300
-
-    Druid Kyrian HEAL Kindred Spirits
-
-commit 38921be05ad97f53d62254362f6132e004db94ab
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Dec 15 15:56:23 2020 -0300
-
-    Druid Kyrian DPS Kindred Spirits
-
-commit bf67a7773df610b53cc5142b66b642cbd1c5d0c3
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Dec 14 14:30:01 2020 -0300
-
-    Bug fixing
-
-commit e364629e66695ca2ed92576181cf14bb5a95249b
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Dec 14 12:45:41 2020 -0300
-
-    Adjusts for The Council of Blood encounter
-
-commit 4c7715a36c677b6c1840539cbeb601c8a256ba38
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Dec 13 19:19:26 2020 -0300
-
-    Framework update
-
-commit 8f1df5e015c21ef19c4b47a9585a108f4c688892
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Dec 12 18:08:11 2020 -0300
-
-    small bug fixes
-
-commit a56865dd68bca549f9fc2d659e8673387f4c5e7b
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Fri Dec 11 19:39:13 2020 -0300
-
-    Framework update
-
-commit b61a8b604132427bb411586f463d1c74d5d49337
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Dec 10 19:23:21 2020 -0300
-
-    Updated list of food
-
-commit 029191976d0abc2a405b8112d6c0edb323e5686a
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Dec 9 18:45:41 2020 -0300
-
-    More fixes
-
-commit a3a72f8d7fef1ac0726e2f95d8258896b6d707dd
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Dec 8 18:36:14 2020 -0300
-
-    More progress on OCD tracker
-
-commit 62dc20917b2d1a5256f47d925a22040fce3826e4
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Dec 7 22:59:35 2020 -0300
-
-    lib update
-
-commit f4be41b115dd855c80ce5ee6504837de1b98e2f4
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Dec 7 22:09:25 2020 -0300
-
-    added libRaidStatus
-
-commit 0ca282275348a6435c47c40e9fe3e91d6e9f68b4
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Dec 6 14:14:51 2020 -0300
-
-    More development on the Coach packager feature, /details coach
+    Coach updates
 
