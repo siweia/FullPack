@@ -7,6 +7,7 @@ local info = module:RegisterInfobar("Time", C.Infobar.TimePos)
 local time, date = time, date
 local strfind, format, floor, strmatch = strfind, format, floor, strmatch
 local mod, tonumber, pairs, ipairs = mod, tonumber, pairs, ipairs
+local IsShiftKeyDown = IsShiftKeyDown
 local C_Map_GetMapInfo = C_Map.GetMapInfo
 local C_DateAndTime_GetCurrentCalendarTime = C_DateAndTime.GetCurrentCalendarTime
 local C_Calendar_SetAbsMonth = C_Calendar.SetAbsMonth
@@ -58,13 +59,6 @@ info.onUpdate = function(self, elapsed)
 end
 
 -- Data
-local bonus = {
-	52834, 52838,	-- Gold
-	52835, 52839,	-- Honor
-	52837, 52840,	-- Resources
-}
-local bonusName = C_CurrencyInfo.GetCurrencyInfo(1580).name
-
 local isTimeWalker, walkerTexture
 local function checkTimeWalker(event)
 	local date = C_DateAndTime_GetCurrentCalendarTime()
@@ -214,7 +208,15 @@ local function addTitle(text)
 	end
 end
 
+info.onShiftDown = function()
+	if info.entered then
+		info:onEnter()
+	end
+end
+
 info.onEnter = function(self)
+	self.entered = true
+
 	RequestRaidInfo()
 
 	local r,g,b
@@ -283,17 +285,6 @@ info.onEnter = function(self)
 
 	-- Quests
 	title = false
-	local count, maxCoins = 0, 2
-	for _, id in pairs(bonus) do
-		if IsQuestFlaggedCompleted(id) then
-			count = count + 1
-		end
-	end
-	if count > 0 then
-		addTitle(QUESTS_LABEL)
-		if count == maxCoins then r,g,b = 1,0,0 else r,g,b = 0,1,0 end
-		GameTooltip:AddDoubleLine(bonusName, count.."/"..maxCoins, 1,1,1, r,g,b)
-	end
 
 	do
 		local currentValue, maxValue, questID = PVPGetConquestLevelInfo()
@@ -309,32 +300,6 @@ info.onEnter = function(self)
 		end
 	end
 
-	for _, v in ipairs(horrificVisions) do
-		if IsQuestFlaggedCompleted(v.id) then
-			addTitle(QUESTS_LABEL)
-			GameTooltip:AddDoubleLine(HORRIFIC_VISION, v.desc, 1,1,1, 0,1,0)
-			break
-		end
-	end
-
-	for _, id in pairs(lesserVisions) do
-		if IsQuestFlaggedCompleted(id) then
-			addTitle(QUESTS_LABEL)
-			GameTooltip:AddDoubleLine(L["LesserVision"], QUEST_COMPLETE, 1,1,1, 1,0,0)
-			break
-		end
-	end
-
-	if not nzothAssaults then
-		nzothAssaults = C_TaskQuest_GetThreatQuests() or {}
-	end
-	for _, v in pairs(nzothAssaults) do
-		if IsQuestFlaggedCompleted(v) then
-			addTitle(QUESTS_LABEL)
-			GameTooltip:AddDoubleLine(GetNzothThreatName(v), QUEST_COMPLETE, 1,1,1, 1,0,0)
-		end
-	end
-
 	for _, v in pairs(questlist) do
 		if v.name and IsQuestFlaggedCompleted(v.id) then
 			if v.name == L["Timewarped"] and isTimeWalker and checkTexture(v.texture) or v.name ~= L["Timewarped"] then
@@ -344,19 +309,51 @@ info.onEnter = function(self)
 		end
 	end
 
-	-- Invasions
-	for index, value in ipairs(invIndex) do
-		title = false
-		addTitle(value.title)
-		local timeLeft, zoneName = CheckInvasion(index)
-		local nextTime = GetNextTime(value.baseTime, index)
-		if timeLeft then
-			timeLeft = timeLeft/60
-			if timeLeft < 60 then r,g,b = 1,0,0 else r,g,b = 0,1,0 end
-			GameTooltip:AddDoubleLine(L["Current Invasion"]..zoneName, format("%.2d:%.2d", timeLeft/60, timeLeft%60), 1,1,1, r,g,b)
+	if IsShiftKeyDown() then
+		-- Nzoth relavants
+		for _, v in ipairs(horrificVisions) do
+			if IsQuestFlaggedCompleted(v.id) then
+				addTitle(QUESTS_LABEL)
+				GameTooltip:AddDoubleLine(HORRIFIC_VISION, v.desc, 1,1,1, 0,1,0)
+				break
+			end
 		end
-		local nextLocation = GetNextLocation(nextTime, index)
-		GameTooltip:AddDoubleLine(L["Next Invasion"]..nextLocation, date("%m/%d %H:%M", nextTime), 1,1,1, 1,1,1)
+
+		for _, id in pairs(lesserVisions) do
+			if IsQuestFlaggedCompleted(id) then
+				addTitle(QUESTS_LABEL)
+				GameTooltip:AddDoubleLine(L["LesserVision"], QUEST_COMPLETE, 1,1,1, 1,0,0)
+				break
+			end
+		end
+
+		if not nzothAssaults then
+			nzothAssaults = C_TaskQuest_GetThreatQuests() or {}
+		end
+		for _, v in pairs(nzothAssaults) do
+			if IsQuestFlaggedCompleted(v) then
+				addTitle(QUESTS_LABEL)
+				GameTooltip:AddDoubleLine(GetNzothThreatName(v), QUEST_COMPLETE, 1,1,1, 1,0,0)
+			end
+		end
+
+		-- Invasions
+		for index, value in ipairs(invIndex) do
+			title = false
+			addTitle(value.title)
+			local timeLeft, zoneName = CheckInvasion(index)
+			local nextTime = GetNextTime(value.baseTime, index)
+			if timeLeft then
+				timeLeft = timeLeft/60
+				if timeLeft < 60 then r,g,b = 1,0,0 else r,g,b = 0,1,0 end
+				GameTooltip:AddDoubleLine(L["Current Invasion"]..zoneName, format("%.2d:%.2d", timeLeft/60, timeLeft%60), 1,1,1, r,g,b)
+			end
+			local nextLocation = GetNextLocation(nextTime, index)
+			GameTooltip:AddDoubleLine(L["Next Invasion"]..nextLocation, date("%m/%d %H:%M", nextTime), 1,1,1, 1,1,1)
+		end
+	else
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(L["Hold Shift"], .6,.8,1)
 	end
 
 	-- Help Info
@@ -365,9 +362,15 @@ info.onEnter = function(self)
 	GameTooltip:AddDoubleLine(" ", DB.ScrollButton..RATED_PVP_WEEKLY_VAULT.." ", 1,1,1, .6,.8,1)
 	GameTooltip:AddDoubleLine(" ", DB.RightButton..L["Toggle Clock"].." ", 1,1,1, .6,.8,1)
 	GameTooltip:Show()
+
+	B:RegisterEvent("MODIFIER_STATE_CHANGED", info.onShiftDown)
 end
 
-info.onLeave = B.HideTooltip
+info.onLeave = function(self)
+	self.entered = true
+	B.HideTooltip()
+	B:UnregisterEvent("MODIFIER_STATE_CHANGED", info.onShiftDown)
+end
 
 info.onMouseUp = function(_, btn)
 	if btn == "RightButton" then
