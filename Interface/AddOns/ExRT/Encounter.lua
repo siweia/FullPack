@@ -40,8 +40,6 @@ module.db.chachedDB = nil
 
 function module.options:Load()
 	local table_find = ExRT.F.table_find3
-
-	local cache = {}
 	
 	module.db.sortedList = {
 		{350,652,653,654,655,656,657,658,659,660,661,662},
@@ -263,9 +261,6 @@ function module.options:Load()
 		return num .. "." .. str
 	end
 
-	local updatesPerLast10sec = 0
-	local updatesPerLast10secLast = 0
-	
 	self.dropDown = ELib:DropDown(self,220,#module.db.diffPos):Size(235):Point(445+2,-31)
 	function self.dropDown:SetValue(newValue,resetDB)
 		if module.db.dropDownNow ~= newValue then
@@ -274,12 +269,6 @@ function module.options:Load()
 		end
 		if resetDB then
 			module.db.chachedDB = nil
-		end
-		local isUpdated
-		if module.db.listUpdated then
-			wipe(cache)
-			module.db.listUpdated = nil
-			isUpdated = true
 		end
 		module.db.dropDownNow = newValue
 		local newDiff = module.db.diffPos[newValue]
@@ -432,16 +421,6 @@ function module.options:Load()
 		end
 		
 		module.db.chachedDB = encounters
-
-		local now = GetTime()
-		local stopPortraitUpdate
-		if now - updatesPerLast10secLast > 10 then
-			updatesPerLast10sec = 0
-		end
-		updatesPerLast10sec = updatesPerLast10sec + 1
-		if updatesPerLast10sec >= 20 then
-			stopPortraitUpdate = true
-		end
 			
 		local j = 0
 		for i=module.db.scrollPos,#encounters do
@@ -480,7 +459,7 @@ function module.options:Load()
 				if encounterLine.wipeTime == 0 then optionsLine.longest:SetText("-") end
 				if encounterLine.killTime == 0 then optionsLine.fastest:SetText("-") end
 
-				if ExRT.GDB.encounterIDtoEJ[encounterLine.id] and not ExRT.isClassic and not stopPortraitUpdate then
+				if ExRT.GDB.encounterIDtoEJ[encounterLine.id] and not ExRT.isClassic then
 					local displayInfo = select(4, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[encounterLine.id]))
 					if displayInfo then
 						SetPortraitTextureFromCreatureDisplayID(optionsLine.bossImg, displayInfo)
@@ -803,13 +782,8 @@ function module.options:Load()
 		module.options.dropDown:SetValue(module.db.dropDownNow)
 	end)	
 	
-	local prevScroll = nil
 	self.ScrollBar = ELib:ScrollBar(self.borderList):Size(16,self.borderList:GetHeight()-27+18):Point("TOPRIGHT",-4,-22):Range(1,1):OnChange(function(self,event)
 		event = ExRT.F.Round(event)
-		if prevScroll == event then
-			return
-		end
-		prevScroll = event
 		module.db.scrollPos = event
 		module.options.dropDown:SetValue(module.db.dropDownNow)
 		self:UpdateButtons()
@@ -951,7 +925,6 @@ function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, g
 	
 	VExRT.Encounter.list[module.db.playerName][module.db.nowInTable] = 
 		"^".. encounterID .. "^" .. difficultyID .. "^" .. module.db.pullTime .. "^0^0^" .. (groupSize or 0) .. "^" .. format("%.2f",ExRT.F.RaidItemLevel and ExRT.F:RaidItemLevel() or 0) .. "^"
-	module.db.listUpdated = true
 	
 	VExRT.Encounter.names[encounterID] = encounterName
 	module.db.firstBlood = nil
@@ -979,7 +952,6 @@ do
 			
 			VExRT.Encounter.list[module.db.playerName][module.db.nowInTable] = 
 				"^".. encounterID .. "^" .. difficultyID .. "^" .. pull .. "^".. pullTime .."^"..(success == 1 and "1" or "0").."^" .. groupSize .. "^" .. raidIlvl .. "^".. fb
-			module.db.listUpdated = true
 			
 		end
 		module.db.isEncounter = nil
@@ -1007,7 +979,6 @@ function module.main:COMBAT_LOG_EVENT_UNFILTERED()
 		end
 		module.db.firstBlood = true
 		VExRT.Encounter.list[module.db.playerName][module.db.nowInTable] = VExRT.Encounter.list[module.db.playerName][module.db.nowInTable] .. destName
-		module.db.listUpdated = true
 		module:UnregisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
 		
 		module.db.chachedDB = nil

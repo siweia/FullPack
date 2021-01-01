@@ -326,7 +326,6 @@ do
 			BWInterfaceFrame:Show()
 		end
 		CloseDropDownMenus() 
-		ELib.ScrollDropDown.Close()
 	end
 	function module:miniMapMenu()
 		if isAdded then
@@ -359,7 +358,6 @@ function ExRT.F:FightLog_OpenTab(tabID)
 	BWInterfaceFrame:Show()
 
 	CloseDropDownMenus()
-	ELib.ScrollDropDown.Close()
 end
 
 function module.options:Load()
