@@ -732,3 +732,6 @@ L["ColoredTargetTip"] = "|n啟用後，染色你當前的目標名條，優先�
 L["TargetNP Color"] = "目標名條顔色"
 L["GUIPanelHelp"] = "你可以在這裏查看控制臺幫助訊息。"
 L["Preset"] = "預設"
+L["InstanceAurasTip"] = "|n顯示副本相關的法術監控。|n關閉後，將只顯示你可以驅散的負面效果。"
+L["PlayerPlate OnFire"] = "火力全開模式"
+L["PPOnFireTip"] = "|n啟用後，個人資源條的監控脫戰后將繼續生效。"
