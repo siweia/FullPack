@@ -1,10 +1,10 @@
-lightweight tag c1c40eb176fca97a3cf3fba163058cbc6680e118 v5.4.1
+lightweight tag 40c5514fb822a6135b418c96a1487fa2572ca962 v5.5.1
 Author:	Boshi Lian <farmer1992@gmail.com>
-Date:	Tue Oct 20 03:14:49 2020 -0700
+Date:	Tue Jan 12 18:05:27 2021 -0800
 
-commit c1c40eb176fca97a3cf3fba163058cbc6680e118
+commit 40c5514fb822a6135b418c96a1487fa2572ca962
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Tue Oct 20 03:14:49 2020 -0700
+Date:   Tue Jan 12 18:05:27 2021 -0800
 
-    minimap now configable
+    set max count to 50
 
