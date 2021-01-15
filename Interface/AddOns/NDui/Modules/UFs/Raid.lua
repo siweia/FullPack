@@ -357,13 +357,33 @@ function UF:BuffIndicatorOnUpdate(elapsed)
 	B.CooldownOnUpdate(self, elapsed, true)
 end
 
+UF.CornerSpells = {}
+function UF:UpdateCornerSpells()
+	wipe(UF.CornerSpells)
+
+	for spellID, value in pairs(C.CornerBuffs[DB.MyClass]) do
+		local modData = NDuiADB["CornerSpells"][DB.MyClass]
+		if not (modData and modData[spellID]) then
+			local r, g, b = unpack(value[2])
+			UF.CornerSpells[spellID] = {value[1], {r, g, b}, value[3]}
+		end
+	end
+
+	for spellID, value in pairs(NDuiADB["CornerSpells"][DB.MyClass]) do
+		if next(value) then
+			local r, g, b = unpack(value[2])
+			UF.CornerSpells[spellID] = {value[1], {r, g, b}, value[3]}
+		end
+	end
+end
+
 local found = {}
 local auraFilter = {"HELPFUL", "HARMFUL"}
 
 function UF:UpdateBuffIndicator(event, unit)
 	if event == "UNIT_AURA" and self.unit ~= unit then return end
 
-	local spellList = NDuiADB["CornerBuffs"][DB.MyClass]
+	local spellList = UF.CornerSpells
 	local buttons = self.BuffIndicator
 	unit = self.unit
 
@@ -491,23 +511,23 @@ function UF:RefreshRaidFrameIcons()
 end
 
 -- Partywatcher
-local partyWatcherSpells = {}
+UF.PartyWatcherSpells = {}
 function UF:UpdatePartyWatcherSpells()
-	wipe(partyWatcherSpells)
+	wipe(UF.PartyWatcherSpells)
 
 	for spellID, duration in pairs(C.PartySpells) do
 		local name = GetSpellInfo(spellID)
 		if name then
 			local modDuration = NDuiADB["PartySpells"][spellID]
 			if not modDuration or modDuration > 0 then
-				partyWatcherSpells[spellID] = duration
+				UF.PartyWatcherSpells[spellID] = duration
 			end
 		end
 	end
 
 	for spellID, duration in pairs(NDuiADB["PartySpells"]) do
 		if duration > 0 then
-			partyWatcherSpells[spellID] = duration
+			UF.PartyWatcherSpells[spellID] = duration
 		end
 	end
 end
@@ -633,7 +653,7 @@ function UF:InterruptIndicator(self)
 	end
 
 	buttons.__max = maxIcons
-	buttons.PartySpells = partyWatcherSpells
+	buttons.PartySpells = UF.PartyWatcherSpells
 	buttons.TalentCDFix = C.TalentCDFix
 	self.PartyWatcher = buttons
 	if C.db["UFs"]["PartyWatcherSync"] then
