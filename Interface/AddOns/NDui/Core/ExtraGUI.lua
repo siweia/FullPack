@@ -554,10 +554,8 @@ function G:SetupPartyWatcher(parent)
 	end)
 
 	local UF = B:GetModule("UnitFrames")
-	if UF.PartyWatcherSpells then
-		for spellID, duration in pairs(UF.PartyWatcherSpells) do
-			createBar(scroll.child, spellID, duration)
-		end
+	for spellID, duration in pairs(UF.PartyWatcherSpells) do
+		createBar(scroll.child, spellID, duration)
 	end
 end
 
@@ -703,7 +701,7 @@ function G:SetupBuffIndicator(parent)
 			anchor, r, g, b = parent.dd.Text:GetText(), parent.swatch.tex:GetColor()
 			showAll = parent.showAll:GetChecked() or nil
 			local modValue = NDuiADB["CornerSpells"][DB.MyClass][spellID]
-			if modValue and modValue[1] or C.CornerBuffs[DB.MyClass][spellID] then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
+			if (modValue and next(modValue)) or (C.CornerBuffs[DB.MyClass][spellID] and not modValue) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
 			anchor = decodeAnchor[anchor]
 			NDuiADB["CornerSpells"][DB.MyClass][spellID] = {anchor, {r, g, b}, showAll}
 		end
@@ -789,11 +787,9 @@ function G:SetupBuffIndicator(parent)
 			scroll.showAll = showAll
 
 			local UF = B:GetModule("UnitFrames")
-			if UF.CornerSpells then
-				for spellID, value in pairs(UF.CornerSpells) do
-					local r, g, b = unpack(value[2])
-					createBar(scroll.child, index, spellID, value[1], r, g, b, value[3])
-				end
+			for spellID, value in pairs(UF.CornerSpells) do
+				local r, g, b = unpack(value[2])
+				createBar(scroll.child, index, spellID, value[1], r, g, b, value[3])
 			end
 		end
 	end
