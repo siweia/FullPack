@@ -349,8 +349,8 @@ function UF:AddTargetIndicator(self)
 	frame.RightArrow:SetPoint("LEFT", frame, "RIGHT", 3, 0)
 	frame.RightArrow:SetRotation(rad(-90))
 
-	frame.Glow = B.CreateSD(frame, 5, true)
-	frame.Glow:SetOutside(self.Health.backdrop, 5, 5)
+	frame.Glow = B.CreateSD(frame, 10, true)
+	frame.Glow:SetOutside(self.Health.backdrop, 10, 10)
 	frame.Glow:SetBackdropBorderColor(1, 1, 1)
 	frame.Glow:SetFrameLevel(0)
 
@@ -450,7 +450,7 @@ function UF:AddQuestIcon(self)
 	if not C.db["Nameplate"]["QuestIndicator"] then return end
 
 	local qicon = self:CreateTexture(nil, "OVERLAY", nil, 2)
-	qicon:SetPoint("LEFT", self, "RIGHT", -1, 0)
+	qicon:SetPoint("LEFT", self.nameText, "RIGHT", -1, 0)
 	qicon:SetSize(30, 30)
 	qicon:SetAtlas(DB.questTex)
 	qicon:Hide()
@@ -769,6 +769,7 @@ function UF:RefreshNameplats()
 		nameplate.npcTitle:SetFont(DB.Font[1], nameTextSize-1, DB.Font[3])
 		nameplate.tarName:SetFont(DB.Font[1], nameTextSize+4, DB.Font[3])
 		nameplate.Castbar.Icon:SetSize(iconSize, iconSize)
+		nameplate.Castbar.glowFrame:SetSize(iconSize+8, iconSize+8)
 		nameplate.Castbar:SetHeight(plateHeight)
 		nameplate.Castbar.Time:SetFont(DB.Font[1], nameTextSize, DB.Font[3])
 		nameplate.Castbar.Text:SetFont(DB.Font[1], nameTextSize, DB.Font[3])
@@ -797,7 +798,6 @@ function UF:UpdatePlateByType()
 	local title = self.npcTitle
 	local raidtarget = self.RaidTargetIndicator
 	local classify = self.ClassifyIndicator
-	local questIcon = self.questIcon
 
 	name:SetShown(not self.widgetsOnly)
 	name:ClearAllPoints()
@@ -820,7 +820,6 @@ function UF:UpdatePlateByType()
 		raidtarget:SetPoint("TOP", title, "BOTTOM", 0, -5)
 		raidtarget:SetParent(self)
 		classify:Hide()
-		if questIcon then questIcon:SetPoint("LEFT", name, "RIGHT", -1, 0) end
 
 		if self.widgetContainer then
 			self.widgetContainer:ClearAllPoints()
@@ -844,7 +843,6 @@ function UF:UpdatePlateByType()
 		raidtarget:SetPoint("RIGHT", self, "LEFT", -3, 0)
 		raidtarget:SetParent(self.Health)
 		classify:Show()
-		if questIcon then questIcon:SetPoint("LEFT", self, "RIGHT", -1, 0) end
 
 		if self.widgetContainer then
 			self.widgetContainer:ClearAllPoints()
@@ -1075,4 +1073,25 @@ function UF:ToggleGCDTicker()
 	if not ticker then return end
 
 	ticker:SetShown(C.db["Nameplate"]["PPGCDTicker"])
+end
+
+UF.MajorSpells = {}
+function UF:RefreshMajorSpells()
+	wipe(UF.MajorSpells)
+
+	for spellID in pairs(C.MajorSpells) do
+		local name = GetSpellInfo(spellID)
+		if name then
+			local modValue = NDuiADB["MajorSpells"][spellID]
+			if modValue == nil then
+				UF.MajorSpells[spellID] = true
+			end
+		end
+	end
+
+	for spellID, value in pairs(NDuiADB["MajorSpells"]) do
+		if value then
+			UF.MajorSpells[spellID] = true
+		end
+	end
 end
