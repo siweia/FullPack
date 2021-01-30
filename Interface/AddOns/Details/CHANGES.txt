@@ -1,46 +1,16 @@
-lightweight tag d90762453740033ee762d9b913575942e74e936c DetailsRetail.9.0.2.8192.144
+lightweight tag c72cdea178e70dcacaef42aefae12753de93f758 DetailsRetail.9.0.2.8192b.144
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Thu Jan 28 20:56:02 2021 -0300
+Date:	Fri Jan 29 14:28:54 2021 -0300
 
-commit d90762453740033ee762d9b913575942e74e936c
+commit c72cdea178e70dcacaef42aefae12753de93f758
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Jan 28 20:56:02 2021 -0300
+Date:   Fri Jan 29 14:28:54 2021 -0300
 
-    Update to version 8192
+    Fix the enoucnter table not found bug from latest version
 
-commit 337b77408b0be18bb2bff79182fd289003510266
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Sun Jan 24 22:55:22 2021 -0600
-
-    Resizing window with None background error fix.
-
-commit 337b77408b0be18bb2bff79182fd289003510266
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Sun Jan 24 22:55:22 2021 -0600
-
-    Resizing window with None background error fix.
-
-commit 8ce12dd7137687b831541a47dc2ca7b83106a88e
+commit a128d8b0c06f5c51cad219d0ff39bbf417bc493a
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Jan 23 20:58:51 2021 -0300
+Date:   Fri Jan 29 11:17:46 2021 -0300
 
-    Added covenant into the Raid Check plugin
-
-commit e6639b1ec7d8b87f5542dafc3b3e242cf0b2e51b
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Jan 23 12:53:27 2021 -0300
-
-    Coach feature should work no on pre-made groups and instance groups
-
-commit 513fa33ebd08607b13a64dfc1aa69b90b041c0a6
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Fri Jan 22 16:25:06 2021 -0600
-
-    Always Show player: Ascending sort direction fix.
-
-commit 513fa33ebd08607b13a64dfc1aa69b90b041c0a6
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Fri Jan 22 16:25:06 2021 -0600
-
-    Always Show player: Ascending sort direction fix.
+    Removed raidinfo for old raids
 
