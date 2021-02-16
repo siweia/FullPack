@@ -60,6 +60,10 @@ local list = {
 		{AuraID = 307496, UnitID = "player"},	-- 神圣觉醒药水
 		{AuraID = 307497, UnitID = "player"},	-- 死亡偏执药水
 		{AuraID = 344314, UnitID = "player"},	-- 心华之速药水
+		{AuraID = 307195, UnitID = "player"},	-- 隐秘精魂药水
+		{AuraID = 342890, UnitID = "player"},	-- 无拘移动药水
+		{AuraID = 322302, UnitID = "player"},	-- 献祭心能药水
+		{AuraID = 307160, UnitID = "player"},	-- 硬化暗影药水
 		-- 9.0饰品
 		{AuraID = 344231, UnitID = "player"},	-- 赤红陈酿
 		{AuraID = 345228, UnitID = "player"},	-- 角斗士徽章
@@ -108,6 +112,7 @@ local list = {
 		{AuraID = 328908, UnitID = "player"},	-- 战斗冥想
 		{AuraID = 345499, UnitID = "player"},	-- 执政官的祝福
 		{AuraID = 339461, UnitID = "player"},	-- 猎手坚韧
+		{AuraID = 325381, UnitID = "player", Flash = true},	-- 争先打击
 		-- 炼金石
 		{AuraID = 60233, UnitID = "player"},	-- 敏捷
 		{AuraID = 60229, UnitID = "player"},	-- 力量
