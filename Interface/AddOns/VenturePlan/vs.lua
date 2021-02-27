@@ -284,9 +284,7 @@ local TP = {} do
 			end
 		elseif tt == "cleave" then
 			local coa = adjCleaveN[source]
-			if taunt then
-				stt[1], ni = taunt, 2
-			elseif coa then
+			if coa then
 				for i=1,#coa do
 					i = coa[i]
 					if i <= 12 then
@@ -298,6 +296,13 @@ local TP = {} do
 						break
 					end
 				end
+				if taunt and (ni < 2 or stt[1] ~= taunt) then
+					stt[1], ni = taunt, 2
+				elseif taunt and ni > 3 then
+					ni = 3
+				end
+			elseif taunt then
+				stt[1], ni = taunt, 2
 			else
 				GetTargets(source, 0, board)
 				if #stt > 0 then

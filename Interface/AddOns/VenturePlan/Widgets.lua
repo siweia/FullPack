@@ -4,8 +4,28 @@ local PROGRESS_MIN_STEP = 0.2
 local CovenKit = "NightFae"
 local tooltipSharedPB, tooltipShopWatch
 
-local function CreateObject(otype, ...)
-	return assert(Factory[otype], otype)(...)
+local CreateObject do
+	local skip, peekO = {SharedTooltipProgressBar=1, ObjectGroup=1, TexSlice=1, CommonHoverTooltip=1, Shadow=1}
+	local function peek(k)
+		local o = peekO and peekO[k]
+		return o and o.GetObjectType and o or nil
+	end
+	local function ret(otype, ...)
+		local a = ...
+		local s = S[a]
+		if a and not skip[otype] and type(VPEX_OnUIObjectCreated) == "function" and (s or type(a) == "table") then
+			local ar = a and a.GetObjectType and a or s and s.GetObjectType and s
+			if ar then
+				peekO = s and (ar == s and a or s) or nil
+				securecall(VPEX_OnUIObjectCreated, otype, ar, peek)
+				peekO = nil
+			end
+		end
+		return ...
+	end
+	function CreateObject(otype, ...)
+		return ret(otype, assert(Factory[otype], otype)(...))
+	end
 end
 T.Shadows, T.CreateObject = S, CreateObject
 
@@ -436,7 +456,7 @@ local function FollowerButton_OnEnter(self)
 	local info = self.info
 	if not info then return end
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	U.SetFollowerInfo(GameTooltip, info, info.autoCombatSpells, info.autoCombatantStats, nil, nil, nil, true)
+	U.SetFollowerInfo(GameTooltip, info, info.autoCombatSpells, nil, nil, nil, nil, true)
 	local tmid = U.FollowerHasTentativeGroup(info.followerID)
 	if info.status == GARRISON_FOLLOWER_ON_MISSION and info.missionTimeEnd then
 		GameTooltip:AddLine(" ")
@@ -1109,8 +1129,7 @@ function Factory.MissionPage(parent)
 	s.Toasts = {CreateObject("MissionToast", f)}
 	s.Toasts[1]:SetPoint("TOPLEFT", 20, -62)
 	s.AcquireToast = MissionPage_AcquireToast
-	
-	return s, s.MissionList
+	return s
 end
 function Factory.MissionList(parent)
 	local coven = C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 1)

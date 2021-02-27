@@ -427,7 +427,7 @@ function U.GetCompanionRecoveryTime(missingShare)
 end
 function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantStats, mid, boardIndex, boardMask, showHealthFooter)
 	local mhp, hp, atk, role, aat, level
-	autoCombatantStats = autoCombatantStats or info and info.autoCombatantStats
+	autoCombatantStats = autoCombatantStats or info and (info.followerID and C_Garrison.GetFollowerAutoCombatStats(info.followerID) or info.autoCombatantStats)
 	if info then
 		role, level = info.role, info.level and ("|cffa8a8a8" .. UNIT_LEVEL_TEMPLATE:format(info.level)) or ""
 	end

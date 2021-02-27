@@ -69,8 +69,7 @@ local function Puck_OnEnter(self)
 	end
 	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
 	local bi, bm = self.boardIndex, GenBoardMask()
-	local info = self.info
-	local acs = self.autoCombatantStats or self.info and self.info.autoCombatantStats
+	local info, acs = self.info
 	if bi > 4 then
 		for _,v in pairs(C_Garrison.GetMissionDeploymentInfo(mid).enemies) do
 			if v.boardIndex == bi then
@@ -135,7 +134,7 @@ local CAG, SetSimResultHint = {} do
 		for i=0,4 do
 			local ii = f[i].info
 			if ii then
-				local stats = ii.autoCombatantStats
+				local stats = C_Garrison.GetFollowerAutoCombatStats(ii.followerID)
 				tag = tag .. ":" .. i .. ":" .. stats.attack .. ":" .. ii.followerID
 				htag = htag .. ":" .. stats.currentHealth
 			end
@@ -216,7 +215,7 @@ local CAG, SetSimResultHint = {} do
 			for i=0,4 do
 				local ii = f[i].info
 				if ii then
-					local acs = ii.autoCombatantStats
+					local acs = C_Garrison.GetFollowerAutoCombatStats(ii.followerID)
 					team[#team+1] = {boardIndex=i, role=ii.role, stats=acs, spells=f[i].autoCombatSpells}
 					if acs.currentHealth < acs.maxHealth then
 						reRange = math.max(reRange or 0, 1 - acs.currentHealth/acs.maxHealth)
@@ -243,8 +242,9 @@ local CAG, SetSimResultHint = {} do
 			md.missingSpells, simArch.dropForks = ms and next(ms) and true or nil, true
 			deadline = debugprofilestop() + 40
 			simArch:Run(qdeadline)
+			return not isDone(simArch.res) or setupRetry()
 		end
-		return not (isDone(simArch.res) and not setupRetry())
+		return not (isDone(simArch.res) and not state.reStart)
 	end
 	function CAG:Run()
 		if not simArch then
@@ -304,7 +304,7 @@ local Tact = {} do
 		table.sort(m, cmpFollowerID)
 		for i=1,#m do
 			local ii = m[i]
-			local stats = ii.autoCombatantStats
+			local stats = C_Garrison.GetFollowerAutoCombatStats(ii.followerID) or ii.autoCombatantStats
 			tag = tag .. ":" .. i .. ":" .. stats.attack .. ":" .. ii.followerID
 			htag = htag .. ":" .. stats.currentHealth
 		end
@@ -398,7 +398,8 @@ local Tact = {} do
 				local ii = f[i].info
 				if ii and not ii.isAutoTroop then
 					local willLevel = not ii.isMaxLevel and ii.xp and ii.levelXP and (ii.xp + rewardXP) >= ii.levelXP
-					ct[#ct+1] = {role=ii.role, stats=ii.autoCombatantStats, spells=f[i].autoCombatSpells, id=ii.followerID, willLevel=willLevel}
+					local acs = C_Garrison.GetFollowerAutoCombatStats(ii.followerID) or ii.autoCombatantStats
+					ct[#ct+1] = {role=ii.role, stats=acs, spells=f[i].autoCombatSpells, id=ii.followerID, willLevel=willLevel}
 				end
 			end
 			for _, fi in ipairs(C_Garrison.GetAutoTroops(123)) do
@@ -475,7 +476,8 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
 	local res = sim.res
 	local rngModel = res.hadDrops or (res.hadWins and res.hadLosses)
 	local inProgress = not res.isFinished and not rngModel
-	local hprefix = (incompleteModel and "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t " or "")
+	local oodBuild = GetBuildInfo() ~= "9.0.2"
+	local hprefix = (oodBuild or incompleteModel) and "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t " or ""
 	if inProgress then
 		hprefix = hprefix .. "|cffff3300" .. L"Preliminary:" .. "|r "
 	end
@@ -487,6 +489,8 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
 
 	if incompleteModel then
 		GameTooltip:AddLine(L"Not all abilities have been taken into account.", 0.9,0.25,0.15)
+	elseif oodBuild then
+		GameTooltip:AddLine(L"The Guide may be out of date.", 0.9,0.25,0.15)
 	end
 	if inProgress then
 		GameTooltip:AddLine(L"Not all outcomes have been examined.", 0.9, 0.25, 0.15, 1)
@@ -562,7 +566,7 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
 			GameTooltip:AddLine(L"Checking health recovery...", 0.45, 1, 0)
 		else
 			local rl = math.max(0, recoverUntil - GetServerTime())
-			GameTooltip:AddLine((L"Would win if started in: %s"):format("|cffffffff" .. U.GetTimeStringFromSeconds(rl, false, true, true)), 0.45, 1, 0.15, 1)
+			GameTooltip:AddLine((L"Would win if started in: %s"):format("|cffffffff" .. U.GetTimeStringFromSeconds(rl, false, true, true) .. "|r"), 0.45, 1, 0.15, 1)
 		end
 	end
 	if flavor then

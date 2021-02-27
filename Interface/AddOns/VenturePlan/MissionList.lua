@@ -184,7 +184,7 @@ local function ConfigureMission(me, mi, isAvailable, haveSpareCompanions, availA
 			totalATK = totalATK + e.attack
 		end
 	end
-	local tag = "[" .. (mi.missionScalar or 0) .. (mi.isElite and "+]" or mi.isRare and "r]" or "]")
+	local tag = "[" .. (mi.missionScalar or 0) .. (mi.isElite and "+]" or mi.isRare and "*]" or "]")
 	if hasNovelSpells then
 		tag = tag .. " |TInterface/EncounterJournal/UI-EJ-WarningTextIcon:16:16|t"
 	end
@@ -382,7 +382,8 @@ local function HookAndCallOnShow(frame, f)
 	end
 end
 function EV:I_ADVENTURES_UI_LOADED()
-	MissionPage, MissionList = T.CreateObject("MissionPage", CovenantMissionFrame.MissionTab)
+	MissionPage = T.CreateObject("MissionPage", CovenantMissionFrame.MissionTab)
+	MissionList = MissionPage.MissionList
 	T.MissionList = MissionList
 	local lc = MissionPage.LogCounter
 	lc.tooltipHeader, lc.tooltipText = "|cff1eff00" .. L"Adventure Report", NORMAL_FONT_COLOR_CODE .. L"A detailed record of an adventure completed by your companions." .. "|n|n|cff1eff00" .. L"Use: Feed the Cursed Adventurer's Guide."
