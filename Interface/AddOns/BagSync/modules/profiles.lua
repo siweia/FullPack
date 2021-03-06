@@ -26,6 +26,9 @@ function Profiles:OnEnable()
 
 	--lets create our widgets
 	local ProfilesFrame = AceGUI:Create("Window")
+	_G["BagSyncProfilesFrame"] = ProfilesFrame
+    --Add to special frames so window can be closed when the escape key is pressed.
+    tinsert(UISpecialFrames, "BagSyncProfilesFrame")
 	Profiles.frame = ProfilesFrame
 	Profiles.parentFrame = ProfilesFrame.frame
 
@@ -141,6 +144,10 @@ function Profiles:AddEntry(entry, isHeader)
 		function (widget, sometable)
 			if not label.userdata.isHeader then
 				label:SetColor(1, 0, 0)
+				--override the single tooltip use of BagSync
+				label.highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+				label.highlight:SetVertexColor(0,1,0,0.3)
+				
 				GameTooltip:SetOwner(label.frame, "ANCHOR_BOTTOMRIGHT")
 				
 				if not label.entry.unitObj.isGuild then
@@ -156,6 +163,8 @@ function Profiles:AddEntry(entry, isHeader)
 		"OnLeave",
 		function (widget, sometable)
 			label:SetColor(1, 1, 1)
+			--override the single tooltip use of BagSync
+			label.highlight:SetTexture(nil)
 			GameTooltip:Hide()
 		end)
 
@@ -173,7 +182,7 @@ function Profiles:DisplayList()
 		table.insert(profilesTable, { unitObj=unitObj, colorized=Tooltip:ColorizeUnit(unitObj, true) } )
 	end
 
-	if table.getn(profilesTable) > 0 then
+	if #profilesTable > 0 then
 	
 		table.sort(profilesTable, function(a, b)
 			if a.unitObj.realm  == b.unitObj.realm then

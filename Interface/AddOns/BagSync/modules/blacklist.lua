@@ -25,6 +25,9 @@ function Blacklist:OnEnable()
 
 	--lets create our widgets
 	local BlacklistFrame = AceGUI:Create("Window")
+	_G["BagSyncBlacklistFrame"] = BlacklistFrame
+    --Add to special frames so window can be closed when the escape key is pressed.
+    tinsert(UISpecialFrames, "BagSyncBlacklistFrame")
 	Blacklist.frame = BlacklistFrame
 
 	BlacklistFrame:SetTitle("BagSync - "..L.Blacklist)
@@ -260,7 +263,7 @@ function Blacklist:DisplayList()
 	end
 
 	--show or hide the scrolling frame depending on count
-	if table.getn(blacklistTable) > 0 then
+	if #blacklistTable > 0 then
 		table.sort(blacklistTable, function(a,b) return (a.value < b.value) end)
 		for i=1, #blacklistTable do
 			self:AddEntry(blacklistTable[i])

@@ -25,6 +25,9 @@ function Professions:OnEnable()
 
 	--lets create our widgets
 	local ProfessionsFrame = AceGUI:Create("Window")
+	_G["BagSyncProfessionsFrame"] = ProfessionsFrame
+    --Add to special frames so window can be closed when the escape key is pressed.
+    tinsert(UISpecialFrames, "BagSyncProfessionsFrame")
 	Professions.frame = ProfessionsFrame
 	Professions.parentFrame = ProfessionsFrame.frame
 
@@ -98,7 +101,12 @@ function Professions:AddEntry(entry, isHeader)
 		function (widget, sometable)
 			if not label.userdata.isHeader then
 				label:SetColor(1, 0, 0)
+				--override the single tooltip use of BagSync
+				label.highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+				label.highlight:SetVertexColor(0,1,0,0.3)
+				
 				GameTooltip:SetOwner(label.frame, "ANCHOR_BOTTOMRIGHT")
+				
 				if not label.userdata.isHeader then
 					if label.userdata.hasRecipes then
 						GameTooltip:AddLine(label.entry.colorized..": "..L.ProfessionHasRecipes)
@@ -113,6 +121,8 @@ function Professions:AddEntry(entry, isHeader)
 		"OnLeave",
 		function (widget, sometable)
 			label:SetColor(1, 1, 1)
+			--override the single tooltip use of BagSync
+			label.highlight:SetTexture(nil)
 			GameTooltip:Hide()
 		end)
 
@@ -136,7 +146,7 @@ function Professions:DisplayList()
 		end
 	end
 
-	if table.getn(professionsTable) > 0 then
+	if #professionsTable > 0 then
 	
 		table.sort(professionsTable, function(a, b)
 			if a.skillData.name == b.skillData.name then

@@ -24,6 +24,9 @@ function Recipes:OnEnable()
 
 	--lets create our widgets
 	local RecipesFrame = AceGUI:Create("Window")
+	_G["BagSyncRecipesFrame"] = RecipesFrame
+    --Add to special frames so window can be closed when the escape key is pressed.
+    tinsert(UISpecialFrames, "BagSyncRecipesFrame")
 	Recipes.frame = RecipesFrame
 
 	RecipesFrame:SetTitle("BagSync - "..L.Recipes)
@@ -91,6 +94,10 @@ function Recipes:AddEntry(entry, isHeader)
 		function (widget, sometable)
 			if not label.userdata.isHeader then
 				label:SetColor(1, 0, 0)
+				--override the single tooltip use of BagSync
+				label.highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+				label.highlight:SetVertexColor(0,1,0,0.3)
+				
 				GameTooltip:SetOwner(label.frame, "ANCHOR_BOTTOMRIGHT")
 				GameTooltip:SetSpellByID(label.entry.recipeID)
 				GameTooltip:Show()
@@ -100,6 +107,9 @@ function Recipes:AddEntry(entry, isHeader)
 		"OnLeave",
 		function (widget, sometable)
 			label:SetColor(1, 1, 1)
+			--override the single tooltip use of BagSync
+			label.highlight:SetTexture(nil)
+			
 			GameTooltip:Hide()
 		end)
 
@@ -124,7 +134,7 @@ function Recipes:DisplayList(data)
 		if v.recipes then
 			local recipeList = {strsplit("|", v.recipes)}
 			
-			if table.getn(recipeList) > 0 then
+			if #recipeList > 0 then
 			
 				for idx = 1, #recipeList do
 					if recipeList[idx] and string.len(recipeList[idx]) > 0 then
@@ -156,7 +166,7 @@ function Recipes:DisplayList(data)
 	end
 
 	--now do the recipes per tier
-	if table.getn(tierTable) > 0 then
+	if #tierTable > 0 then
 		
 		--sort the tiers
 		table.sort(tierTable, function(a, b)

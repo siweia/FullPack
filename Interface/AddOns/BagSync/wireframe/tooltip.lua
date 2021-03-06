@@ -51,7 +51,7 @@ function Tooltip:GetSortIndex(unitObj)
 	return 4
 end
 
-function Tooltip:ColorizeUnit(unitObj, bypass, showRealm)
+function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple)
 	if not unitObj.data then return nil end
 	
 	local player = Unit:GetUnitInfo()
@@ -60,73 +60,96 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm)
 	local realmTag = ""
 	local delimiter = " "
 	
+	--showSimple: returns only colorized name no images
+	--bypass: shows colorized names, checkmark, and faction icons but no XR or BNET tags
+	--showRealm: is used for debugging purposes and adds realm tags
+	
 	if not unitObj.isGuild then
+	
 		--first colorize by class color
-		if bypass or BSYC.options.enableUnitClass and RAID_CLASS_COLORS[unitObj.data.class] then
+		if bypass or showSimple or BSYC.options.enableUnitClass and RAID_CLASS_COLORS[unitObj.data.class] then
 			tmpTag = self:HexColor(RAID_CLASS_COLORS[unitObj.data.class], unitObj.name)
 		else
 			tmpTag = self:HexColor(BSYC.options.colors.first, unitObj.name)
 		end
 		
-		--add green checkmark
-		if unitObj.name == player.name and unitObj.realm == player.realm then
-			if bypass or BSYC.options.enableTooltipGreenCheck then
-				local ReadyCheck = [[|TInterface\RaidFrame\ReadyCheck-Ready:0|t]]
-				tmpTag = ReadyCheck.." "..tmpTag
-			end
-		end
+		--ignore certain stuff if we only want to return simple colored units
+		if not showSimple then
 		
-		--add faction icons
-		if bypass or BSYC.options.enableFactionIcons then
-			local FactionIcon = ""
-			
-			if BSYC.IsRetail then
-				FactionIcon = [[|TInterface\Icons\Achievement_worldevent_brewmaster:18|t]]
-				if unitObj.data.faction == "Alliance" then
-					FactionIcon = [[|TInterface\Icons\Inv_misc_tournaments_banner_human:18|t]]
-				elseif unitObj.data.faction == "Horde" then
-					FactionIcon = [[|TInterface\Icons\Inv_misc_tournaments_banner_orc:18|t]]
-				end
-			else
-				FactionIcon = [[|TInterface\Icons\ability_seal:18|t]]
-				if unitObj.data.faction == "Alliance" then
-					FactionIcon = [[|TInterface\Icons\inv_bannerpvp_02:18|t]]
-				elseif unitObj.data.faction == "Horde" then
-					FactionIcon = [[|TInterface\Icons\inv_bannerpvp_01:18|t]]
+			--add green checkmark
+			if unitObj.name == player.name and unitObj.realm == player.realm then
+				if bypass or BSYC.options.enableTooltipGreenCheck then
+					local ReadyCheck = [[|TInterface\RaidFrame\ReadyCheck-Ready:0|t]]
+					tmpTag = ReadyCheck.." "..tmpTag
 				end
 			end
 			
-			if FactionIcon ~= "" then
-				tmpTag = FactionIcon.." "..tmpTag
+			--add faction icons
+			if bypass or BSYC.options.enableFactionIcons then
+				local FactionIcon = ""
+				
+				if BSYC.IsRetail then
+					FactionIcon = [[|TInterface\Icons\Achievement_worldevent_brewmaster:18|t]]
+					if unitObj.data.faction == "Alliance" then
+						FactionIcon = [[|TInterface\Icons\Inv_misc_tournaments_banner_human:18|t]]
+					elseif unitObj.data.faction == "Horde" then
+						FactionIcon = [[|TInterface\Icons\Inv_misc_tournaments_banner_orc:18|t]]
+					end
+				else
+					FactionIcon = [[|TInterface\Icons\ability_seal:18|t]]
+					if unitObj.data.faction == "Alliance" then
+						FactionIcon = [[|TInterface\Icons\inv_bannerpvp_02:18|t]]
+					elseif unitObj.data.faction == "Horde" then
+						FactionIcon = [[|TInterface\Icons\inv_bannerpvp_01:18|t]]
+					end
+				end
+				
+				if FactionIcon ~= "" then
+					tmpTag = FactionIcon.." "..tmpTag
+				end
 			end
+			
 		end
-		
-		--return the bypass
-		if bypass then
-			--check for showRealm tag before returning
-			if showRealm then
-				realmTag = L.TooltipBattleNetTag..delimiter
-				tmpTag = self:HexColor(BSYC.options.colors.bnet, "["..realmTag..realm.."]").." "..tmpTag
-			end
-			return tmpTag
-		end
+
 	else
 		--is guild
 		tmpTag = self:HexColor(BSYC.options.colors.guild, select(2, Unit:GetUnitAddress(unitObj.name)) )
 	end
 	
+	----------------
+	--If we Bypass or showSimple none of the XR or BNET stuff will be shown
+	----------------
+	if bypass or showSimple then
+		--DEBUGGING: check for showRealm tag before returning, this is mostly used for DEBUGGING purposes.  We don't want to add default tags normally.
+		--for that we want to use the XREALM procedures below for tagging.
+		if showRealm then
+			realmTag = L.TooltipBattleNetTag..delimiter
+			tmpTag = self:HexColor(BSYC.options.colors.bnet, "["..realmTag..realm.."]").." "..tmpTag
+		end
+		--since we Bypass don't show anything else just return what we got
+		return tmpTag
+	end
+	----------------
+	
+	--Always set certain features off if it conflicts with currently enabled options.
 	if BSYC.options.enableXR_BNETRealmNames then
-		if BSYC.options.enableRealmAstrickName then BSYC.options.enableRealmAstrickName = false end
-		if BSYC.options.enableRealmShortName then BSYC.options.enableRealmShortName = false end
+		BSYC.options.enableRealmAstrickName = false
+		BSYC.options.enableRealmShortName = false
+	
 		realm = unitObj.realm
+	
 	elseif BSYC.options.enableRealmAstrickName then
-		if BSYC.options.enableXR_BNETRealmNames then BSYC.options.enableXR_BNETRealmNames = false end
-		if BSYC.options.enableRealmShortName then BSYC.options.enableRealmShortName = false end
+		BSYC.options.enableXR_BNETRealmNames = false
+		BSYC.options.enableRealmShortName = false
+		
 		realm = "*"
+	
 	elseif BSYC.options.enableRealmShortName then
-		if BSYC.options.enableXR_BNETRealmNames then BSYC.options.enableXR_BNETRealmNames = false end
-		if BSYC.options.enableRealmAstrickName then BSYC.options.enableRealmAstrickName = false end
+		BSYC.options.enableXR_BNETRealmNames = false
+		BSYC.options.enableRealmAstrickName = false
+		
 		realm = string.sub(unitObj.realm, 1, 5)
+	
 	else
 		realm = ""
 		delimiter = ""
@@ -154,7 +177,10 @@ function Tooltip:MoneyTooltip()
 	
 	if (not tooltip) then
 			tooltip = CreateFrame("GameTooltip", "BagSyncMoneyTooltip", UIParent, "GameTooltipTemplate")
-			
+			_G["BagSyncMoneyTooltip"] = tooltip
+			--Add to special frames so window can be closed when the escape key is pressed.
+			tinsert(UISpecialFrames, "BagSyncMoneyTooltip")
+	
 			local closeButton = CreateFrame("Button", nil, tooltip, "UIPanelCloseButton")
 			closeButton:SetPoint("TOPRIGHT", tooltip, 1, 0)
 			
@@ -205,7 +231,7 @@ function Tooltip:MoneyTooltip()
 		return a.sortIndex < b.sortIndex;
 	end)
 
-	for i=1, table.getn(usrData) do
+	for i=1, #usrData do
 		--use GetMoneyString and true to seperate it by thousands
 		tooltip:AddDoubleLine(usrData[i].colorized, GetMoneyString(usrData[i].unitObj.data.money, true), 1, 1, 1, 1, 1, 1)
 		total = total + usrData[i].unitObj.data.money
@@ -263,9 +289,9 @@ function Tooltip:UnitTotals(unitObj, allowList, unitList)
 end
 
 function Tooltip:ItemCount(data, itemID, allowList, source, total)
-	if table.getn(data) < 1 then return total end
+	if #data < 1 then return total end
 	
-	for i=1, table.getn(data) do
+	for i=1, #data do
 		if data[i] then
 			local link, count, identifier = strsplit(";", data[i])
 			if link then
@@ -337,8 +363,8 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	
 	--if we already did the item, then display the previous information
 	if self.__lastLink and self.__lastLink == link then
-		if self.__lastTally and table.getn(self.__lastTally) > 0 then
-			for i=1, table.getn(self.__lastTally) do
+		if self.__lastTally and #self.__lastTally > 0 then
+			for i=1, #self.__lastTally do
 				local color = BSYC.options.colors.total --this is a cover all color we are going to use
 				if BSYC.options.enableExtTooltip or isBattlePet then
 					local lineNum = objTooltip.qTip:AddLine(self.__lastTally[i].colorized, 	string.rep(" ", 4), self.__lastTally[i].tallyString)
@@ -412,7 +438,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	end
 	
 	--only sort items if we have something to work with
-	if table.getn(unitList) > 0 then
+	if #unitList > 0 then
 
 		table.sort(unitList, function(a, b)
 			if a.sortIndex  == b.sortIndex then
@@ -429,7 +455,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	local desc, value = '', ''
 	
 	--add [Total] if we have more than one unit to work with
-	if BSYC.options.showTotal and grandTotal > 0 and table.getn(unitList) > 1 then
+	if BSYC.options.showTotal and grandTotal > 0 and #unitList > 1 then
 		desc = self:HexColor(BSYC.options.colors.total, L.TooltipTotal)
 		value = self:HexColor(BSYC.options.colors.second, comma_value(grandTotal))
 		table.insert(unitList, { colorized=desc, tallyString=value} )
@@ -446,12 +472,12 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	end
 	
 	--add seperator if enabled and only if we have something to work with
-	if not objTooltip.qTip and BSYC.options.enableTooltipSeperator and table.getn(unitList) > 0 then
+	if not objTooltip.qTip and BSYC.options.enableTooltipSeperator and #unitList > 0 then
 		table.insert(unitList, 1, { colorized=" ", tallyString=" "} )
 	end
 	
 	--finally display it
-	for i=1, table.getn(unitList) do
+	for i=1, #unitList do
 		local color = BSYC.options.colors.total --this is a cover all color we are going to use
 		if BSYC.options.enableExtTooltip or isBattlePet then
 			-- Add an new line, using all columns
@@ -506,7 +532,7 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 		objTooltip:AddLine(" ")
 	end
 
-	for i=1, table.getn(usrData) do
+	for i=1, #usrData do
 		if usrData[i].count then
 			objTooltip:AddDoubleLine(usrData[i].colorized, comma_value(usrData[i].count), 1, 1, 1, 1, 1, 1)
 		end
