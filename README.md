@@ -1,2 +1,15 @@
-#FullPack
-测试用。
+# 日常自用插件列表备份
+- !BaudErrorFrame
+- AngrierWorldQuests
+- AngryKeystones
+- BagSync
+- DBM
+- DBM-VPYike
+- Details
+- ExRT
+- Handynotes with Oribos and Shadowlands
+- Myslot
+- MythicDungeonTools
+- NDui
+- PremadeGroupsFilter
+- VenturePlan
