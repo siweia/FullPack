@@ -346,6 +346,8 @@ G.DefaultSettings = {
 		SendActionCD = false,
 		MawThreatBar = true,
 		MDGuildBest = true,
+		FasterSkip = false,
+		EnhanceDressup = true,
 	},
 	Tutorial = {
 		Complete = false,
@@ -754,7 +756,7 @@ G.TabList = {
 	L["Maps"],
 	L["Skins"],
 	L["Tooltip"],
-	L["Misc"],
+	NewFeatureTag..L["Misc"],
 	NewFeatureTag..L["UI Settings"],
 	L["Profile"],
 }
@@ -1062,7 +1064,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Tooltip", "ConduitInfo", HeaderTag..L["Show ConduitInfo"]},
 	},
 	[13] = {
-		{1, "Misc", "ItemLevel", HeaderTag..L["Show ItemLevel"]},
+		{1, "Misc", "ItemLevel", HeaderTag..L["Show ItemLevel"], nil, nil, nil, L["ItemLevelTip"]},
 		{1, "Misc", "GemNEnchant", L["Show GemNEnchant"].."*"},
 		{1, "Misc", "AzeriteTraits", L["Show AzeriteTraits"].."*", true},
 		{},--blank
@@ -1072,6 +1074,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "HideBossBanner", L["Hide Bossbanner"].."*", true, nil, toggleBossBanner},
 		{1, "Misc", "InstantDelete", L["InstantDelete"].."*"},
 		{1, "Misc", "FasterLoot", L["Faster Loot"].."*", true, nil, updateFasterLoot},
+		{1, "Misc", "BlockInvite", "|cffff0000"..L["BlockInvite"].."*", nil, nil, nil, L["BlockInviteTip"]},
+		{1, "Misc", "FasterSkip", NewFeatureTag..L["FasterMovieSkip"], true, nil, nil, L["FasterMovieSkipTip"]},
 		{},--blank
 		{1, "Misc", "MissingStats", L["Show MissingStats"]},
 		{1, "Misc", "ParagonRep", L["ParagonRep"], true},
@@ -1080,9 +1084,9 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "PetFilter", L["Show PetFilter"]},
 		{1, "Misc", "Screenshot", L["Auto ScreenShot"].."*", true, nil, updateScreenShot},
 		{1, "Misc", "Focuser", L["Easy Focus"]},
-		{1, "Misc", "BlockInvite", "|cffff0000"..L["BlockInvite"].."*", true, nil, nil, L["BlockInviteTip"]},
-		{1, "Misc", "MawThreatBar", L["MawThreatBar"], nil, nil, nil, L["MawThreatBarTip"]},
 		{1, "Misc", "MDGuildBest", L["MDGuildBest"], true, nil, nil, L["MDGuildBestTip"]},
+		{1, "Misc", "MawThreatBar", L["MawThreatBar"], nil, nil, nil, L["MawThreatBarTip"]},
+		{1, "Misc", "EnhanceDressup", NewFeatureTag..L["EnhanceDressup"], true, nil, nil, L["EnhanceDressupTip"]},
 	},
 	[14] = {
 		{1, "ACCOUNT", "VersionCheck", L["Version Check"]},
