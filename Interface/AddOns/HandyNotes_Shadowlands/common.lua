@@ -120,17 +120,22 @@ local VIGNETTES = {
     [4577] = SILVER_STRONGBOX
 }
 
+local isShowing = false
 hooksecurefunc(GameTooltip, 'Show', function(self)
+    if isShowing then return end
     local owner = self:GetOwner()
     if owner and owner.vignetteID then
         local rewards = VIGNETTES[owner.vignetteID]
         if rewards and #rewards > 0 then
+            isShowing = true
             self:AddLine(' ') -- add blank line before rewards
             for i, reward in ipairs(rewards) do
                 if reward:IsEnabled() then
                     reward:Render(self)
                 end
             end
+            self:Show()
+            isShowing = false
         end
     end
 end)
