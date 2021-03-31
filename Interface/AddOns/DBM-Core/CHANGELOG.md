@@ -1,36 +1,24 @@
 # Deadly Boss Mods Core
 
-## [9.0.24](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/9.0.24) (2021-03-23)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/9.0.23...9.0.24) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [9.0.25](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/9.0.25) (2021-03-30)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/9.0.24...9.0.25) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- Fix dreadbolt volley text on spcial warning.  
-- Fix any potential issues with nils in profiles. (#545)  
-- Forgot the self.bars references  
-- Add author note  
-- No sense in all these DBM.Bars access  
-- Actually fix animations :/ No idea what I was doing previously. (#543)  
-- Broadcast pizza timer cancellations (#542)  
-- Fix the DBT animation... (#541)  
-- Increase Y offsets from -5 to 30, to -50 to 50 (Like X offsets) (#540)  
-    * Increase Y offsets from -5 to 30, to -50 to 50 (Like X offsets)  
-    Also change up some more DBM.Bars references  
-    * More cases of DBM.Bars  
-    * More DBM.Bars references.  
-    * More DBM.Bars references.  
-    * More DBM.Bars references.  
-    * More DBM.Bars references.  
-    * Last DBM.Bars references.  
-- Fixed a bug with font dropdown not showing special warning example  
-- Update DBT.lua (#538)  
-- Fix copy/paste error  
-- Address another core complaint and add test bar button to all bar options panels  
-- Fix #527 (#536)  
-    Logs show that first cast is after 9.7 seconds, not 3.7 seconds.  
-- Fix #528 (#535)  
-    Added a fallback timer support.  
-    After the initial 4 casts, it goes into a loop cycle of 30.4 or 35.2 second timers (For both timers...)  
-- Fix #533 (#534)  
-    Sorting features were inverted.  
-- Force a hard-update on DBT when importing profile. (#532)  
-- Use a profile on SetSkin (#531)  
-- Bump alpha  
+- Improve text description of frida after image marking to Council fight in Castle Nathria  
+    Added user requested alert for Tarvoids Sintouched anima inside Sanguine Depths  
+- Add initial timer counts and change object type  
+- Add counters to Shared Suffering and for Adds (#551)  
+    Co-authored-by: Adam <MysticalOS@users.noreply.github.com>  
+- Fix panel prototype to not run trivial filter on SWSound dropdown  
+- Sire no longer requires localized trigger for add spawns, kill them off and use encounter event.  
+- Fixed a bug that'd cause dark recital timer to be missing in phase 2 if stavros s killed first on mythic difficulty.  
+- fix  
+- Switch altimor and Kael to hotfixed combat log events, which are slightly less cpu and more reliable  
+- Update TheCouncilofBlood.lua (#550)  
+    Co-authored-by: Mads Chrøis <32795834+Aloise3@users.noreply.github.com>  
+- More DBT fixes (#549)  
+- Add phase warnings for council (Request) (#546)  
+- Fix bug with SetSkin (#547)  
+- revert sound channels back to 64. I think I got more complaints of missing sound bumping it to 128 than I did with it at 64  
+    128 should have solved it if it was a sound channel problem, but something else is amiss  
+- Fixed anothe alert missing voice pack sound  
+- Bump alpha revision  
