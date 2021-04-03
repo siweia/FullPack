@@ -1,67 +1,34 @@
-tag 00d8a039f504f313e15cc3603a97860c272fee73 v9.0.5.8357.144
+tag 749854d063dc8bee0fe7a99380a568c9c97b39a7 DetailsRetail.9.0.5.8373.144
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Mon Mar 15 15:33:42 2021 -0300
+Date:	Thu Apr 1 10:29:59 2021 -0300
 
-commit f0554a633668ad81d3530f5c132d52f1e833d0e1
+commit f82f706bfa75a40465c12f7f24bafc2688255ae2
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Mar 15 15:33:29 2021 -0300
+Date:   Thu Apr 1 10:28:26 2021 -0300
 
-    v9.0.5.8357.144
+    Version Update
 
-commit c6e17b199e3a584882bf972fec40bde7e1179556
+commit d7718caacf020baa630d55dbe09fa0a5f084423d
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Mar 15 14:43:03 2021 -0300
+Date:   Thu Apr 1 10:23:05 2021 -0300
 
-    Fixed an issue where sometimes exporting a profile wouldn't work
+    Framework update and Stop reset max segments amount on logon
 
-commit 089497782ebbe8c2024532302ffe1d46b15c3a96
+commit 476e6161474c1bda904c01d5a514222fcb1114e2
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Mar 13 14:06:43 2021 -0300
+Date:   Fri Mar 26 15:17:55 2021 -0300
 
-    ToC Update
+    Make Monk's Storm, Earth, and Fire adds have their names in the charts
 
-commit 8736751d59104b8763189ac1f84e5a03aed516a0
+commit 94887b9db72ff1abb3e01fc780abe8c2fbaa0e99
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Mar 11 18:54:48 2021 -0300
+Date:   Wed Mar 17 19:58:05 2021 -0300
 
-    Fixed Spirit Shell overhealing
+    Remove debug prints
 
-commit 4c50ae9c6e3e3ed9a0b37c517b7afb21f5acebf3
+commit 842b6f27a118a6314b2e6008c408b24ba8c076ac
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Mar 11 16:16:06 2021 -0300
+Date:   Wed Mar 17 19:57:33 2021 -0300
 
-    Make the damage done tooltip more organized
-
-commit 5887877b4bf05cb6dae31287af5322001ba8009d
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Mar 11 13:34:50 2021 -0300
-
-    Maximum amount of segments raised to 40, this change will help with the mythic+ overall segment
-
-commit f466d8723cac1dd324ad8a6b21d5ba20a75b30cf
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Mar 11 13:10:37 2021 -0300
-
-    Renamed 'Custom Displays' to just 'Scripts'
-
-commit 34019fd81bf9859c16633a1a1fa6c30600d7fb0b
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Mar 11 11:44:06 2021 -0300
-
-    Attempt to fix the Sanguine affix healing done
-
-commit 72e5b4c8a5a89978d442598453c40c42825306df
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Mar 11 11:26:48 2021 -0300
-
-    After a profile import, reset all the mythic dungeon settings to default.
-    
-    - After a profile import, reset all the mythic dungeon settings to default.
-    - Framework update to 237.
-
-commit 662308230637fa8bfa6b6d3d3dbb392e02ffc9a2
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Mar 6 20:58:19 2021 -0300
-
-    Check if the dispel amount is valid before work with the value
+    Added Reset Overall Data on Torghast
 
