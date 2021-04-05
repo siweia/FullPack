@@ -285,6 +285,7 @@ G.DefaultSettings = {
 		FontOutline = true,
 		Loot = true,
 		Shadow = true,
+		GreyBD = false,
 		FontScale = 1,
 	},
 	Tooltip = {
@@ -1028,6 +1029,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Skins", "FlatMode", L["FlatMode"], true},
 		{1, "Skins", "Shadow", L["Shadow"]},
 		{1, "Skins", "FontOutline", L["FontOutline"], true},
+		{1, "Skins", "GreyBD", L["GreyBackdrop"], nil, nil, nil, L["GreyBackdropTip"]},
 		{3, "Skins", "SkinAlpha", L["SkinAlpha"].."*", nil, {0, 1, .05}, updateSkinAlpha},
 		{3, "Skins", "FontScale", L["GlobalFontScale"], true, {.5, 1.5, .05}},
 		{},--blank
@@ -1330,7 +1332,7 @@ end
 
 local donationList = {
 	["afdian"] = "33578473, normanvon, y368413, EK, msylgj, 夜丨灬清寒, akakai, reisen410, 其实你很帥, 萨菲尔, Antares, RyanZ, fldqw, Mario, 时光旧予, 食铁骑兵, 爱蕾丝的基总, 施然, 命运镇魂曲, 不可语上, Leo, 忘川, 刘翰承, 悟空海外党, cncj, 暗月, 汪某人, 黑手, iraq120, 嗜血未冷, 我又不是妖怪，养乐多，无人知晓，秋末旷夜，Teo，莉拉斯塔萨，音尘绝，刺王杀驾以及部分未备注名字的用户。",
-	["Patreon"] = "Quentin, Julian Neigefind, silenkin, imba Villain, Zeyu Zhu.",
+	["Patreon"] = "Quentin, Julian Neigefind, silenkin, imba Villain, Zeyu Zhu, Kon Floros.",
 }
 local function CreateDonationIcon(parent, texture, name, xOffset)
 	local button = B.CreateButton(parent, 30, 30, true, texture)
