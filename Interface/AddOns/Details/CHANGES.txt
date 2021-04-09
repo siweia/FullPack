@@ -1,34 +1,34 @@
-tag 749854d063dc8bee0fe7a99380a568c9c97b39a7 DetailsRetail.9.0.5.8373.144
+lightweight tag bc97d279b982419c625dffa212c7f83a9d9205d2 DetailsRetail.9.0.5.8402.144
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Thu Apr 1 10:29:59 2021 -0300
+Date:	Thu Apr 8 13:05:27 2021 -0300
 
-commit f82f706bfa75a40465c12f7f24bafc2688255ae2
+commit bc97d279b982419c625dffa212c7f83a9d9205d2
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Apr 1 10:28:26 2021 -0300
+Date:   Thu Apr 8 13:05:27 2021 -0300
 
-    Version Update
+    version bump
 
-commit d7718caacf020baa630d55dbe09fa0a5f084423d
+commit ba97deb5632ae1e1220156dd7eddc8a35c173bb5
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Apr 1 10:23:05 2021 -0300
+Date:   Thu Apr 8 11:38:44 2021 -0300
 
-    Framework update and Stop reset max segments amount on logon
+    Pets changed
 
-commit 476e6161474c1bda904c01d5a514222fcb1114e2
+commit 2d243d13b5a25e46184615e7480ee73b77c95616
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Fri Mar 26 15:17:55 2021 -0300
+Date:   Thu Apr 8 11:00:16 2021 -0300
 
-    Make Monk's Storm, Earth, and Fire adds have their names in the charts
+    Make sure the arena unit exists before continuing
 
-commit 94887b9db72ff1abb3e01fc780abe8c2fbaa0e99
+commit 5a1cef50010d9baa9432385334a4f2484fe3bb78
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Mar 17 19:58:05 2021 -0300
+Date:   Sun Apr 4 12:54:27 2021 -0300
 
-    Remove debug prints
+    pets
 
-commit 842b6f27a118a6314b2e6008c408b24ba8c076ac
+commit 10936adf714627097b0629629d053df98a2a72e7
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Mar 17 19:57:33 2021 -0300
+Date:   Sat Apr 3 18:40:01 2021 -0300
 
-    Added Reset Overall Data on Torghast
+    changes
 
