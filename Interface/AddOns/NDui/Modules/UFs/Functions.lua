@@ -917,12 +917,25 @@ function UF.PostUpdateClassPower(element, cur, max, diff, powerType, chargedInde
 		for i = 1, 6 do
 			element[i].bg:Hide()
 		end
-		element.prevColor = nil
-		return
-	end
 
-	for i = 1, max do
-		element[i].bg:Show()
+		element.prevColor = nil
+	else
+		for i = 1, max do
+			element[i].bg:Show()
+		end
+
+		element.thisColor = cur == max and 1 or 2
+		if not element.prevColor or element.prevColor ~= element.thisColor then
+			local r, g, b = 1, 0, 0
+			if element.thisColor == 2 then
+				local color = element.__owner.colors.power[powerType]
+				r, g, b = color[1], color[2], color[3]
+			end
+			for i = 1, #element do
+				element[i]:SetStatusBarColor(r, g, b)
+			end
+			element.prevColor = element.thisColor
+		end
 	end
 
 	if diff then
@@ -932,19 +945,6 @@ function UF.PostUpdateClassPower(element, cur, max, diff, powerType, chargedInde
 		for i = max + 1, 6 do
 			element[i].bg:Hide()
 		end
-	end
-
-	element.thisColor = cur == max and 1 or 2
-	if not element.prevColor or element.prevColor ~= element.thisColor then
-		local r, g, b = 1, 0, 0
-		if element.thisColor == 2 then
-			local color = element.__owner.colors.power[powerType]
-			r, g, b = color[1], color[2], color[3]
-		end
-		for i = 1, #element do
-			element[i]:SetStatusBarColor(r, g, b)
-		end
-		element.prevColor = element.thisColor
 	end
 
 	if chargedIndex and chargedIndex ~= element.thisCharge then
@@ -1153,6 +1153,7 @@ function UF:CreatePrediction(self)
 	hab:SetReverseFill(true)
 	hab:SetStatusBarTexture(DB.normTex)
 	hab:SetStatusBarColor(0, .5, .8, .5)
+	hab:SetFrameLevel(frame:GetFrameLevel())
 
 	local ohg = frame:CreateTexture(nil, "ARTWORK", nil, 1)
 	ohg:SetWidth(15)
