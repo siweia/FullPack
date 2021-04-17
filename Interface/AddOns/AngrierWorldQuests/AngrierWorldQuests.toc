@@ -5,7 +5,7 @@
 ## Version: v0.32.1
 ## SavedVariables: AngrierWorldQuests_Config
 ## SavedVariablesPerCharacter: AngierWorldQuests_CharacterConfig
-## X-Packaged-Version: v0.32.0
+## X-Packaged-Version: v0.32.1
 
 Core.lua
 
