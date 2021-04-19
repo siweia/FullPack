@@ -165,9 +165,6 @@ local function TitleButton_OnEnter(self)
 			pin:EnableDrawLayer("HIGHLIGHT")
 		end
 	end
-	if Config.showComparisonRight then
-		WorldMapTooltip.ItemTooltip.Tooltip.overrideComparisonAnchorSide = "right"
-	end
 	TaskPOI_OnEnter(self)
 end
 
@@ -232,7 +229,8 @@ local function FilterButton_OnEnter(self)
 		if title then text = text..": "..title end
 	end
 	if self.filter == "ZONE" and Config.filterZone ~= 0 then
-		local title = GetMapNameByID(Config.filterZone)
+		local mapInfo = C_Map.GetMapInfo(Config.filterZone)
+		local title = mapInfo and mapInfo.name
 		if title then text = text..": "..title end
 	end
 	if self.filter == "TIME" then
@@ -500,8 +498,7 @@ local titleFramePool
 local headerButton
 local spacerFrame
 
-local function QuestFrame_AddQuestButton(questInfo, prevButton)
-	local totalHeight = 8
+local function QuestFrame_AddQuestButton(questInfo)
 	local button = titleFramePool:Acquire()
 	TitleButton_Initiliaze(button)
 
@@ -776,7 +773,7 @@ local function TaskPOI_IsFiltered(info, displayMapID)
 		end
 
 		if selectedFilters.TRACKED then
-			if IsWorldQuestHardWatched(info.questId) or GetSuperTrackedQuestID() == info.questId then
+			if C_QuestLog.GetQuestWatchType(info.questId) == Enum.QuestWatchType.Manual or C_SuperTrack.GetSuperTrackedQuestID() == info.questId then
 				isFiltered = false
 			end
 		end
@@ -878,7 +875,6 @@ local function QuestFrame_Update()
 	local tasksOnMap = C_TaskQuest.GetQuestsForPlayerByMapID(mapID)
 	if (Config.onlyCurrentZone) and (not displayLocation or lockedQuestID) and not (tasksOnMap and #tasksOnMap > 0) and (mapID ~= MAPID_ARGUS) then
 		for i = 1, #filterButtons do filterButtons[i]:Hide() end
-		if spaceFrame then spacerFrame:Hide() end
 		if headerButton then headerButton:Hide() end
 		QuestScrollFrame.Contents:Layout()
 		return
@@ -886,7 +882,7 @@ local function QuestFrame_Update()
 
 	local questsCollapsed = Config.collapsed
 
-	local button, firstButton, storyButton, prevButton
+	local firstButton, storyButton, prevButton
 	local layoutIndex = Config.showAtTop and 0 or 10000
 
 	local storyAchievementID, storyMapID = C_QuestLog.GetZoneStoryInfo(mapID)
@@ -940,21 +936,13 @@ local function QuestFrame_Update()
 		headerButton.styled = true
 	end
 
-	local displayedQuestIDs = {}
 	local usedButtons = {}
 	local filtersOwnRow = false
 
 	if questsCollapsed then
 		for i = 1, #filterButtons do filterButtons[i]:Hide() end
 	else
-		local hasFilters = Config:HasFilters()
 		local selectedFilters = Config:GetFilterTable()
-
-		local enabledCount = 0
-		for i=#Mod.FiltersOrder, 1, -1 do
-			if not Config:GetFilterDisabled(Mod.FiltersOrder[i]) then enabledCount = enabledCount + 1 end
-		end
-
 		local prevFilter
 
 		for j=1, #Mod.FiltersOrder, 1 do
