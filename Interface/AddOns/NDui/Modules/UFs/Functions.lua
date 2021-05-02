@@ -170,15 +170,13 @@ function UF:CreateHealthText(self)
 			name:SetPoint("LEFT", 3, -1)
 		elseif C.db["UFs"]["SimpleMode"] and not self.isPartyFrame then
 			name:SetPoint("LEFT", 4, 0)
-		elseif C.db["UFs"]["RaidBuffIndicator"] then
+		else
 			name:SetJustifyH("CENTER")
 			if C.db["UFs"]["RaidHPMode"] ~= 1 then
 				name:SetPoint("TOP", 0, -3)
 			else
 				name:SetPoint("CENTER")
 			end
-		else
-			name:SetPoint("TOPLEFT", 2, -2)
 		end
 		name:SetScale(C.db["UFs"]["RaidTextScale"])
 	elseif mystyle == "nameplate" then
@@ -213,12 +211,10 @@ function UF:CreateHealthText(self)
 			self:Tag(hpval, "[hp]")
 		elseif C.db["UFs"]["SimpleMode"] and not self.isPartyFrame then
 			hpval:SetPoint("RIGHT", -4, 0)
-		elseif C.db["UFs"]["RaidBuffIndicator"] then
+		else
 			hpval:ClearAllPoints()
 			hpval:SetPoint("BOTTOM", 0, 1)
 			hpval:SetJustifyH("CENTER")
-		else
-			hpval:SetPoint("RIGHT", -3, -7)
 		end
 		hpval:SetScale(C.db["UFs"]["RaidTextScale"])
 	elseif mystyle == "nameplate" then
@@ -239,15 +235,13 @@ function UF:UpdateRaidNameText()
 			name:ClearAllPoints()
 			if C.db["UFs"]["SimpleMode"] and not frame.isPartyFrame then
 				name:SetPoint("LEFT", 4, 0)
-			elseif C.db["UFs"]["RaidBuffIndicator"] then
+			else
 				name:SetJustifyH("CENTER")
 				if C.db["UFs"]["RaidHPMode"] ~= 1 then
 					name:SetPoint("TOP", 0, -3)
 				else
 					name:SetPoint("CENTER")
 				end
-			else
-				name:SetPoint("TOPLEFT", 2, -2)
 			end
 			frame.healthValue:UpdateTag()
 		end
@@ -685,6 +679,9 @@ function UF.PostUpdateIcon(element, _, button, _, _, duration, expiration, debuf
 		button:SetSize(element.size, element.size)
 	end
 
+	local fontSize = element.fontSize or element.size*.6
+	button.count:SetFont(DB.Font[1], fontSize, DB.Font[3])
+
 	if button.isDebuff and filteredStyle[style] and not button.isPlayer then
 		button.icon:SetDesaturated(true)
 	else
@@ -778,9 +775,14 @@ function UF.RaidBuffFilter(_, _, _, _, _, _, _, _, _, caster, _, _, spellID, can
 	end
 end
 
+local debuffBlackList = {
+	[206151] = true,
+}
 function UF.RaidDebuffFilter(element, _, _, _, _, _, _, _, _, caster, _, _, spellID, _, isBossAura)
 	local parent = element.__owner
-	if (C.db["UFs"]["RaidBuffIndicator"] and UF.CornerSpells[spellID]) or parent.RaidDebuffs.spellID == spellID or parent.rawSpellID == spellID then
+	if debuffBlackList[spellID] then
+		return false
+	elseif (C.db["UFs"]["RaidBuffIndicator"] and UF.CornerSpells[spellID]) or parent.RaidDebuffs.spellID == spellID or parent.rawSpellID == spellID then
 		return false
 	elseif isBossAura or SpellIsPriorityAura(spellID) then
 		return true
@@ -894,6 +896,7 @@ function UF:CreateBuffs(self)
 		bu.size = C.db["UFs"]["RaidBuffSize"]
 		bu.CustomFilter = UF.RaidBuffFilter
 		bu.disableMouse = true
+		bu.fontSize = C.db["UFs"]["RaidBuffSize"]-2
 	else
 		bu.num = 6
 		bu.iconsPerRow = 6
@@ -934,6 +937,8 @@ function UF:CreateDebuffs(self)
 		bu.size = C.db["UFs"]["RaidDebuffSize"]
 		bu.CustomFilter = UF.RaidDebuffFilter
 		bu.disableMouse = true
+		bu.showDebuffType = true
+		bu.fontSize = C.db["UFs"]["RaidDebuffSize"]-2
 	end
 
 	UF:UpdateAuraContainer(self, bu, bu.num)
@@ -946,23 +951,38 @@ end
 function UF:UpdateRaidAuras()
 	for _, frame in pairs(oUF.objects) do
 		if frame.mystyle == "raid" then
-			local debuff = frame.Debuffs
-			if debuff then
-				debuff.num = ((C.db["UFs"]["SimpleMode"] and not self.isPartyFrame) or (not C.db["UFs"]["ShowRaidDebuff"])) and 0 or 3
-				debuff.size = C.db["UFs"]["RaidDebuffSize"]
-				UF:UpdateAuraContainer(frame, debuff, debuff.num)
-				debuff:ForceUpdate()
+			local debuffs = frame.Debuffs
+			if debuffs then
+				debuffs.num = ((C.db["UFs"]["SimpleMode"] and not self.isPartyFrame) or (not C.db["UFs"]["ShowRaidDebuff"])) and 0 or 3
+				debuffs.size = C.db["UFs"]["RaidDebuffSize"]
+				debuffs.fontSize = C.db["UFs"]["RaidDebuffSize"]-2
+				UF:UpdateAuraContainer(frame, debuffs, debuffs.num)
+				debuffs:ForceUpdate()
 			end
 
-			local buff = frame.Buffs
-			if buff then
-				buff.num = ((C.db["UFs"]["SimpleMode"] and not self.isPartyFrame) or (not C.db["UFs"]["ShowRaidBuff"])) and 0 or 3
-				buff.size = C.db["UFs"]["RaidBuffSize"]
-				UF:UpdateAuraContainer(frame, buff, buff.num)
-				buff:ForceUpdate()
+			local buffs = frame.Buffs
+			if buffs then
+				buffs.num = ((C.db["UFs"]["SimpleMode"] and not self.isPartyFrame) or (not C.db["UFs"]["ShowRaidBuff"])) and 0 or 3
+				buffs.size = C.db["UFs"]["RaidBuffSize"]
+				buffs.fontSize = C.db["UFs"]["RaidBuffSize"]-2
+				UF:UpdateAuraContainer(frame, buffs, buffs.num)
+				buffs:ForceUpdate()
 			end
 		end
 	end
+end
+
+local function refreshAurasElements(self)
+	local buffs = self.Buffs
+	if buffs then buffs:ForceUpdate() end
+
+	local debuffs = self.Debuffs
+	if debuffs then debuffs:ForceUpdate() end
+end
+
+function UF:RefreshAurasByCombat(self)
+	self:RegisterEvent("PLAYER_REGEN_ENABLED", refreshAurasElements, true)
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", refreshAurasElements, true)
 end
 
 -- Class Powers
