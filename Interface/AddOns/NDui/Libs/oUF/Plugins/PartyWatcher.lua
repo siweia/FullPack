@@ -76,6 +76,7 @@ end
 local function ResetButtons(self)
 	local element = self.PartyWatcher
 	element.index = 0
+	element.lastCount = nil
 	wipe(element.spellToButton)
 	for i = 1, element.__max do
 		local button = element[i]
@@ -101,7 +102,7 @@ local function Enable(self)
 		element.maxButtons = #element
 		element.spellToButton = {}
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Update)
-		self:RegisterEvent("GROUP_JOINED", ResetButtons, true)
+		self:RegisterEvent("GROUP_LEFT", ResetButtons, true)
 		self:RegisterEvent("CHALLENGE_MODE_START", ResetButtons, true)
 		self:RegisterEvent("GROUP_ROSTER_UPDATE", ResetButtonsWithCheck, true)
 		return true
@@ -113,7 +114,7 @@ local function Disable(self)
 
 	if element then
 		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", Update)
-		self:UnregisterEvent("GROUP_JOINED", ResetButtons)
+		self:UnregisterEvent("GROUP_LEFT", ResetButtons)
 		self:UnregisterEvent("CHALLENGE_MODE_START", ResetButtons)
 		self:UnregisterEvent("GROUP_ROSTER_UPDATE", ResetButtonsWithCheck)
 	end
