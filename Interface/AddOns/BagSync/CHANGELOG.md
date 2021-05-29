@@ -1,7 +1,9 @@
 # BagSync
 
-## [v15.3](https://github.com/Xruptor/BagSync/tree/v15.3) (2021-04-06)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v15.1...v15.3) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v15.5](https://github.com/Xruptor/BagSync/tree/v15.5) (2021-05-28)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v15.3...v15.5) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Added support for GitHub Actions packager for WoWInterface and Curse.  
-    Removed support for Travis CI.  
+- Updating BagSync to support Retail, Classic and now BCC (aka TBC).  #Fixes 134  
+- Updating the Packager GitHub Action script.  
+- More merchant token tooltip cleanup.  
+- Fixed an issue where currency items (not tokens) were not displaying tooltip information at a Merchant.  Example: Item tokens required to get Raid Finder Gear.  
