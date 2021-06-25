@@ -724,7 +724,7 @@ function module:OnLogin()
 	end
 
 	local bagTypeColor = {
-		[0] = {.3, .3, .3, .3},	-- 容器
+		[0] = {.3, .3, .3, .3},		-- 容器
 		[1] = false,				-- 弹药袋
 		[2] = {0, .5, 0, .25},		-- 草药袋
 		[3] = {.8, 0, .8, .25},		-- 附魔袋
@@ -928,7 +928,7 @@ function module:OnLogin()
 		elseif strmatch(name, "Quest") then
 			label = QUESTS_LABEL
 		elseif strmatch(name, "Anima") then
-			label = ANIMA
+			label = POWER_TYPE_ANIMA
 		end
 		if label then
 			self.label = B.CreateFS(self, 14, label, true, "TOPLEFT", 5, -8)

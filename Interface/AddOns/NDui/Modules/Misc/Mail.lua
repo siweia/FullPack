@@ -6,6 +6,7 @@ local wipe, select, pairs, tonumber = wipe, select, pairs, tonumber
 local strsplit, strfind = strsplit, strfind
 local InboxItemCanDelete, DeleteInboxItem, TakeInboxMoney, TakeInboxItem = InboxItemCanDelete, DeleteInboxItem, TakeInboxMoney, TakeInboxItem
 local GetInboxNumItems, GetInboxHeaderInfo, GetInboxItem, GetItemInfo = GetInboxNumItems, GetInboxHeaderInfo, GetInboxItem, GetItemInfo
+local GetSendMailPrice, GetMoney = GetSendMailPrice, GetMoney
 local C_Timer_After = C_Timer.After
 local C_Mail_HasInboxMoney = C_Mail.HasInboxMoney
 local C_Mail_IsCommandPending = C_Mail.IsCommandPending
@@ -66,6 +67,7 @@ local contactList = {}
 function M:ContactButton_OnClick()
 	local text = self.name:GetText() or ""
 	SendMailNameEditBox:SetText(text)
+	SendMailNameEditBox:SetCursorPosition(0)
 end
 
 function M:ContactButton_Delete()
@@ -158,7 +160,7 @@ end
 
 function M:MailBox_ContactList()
 	local bu = B.CreateGear(SendMailFrame)
-	bu:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", 3, 0)
+	bu:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", 20, 0)
 
 	local list = CreateFrame("Frame", nil, bu)
 	list:SetSize(200, 424)
@@ -333,7 +335,7 @@ end
 function M:LastMailSaver()
 	local mailSaver = CreateFrame("CheckButton", nil, SendMailFrame, "OptionsCheckButtonTemplate")
 	mailSaver:SetHitRectInsets(0, 0, 0, 0)
-	mailSaver:SetPoint("RIGHT", MailFrame.CloseButton, "LEFT", -3, 0)
+	mailSaver:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", 0, 0)
 	mailSaver:SetSize(24, 24)
 	B.ReskinCheck(mailSaver)
 	mailSaver.bg:SetBackdropBorderColor(1, .8, 0, .5)
@@ -356,8 +358,8 @@ function M:LastMailSaver()
 
 	hooksecurefunc(SendMailNameEditBox, "SetText", function(self, text)
 		if resetPending and text == "" then
-			self:SetText(C.db["Misc"]["MailTarget"])
 			resetPending = nil
+			self:SetText(C.db["Misc"]["MailTarget"])
 		end
 	end)
 
@@ -366,6 +368,26 @@ function M:LastMailSaver()
 			SendMailNameEditBox:SetText(C.db["Misc"]["MailTarget"])
 		end
 	end)
+end
+
+function M:ArrangeDefaultElements()
+	InboxTooMuchMail:ClearAllPoints()
+	InboxTooMuchMail:SetPoint("BOTTOM", MailFrame, "TOP", 0, 5)
+
+	SendMailNameEditBox:SetWidth(155)
+	SendMailNameEditBoxMiddle:SetWidth(146)
+	SendMailCostMoneyFrame:SetAlpha(0)
+
+	SendMailMailButton:HookScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_TOP")
+		GameTooltip:ClearLines()
+		local sendPrice = GetSendMailPrice()
+		local colorStr = "|cffffffff"
+		if sendPrice > GetMoney() then colorStr = "|cffff0000" end
+		GameTooltip:AddLine(SEND_MAIL_COST..colorStr..M:GetMoneyString(sendPrice, true))
+		GameTooltip:Show()
+	end)
+	SendMailMailButton:HookScript("OnLeave", B.HideTooltip)
 end
 
 function M:MailBox()
@@ -384,12 +406,8 @@ function M:MailBox()
 	-- Custom contact list
 	M:MailBox_ContactList()
 
-	-- Replace the alert frame
-	if InboxTooMuchMail then
-		InboxTooMuchMail:ClearAllPoints()
-		InboxTooMuchMail:SetPoint("BOTTOM", MailFrame, "TOP", 0, 5)
-	end
-
+	-- Elements
+	M:ArrangeDefaultElements()
 	M.GetMoneyString = B:GetModule("Infobar").GetMoneyString
 	M:CollectGoldButton()
 	M:CollectCurrentButton()
