@@ -41,6 +41,13 @@ local function Mirror(tex, swapH, swapV)
 	tex:SetTexCoord(ulX, ulY, llX, llY, urX, urY, lrX, lrY)
 	return tex
 end
+local function AugmentFollowerInfo(info)
+	info.autoCombatantStats = C_Garrison.GetFollowerAutoCombatStats(info.followerID)
+	info.autoCombatSpells = C_Garrison.GetFollowerAutoCombatSpells(info.followerID, info.level)
+	info.missionTimeEnd = info.missionTimeEnd or info.status == GARRISON_FOLLOWER_ON_MISSION and
+		(GetTime() + (C_Garrison.GetFollowerMissionTimeLeftSeconds(info.followerID) or 1)) or nil
+	return info
+end
 
 local GetTimeStringFromSeconds = U.GetTimeStringFromSeconds
 local function HideOwnGameTooltip(self)
@@ -533,10 +540,6 @@ local function FollowerButton_SetInfo(self, info)
 	local s = S[self]
 	local onMission = info.status == GARRISON_FOLLOWER_ON_MISSION
 	local inTG = not info.isAutoTroop and U.FollowerHasTentativeGroup(info.followerID)
-	if info.followerID then
-		info.autoCombatSpells = info.autoCombatSpells or C_Garrison.GetFollowerAutoCombatSpells(info.followerID, info.level)
-		info.autoCombatantStats = info.autoCombatantStats or C_Garrison.GetFollowerAutoCombatStats(info.followerID)
-	end
 	local vc, dc = inTG and 0.55 or onMission and 0.25 or 1, onMission and 0.65 or 1
 	local mc = onMission and DISABLED_FONT_COLOR or NORMAL_FONT_COLOR
 	local mtl = info.missionTimeEnd and GetTimeStringFromSeconds(math.max(0, info.missionTimeEnd-GetTime()), 2, true, true) or ""
@@ -707,14 +710,10 @@ local function FollowerList_Refresh(self, setXPGain)
 		local fl = C_Garrison.GetFollowers(123)
 		local ft = C_Garrison.GetAutoTroops(123)
 		for i=1,#ft do
-			FollowerButton_SetInfo(wt[i], ft[i])
+			FollowerButton_SetInfo(wt[i], AugmentFollowerInfo(ft[i]))
 		end
 		for i=1,#fl do
-			local e = fl[i]
-			e.autoCombatantStats = C_Garrison.GetFollowerAutoCombatStats(e.followerID)
-			e.autoCombatSpells = C_Garrison.GetFollowerAutoCombatSpells(e.followerID, e.level)
-			e.missionTimeEnd = e.missionTimeEnd or e.status == GARRISON_FOLLOWER_ON_MISSION and
-				(GetTime() + (C_Garrison.GetFollowerMissionTimeLeftSeconds(e.followerID) or 1)) or nil
+			AugmentFollowerInfo(fl[i])
 		end
 		s.TroopInfo.tooltipText = FollowerList_GetTroopHint(fl)
 		SortFollowerList(fl, false, true)
