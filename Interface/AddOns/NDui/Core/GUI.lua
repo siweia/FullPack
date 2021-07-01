@@ -57,6 +57,7 @@ G.DefaultSettings = {
 		SpecialBagsColor = false,
 		iLvlToShow = 1,
 		AutoDeposit = false,
+		PetTrash = true,
 
 		FilterJunk = true,
 		FilterConsumable = true,
@@ -312,6 +313,7 @@ G.DefaultSettings = {
 		OnlyArmorIcons = false,
 		ConduitInfo = true,
 		HideAllID = false,
+		MDScore = false,
 	},
 	Misc = {
 		Mail = true,
@@ -774,7 +776,7 @@ local NewTag = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 
 G.TabList = {
 	NewTag..L["Actionbar"],
-	L["Bags"],
+	NewTag..L["Bags"],
 	L["Unitframes"],
 	NewTag..L["RaidFrame"],
 	L["Nameplate"],
@@ -784,7 +786,7 @@ G.TabList = {
 	NewTag..L["ChatFrame"],
 	L["Maps"],
 	L["Skins"],
-	L["Tooltip"],
+	NewTag..L["Tooltip"],
 	L["Misc"],
 	L["UI Settings"],
 	L["Profile"],
@@ -827,6 +829,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Bags", "DeleteButton", L["Bags DeleteButton"], true},
 		{1, "Bags", "BagsiLvl", L["Bags Itemlevel"].."*", nil, nil, updateBagStatus},
 		{1, "Bags", "ShowNewItem", L["Bags ShowNewItem"], true},
+		{1, "Bags", "PetTrash", NewTag..L["PetTrash"], nil, nil, nil, L["PetTrashTip"]},
 		{3, "Bags", "iLvlToShow", L["iLvlToShow"].."*", nil, {1, 500, 1}, nil, L["iLvlToShowTip"]},
 		{4, "Bags", "BagSortMode", L["BagSortMode"].."*", true, {L["Forward"], L["Backward"], DISABLE}, updateBagSortOrder, L["BagSortTip"]},
 		{},--blank
@@ -1098,7 +1101,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Tooltip", "SpecLevelByShift", L["Show SpecLevelByShift"].."*", true},
 		{1, "Tooltip", "LFDRole", L["Group Roles"].."*"},
 		{1, "Tooltip", "TargetBy", L["Show TargetedBy"].."*", true},
-		{1, "Tooltip", "HideAllID", "|cffff0000"..L["HideAllID"]},
+		{1, "Tooltip", "MDScore", NewTag..L["MDScore"].."*", nil, nil, nil, L["MDScoreTip"]},
+		{1, "Tooltip", "HideAllID", "|cffff0000"..L["HideAllID"], true},
 		{},--blank
 		{1, "Tooltip", "AzeriteArmor", HeaderTag..L["Show AzeriteArmor"]},
 		{1, "Tooltip", "OnlyArmorIcons", L["Armor icons only"].."*", true},

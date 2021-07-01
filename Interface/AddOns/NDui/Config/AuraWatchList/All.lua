@@ -45,6 +45,7 @@ local module = B:GetModule("AurasTable")
 -- 全职业的相关监控
 local list = {
 	["Enchant Aura"] = {	-- 附魔及饰品组
+		{AuraID = 354808, UnitID = "player"},	-- 棱彩之光，1万币的小宠物
 		-- 种族天赋
 		{AuraID = 26297, UnitID = "player"},	-- 狂暴 巨魔
 		{AuraID = 20572, UnitID = "player"},	-- 血性狂怒 兽人
@@ -80,7 +81,6 @@ local list = {
 		{AuraID = 330367, UnitID = "player", Text = L["Versa"]},	-- 不可思议的量子装置，全能
 		{AuraID = 330368, UnitID = "player", Text = L["Haste"]},	-- 不可思议的量子装置，急速
 		{AuraID = 330380, UnitID = "player", Text = L["Mastery"]},	-- 不可思议的量子装置，精通
-		-- isNewPatch
 		{AuraID = 351872, UnitID = "player"},	-- 钢铁尖刺
 		{AuraID = 355316, UnitID = "player"},	-- 安海尔德之盾
 		{AuraID = 356326, UnitID = "player"},	-- 折磨洞察
@@ -122,6 +122,9 @@ local list = {
 		{AuraID = 333218, UnitID = "player"},	-- 废土礼节
 		{AuraID = 336885, UnitID = "player"},	-- 抚慰阴影
 		{AuraID = 324156, UnitID = "player", Flash = true},	-- 劫掠射击
+		{AuraID = 328900, UnitID = "player"},	-- 放下过去
+		{AuraID = 333961, UnitID = "player"},	-- 行动的召唤：布隆
+		{AuraID = 333943, UnitID = "player"},	-- 源生重槌
 		-- 炼金石
 		{AuraID = 60233, UnitID = "player"},	-- 敏捷
 		{AuraID = 60229, UnitID = "player"},	-- 力量
@@ -211,6 +214,7 @@ local list = {
 		{AuraID = 330725, UnitID = "player", Flash = true},	-- 伤逝剧场，暗影易伤
 		{AuraID = 336258, UnitID = "player", Flash = true},	-- 凋魂之殇，落单狩猎
 		{AuraID = 331399, UnitID = "player"},	-- 凋魂之殇，感染毒雨
+		{AuraID = 333353, UnitID = "player"},	-- 凋魂之殇，暗影伏击
 		{AuraID = 327401, UnitID = "player", Flash = true},	-- 通灵战潮，共受苦难
 		{AuraID = 323471, UnitID = "player", Flash = true},	-- 通灵战潮，切肉飞刀
 		{AuraID = 328181, UnitID = "player"},	-- 通灵战潮，凌冽之寒
