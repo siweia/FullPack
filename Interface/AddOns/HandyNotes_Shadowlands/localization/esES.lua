@@ -240,9 +240,15 @@ L["zolla_note"] = "Nos tomamos muy en serio nuestras defensas. Seamos grandes o 
 -------------------------------------------------------------------------------
 
 L["chamber_note"] = "Usa un {item:186718} del {npc:178257} en el Teletransportador Antiguo. Usa el Teletransportador Antiguo reparado para acceder a la cámara."
-L["consumption_note"] = nil
+L["consumption_note"] = [[
+Este raro no soltará botín hasta que haya consumido a 40x {npc:179758} para transformarse en su forma azul sombreada (Raro).
+
+Este raro soltará objetos de investigación extra después de consumir otros 40x {npc:179758} para transformarse en su forma verde sombreada (Raro Élite).
+
+|cFFFF0000EL RARO NO HARÁ APARECER {npc:179758} PARA CONSUMIR SI ESTÁ EN COMBATE.|r
+]]
 L["corpse_heap_note"] = "Habla con {npc:180079} para empezar el evento de recolección."
-L["darkmaul_note"] = "Recoge {item:187153} de los Champifauces Invasivos y alimenta a las {npc:180063} con ellos. Se ha de completar el evento 6 veces para conseguir la montura."
+L["darkmaul_note"] = "Recoge {item:187153} de los Champifauces Invasivos y alimenta a las {npc:180063} con ellos. Se ha de completar el evento 10 veces para conseguir la montura."
 L["dislodged_nest_note"] = "Haz click en una Polilla Nociva cercana para conseguir {spell:355181}. Usa el botón de acción extra de {spell:355131} en el {npc:178547} para controlarlo y montarlo en el árbol que tiene el nido."
 L["flayedwing_transporter_note"] = "Haz click en el {npc:178633} para volar a o desde la Cámara de los Secretos."
 L["forgotten_feather_note"] = "Flotando en una isla pequeña que se accede saltando hacia abajo desde el Respiro del Guardían."
@@ -253,7 +259,7 @@ L["no_stoneborne_note"] = "Habla con {npc:179974} para empezar el evento."
 L["offering_box_note"] = "Requiere una {item:187033} que se puede encontrar en la parte superior de la pared del lado oeste de las ruinas cercanas."
 L["pop_quiz_note"] = "El evento del Cuestionario aparecerá aleatoriamente en el mapa. Haz click en el Bastón del Velo Abandonado y responde a las preguntas de {npc:180162}."
 L["popo_note"] = "Habla con {npc:180028} para empezar el evento de escolta."
-L["razorwing_note"] = "Devuelve 6 {item:187054} soltados por los devoradores de la zona."
+L["razorwing_note"] = "Devuelve 10 {item:187054} soltados por los devoradores de la zona."
 L["reliwik_note"] = "Haz click en el huevo de alafilada prístino para hacerlo bajar."
 L["spectral_bound_chest"] = "Haz click en las 3 {item:179369} cercanas para debloquear el cofre."
 L["spectral_bound_note"] = "Cofre reforzado espectral"
@@ -273,6 +279,8 @@ Requiere una {item:186731}, la cual se le puede comprar al {npc:178257} una vez 
 
 |cFFFF8C00Los portales de falla no están activos todos al mismo tiempo.|r
 ]]
+L["rift_rare_only_note"] = "Este raro sólo se puede ver y ser matado dentro de la fase de |cFFFFFF00La Falla|r."
+L["rift_rare_exit_note"] = "Este raro saldrá de la fase de |cFFFFFF00La Falla|r en cuanto se interactúe con él dentro de la falla."
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "Muestra donde están los {npc:179595} usados para entrar en |cFFFFFF00La Falla|r."
 

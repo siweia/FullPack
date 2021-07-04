@@ -240,9 +240,15 @@ L["zolla_note"] = "Nous prenons nos défenses très au sérieux. Qu'elles soient
 -------------------------------------------------------------------------------
 
 L["chamber_note"] = "Utilisez une {item:186718} de l'{npc:178257} sur le Téléporteur ancien. Utilise le Téléporteur ancien réparé pour accéder à la chambre."
-L["consumption_note"] = nil
+L["consumption_note"] = [[
+Ce monstre rare ne laissera pas de butin avant d'avoir consommé 40 {npc:179758} pour se transformer en sa forme bleue (Rare).
+
+Ce monstre rare laissera tomber des objets de recherche supplémentaires après avoir consommé *de nouveau* 40 {npc:179758} pour se transformer en sa forme verte (Élite Rare).
+
+|cFFFF0000LE MONSTRE RARE NE FERA PAS APPARAÎTRE DES {npc:179758} POUR LES CONSOMMER SI ENGAGÉ EN COMBAT.|r
+]]
 L["corpse_heap_note"] = "Parlez à {npc:180079} pour commencer l'événement de collecte."
-L["darkmaul_note"] = "Collectez des {item:187153} sur les champignantre envahissants et nourrissez {npc:180063} avec. Vous devez terminer l'événement 6 fois pour obtenir la monture."
+L["darkmaul_note"] = "Collectez des {item:187153} sur les champignantre envahissants et nourrissez {npc:180063} avec. Vous devez terminer l'événement 10 fois pour obtenir la monture."
 L["dislodged_nest_note"] = "Cliquez sur un papillon nocif proche pour obtenir {spell:355181}. Utilisez le bouton d'action supplémentaire {spell:355131} sur un {npc:178547} pour en prendre le contrôle et le conduire dans l'arbre où se trouve le nid."
 L["flayedwing_transporter_note"] = "Cliquez sur {npc:178633} pour voler vers ou depuis le Caveau des Secrets."
 L["forgotten_feather_note"] = "Flottant sur une petite île à laquelle on accède en sautant depuis le Répit du gardien."
@@ -253,7 +259,7 @@ L["no_stoneborne_note"] = "Parlez à {npc:179974} pour commencer l'événement."
 L["offering_box_note"] = "Requiert une Petite clé des offrandes qui peut être trouvée sur le haut du mur ouest des ruines voisines."
 L["pop_quiz_note"] = "L'événement Pop Quizz apparaîtra aléatoirement sur la carte. Cliquez sur le Mât voilé abandonné et répondez aux questions de {npc:180162}."
 L["popo_note"] = "Parlez à {npc:180028} pour déclencher l'événement d'escorte."
-L["razorwing_note"] = "Apportez 6 {item:187054} obtenus sur les dévoreurs dans la zone."
+L["razorwing_note"] = "Apportez 10 {item:187054} obtenus sur les dévoreurs dans la zone."
 L["reliwik_note"] = "Cliquez sur l'oeuf de rasaile non corrompu pour le faire descendre."
 L["spectral_bound_chest"] = "Cliquez sur 3 clés spectrales proches pour déverrouiller le coffre."
 L["spectral_bound_note"] = "Coffre cerclé spectral"
@@ -273,6 +279,8 @@ Nécessite une {item:186731}, qui peut être achetée à {npc:178257} une fois q
 
 |cFFFF8C00Les portails de failles ne sont pas tous actifs à un moment donné.|r
 ]]
+L["rift_rare_only_note"] = "Ce monstre ne peut être vu et tué qu'en étant entré dans |cFFFFFF00La Faille|r."
+L["rift_rare_exit_note"] = "Ce monstre rare sortira de |cFFFFFF00La Faille|r une fois qu'il aura été abordé à l'intérieur de celle-ci."
 L["options_icons_rift_portal"] = "{npc:179595s}"
 L["options_icons_rift_portal_desc"] = "Afficher les emplacements des {npc:179595s} utilisés pour entrer dans |cFFFFFF00La Faille|r."
 
