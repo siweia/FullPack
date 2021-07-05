@@ -1,50 +1,34 @@
-tag fc76c7a5039453bb7d94419ec38f9851c702a773 DetailsRetail.9.1.0.8697.145
+tag 27e9a91e1e467580c07954929aad9fc95dae5155 DetailsRetail.9.1.0.8698.145
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Thu Jul 1 18:47:45 2021 -0300
+Date:	Sun Jul 4 18:53:48 2021 -0300
 
-commit 07a60b42eceb56f7e0c335b3a21378e40b858e96
+commit ec4d1f06cc0f63c72d44f65ec52de90e17013fec
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Jul 1 18:46:46 2021 -0300
+Date:   Sun Jul 4 18:53:06 2021 -0300
 
-    updated lib RaidStatus and general bug fixes; ToC Updates
+    version up
 
-commit ca427e9baa16c1cf9bc27a851e2f13c05ced7428
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Wed Jun 23 22:08:05 2021 -0500
+commit 999be46647dd7e6978bc54ead8e303d11d406b9f
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun Jul 4 18:52:41 2021 -0300
 
-    Fix for unpack issue
-    
-    BM Hunters were listed as HunterBeastMaster, when in reality it is HunterBeastMastery.
-    
-    Also, told it to return nil instead of 0 so the unpack error just softly goes away.
+    Fix some issues with the Coach
 
-commit ca427e9baa16c1cf9bc27a851e2f13c05ced7428
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Wed Jun 23 22:08:05 2021 -0500
+commit fce191bf4f63de36b94e65033dcf5cd352844133
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sat Jul 3 14:48:17 2021 -0300
 
-    Fix for unpack issue
-    
-    BM Hunters were listed as HunterBeastMaster, when in reality it is HunterBeastMastery.
-    
-    Also, told it to return nil instead of 0 so the unpack error just softly goes away.
+    Typo
 
-commit ca427e9baa16c1cf9bc27a851e2f13c05ced7428
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Wed Jun 23 22:08:05 2021 -0500
+commit dd49b0d8ec2916546da395028066f048af9cc8a3
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sat Jul 3 10:16:55 2021 -0300
 
-    Fix for unpack issue
-    
-    BM Hunters were listed as HunterBeastMaster, when in reality it is HunterBeastMastery.
-    
-    Also, told it to return nil instead of 0 so the unpack error just softly goes away.
+    removed CONFIG_OPTION_DONT_MOVE_BATTLEGROUND_MINIMAP_ICON_ON_ERROR
 
-commit ca427e9baa16c1cf9bc27a851e2f13c05ced7428
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Wed Jun 23 22:08:05 2021 -0500
+commit dbfe4b0fc21af365743f3c8098f6499cf20fba6c
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Jul 1 22:26:00 2021 -0300
 
-    Fix for unpack issue
-    
-    BM Hunters were listed as HunterBeastMaster, when in reality it is HunterBeastMastery.
-    
-    Also, told it to return nil instead of 0 so the unpack error just softly goes away.
+    Don't show new version chat message when Suppress Alerts
 
