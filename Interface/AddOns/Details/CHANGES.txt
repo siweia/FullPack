@@ -1,34 +1,10 @@
-tag 27e9a91e1e467580c07954929aad9fc95dae5155 DetailsRetail.9.1.0.8698.145
+tag 2c8d41fb7a830538fcb3b09d9af33353b06d56f6 DetailsRetail.9.1.0.8700a.145
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sun Jul 4 18:53:48 2021 -0300
+Date:	Tue Jul 6 21:27:07 2021 -0300
 
-commit ec4d1f06cc0f63c72d44f65ec52de90e17013fec
+commit 6f6d79613425538b4b520bb0de34fdb79bf57a37
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Jul 4 18:53:06 2021 -0300
+Date:   Tue Jul 6 21:26:45 2021 -0300
 
-    version up
-
-commit 999be46647dd7e6978bc54ead8e303d11d406b9f
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Jul 4 18:52:41 2021 -0300
-
-    Fix some issues with the Coach
-
-commit fce191bf4f63de36b94e65033dcf5cd352844133
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Jul 3 14:48:17 2021 -0300
-
-    Typo
-
-commit dd49b0d8ec2916546da395028066f048af9cc8a3
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Jul 3 10:16:55 2021 -0300
-
-    removed CONFIG_OPTION_DONT_MOVE_BATTLEGROUND_MINIMAP_ICON_ON_ERROR
-
-commit dbfe4b0fc21af365743f3c8098f6499cf20fba6c
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Jul 1 22:26:00 2021 -0300
-
-    Don't show new version chat message when Suppress Alerts
+    Removed some debug prints from the coach feature :)
 
