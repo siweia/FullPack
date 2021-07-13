@@ -2,16 +2,10 @@ local _, T = ...
 local EV = T.Evie
 local LibParse = LibStub("LibParse");
 
-local serialize do
-	local sigT, sigN = {}
-	local sReg, sRegRev, sign = {__index={true, false, "newHealth", "oldHealth", "maxHealth", "boardIndex", "type", "casterBoardIndex", "spellID", "auraType", "effectIndex", "targetInfo", "schoolMask", "points", "events" , "missionID", "missionScalar"}}, {__index={}}, string.char(77,85,119,83,110,77,105)
-	for k,v in pairs(sReg.__index) do sRegRev.__index[v] = k end
-	for i, c in ("01234qwertyuiopasdfghjklzxcvbnm5678QWERTYUIOPASDFGHJKLZXCVBNM9"):gmatch("()(.)") do sigT[i-1], sigT[c], sigN = c, i-1, i end
-
-	function serialize(data)
-		return LibParse:JSONEncode(data)
-	end
+local function serialize(data)
+	return LibParse:JSONEncode(data)
 end
+
 local function GetCompletedMissionInfo(mid)
 	local ma = C_Garrison.GetCompleteMissions(123)
 	for i=1,#ma do
@@ -181,6 +175,9 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 	local ok, checkpoints = generateCheckpoints(cr)
 	if ok then
 		local st, novel, nok, om = serialize(cr), isNovelLog(cr, checkpoints)
+		cr.predictionCorrect = om
+		cr.addonVersion = GetAddOnMetadata("VenturePlan", "Version")
+		st = serialize(cr)
 		VP_MissionReports = VP_MissionReports or {}
 		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
 		LR_MissionID, LR_Novelty = mid, nok and (novel and (om and 2 or 3) or 1) or 0
@@ -195,11 +192,11 @@ function T.GetMissionReportCount()
 	return type(VP_MissionReports) == "table" and #VP_MissionReports or 0
 end
 function T.ExportMissionReports()
-	local s = ""
+	local missionReportString = ""
 	for i=1,VP_MissionReports and #VP_MissionReports or 0 do
-		s = (i > 1 and s .. "\n" or "") .. VP_MissionReports[i][1]
+		missionReportString = (i > 1 and missionReportString .. "\n" or "") .. VP_MissionReports[i][1]
 	end
-	return s
+	return missionReportString
 end
 function T.GetMissionReportInfo(mid)
 	if mid == LR_MissionID then
