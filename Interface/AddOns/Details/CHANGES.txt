@@ -1,10 +1,10 @@
-tag 2c8d41fb7a830538fcb3b09d9af33353b06d56f6 DetailsRetail.9.1.0.8700a.145
+tag 2f07af5e99bd53b7338159800ea7f0cc023461af DetailsRetail.9.1.0.8710.145
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Tue Jul 6 21:27:07 2021 -0300
+Date:	Sat Jul 10 22:11:02 2021 -0300
 
-commit 6f6d79613425538b4b520bb0de34fdb79bf57a37
+commit caf27f4ff0d7cb7538d096caca69695633cbe7f8
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Jul 6 21:26:45 2021 -0300
+Date:   Sat Jul 10 22:10:37 2021 -0300
 
-    Removed some debug prints from the coach feature :)
+    Fixes for Kel'Thuzad and Painsmith encounters
 
