@@ -131,8 +131,12 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	
 	me:Show()
 end
-local function cmpMissionInfo(a, b)
-	local ac, bc = a.timeLeftSeconds, b.timeLeftSeconds
+local function cmpMissionInfo(a,b)
+	local ac, bc = a.completed or a.timeLeftSeconds == 0, b.completed or b.timeLeftSeconds == 0
+	if ac ~= bc then
+		return ac
+	end
+	ac, bc = a.timeLeftSeconds, b.timeLeftSeconds
 	if (not ac) ~= (not bc) then
 		return not ac
 	end
@@ -222,12 +226,15 @@ local function UpdateMissions()
 		m.hasTentativeGroup = U.MissionHasTentativeGroup(mid)
 		m.hasPendingStart = U.IsMissionStartingSoon(mid)
 	end
-	
+	for i=1,inProgressMissions and #inProgressMissions or 0 do
+		missions[#missions+1] = inProgressMissions[i]
+	end
+
 	local ni, anima = 1, C_CurrencyInfo.GetCurrencyInfo(1813)
 	anima = (anima and anima.quantity or 0)
+	ni = pushMissionSet(ni, cMissions, missions, haveUnassignedRookies, anima)
 	ni = pushMissionSet(ni, missions, nil, haveUnassignedRookies, anima)
-	ni = pushMissionSet(ni, cMissions, inProgressMissions, haveUnassignedRookies, anima)
-	ni = pushMissionSet(ni, inProgressMissions, nil, haveUnassignedRookies, anima)
+	ni = pushMissionSet(ni, inProgressMissions, missions, haveUnassignedRookies, anima)
 	MissionList.numMissions = ni-1
 	for i=ni, #MissionList.Missions do
 		MissionList.Missions[i]:Hide()

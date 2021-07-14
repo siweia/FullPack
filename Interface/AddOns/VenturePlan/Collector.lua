@@ -125,7 +125,7 @@ local function findReportSlot(logs, st, novel)
 			end
 		end
 	end
-	if nc + oc < 99 then
+	if nc + oc < 10 then
 		return #logs+1
 	elseif novel then
 		return oc > 49 and oi or ni
