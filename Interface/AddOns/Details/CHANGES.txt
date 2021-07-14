@@ -1,10 +1,22 @@
-tag 2f07af5e99bd53b7338159800ea7f0cc023461af DetailsRetail.9.1.0.8710.145
+tag 7605442928396f6aba7f100d50f62605d1cfa66c DetailsRetail.9.1.0.8720.145
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sat Jul 10 22:11:02 2021 -0300
+Date:	Tue Jul 13 18:58:50 2021 -0300
 
-commit caf27f4ff0d7cb7538d096caca69695633cbe7f8
+commit f516d1d304bf584b69ab8be0fdc397149458c51c
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Jul 10 22:10:37 2021 -0300
+Date:   Tue Jul 13 18:57:42 2021 -0300
 
-    Fixes for Kel'Thuzad and Painsmith encounters
+    Lib Update
+
+commit 33b7542f6b7b1af0be6a1b44acf7259a54a9af87
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Tue Jul 13 18:47:55 2021 -0300
+
+    More fixes for Kel'Thuzad Encounter
+
+commit 7fd57e2f40c511a5827512b30472e47de4d09cc2
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon Jul 12 14:22:19 2021 -0300
+
+    Update on Details.UnitInfo
 
