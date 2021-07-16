@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2447, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210713035738")
+mod:SetRevision("20210713234119")
 mod:SetCreatureID(175730)
 mod:SetEncounterID(2431)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -209,7 +209,7 @@ function mod:OnCombatStart(delay)
 	if self.Options.NPAuraOnBurdenofDestiny then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
-	DBM:AddMsg("Abilities on this fight can be a little buggy and sometimes skip casts/change order. DBM timers attempt to match the most common scenario of events but sometimes fight will do it's own thing")
+	DBM:AddMsg("Abilities on this fight can be volatile and sometimes skip casts/change order. DBM timers attempt to match the most common scenario of events but sometimes fight will do it's own thing")
 end
 
 function mod:OnCombatEnd()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210713064024")
+mod:SetRevision("20210713072200")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -129,7 +129,7 @@ local timerWailingArrowCD							= mod:NewCDCountTimer(33.9, 347609, nil, "Tank|H
 local timerRangersHeartseekerCD						= mod:NewCDCountTimer(33.9, 352663, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerBlackArrowCD								= mod:NewAITimer(33.9, 358704, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
 --Intermission: A Monument to our Suffering
-local timerRiveCD									= mod:NewCDCountTimer(48.8, 353418, nil, nil, nil, 3)
+local timerRiveCD									= mod:NewCDTimer(48.8, 353418, nil, nil, nil, 3)
 local timerNextPhase								= mod:NewPhaseTimer(16.5, 348094, nil, nil, nil, 6)
 --Stage Two: The Banshee Queen
 --local timerChannelIceCD								= mod:NewCDCountTimer(48.8, 348148, nil, nil, nil, 6)
@@ -692,15 +692,17 @@ function mod:SPELL_CREATE(args)
 			timerRuinCD:Update(32, 34.1, 1)--Just to replace the timer that stop call cancelled for run over timer
 			timerRangersHeartseekerCD:Start(27.6, self.vb.heartseekerCount+1)
 			timerVeilofDarknessCD:Start(30, self.vb.veilofDarknessCount+1)--to EMOTE
-			timerRangersHeartseekerCD:Start(45.2, self.vb.heartseekerCount+1)
-			timerBansheeWailCD:Start(48.2, self.vb.bansheeWailCount+1)
+			if self:IsHard() then--Normal doesn't seem to get second one
+				timerRangersHeartseekerCD:Start(45.2, self.vb.heartseekerCount+2)
+			end
+			timerBansheeWailCD:Start(47, self.vb.bansheeWailCount+1)
 			--TODO, more shit if not pushed?
 		elseif self.vb.bridgeCount == 3 then
 			warnEarthBridge:Show(self.vb.bridgeCount)
 --			timerHauntingWaveCD:Start(1, self.vb.hauntingWavecount+1)--Used too soon to have timer
 			timerVeilofDarknessCD:Start(23.9, self.vb.veilofDarknessCount+1)
 			--TODO, more shit if not pushed?
-		elseif self.vb.bridgeCount == 4 then
+		elseif self.vb.bridgeCount == 4 then--Normal timers are slightly slower but close enough to just use these globally
 			warnIceBridge:Show(self.vb.bridgeCount)
 --			timerHauntingWaveCD:Start(1, self.vb.hauntingWavecount+1)--Used too soon to have timer
 			timerRuinCD:Start(8, self.vb.ruinCount+1)
@@ -713,11 +715,11 @@ function mod:SPELL_CREATE(args)
 			timerHauntingWaveCD:Start(31.7, self.vb.hauntingWavecount+1)
 			timerVeilofDarknessCD:Start(35.7, self.vb.veilofDarknessCount+1)
 			--TODO, more shit if not pushed?
-		elseif self.vb.bridgeCount == 6 then
+		elseif self.vb.bridgeCount == 6 then--This can sometimes clip veil of darkness timer (canceling it)
 			warnEarthBridge:Show(self.vb.bridgeCount)
 			timerRuinCD:Start(7, self.vb.ruinCount+1)
 			timerHauntingWaveCD:Start(25.2, self.vb.hauntingWavecount+1)
-			timerRangersHeartseekerCD:Start(30.6, self.vb.heartseekerCount+1)
+			timerRangersHeartseekerCD:Start(self:IsEasy() and 34.4 or 30.6, self.vb.heartseekerCount+1)
 			timerVeilofDarknessCD:Start(37.9, self.vb.veilofDarknessCount+1)
 			timerBansheeWailCD:Start(45.5, self.vb.bansheeWailCount+1)
 			--TODO, more shit if not pushed?
