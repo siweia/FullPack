@@ -285,7 +285,15 @@ Requiere una {item:186731}, la cual se le puede comprar al {npc:178257} una vez 
 |cFFFF8C00Los portales de falla no están activos todos al mismo tiempo.|r
 ]]
 L["rift_rare_only_note"] = "Este raro sólo se puede ver y ser matado dentro de la fase de |cFFFFFF00La Falla|r."
-L["rift_rare_exit_note"] = "¡Este raro ha de tener el buff {spell:354840} o estará bug! Saldrá de la fase de |cFFFFFF00La Falla|r en cuanto se interactúe con él dentro de la falla."
+L["rift_rare_exit_note"] = [[
+Este raro saldrá de la fase de |cFFFFFF00La Falla|r en cuanto se interactúe con él dentro de la falla.
+
+Estos tres raros de falla suelen aparecer en  orden con 20 minutos de intérvalo:
+
+  1. {npc:179913}
+  2. {npc:179608}
+  3. {npc:179911}
+]]
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "Muestra donde están los {npc:179595} usados para entrar en |cFFFFFF00La Falla|r."
 
@@ -636,7 +644,7 @@ L["nilg_silver_ring_note4"] = "Mata {npc:177134} en la zona de Desmotaeron (drop
 L["nilg_stone_ring_note"] = "Recoge 4 {item:186600} durante el asalto de los Necroseñores y combínalos en cualquier {npc:171492} en la Caldera de Zovaal."
 L["nilg_stone_ring_note1"] = "Está en algunos Alijos Jurafauces (icono amarillo) sobre las murallas del Bastión de la Perdición."
 L["nilg_stone_ring_note2"] = "Completa la misión {quest:63545}, y entonces despoja los Alijos Jurafauces hasta encontrar el item de misión {item:186573}. ¡Esta misión se puede compartir!"
-L["nilg_stone_ring_note3"] = "Se despoja de un {npc:179601} enmedio de la zona del Bastión de la Perdición."
+L["nilg_stone_ring_note3"] = "Se despoja de un {npc:179601} que entra por el puerte de la entrada oeste del Bastión de la Perdición (28,57)."
 L["nilg_stone_ring_note4"] = "Está por el suelo del Bastión de la Perdición cerca del {npc:170634}. Tu {npc:180598} puede ayudarte a encontrarlo."
 L["nilg_gold_band_note"] = "Usa el punto de agarre y sigue el camino a la cima de la montaña."
 L["nilganihmaht_note"] = "Tienes que recoger los 5 anillos y llevarlos a {npc:179572} en la falla."

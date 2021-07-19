@@ -276,7 +276,7 @@ L["worldcracker_note"] = "Sprich mit {npc:180028}, um das Escortevent zu starten
 L["archivist_key_note"] = "Kaufe zum öffnen von {npc:178257} einen %s."
 L["korthian_shrine_note"] = "Klicke den Schrein an, um die {spell:352367} zu erhalten, damit du den versteckten Pfad zum Altar sehen kannst."
 L["num_research"] = "%d katalogisierte Forschung"
-L["plus_research"] = nil
+L["plus_research"] = "+katalogisierte Forschung"
 L["options_icons_relic"] = "{achievement:15066}"
 L["options_icons_relic_desc"] = "Zeigt die 20 Relikte für den Erfolg {achievement:15066} an."
 
@@ -288,7 +288,15 @@ Benötigt einen {item:186731}, den man bei {npc:178257} kaufen kann, wenn Stufe 
 |cFFFF8C00Nicht alle Rissportale sind gleichzeitig aktiv.|r
 ]]
 L["rift_rare_only_note"] = "Dieser seltene Gegner kann nur gesehen und getötet werden, während man sich im |cFFFFFF00Riss|r befindet."
-L["rift_rare_exit_note"] = "Damit dieser seltene Gegner im |cFFFFFF00Riss|r vorzufinden ist, muss er den Stärkungszauber {spell:354840} haben. Er wird den |cFFFFFF00Riss|r verlassen, wenn mit ihm im |cFFFFFF00Riss|r interagiert wurde."
+L["rift_rare_exit_note"] = [[
+Dieser seltene Gegner wird den |cFFFFFF00Riss|r verlassen, wenn mit ihm im |cFFFFFF00Riss|r interagiert wurde.
+
+Die drei seltenen Gegner im |cFFFFFF00Riss|r erscheinen üblicherweise in einer festgelegten Reihenfolge in einem Intervall von etwa 20 Minuten:
+
+  1. {npc:179913}
+  2. {npc:179608}
+  3. {npc:179911}
+]]
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "Zeigt die Positionen von {npc:179595en} an, um den |cFFFFFF00Riss|r zu betreten."
 
@@ -644,8 +652,8 @@ L["nilg_stone_ring_note3"] = "Erbeutet vom {npc:179601} im mittleren Bereich der
 L["nilg_stone_ring_note4"] = "Kann auf dem Boden in der Verdammnisfestung in der Nähe von {npc:170634} gefunden werden. Dein {npc:180598} kann helfen ihn zu finden."
 L["nilg_gold_band_note"] = "Benutze das Greifhakenziel und folge dem Weg nach oben zum Gipfel."
 L["nilganihmaht_note"] = "Es müssen fünf Ringe gesammelt und diese zur {npc:179572} im |cFFFFFF00Riss|r gebracht werden."
-L["calcis"] = nil
-L["desmotaeron"] = nil
+L["calcis"] = "Calcis"
+L["desmotaeron"] = "Desmotaeron"
 
 L["zovault_note"] = "Ziehe täglich {npc:179883} zu {npc:179904} für einen garantierten Rissstein."
 L["options_icons_zovault"] = "{npc:179883}"
