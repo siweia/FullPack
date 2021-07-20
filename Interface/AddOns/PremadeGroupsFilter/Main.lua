@@ -190,6 +190,9 @@ function PGF.SortByFriendsAndAge(searchResultID1, searchResultID2)
     if searchResultInfo1.numGuildMates ~= searchResultInfo2.numGuildMates then
         return searchResultInfo1.numGuildMates > searchResultInfo2.numGuildMates
     end
+    if searchResultInfo1.isWarMode ~= searchResultInfo2.isWarMode then
+        return searchResultInfo1.isWarMode == C_PvP.IsWarModeDesired()
+    end
 
     return searchResultInfo1.age < searchResultInfo2.age
 end
@@ -341,6 +344,18 @@ function PGF.DoFilterSearchResults(results)
         env.autoinv = searchResultInfo.autoAccept
         env.questid = searchResultInfo.questID
         env.declined = PGF.IsDeclinedGroup(searchResultInfo)
+        env.warmode = searchResultInfo.isWarMode
+        env.mprating = searchResultInfo.leaderOverallDungeonScore or 0
+        env.mpmaprating = 0
+        env.mpmapname   = ""
+        env.mpmapmaxkey = 0
+        env.mpmapintime = false
+        if searchResultInfo.leaderDungeonScoreInfo then
+            env.mpmaprating = searchResultInfo.leaderDungeonScoreInfo.mapScore
+            env.mpmapname   = searchResultInfo.leaderDungeonScoreInfo.mapName
+            env.mpmapmaxkey = searchResultInfo.leaderDungeonScoreInfo.bestRunLevel
+            env.mpmapintime = searchResultInfo.leaderDungeonScoreInfo.finishedSuccess
+        end
 
         PGF.PutSearchResultMemberInfos(resultID, searchResultInfo, env)
         PGF.PutEncounterNames(resultID, env)
