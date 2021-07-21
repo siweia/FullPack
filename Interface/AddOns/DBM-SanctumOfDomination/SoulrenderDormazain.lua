@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2445, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210714151327")
+mod:SetRevision("20210715050601")
 mod:SetCreatureID(175727)
 mod:SetEncounterID(2434)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -104,9 +104,9 @@ local allTimers = {
 		--Torment
 		[349873] = {12.6, 50.4, 45.3, 61.9, 31.5, 32.6, 30.9, 55.9, 30.6, 33.8, 31.5},
 		--Call Mawsworn
-		[350615] = {24, 57, 102.7, 63.4, 95.4, 57.3},
+		[350615] = {24, 57, 102.4, 63.4, 93.5, 57.3},
 		--Hellscream
-		[350411] = {55, 163, 42.5, 63.8, 42.2, 41.5},
+		[350411] = {55, 163, 41.9, 63.8, 42, 41.5},
 	},
 	["heroic"] = {
 		--Ruinblade
