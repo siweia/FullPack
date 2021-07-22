@@ -360,6 +360,7 @@ G.DefaultSettings = {
 		DBMCount = "10",
 		EasyMarkKey = 1,
 		ShowMarkerBar = 4,
+		MarkerSize = 28,
 		BlockInvite = false,
 		NzothVision = true,
 		SendActionCD = false,
@@ -782,8 +783,8 @@ local NewTag = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 
 G.TabList = {
 	L["Actionbar"],
-	NewTag..L["Bags"],
-	NewTag..L["Unitframes"],
+	L["Bags"],
+	L["Unitframes"],
 	L["RaidFrame"],
 	L["Nameplate"],
 	L["PlayerPlate"],
@@ -835,7 +836,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Bags", "DeleteButton", L["Bags DeleteButton"], true},
 		{1, "Bags", "BagsiLvl", L["Bags Itemlevel"].."*", nil, nil, updateBagStatus},
 		{1, "Bags", "ShowNewItem", L["Bags ShowNewItem"], true},
-		{1, "Bags", "PetTrash", NewTag..L["PetTrash"], nil, nil, nil, L["PetTrashTip"]},
+		{1, "Bags", "PetTrash", L["PetTrash"], nil, nil, nil, L["PetTrashTip"]},
 		{3, "Bags", "iLvlToShow", L["iLvlToShow"].."*", nil, {1, 500, 1}, nil, L["iLvlToShowTip"]},
 		{4, "Bags", "BagSortMode", L["BagSortMode"].."*", true, {L["Forward"], L["Backward"], DISABLE}, updateBagSortOrder, L["BagSortTip"]},
 		{},--blank
@@ -847,7 +848,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 	[3] = {
 		{1, "UFs", "Enable", HeaderTag..L["Enable UFs"], nil, setupUnitFrame, nil, L["HideUFWarning"]},
 		{},--blank
-		{1, "UFs", "Castbars", NewTag..HeaderTag..L["UFs Castbar"], nil, setupCastbar},
+		{1, "UFs", "Castbars", HeaderTag..L["UFs Castbar"], nil, setupCastbar},
 		{1, "UFs", "SwingBar", L["UFs SwingBar"]},
 		{1, "UFs", "SwingTimer", L["UFs SwingTimer"], true, nil, nil, L["SwingTimer Tip"]},
 		{1, "UFs", "LagString", L["Castbar LagString"]},
@@ -1001,10 +1002,11 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 	},
 	[8] = {
 		{1, "Misc", "RaidTool", HeaderTag..L["Raid Manger"]},
-		{1, "Misc", "RMRune", L["Runes Check"].."*"},
-		{2, "Misc", "DBMCount", L["DBMCount"].."*", true, nil, nil, L["DBMCountTip"]},
+		{1, "Misc", "RMRune", L["Runes Check"].."*", true},
 		{4, "Misc", "EasyMarkKey", L["EasyMark"].."*", nil, {"CTRL", "ALT", "SHIFT", DISABLE}, nil, L["EasyMarkTip"]},
-		{4, "Misc", "ShowMarkerBar", L["ShowMarkerBar"].."*", true, {L["Grids"], L["Horizontal"], L["Vertical"], DISABLE}, updateMarkerGrid, L["ShowMarkerBarTip"]},
+		{2, "Misc", "DBMCount", L["DBMCount"].."*", true, nil, nil, L["DBMCountTip"]},
+		{4, "Misc", "ShowMarkerBar", L["ShowMarkerBar"].."*", nil, {L["Grids"], L["Horizontal"], L["Vertical"], DISABLE}, updateMarkerGrid, L["ShowMarkerBarTip"]},
+		{3, "Misc", "MarkerSize", NewTag..L["MarkerSize"].."*", true, {20, 50, 1}, updateMarkerGrid},
 		{},--blank
 		{1, "Misc", "QuestNotification", HeaderTag..L["QuestNotification"].."*", nil, nil, updateQuestNotification},
 		{1, "Misc", "QuestProgress", L["QuestProgress"].."*"},
