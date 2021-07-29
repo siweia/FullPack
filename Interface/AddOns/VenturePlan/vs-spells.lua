@@ -423,5 +423,5 @@ T.KnownSpells = {
 		{type="nuke", target=1, damageATK=120},
 		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
 	}, --Tainted Bite
-	[349]={type="nuke", target="all-enemies", damageATK=8}, --Anima Swell
+	[349]={type="nuke", target="all-enemies", damageATK=10}, --Anima Swell
 }
