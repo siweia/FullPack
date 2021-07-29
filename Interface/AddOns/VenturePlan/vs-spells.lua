@@ -61,7 +61,7 @@ T.KnownSpells = {
 	[62]={type="nuke", target="enemy-front", damageATK=30},
 	[63]={type="aura", target="all-enemies", modDamageDealt=-20, duration=2, damageATK1=60},
 	[64]={type="nuke", target="all-enemies", damageATK=150},
-	[66]={type="nuke", target="col", damageATK=150},
+	[66]={type="nuke", target=0, damageATK=150},
 	[71]={type="heal", target=3, healATK=100},
 	[72]={
 		{type="nuke", target=0, damageATK=200},
@@ -116,8 +116,8 @@ T.KnownSpells = {
 	[105]={type="passive", target="all-allies", modDamageTaken=-10},
 	[106]={type="nuke", target="cleave", damageATK=40},
 	[107]={
-		{type="aura", target=0, duration=3, damageATK=150, nore=true},
-		{type="aura", target=0, duration=3, plusDamageTakenATK=50},
+		{type="aura", target="all-enemies", damageATK=40, duration=4, nore=true},
+		{type="aura", target=0, plusDamageTakenATK=30, duration=3},
 	}, -- Volatile Solvent
 	[108]={
 		{type="heal", target=3, healATK=40},
@@ -406,11 +406,11 @@ T.KnownSpells = {
 	[338]={type="nuke", target=0, damageATK=50}, --Scallywag Slash
 	[339]={type="nuke", target="all-enemies", damageATK=120, firstTurn=3}, --Cannon Barrage
 	[340]={type="nuke", target=1, damageATK=60}, --Tainted Bite (UNVERIFIED)
-	[341]={type="aura", target=1, damageATK1=120, duration=3, plusDamageTakenATK=20}, --Tainted Bite
-	[342]={
-		{type="nuke", target=0, damageATK=100},
-		{type="aura", target=0, duration=2, plusDamageDealtATK=-70},
-	}, --Regurgitated Meal
+	[341]={
+		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
+		{type="nuke", target=1, damageATK=120},
+	}, --Tainted Bite
+	[342]={type="aura", target=0, duration=1, damageATK1=100, plusDamageDealtATK=-70}, --Regurgitated Meal
 	[343]={
 		{type="nuke", target="enemy-front", damageATK=80},
 		{type="aura", target=4, duration=1, modDamageDealt=20},
