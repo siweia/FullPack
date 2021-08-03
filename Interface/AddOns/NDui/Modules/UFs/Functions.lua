@@ -6,7 +6,8 @@ local UF = B:RegisterModule("UnitFrames")
 local AURA = B:GetModule("Auras")
 
 local format, floor = string.format, math.floor
-local pairs, next = pairs, next
+local pairs, next, unpack = pairs, next, unpack
+local UnitGUID, IsItemInRange = UnitGUID, IsItemInRange
 local UnitFrame_OnEnter, UnitFrame_OnLeave = UnitFrame_OnEnter, UnitFrame_OnLeave
 local SpellGetVisibilityInfo, UnitAffectingCombat, SpellIsSelfBuff, SpellIsPriorityAura = SpellGetVisibilityInfo, UnitAffectingCombat, SpellIsSelfBuff, SpellIsPriorityAura
 
@@ -1000,7 +1001,7 @@ end
 -- Class Powers
 local barWidth, barHeight = unpack(C.UFs.BarSize)
 
-function UF.PostUpdateClassPower(element, cur, max, diff, powerType, chargedIndex)
+function UF.PostUpdateClassPower(element, cur, max, diff, powerType, chargedPowerPoints)
 	if not cur or cur == 0 then
 		for i = 1, 6 do
 			element[i].bg:Hide()
@@ -1035,15 +1036,11 @@ function UF.PostUpdateClassPower(element, cur, max, diff, powerType, chargedInde
 		end
 	end
 
-	if chargedIndex and chargedIndex ~= element.thisCharge then
-		local bar = element[chargedIndex]
-		element.chargeStar:SetParent(bar)
-		element.chargeStar:SetPoint("CENTER", bar)
-		element.chargeStar:Show()
-		element.thisCharge = chargedIndex
-	else
-		element.chargeStar:Hide()
-		element.thisCharge = nil
+	for i = 1, 6 do
+		local bar = element[i]
+		if not bar.chargeStar then break end
+
+		bar.chargeStar:SetShown(chargedPowerPoints and tContains(chargedPowerPoints, i))
 	end
 end
 
@@ -1112,6 +1109,14 @@ function UF:CreateClassPower(self)
 
 		if DB.MyClass == "DEATHKNIGHT" and C.db["UFs"]["RuneTimer"] then
 			bars[i].timer = B.CreateFS(bars[i], 13, "")
+		elseif DB.MyClass == "ROGUE" then
+			local chargeStar = bars[i]:CreateTexture()
+			chargeStar:SetAtlas("VignetteKill")
+			chargeStar:SetDesaturated(true)
+			chargeStar:SetSize(22, 22)
+			chargeStar:SetPoint("CENTER")
+			chargeStar:Hide()
+			bars[i].chargeStar = chargeStar
 		end
 	end
 
@@ -1122,12 +1127,6 @@ function UF:CreateClassPower(self)
 		bars.__max = 6
 		self.Runes = bars
 	else
-		local chargeStar = bar:CreateTexture()
-		chargeStar:SetAtlas("VignetteKill")
-		chargeStar:SetSize(24, 24)
-		chargeStar:Hide()
-		bars.chargeStar = chargeStar
-
 		bars.PostUpdate = UF.PostUpdateClassPower
 		self.ClassPower = bars
 	end
@@ -1425,4 +1424,62 @@ function UF:CreateQuestSync(self)
 	self:RegisterEvent("QUEST_SESSION_LEFT", updatePartySync, true)
 	self:RegisterEvent("QUEST_SESSION_JOINED", updatePartySync, true)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", updatePartySync, true)
+end
+
+-- Demonic Gateway
+local GatewayTexs = {
+	[59262] = 607512, -- green
+	[59271] = 607513, -- purple
+}
+local function DGI_UpdateGlow()
+	local frame = _G.oUF_Focus
+	if not frame then return end
+
+	local element = frame.DemonicGatewayIndicator
+	if element:IsShown() and IsItemInRange(37727, "focus") then
+		B.ShowOverlayGlow(element.glowFrame)
+	else
+		B.HideOverlayGlow(element.glowFrame)
+	end
+end
+
+local function DGI_Visibility()
+	local frame = _G.oUF_Focus
+	if not frame then return end
+
+	local element = frame.DemonicGatewayIndicator
+	local guid = UnitGUID("focus")
+	local npcID = guid and B.GetNPCID(guid)
+	local isGate = npcID and GatewayTexs[npcID]
+
+	element:SetTexture(isGate)
+	element:SetShown(isGate)
+	element.updater:SetShown(isGate)
+	DGI_UpdateGlow()
+end
+
+local function DGI_OnUpdate(self, elapsed)
+	self.elapsed = (self.elapsed or 0) + 0.1
+	if self.elapsed > .1 then
+		DGI_UpdateGlow()
+
+		self.elapsed = 0
+	end
+end
+
+function UF:DemonicGatewayIcon(self)
+	local icon = self:CreateTexture(nil, "ARTWORK")
+	icon:SetPoint("CENTER")
+	icon:SetSize(22, 22)
+	icon:SetTexture(607512) -- 607513 for purple
+	icon:SetTexCoord(unpack(DB.TexCoord))
+	icon.glowFrame = B.CreateGlowFrame(self, 22)
+
+	local updater = CreateFrame("Frame")
+	updater:SetScript("OnUpdate", DGI_OnUpdate)
+	updater:Hide()
+
+	self.DemonicGatewayIndicator = icon
+	self.DemonicGatewayIndicator.updater = updater
+	B:RegisterEvent("PLAYER_FOCUS_CHANGED", DGI_Visibility)
 end
