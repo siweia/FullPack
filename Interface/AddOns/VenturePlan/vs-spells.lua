@@ -374,7 +374,7 @@ T.KnownSpells = {
 		{type="heal", target=3, healATK=130},
 		{type="aura", target=3, duration=2, plusDamageDealtATK=50},
 	}, --Purifying Light (UNVERIFIED)
-	[315]={type="aura", target=1, damageATK1=150, duration=2, modDamageDealt=-30}, --Resounding Message (UNVERIFIED)
+	[315]={type="aura", target=1, damageATK1=150, duration=2, modDamageDealt=-30}, --Resounding Message
 	[316]={type="nuke", target=0, damageATK=100, selfhealATK=30}, --Self Replication (UNVERIFIED)
 	[317]={type="aura", target="enemy-front", duration=1, damageATK1=150, plusDamageTakenATK=30}, --Shocking Fist (UNVERIFIED)
 	[318]={type="aura", target="all-allies", duration=3, plusDamageDealtATK=50}, --Inspiring Howl (UNVERIFIED)
