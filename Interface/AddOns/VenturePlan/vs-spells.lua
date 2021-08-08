@@ -365,9 +365,9 @@ T.KnownSpells = {
 		{type="aura", target=4, duration=1, modDamageDealt=20},
 	}, --Axe of Determination (UNVERIFIED)
 	[311]={
-		{type="heal", target=3, healATK=120},
-		{type="aura", target=3, duration=2, modMaxHP=40},
-	}, --Wings of Mending (UNVERIFIED)
+        {type="heal", target=3, healATK=120},
+        {type="aura", target=3, duration=2, modMaxHPATK=40},
+    }, --Wings of Mending
 	[312]={type="nuke", target="cone", damageATK=180}, --Panoptic Beam (UNVERIFIED)
 	[313]={type="heal", target="all-allies", healATK=70}, --Spirit's Guidance (UNVERIFIED)
 	[314]={
