@@ -148,8 +148,11 @@ function module:CreateCollapseArrow()
 	bu.tag = tag
 
 	bu.__owner = self
+	C.db["Bags"]["HideWidgets"] = not C.db["Bags"]["HideWidgets"] -- reset before toggle
 	ToggleWidgetButtons(bu)
 	bu:SetScript("OnClick", ToggleWidgetButtons)
+
+	self.widgetArrow = bu
 end
 
 function module:CreateBagBar(settings, columns)
@@ -172,12 +175,16 @@ local function CloseOrRestoreBags(self, btn)
 	if btn == "RightButton" then
 		local bag = self.__owner.main
 		local bank = self.__owner.bank
+		local reagent = self.__owner.reagent
 		C.db["TempAnchor"][bag:GetName()] = nil
 		C.db["TempAnchor"][bank:GetName()] = nil
+		C.db["TempAnchor"][reagent:GetName()] = nil
 		bag:ClearAllPoints()
-		bag:SetPoint("BOTTOMRIGHT", -50, 320)
+		bag:SetPoint("BOTTOMRIGHT", -50, 50)
 		bank:ClearAllPoints()
 		bank:SetPoint("BOTTOMRIGHT", bag, "BOTTOMLEFT", -10, 0)
+		reagent:ClearAllPoints()
+		reagent:SetPoint("BOTTOMLEFT", bank)
 		PlaySound(SOUNDKIT.IG_MINIMAP_OPEN)
 	else
 		CloseAllBags()
@@ -265,18 +272,22 @@ function module:CreateDepositButton()
 	return bu
 end
 
+local function ToggleBackpacks(self)
+	local parent = self.__owner
+	B:TogglePanel(parent.BagBar)
+	if parent.BagBar:IsShown() then
+		self.bg:SetBackdropBorderColor(1, .8, 0)
+		PlaySound(SOUNDKIT.IG_BACKPACK_OPEN)
+	else
+		B.SetBorderColor(self.bg)
+		PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE)
+	end
+end
+
 function module:CreateBagToggle()
 	local bu = B.CreateButton(self, 22, 22, true, "Interface\\Buttons\\Button-Backpack-Up")
-	bu:SetScript("OnClick", function()
-		B:TogglePanel(self.BagBar)
-		if self.BagBar:IsShown() then
-			bu.bg:SetBackdropBorderColor(1, .8, 0)
-			PlaySound(SOUNDKIT.IG_BACKPACK_OPEN)
-		else
-			B.SetBorderColor(bu.bg)
-			PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE)
-		end
-	end)
+	bu.__owner = self
+	bu:SetScript("OnClick", ToggleBackpacks)
 	bu.title = BACKPACK_TOOLTIP
 	B.AddTooltip(bu, "ANCHOR_TOP")
 
