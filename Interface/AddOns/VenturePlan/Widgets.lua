@@ -725,7 +725,7 @@ local function FollowerList_Refresh(self, setXPGain)
 		for i=#fl+1,#wf do
 			wf[i]:Hide()
 		end
-		self:SetHeight(135+72*math.ceil(#fl/4))
+		self:SetHeight(135+68*math.ceil(#fl/4))
 		self.noRefresh = true
 	end
 	FollowerList_SyncToBoard(self)
@@ -1959,7 +1959,7 @@ function Factory.FollowerList(parent)
 	s.companions = {}
 	for i=1,24 do
 		t = CreateObject("FollowerListButton", f, false)
-		t:SetPoint("TOPLEFT", ((i-1)%4)*76+14, -math.floor((i-1)/4)*72-130)
+		t:SetPoint("TOPLEFT", ((i-1)%4)*76+14, -math.floor((i-1)/4)*68-130)
 		s.companions[i] = t
 	end
 	f:SetPoint("LEFT", UIParent, "LEFT", 20, 0)
