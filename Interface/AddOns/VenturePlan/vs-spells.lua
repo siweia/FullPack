@@ -27,7 +27,7 @@ T.KnownSpells = {
 	},
 	[25]={
 		{type="nuke", target="enemy-front", damageATK=50},
-		{type="aura", target=4, modDamageDealt=20, duration=3}
+		{type="aura", target=4, modDamageDealt=20, duration=3},
 	},
 	[26]={
 		{type="heal", target=3, healATK=100},
@@ -49,7 +49,7 @@ T.KnownSpells = {
 	[53]={type="aura", target="all-enemies", duration=6, period=2, modDamageDealt=-20, damageATK=10},
 	[54]={
 		{type="nuke", target=0, damageATK=90},
-		{type="nuke", target=1, damageATK=90}
+		{type="nuke", target=1, damageATK=90},
 	},
 	[55]={type="nuke", target="enemy-front", damageATK=150},
 	[56]={type="nuke", target=1, damageATK=125},
@@ -116,7 +116,7 @@ T.KnownSpells = {
 	[105]={type="passive", target="all-allies", modDamageTaken=-10},
 	[106]={type="nuke", target="cleave", damageATK=40},
 	[107]={
-		{type="aura", target=0, duration=3, damageATK=150, nore=true},
+		{type="aura", target=0, duration=4, damageATK=50, nore=true},
 		{type="aura", target=0, duration=3, plusDamageTakenATK=50},
 	}, -- Volatile Solvent
 	[108]={
@@ -136,7 +136,7 @@ T.KnownSpells = {
 	[119]={type="nuke", target="cone", damageATK=100},
 	[120]={type="aura", target="random-enemy", modDamageDealt=50, duration=2},
 	[121]={type="aura", target="all-enemies", modDamageDealt=-50, duration=1},
-	[122]={type="nop"}, -- Broken on Blizzard's end and never fires because the duration is 0
+	[122]={type="nop"},
 	[123]={type="heal", target="friend-front-soft", healATK=30},
 	[124]={type="nuke", target="cleave", damageATK=60},
 	[125]={type="nuke", target="random-enemy", damageATK=60},
@@ -353,7 +353,7 @@ T.KnownSpells = {
 
 	--New values for 9.1
 	[305]={type="nuke", target="enemy-back", damageATK=120}, --Roots of Submission
-	[306]={type="aura", target=3, duration=3, modMaxHP=60, plusDamageDealtATK=40}, --Arcane Empowerment (UNVERIFIED)
+	[306]={type="aura", target=3, duration=3, modMaxHPATK=60, plusDamageDealtATK=40}, --Arcane Empowerment
 	[307]={type="nuke", target="cone", damageATK=160}, --Fist of Nature (UNVERIFIED)
 	[308]={type="nuke", target=1, damageATK=350, firstTurn=3}, --Spore of Doom (UNVERIFIED)
 	[309]={
@@ -378,7 +378,7 @@ T.KnownSpells = {
 	[316]={type="nuke", target=0, damageATK=100, selfhealATK=30}, --Self Replication (UNVERIFIED)
 	[317]={type="aura", target="enemy-front", duration=1, damageATK1=150, plusDamageTakenATK=30}, --Shocking Fist (UNVERIFIED)
 	[318]={type="aura", target="all-allies", duration=3, plusDamageDealtATK=50}, --Inspiring Howl (UNVERIFIED)
-	[319]={type="aura", target="enemy-front", duration=3, damageATK1=80, damageATK=50, noFirstTick=true}, --Shattering Blows (UNVERIFIED)
+	[319]={type="aura", target="enemy-front", duration=4, damageATK1=80, damageATK=50, noFirstTick=true}, --Shattering Blows (UNVERIFIED)
 	[320]={type="nuke", target="enemy-back", damageATK=100}, --Hailstorm (UNVERIFIED)
 	[321]={type="heal", target=3, healATK=200}, --Adjustment (UNVERIFIED)
 	[322]={
@@ -396,7 +396,7 @@ T.KnownSpells = {
 	[328]={type="nuke", target=0, damageATK=30}, --Applied Lesson
 	[329]={type="aura", target=4, modDamageTaken=-50, duration=3}, --Muscle Up
 	[330]={type="aura", target="all-allies", duration=2, plusDamageDealtATK=20}, --Oversight
-	[331]={type="aura", target="all-other-allies", plusDamageDealtATK=20, duration=3}, --Supporting Fire (I'm not sure it's need duration 3)
+	[331]={type="aura", target="all-other-allies", plusDamageDealtATK=20, duration=3}, --Supporting Fire
 	[332]={type="nuke", target=1, damageATK=150}, --Emptied Mug
 	[333]={type="aura", target=4, duration=3, modDamageDealt=40}, --Overload
 	[334]={type="nuke", target=0, damageATK=90}, --Hefty Package
@@ -416,7 +416,7 @@ T.KnownSpells = {
 		{type="aura", target=4, duration=1, modDamageDealt=20},
 	}, --Sharptooth Snarl
 	[344]={type="nuke", target="all-enemies", damageATK=30}, --Razorwing Buffet
-	[345]={type="aura", target="all-allies" , duration=3 , plusDamageTakenATK=-30}, --Protective Wings (Bugged in data maybe? Description wording applies modDamageDealt.)
+	[345]={type="aura", target="all-allies" , duration=3 , plusDamageTakenATK=-30}, --Protective Wings
 	[346]={type="aura", target=0, duration=2, damageATK1=30, plusDamageDealtATK=1}, --Heel Bite (BUGGED: Should be modDamageDealt=-1. It isn't.)
 	[347]={type="nuke", target="cone", damageATK=100}, --Darkness from Above
 	[348]={
