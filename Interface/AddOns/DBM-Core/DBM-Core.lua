@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210818143746"),
-	DisplayVersion = "9.1.10", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 8, 15) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210825063714"),
+	DisplayVersion = "9.1.11", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 8, 25) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -1320,6 +1320,8 @@ do
 			end
 			onLoadCallbacks = nil
 			loadOptions(self)
+			DBT:LoadOptions("DBM")
+			self.AddOns = {}
 			if WOW_PROJECT_ID ~= (WOW_PROJECT_MAINLINE or 1) then
 				self:Disable(true)
 				self:Schedule(15, infniteLoopNotice, self, L.RETAIL_ONLY)
@@ -1365,7 +1367,6 @@ do
 			if GetAddOnEnableState(playerName, "DBM-LootReminder") >= 1 then
 				C_TimerAfter(15, function() AddMsg(self, L.DBMLOOTREMINDER) end)
 			end
-			DBT:LoadOptions("DBM")
 			self.Arrow:LoadPosition()
 			-- LibDBIcon setup
 			if type(DBM_MinimapIcon) ~= "table" then
@@ -1379,7 +1380,6 @@ do
 			if soundChannels < 64 then
 				SetCVar("Sound_NumChannels", 64)
 			end
-			self.AddOns = {}
 			self.Voices = { {text = "None",value  = "None"}, }--Create voice table, with default "None" value
 			self.VoiceVersions = {}
 			for i = 1, GetNumAddOns() do
@@ -8452,7 +8452,7 @@ do
 			["RangedDps"] = true,
 			["ManaUser"] = true,
 			["SpellCaster"] = true,
-			["RemoveMagic"] = true,--Singe Magic (Imp)
+--			["RemoveMagic"] = true,--Singe Magic (Imp)
 			["CasterDps"] = true,
 		},
 		[1454] = {	--Initial Warlock (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
