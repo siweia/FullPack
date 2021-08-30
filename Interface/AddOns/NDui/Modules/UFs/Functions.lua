@@ -1,7 +1,7 @@
 local _, ns = ...
 local B, C, L, DB = unpack(ns)
 
-local oUF = ns.oUF or oUF
+local oUF = ns.oUF
 local UF = B:RegisterModule("UnitFrames")
 local AURA = B:GetModule("Auras")
 
@@ -791,6 +791,8 @@ end
 
 local debuffBlackList = {
 	[206151] = true,
+	[296847] = true,
+	[338906] = true,
 }
 function UF.RaidDebuffFilter(element, _, _, _, _, _, _, _, _, caster, _, _, spellID, _, isBossAura)
 	local parent = element.__owner
@@ -1459,7 +1461,7 @@ local function DGI_Visibility()
 end
 
 local function DGI_OnUpdate(self, elapsed)
-	self.elapsed = (self.elapsed or 0) + 0.1
+	self.elapsed = (self.elapsed or 0) + elapsed
 	if self.elapsed > .1 then
 		DGI_UpdateGlow()
 
