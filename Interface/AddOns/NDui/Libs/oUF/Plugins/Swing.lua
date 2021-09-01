@@ -3,6 +3,7 @@
 -- NDui MOD
 -------------------------
 local _, ns = ...
+local B, C, L, DB = unpack(ns)
 local oUF = ns.oUF
 
 local strfind, select = strfind, select
@@ -299,6 +300,14 @@ local function Melee(self, event, _, sourceGUID)
 	lasthit = now
 end
 
+local function FixedRange(value) -- needs review
+	if value > 1 then
+		return 1
+	elseif value < 0 then
+		return 0
+	end
+end
+
 local function ParryHaste(self, ...)
 	local destGUID, _, _, _, missType = select(7, ...)
 
@@ -316,7 +325,7 @@ local function ParryHaste(self, ...)
 
 	-- needed calculations, so the timer doesnt jump on parryhaste
 	if dualwield then
-		local percentage = (swingMH.max - now) / swingMH.speed
+		local percentage = FixedRange((swingMH.max - now) / swingMH.speed)
 
 		if percentage > .6 then
 			swingMH.max = now + swingMH.speed * .6
@@ -328,7 +337,7 @@ local function ParryHaste(self, ...)
 			UpdateBarMinMaxValues(swingMH)
 		end
 
-		percentage = (swingOH.max - now) / swingOH.speed
+		percentage = FixedRange((swingOH.max - now) / swingOH.speed)
 
 		if percentage > .6 then
 			swingOH.max = now + swingOH.speed * .6
@@ -340,7 +349,7 @@ local function ParryHaste(self, ...)
 			UpdateBarMinMaxValues(swingOH)
 		end
 	else
-		local percentage = (swing.max - now) / swing.speed
+		local percentage = FixedRange((swing.max - now) / swing.speed)
 
 		if percentage > .6 then
 			swing.max = now + swing.speed * .6
@@ -456,7 +465,7 @@ local function Enable(self, unit)
 		if not bar.disableMelee then
 			self:RegisterCombatEvent("SWING_DAMAGE", Melee)
 			self:RegisterCombatEvent("SWING_MISSED", Melee)
-			self:RegisterCombatEvent("SWING_MISSED", ParryHaste)
+			--self:RegisterCombatEvent("SWING_MISSED", ParryHaste)
 			self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		end
 		self:RegisterEvent("PLAYER_REGEN_ENABLED", Ooc, true)
@@ -475,7 +484,7 @@ local function Disable(self)
 		if not bar.disableMelee then
 			self:UnregisterCombatEvent("SWING_DAMAGE", Melee)
 			self:UnregisterCombatEvent("SWING_MISSED", Melee)
-			self:UnregisterCombatEvent("SWING_MISSED", ParryHaste)
+			--self:UnregisterCombatEvent("SWING_MISSED", ParryHaste)
 			self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		end
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", Ooc)

@@ -908,7 +908,7 @@ function UF:PostUpdatePlates(event, unit)
 		UF.UpdateDungeonProgress(self, unit)
 		UF:UpdateClassPowerAnchor()
 
-		self.tarName:SetShown(self.npcID == 174773)
+		self.tarName:SetShown(C.ShowTargetNPCs[self.npcID])
 	end
 	UF.UpdateExplosives(self, event, unit)
 end
