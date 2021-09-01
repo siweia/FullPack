@@ -1,30 +1,26 @@
 # Deadly Boss Mods Core
 
-## [9.1.11](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/9.1.11) (2021-08-25)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/9.1.10...9.1.11) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [9.1.12](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/9.1.12) (2021-08-31)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/9.1.11...9.1.12) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- prep new release  
-- Fix lua error and finish the P3 LFR data  
-- Populated LFR timer data for Sylvanas. Still need to find a longer pull to complete tables but this should be enough to cover most groups.  
-    Partial revert of last timer change since it messed some stuff up.  
-- fix last  
-- Fixed some bugs on first boss of Tazavesh  
-    Turned off Hyperlight bolt interrupt by default in tazavesh trash do to spam  
-    Fixed some misc timers in De other side  
-- Name can be nil in parseDescription, just nope outta there (#652)  
-- Make GUI elements support $spell:id and $journal:id syntax (Fixes #593) (#650)  
-- Re-enable skinning option inside of GUI (#651)  
-- Few timer tweaks from debug info  
-- Use debuff for timer/counter to avoid CLEU order issues that cause arrow counts to be incorrect on sylvanas  
-- tweak this audio too for more clarity as well  
-- Since the nine has MANY mechanics, link essence voice audio has been changed to use a different voice file from fragments, so it is clearer which mechanic you are getting as soon a you hear it.  
-- Add tank add marking to KT to get another thing off checklist  
-    Also fixed bug with frostbound warning never working  
-- tweak at least 3 offending warnings off hand that say to run out when you only need to spread. more definitely need changing just don't remember off hand which ones NEED to be run out and which should just be spread out  
-- Fixed a bug where the volatile acid target scan never worked in TirnaScithe  
-    Added a target scan to throw cleaver in necrotic wave to enable a chat bubble fo rit  
-- Initialise DBT and addons variable earlier (#649)  
-    In cases where an addon is "no longer supported" and DBM disables, addons variable is never defined, which will cause errors to appear when a mod attempts to call NewMod  
-- cleanup file packaging  
+- prevent duplicate timer entries through additional validation check  
+    Don't call unnessesary stop calls during timer updates on generals and nerzhul. The cleanup is already handled in the :Update method so performing it twice is just wasted cpu and redundant debug  
+    Minor timer adjustments  
+- silence yell above 8 players  
+- Don't need to clear icon multiple times. just once. another micro performance improvement to fragments icon code  
+- Fixed bug where grimm portent yell on fatescribe was non sensicle  
+    Cleaned up the nines fragments code and maybe fix a bug with fragment yells/icons if more than 3 exist at same time on heroic or more than 4 exist at same time on mythic plus small performance change (calculating uid multiple times is silly, it doesn't change  
+- Update koKR (#655)  
+- Fix count issue (#654)  
+    Some idiot forgot to use pairs to iter items  
+- Don't debug report wipe on boss mods that don't have proper combat.  
+- suspend news update until there it is needed again one day.  
+- Fixed invalid variable name in darkness timer  
+- Add additional protection while at it in remote chancec event is added to other mobs (probably won't be, they have spawn events already )  
+- unrelated note, soul shard marking was broken on KT because it was using wrong GUID, fix that at least.  
+- Fixed nerzhul incrementing phase twice on phase change, resulting in timers to go off the rails bonkers  
+- LFR adjustments to castle based on debug feedback.  
+- two minor timer corrections  
+- More P1 LFR data  
+- Fixed bug that caused arrow countdown yell not to actually use the right option/prototype. How something was broken for MONTHS before a single user reported it is beyond me. Why don't people report bugs :\ Special thanks to the person who came forward now.  
 - bump alpha revision  
-- Update zhTW (#644)  
