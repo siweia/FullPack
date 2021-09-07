@@ -398,7 +398,7 @@ T.KnownSpells = {
 	[330]={type="aura", target="all-allies", duration=2, plusDamageDealtATK=20}, --Oversight
 	[331]={type="aura", target="all-other-allies", plusDamageDealtATK=20, duration=3}, --Supporting Fire
 	[332]={type="nuke", target=1, damageATK=150}, --Emptied Mug
-	[333]={type="aura", target=4, duration=3, modDamageDealt=40}, --Overload
+	[333]={type="aura", target=4, duration=3, plusDamageDealtATK=40}, --Overload
 	[334]={type="nuke", target=0, damageATK=90}, --Hefty Package
 	[335]={type="nuke", target="enemy-back", damageATK=40}, --Errant Package
 	[336]={type="heal", target=3, healATK=80}, --Evidence of Wrongdoing
@@ -406,11 +406,11 @@ T.KnownSpells = {
 	[338]={type="nuke", target=0, damageATK=50}, --Scallywag Slash
 	[339]={type="nuke", target="all-enemies", damageATK=120, firstTurn=3}, --Cannon Barrage
 	[340]={type="nuke", target=1, damageATK=60}, --Tainted Bite (UNVERIFIED)
-	[341]={type="aura", target=1, damageATK1=120, duration=3, plusDamageTakenATK=20}, --Tainted Bite
-	[342]={
-		{type="nuke", target=0, damageATK=100},
-		{type="aura", target=0, duration=2, plusDamageDealtATK=-70},
-	}, --Regurgitated Meal
+	[341]={
+		{type="nuke", target=1, damageATK=120},
+		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
+	}, --Tainted Bite
+	[342]={type="aura", target=0, duration=1, damageATK1=100, plusDamageDealtATK=-70}, --Regurgitated Meal
 	[343]={
 		{type="nuke", target="enemy-front", damageATK=80},
 		{type="aura", target=4, duration=1, modDamageDealt=20},
