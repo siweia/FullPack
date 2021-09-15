@@ -1,26 +1,34 @@
 # Deadly Boss Mods Core
 
-## [9.1.12](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/9.1.12) (2021-08-31)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/9.1.11...9.1.12) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [9.1.13](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/9.1.13) (2021-09-14)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/9.1.12...9.1.13) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- prevent duplicate timer entries through additional validation check  
-    Don't call unnessesary stop calls during timer updates on generals and nerzhul. The cleanup is already handled in the :Update method so performing it twice is just wasted cpu and redundant debug  
-    Minor timer adjustments  
-- silence yell above 8 players  
-- Don't need to clear icon multiple times. just once. another micro performance improvement to fragments icon code  
-- Fixed bug where grimm portent yell on fatescribe was non sensicle  
-    Cleaned up the nines fragments code and maybe fix a bug with fragment yells/icons if more than 3 exist at same time on heroic or more than 4 exist at same time on mythic plus small performance change (calculating uid multiple times is silly, it doesn't change  
-- Update koKR (#655)  
-- Fix count issue (#654)  
-    Some idiot forgot to use pairs to iter items  
-- Don't debug report wipe on boss mods that don't have proper combat.  
-- suspend news update until there it is needed again one day.  
-- Fixed invalid variable name in darkness timer  
-- Add additional protection while at it in remote chancec event is added to other mobs (probably won't be, they have spawn events already )  
-- unrelated note, soul shard marking was broken on KT because it was using wrong GUID, fix that at least.  
-- Fixed nerzhul incrementing phase twice on phase change, resulting in timers to go off the rails bonkers  
-- LFR adjustments to castle based on debug feedback.  
-- two minor timer corrections  
-- More P1 LFR data  
-- Fixed bug that caused arrow countdown yell not to actually use the right option/prototype. How something was broken for MONTHS before a single user reported it is beyond me. Why don't people report bugs :\ Special thanks to the person who came forward now.  
-- bump alpha revision  
+- prep tag  
+- Fixed a bug where updateEnemyPower had a specific check in wrong place  
+- Update zhTW (#664)  
+- Update koKR (#663)  
+- Fix missed line and add vibrate to special warning test buttons as well.  
+- Fix vibration api so it works, also revert flash duration local change since vibration duration is fixed and can't actually be changed.  
+- Fix incorrect autoplace flag, to prevent wasted cycles placing the option twice  
+- Fixed typo and updated luacheck  
+- Added controller support to special announce configuration and global disable configurations for patch 9.1.5. These options won't do anything on 9.1 or if not using a controller  
+- Update koKR (#661)  
+- Update zhTW (#660)  
+- stray copy/paste  
+- aggregate consumption and acid Expulsion alerts to a shared throttle and reduce number of similtanious dodge warnings on tradova. if you were told to watch step from things on ground within last 3 seconds, you don't need to be told again.  
+- Adjust sin quake timing a little to not be as big of a pre warning., also gave it a throttle  
+- Download infestor to a target warning, reducing special warning spam on Tredova slightly. Shouldn't get two special warnings for same mechanic if it just happens to be on you.  
+- Add additional 2 sec aggregation to interrupt warnings to Tirna Scithe trash mod, to reduce chance of overlapping interrupt spam  
+- Few timer tweaks/fixes, especially to LFR frost blast on stage 3 KelThuzad which seems to have been buffed since week one LFR  
+- Update localization.cn.lua (#659)  
+- Update zhTW (#658)  
+- Update koKR (#657)  
+- remove some stray bad copy/paste  
+- Made it possible to select whether icon marking for bombs on guardian uses default dbm method of prioritizing melee over ranged, or default bigwigs method that just uses combat log order. Per usual, raid leaders option overrides rest of raid, unless RL isn't running DBM, then local user preference is used.  
+- Forgot about that debug I added  
+- Mob auto marking prototype bugfixes and improvements:  
+     - Fixed a bug where if already marked filter was used, it did reverse of what it was supposed to do  
+     - Swtiched logic of friendly target auto marking filtering to be more clear and concise as well as use a more trustworthy api that also just happens to have performance benefits since it's one already upvalued by core for other reasons  
+     - Fixed a bug where the already marked fllter and icon elect overrides would fail too pass on beyond first scan cycle, causing these options to be near useless (I mean, marked filter was already useless but it was double useless, yay!).  
+     - Improved debug to be more verbose for identifying areas auto marking fails as well as ensuring that when it fails, it logged by transcriptor even if user doesn't set debuglevel to 3  
+- bump alpha  
