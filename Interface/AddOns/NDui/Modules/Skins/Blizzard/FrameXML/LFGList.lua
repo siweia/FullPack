@@ -78,6 +78,9 @@ tinsert(C.defaultThemes, function()
 
 	B.Reskin(searchPanel.RefreshButton)
 	B.Reskin(searchPanel.BackButton)
+	if DB.isNewPatch then
+		B.Reskin(searchPanel.BackToGroupButton)
+	end
 	B.Reskin(searchPanel.SignUpButton)
 	B.Reskin(searchPanel.ScrollFrame.ScrollChild.StartGroupButton)
 	B.ReskinInput(searchPanel.SearchBox)
@@ -158,6 +161,9 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(applicationViewer.RefreshButton)
 	B.Reskin(applicationViewer.RemoveEntryButton)
 	B.Reskin(applicationViewer.EditButton)
+	if DB.isNewPatch then
+		B.Reskin(applicationViewer.BrowseGroupsButton)
+	end
 	B.ReskinCheck(applicationViewer.AutoAcceptButton)
 	B.ReskinScroll(LFGListApplicationViewerScrollFrameScrollBar)
 
@@ -210,6 +216,10 @@ tinsert(C.defaultThemes, function()
 		B.ReskinInput(entryCreation.MythicPlusRating.EditBox)
 		B.ReskinCheck(entryCreation.PVPRating.CheckButton)
 		B.ReskinInput(entryCreation.PVPRating.EditBox)
+		if entryCreation.PvpItemLevel then -- I do believe blizz will rename Pvp into PvP in future build
+			B.ReskinCheck(entryCreation.PvpItemLevel.CheckButton)
+			B.ReskinInput(entryCreation.PvpItemLevel.EditBox)
+		end
 	end
 	B.ReskinCheck(entryCreation.ItemLevel.CheckButton)
 	B.ReskinCheck(entryCreation.VoiceChat.CheckButton)
