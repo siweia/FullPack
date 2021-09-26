@@ -4,7 +4,7 @@ local Mod = Addon:NewModule('Schedule')
 local rowCount = 3
 local requestPartyKeystones
 
-local SEASON_AFFIX_ID = 121
+local SEASON_AFFIX_ID = 128
 local affixSchedule = {
 	[1]  = {[1]=10, [2]=11,  [3]=124},
 	[2]  = {[1]=9,  [2]=6,   [3]=3},
