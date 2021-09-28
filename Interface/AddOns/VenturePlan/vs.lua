@@ -142,7 +142,7 @@ do -- targets
 		[3]={
 			[0]="23104", "03421", "03214", "20143", "31204",
 			"56a79b8c", "5a7b69c8", "6bac8759", "768bc95a",
-			"5a6978bc", "96b57a8c", "a78c69b5", "56a79b8c"
+			"5a6978bc", "96b57a8c", "a78c69b5", "8b7c65a9"
 		},
 		[4]={
 			[0]="0", "1", "2", "3", "4",
@@ -412,7 +412,7 @@ do -- targets
 	function VS:GetAutoAttack(role, slot, mid, firstSpell)
 		local a1 = slot and mid and overrideAA[4+2*slot+32*mid]
 		local a2 = (slot or 0) < 5 and firstSpell and overrideAA[1+4*firstSpell]
-		return (a1 or a2 or (role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
+		return (a1 or a2 or (firstSpell == 11 or role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
 	end
 	VS.GetTargets = GetTargets
 	VS.targetLists = targetLists
@@ -829,9 +829,35 @@ function mu:cast(sourceIndex, sid, recast, qe)
 	if si.type == "passive" then
 		return mu.passive(self, sourceIndex, sid)
 	else
-		enqc(self.queue, self.turn+recast, {"cast", sourceIndex, sid, recast, ord=ord, ord0=qe.ord0})
+		local checkCast = mu.CheckCast(self,sourceIndex,sid)
+		if checkCast then
+			--cast success,enqueue after recast(cooldown) turn
+			enqc(self.queue, self.turn+recast, {"cast", sourceIndex, sid, recast, ord=ord, ord0=qe.ord0})
+			return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, ord-1)
+		else
+			--cast fail,enqueue next turn
+			enqc(self.queue, self.turn+1, {"cast", sourceIndex, sid, recast, ord=ord, ord0=qe.ord0})
+			return
+		end
 	end
-	return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, ord-1)
+	--return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, ord-1)
+end
+function mu:CheckCast(sourceIndex,sid)
+	local spellInfo,board = SpellInfo[sid], self.board
+	--only heal spell with single effect needs to be check
+	if spellInfo == nil or spellInfo[1] ~= nil or spellInfo.type ~= "heal" then
+		return true
+	end
+	local targets = VS.GetTargets(sourceIndex, spellInfo.target, board)
+	local cast = false
+	for i=1,targets and #targets or 0 do
+		local targetUnit = board[targets[i]]
+		if targetUnit.curHP > 0 and targetUnit.curHP < targetUnit.maxHP then
+			cast = true
+			break
+		end
+	end
+	return cast
 end
 function mu:qcast(sourceIndex, sid, eid, ord1, forkTarget)
 	local si, board = SpellInfo[sid], self.board
@@ -1346,7 +1372,7 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 	for i=1,#encounters do
 		local e = encounters[i]
 		local rf, sa = {maxHP=e.maxHealth, curHP=e.maxHealth, atk=e.attack, slot=e.boardIndex}, e.autoCombatSpells
-		local aa = VS:GetAutoAttack(e.role, rf.slot, mid, sa and sa[1] and sa[1].autoCombatSpellID)
+		local aa = VS:GetAutoAttack(e.role, rf.slot, mid, e.autoCombatAutoAttack and e.autoCombatAutoAttack.autoCombatSpellID)
 		missingSpells, pmask = addCasts(q, rf.slot, sa, aa, missingSpells, pmask)
 		board[e.boardIndex] = addActorProps(rf)
 	end
