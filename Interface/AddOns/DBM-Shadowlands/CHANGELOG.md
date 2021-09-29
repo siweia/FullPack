@@ -1,21 +1,12 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.1.14](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.1.14) (2021-09-20)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.1.13...9.1.14) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.1.15](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.1.15) (2021-09-27)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.1.14...9.1.15) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Squelch destiny switch warning on LFR and normal. honestly people just blow up add and not worry about it hitting tank.  
-- Move reaver marking to a later event to avoid calling SetRaidTarget on a boss unit ID before the boss frame is visible. This should prevent icons failing on reavers hopefully.  
-- Update ci.yml (#673)  
-- Add trigger for workflow\_dispatch (#672)  
-- Fix shard marking on KT  
-- Update .pkgmeta (#671)  
-- Add version marker to DBM-Shadowlands (#670)  
-- Double call on external dependency (#669)  
-- Update .pkgmeta (#668)  
-- Unified? Maybe? (#667)  
-- Revert "Revert "Revert "PROBABLY SOME ABSOLUTELY BROKEN SHIT THAT'LL END ALL LIFE IN UNIVERSE"""  
-- Revert "Revert "PROBABLY SOME ABSOLUTELY BROKEN SHIT THAT'LL END ALL LIFE IN UNIVERSE""  
-- Revert "PROBABLY SOME ABSOLUTELY BROKEN SHIT THAT'LL END ALL LIFE IN UNIVERSE"  
-- PROBABLY SOME ABSOLUTELY BROKEN SHIT THAT'LL END ALL LIFE IN UNIVERSE  
-    (DON'T DOWNLOAD THIS VERSION, I'LL DO BEST TO DELETE IT ASAP)  
-- Forgot to push this  
+- Revert infectious rain change from months ago, it was never right. original timer was right.  
+- Fixed annihilating Glare timer/warning, which broke when blizzard removed the SPELL\_CAST\_START combat log event for it.  
+- Update zhCN (#680)  
+- Use packager fork to fix some minor CI bugs (#677)  
+- Fixed dromans wrath timer for recent hotfix  
+- Register event  
+- Add a bone spikes dodge warning, assuming it is a dodge that is. unclear,, but this is probably fastest way to find out if it isn't :D  
