@@ -1,12 +1,16 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.1.15](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.1.15) (2021-09-27)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.1.14...9.1.15) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.1.17](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.1.17) (2021-10-07)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.1.16...9.1.17) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Revert infectious rain change from months ago, it was never right. original timer was right.  
-- Fixed annihilating Glare timer/warning, which broke when blizzard removed the SPELL\_CAST\_START combat log event for it.  
-- Update zhCN (#680)  
-- Use packager fork to fix some minor CI bugs (#677)  
-- Fixed dromans wrath timer for recent hotfix  
-- Register event  
-- Add a bone spikes dodge warning, assuming it is a dodge that is. unclear,, but this is probably fastest way to find out if it isn't :D  
+- Update retail version  
+- Fix last  
+- KT Update for October 21st hotfixes:  
+     - Fixed detection of Frost Blast (P1) (fixes P1 CD timer)  
+     - Fixed detection of Howling Blizzard (fixes CD timer, cast timer, and alerts)  
+     - Fixed detection of Soul Fracture cast (fixes CD timer and shard marking)  
+     - Fixed detection off Oblivions echo (fixes CD timer and alerts)  
+     - Fixed detection of glacial wrath (fixes CD timer and icons)  
+     - Fixed initial Stage 3 Onslaught of the damn timer on mythic difficulty  
+- Fix some missed tocs  
+- bump alphas  
