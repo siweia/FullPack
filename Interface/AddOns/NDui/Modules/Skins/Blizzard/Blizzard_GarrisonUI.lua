@@ -1101,6 +1101,31 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			self.isSetting = nil
 		end
 
+		local ReplacedRoleTex = {
+			["adventures-tank"] = "Soulbinds_Tree_Conduit_Icon_Protect",
+			["adventures-healer"] = "ui_adv_health",
+			["adventures-dps"] = "ui_adv_atk",
+			["adventures-dps-ranged"] = "Soulbinds_Tree_Conduit_Icon_Utility",
+		}
+		local function replaceFollowerRole(roleIcon, atlas)
+			local newAtlas = ReplacedRoleTex[atlas]
+			if newAtlas then
+				roleIcon:SetAtlas(newAtlas)
+			end
+		end
+
+		local function updateSelectedBorder(portrait, show)
+			if show then
+				portrait.__owner.bg:SetBackdropBorderColor(.6, 0, 0)
+			else
+				portrait.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+			end
+		end
+
+		local function updateActiveGlow(border, show)
+			border.__shadow:SetShown(show)
+		end
+
 		function VPEX_OnUIObjectCreated(otype, widget, peek)
 			if widget:IsObjectType("Frame") then
 				if otype == "MissionButton" then
@@ -1141,12 +1166,45 @@ C.themes["Blizzard_GarrisonUI"] = function()
 					widget:SetHighlightTexture(nil)
 					widget:SetPushedTexture(DB.textures.pushed)
 					widget.Icon:SetTexCoord(unpack(DB.TexCoord))
+					widget:SetSize(46, 46)
 				elseif otype == "FollowerList" then
 					B.StripTextures(widget)
 					B.CreateBDFrame(widget, .25)
 					hooksecurefunc(widget, "SetHeight", AdjustFollowerList)
 				elseif otype == "FollowerListButton" then
+					widget.bg = B.CreateBDFrame(peek("Portrait"), 1)
+					peek("Hi"):SetColorTexture(1, 1, 1, .25)
+					peek("Hi"):SetInside(widget.bg)
+					peek("PortraitR"):Hide()
+					peek("PortraitT"):SetTexture(nil)
+					peek("PortraitT").__owner = widget
+					hooksecurefunc(peek("PortraitT"), "SetShown", updateSelectedBorder)
+
+					if peek("EC") then
+						peek("EC"):SetTexture(nil)
+						peek("EC").__shadow = B.CreateSD(peek("Portrait"), 5, true)
+						peek("EC").__shadow:SetBackdropBorderColor(peek("EC"):GetVertexColor())
+						hooksecurefunc(peek("EC"), "SetShown", updateActiveGlow)
+					end
+
+					B.CreateBDFrame(peek("HealthBG"), .25):SetFrameLevel(1)
+					peek("HealthBG"):ClearAllPoints()
+					peek("HealthBG"):SetPoint("TOPLEFT", peek("Portrait"), "BOTTOMLEFT", 0, 10)
+					peek("HealthBG"):SetPoint("BOTTOMRIGHT", peek("Portrait"), "BOTTOMRIGHT")
+					peek("Health"):SetHeight(10)
+					peek("HealthFrameR"):Hide()
 					peek("TextLabel"):SetFontObject("Game12Font")
+					peek("TextLabel"):ClearAllPoints()
+					peek("TextLabel"):SetPoint("CENTER", peek("HealthBG"), 1, 0)
+
+					peek("Favorite"):ClearAllPoints()
+					peek("Favorite"):SetPoint("TOPLEFT", -2, 2)
+					peek("Favorite"):SetSize(30, 30)
+					peek("RoleB"):Hide()
+					peek("Role"):ClearAllPoints()
+					peek("Role"):SetPoint("CENTER", widget.bg, "TOPRIGHT")
+					hooksecurefunc(peek("Role"), "SetAtlas", replaceFollowerRole)
+
 					hooksecurefunc(widget, "SetPoint", AdjustFollowerButton)
 				elseif otype == "ProgressBar" then
 					B.StripTextures(widget)
