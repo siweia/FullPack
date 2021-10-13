@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 002c36f
+## Version: a3ea5f8
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibStub\LibStub.lua
@@ -45,6 +45,12 @@ localization.kr.lua
 localization.es.lua
 localization.br.lua
 
+# Pre-core modules
+modules\Modules.lua
+
+modules\Icons.lua
+
+# Core
 DBM-Core.lua
 DBM-Arrow.lua
 DBM-Flash.lua
