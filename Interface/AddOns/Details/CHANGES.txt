@@ -1,10 +1,10 @@
-tag e1a44e43063ba0615753f0316fde6580b07474f7 DetailsRetail.v9.1.0.8888a.145
+tag 5f499e85b4e45b3b28dc1e9c812b4df959342b01 DetailsRetail.v9.1.0.8889.145
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Tue Oct 12 10:27:41 2021 -0300
+Date:	Tue Oct 12 21:02:19 2021 -0300
 
-commit d6964804f0566b36fe69e01a629cb81f740e56a4
+commit 12d31f2b2923313e6629816e840829651e851b1d
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Oct 12 10:27:08 2021 -0300
+Date:   Tue Oct 12 21:01:45 2021 -0300
 
-    packager changes
+    Fixed an error introduced in the latest version
 
