@@ -235,8 +235,6 @@ G.DefaultSettings = {
 		TankMode = false,
 		TargetIndicator = 5,
 		InsideView = true,
-		PlateWidth = 190,
-		PlateHeight = 8,
 		CustomUnitColor = true,
 		CustomColor = {r=0, g=.8, b=.3},
 		UnitList = "",
@@ -260,8 +258,6 @@ G.DefaultSettings = {
 		PPFadeoutAlpha = 0,
 		PPOnFire = false,
 		NameplateClassPower = false,
-		NameTextSize = 14,
-		HealthTextSize = 16,
 		MinScale = 1,
 		MinAlpha = 1,
 		ColorBorder = false,
@@ -275,6 +271,18 @@ G.DefaultSettings = {
 		FocusColor = {r=1, g=.8, b=0},
 		CastbarGlow = true,
 		CastTarget = false,
+		FriendPlate = false,
+
+		PlateWidth = 190,
+		PlateHeight = 8,
+		NameTextSize = 14,
+		HealthTextSize = 16,
+		HealthTextOffset = 5,
+		FriendPlateWidth = 190,
+		FriendPlateHeight = 8,
+		FriendNameSize = 14,
+		FriendHealthSize = 16,
+		FriendHealthOffset = 5,
 	},
 	Skins = {
 		DBM = true,
@@ -524,6 +532,10 @@ end
 
 local function setupNameplateFilter()
 	G:SetupNameplateFilter(guiPage[5])
+end
+
+local function setupNameplateSize()
+	G:SetupNameplateSize(guiPage[5])
 end
 
 local function setupPlateCastbarGlow()
@@ -795,15 +807,15 @@ G.TabList = {
 	L["Bags"],
 	L["Unitframes"],
 	L["RaidFrame"],
-	L["Nameplate"],
+	NewTag..L["Nameplate"],
 	L["PlayerPlate"],
 	L["Auras"],
 	L["Raid Tools"],
 	L["ChatFrame"],
-	NewTag..L["Maps"],
+	L["Maps"],
 	L["Skins"],
 	L["Tooltip"],
-	NewTag..L["Misc"],
+	L["Misc"],
 	L["UI Settings"],
 	L["Profile"],
 }
@@ -930,6 +942,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 	},
 	[5] = {
 		{1, "Nameplate", "Enable", HeaderTag..L["Enable Nameplate"], nil, setupNameplateFilter},
+		{1, "Nameplate", "FriendPlate", NewTag..L["FriendPlate"].."*", nil, setupNameplateSize, refreshNameplates, L["FriendPlateTip"]},
 		{1, "Nameplate", "NameOnlyMode", L["NameOnlyMode"].."*", true, nil, nil, L["NameOnlyModeTip"]},
 		{},--blank
 		{4, "Nameplate", "TargetIndicator", L["TargetIndicator"].."*", nil, {DISABLE, L["TopArrow"], L["RightArrow"], L["TargetGlow"], L["TopNGlow"], L["RightNGlow"]}, refreshNameplates},
@@ -966,10 +979,6 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Nameplate", "VerticalSpacing", L["NP VerticalSpacing"].."*", true, {.5, 1.5, .1}, updatePlateSpacing},
 		{3, "Nameplate", "MinScale", L["Nameplate MinScale"].."*", false, {.5, 1, .1}, updatePlateScale},
 		{3, "Nameplate", "MinAlpha", L["Nameplate MinAlpha"].."*", true, {.5, 1, .1}, updatePlateAlpha},
-		{3, "Nameplate", "PlateWidth", L["NP Width"].."*", false, {50, 250, 1}, refreshNameplates},
-		{3, "Nameplate", "PlateHeight", L["NP Height"].."*", true, {5, 30, 1}, refreshNameplates},
-		{3, "Nameplate", "NameTextSize", L["NameTextSize"].."*", false, {10, 30, 1}, refreshNameplates},
-		{3, "Nameplate", "HealthTextSize", L["HealthTextSize"].."*", true, {10, 30, 1}, refreshNameplates},
 		{3, "Nameplate", "maxAuras", L["Max Auras"].."*", false, {0, 10, 1}, refreshNameplates},
 		{3, "Nameplate", "AuraSize", L["Auras Size"].."*", true, {18, 40, 1}, refreshNameplates},
 	},
@@ -1077,7 +1086,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"]},
 		{1, "Misc", "ExpRep", L["Show Expbar"], true},
 		{3, "Map", "MinimapScale", L["Minimap Scale"].."*", nil, {.5, 3, .1}, updateMinimapScale},
-		{3, "Map", "MinimapSize", NewTag..L["Minimap Size"].."*", true, {100, 500, 1}, updateMinimapScale},
+		{3, "Map", "MinimapSize", L["Minimap Size"].."*", true, {100, 500, 1}, updateMinimapScale},
 	},
 	[11] = {
 		{1, "Skins", "BlizzardSkins", HeaderTag..L["BlizzardSkins"], nil, nil, nil, L["BlizzardSkinsTips"]},
@@ -1154,7 +1163,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "MDGuildBest", L["MDGuildBest"], true, nil, nil, L["MDGuildBestTip"]},
 		{1, "Misc", "MawThreatBar", L["MawThreatBar"], nil, nil, nil, L["MawThreatBarTip"]},
 		{1, "Misc", "EnhanceDressup", L["EnhanceDressup"], true, nil, nil, L["EnhanceDressupTip"]},
-		{1, "Misc", "QuestTool", NewTag..L["QuestTool"], nil, nil, nil, L["QuestToolTip"]},
+		{1, "Misc", "QuestTool", L["QuestTool"], nil, nil, nil, L["QuestToolTip"]},
 	},
 	[14] = {
 		{1, "ACCOUNT", "VersionCheck", L["Version Check"]},
