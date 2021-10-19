@@ -1088,17 +1088,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 			self.isSetting = nil
 		end
-		local function AdjustFollowerButton(self, anchor, x, y)
-			if y == -35 then return end -- troops
-			if self.isSetting then return end
-			self.isSetting = true
-
-			local mult = (y+130)/72
-			if mult == floor(mult) then -- only adjust the unmodified VP
-				self:SetPoint(anchor, x, mult*68 - 130)
-			end
-			self.isSetting = nil
-		end
 
 		local ReplacedRoleTex = {
 			["adventures-tank"] = "Soulbinds_Tree_Conduit_Icon_Protect",
@@ -1148,12 +1137,12 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local function reskinFollowerAbility(frame, index, first)
 			local ability = select(index, frame:GetRegions())
 			ability:SetMask(nil)
-			ability:SetSize(12, 12)
+			ability:SetSize(14, 14)
 			ability.bg = B.ReskinIcon(ability)
-			ability.bg:SetFrameLevel(5)
+			ability.bg:SetFrameLevel(4)
 			tinsert(frame.__abilities, ability)
 			select(2, ability:GetPoint()):SetAlpha(0)
-			ability:SetPoint("CENTER", frame, "LEFT", 11, first and 11 or -1)
+			ability:SetPoint("CENTER", frame, "LEFT", 11, first and 15 or 0)
 		end
 
 		local function updateVisibleAbilities(self)
@@ -1165,7 +1154,13 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			self.__owner.__role:SetDesaturated(not showHealth)
 		end
 
-		local VPFollowers, VPTroops = {}, {}
+		local function fixAnchorForModVP(self, _, x, y)
+			if x == 5 and y == -18 then
+				self:SetPoint("CENTER", self.__owner, 1, 0)
+			end
+		end
+
+		local VPFollowers, VPTroops, VPBooks = {}, {}, {}
 		function VPEX_OnUIObjectCreated(otype, widget, peek)
 			if widget:IsObjectType("Frame") then
 				if otype == "MissionButton" then
@@ -1195,6 +1190,10 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				elseif otype == "MissionPage" then
 					B.StripTextures(widget)
 					B.Reskin(peek("UnButton"))
+					B.Reskin(peek("StartButton"))
+					if peek("StartButton"):GetWidth() < 50 then -- only adjust the unmodified VP
+						peek("StartButton"):SetText("|T"..DB.ArrowUp..":16|t")
+					end
 				elseif otype == "ILButton" then
 					widget:DisableDrawLayer("BACKGROUND")
 					local bg = B.CreateBDFrame(widget, .25)
@@ -1203,10 +1202,11 @@ C.themes["Blizzard_GarrisonUI"] = function()
 					B.CreateBDFrame(widget.Icon, .25)
 				elseif otype == "IconButton" then
 					B.ReskinIcon(widget:GetNormalTexture())
-					widget:SetHighlightTexture(nil)
-					widget:SetPushedTexture(DB.textures.pushed)
+					widget:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+					widget:SetPushedTexture(nil)
 					widget.Icon:SetTexCoord(unpack(DB.TexCoord))
 					widget:SetSize(46, 46)
+					tinsert(VPBooks, widget)
 				elseif otype == "FollowerList" then
 					B.StripTextures(widget)
 					B.CreateBDFrame(widget, .25)
@@ -1219,6 +1219,10 @@ C.themes["Blizzard_GarrisonUI"] = function()
 					for i, follower in pairs(VPFollowers) do
 						follower:ClearAllPoints()
 						follower:SetPoint("TOPLEFT", ((i-1)%5)*60+5, -floor((i-1)/5)*60-130)
+					end
+					for i, book in pairs(VPBooks) do
+						book:ClearAllPoints()
+						book:SetPoint("BOTTOMLEFT", 24, -46 + i*50)
 					end
 				elseif otype == "FollowerListButton" then
 					widget.bg = B.CreateBDFrame(peek("Portrait"), 1)
@@ -1252,6 +1256,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 					peek("TextLabel"):SetFontObject("Game12Font")
 					peek("TextLabel"):ClearAllPoints()
 					peek("TextLabel"):SetPoint("CENTER", peek("HealthBG"), 1, 0)
+					peek("TextLabel").__owner = peek("HealthBG")
+					hooksecurefunc(peek("TextLabel"), "SetPoint", fixAnchorForModVP)
 
 					peek("Favorite"):ClearAllPoints()
 					peek("Favorite"):SetPoint("TOPLEFT", -2, 2)
@@ -1274,8 +1280,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 						peek("HealthBG").__owner = frame
 						hooksecurefunc(peek("HealthBG"), "SetGradient", updateVisibleAbilities)
 					end
-
-					hooksecurefunc(widget, "SetPoint", AdjustFollowerButton)
 				elseif otype == "ProgressBar" then
 					B.StripTextures(widget)
 					B.CreateBDFrame(widget, 1)
