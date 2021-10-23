@@ -5,7 +5,7 @@ T.KnownSpells = {
 	[5]={type="nuke", target="all-enemies", damageATK=10},
 	[6]={type="nuke", target="enemy-back", damageATK=60},
 	[7]={type="nuke", target=0, damageATK=10},
-	[9]={type="heal", target="all-allies", healPercent=5},
+	[9]={type="heal", target="all-allies", healPerc=5},
 	[10]={
 		{type="nuke", target=0, damagePerc=20},
 		{type="aura", target="all-enemies", duration=4, damagePerc=3, noFirstTick=true, dne=true},

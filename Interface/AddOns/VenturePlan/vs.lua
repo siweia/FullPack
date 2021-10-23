@@ -803,7 +803,7 @@ end
 function mu:heal(sourceIndex, targetIndex, _targetSeq, ord, si, sid, _eid)
 	local board = self.board
 	local su, tu = board[sourceIndex], board[targetIndex]
-	local hPerc, hatk = si.healPercent, si.healATK
+	local hPerc, hatk = si.healPerc, si.healATK
 	local points = (hatk and f32_pim(hatk, su.atk) or 0) + (hPerc and floor(hPerc*tu.maxHP/100) or 0)
 	mu.mend(self, sourceIndex, targetIndex, points, "Spell", sid)
 	if si.shroudTurns then
