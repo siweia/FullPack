@@ -116,7 +116,7 @@ T.KnownSpells = {
 	[105]={type="passive", target="all-allies", modDamageTaken=-10},
 	[106]={type="nuke", target="cleave", damageATK=40},
 	[107]={
-		{type="aura", target=0, duration=4, damageATK=50, nore=true},
+		{type="aura", target=0, duration=4, damageATK=150, nore=true},
 		{type="aura", target=0, duration=3, plusDamageTakenATK=50},
 	}, -- Volatile Solvent
 	[108]={
