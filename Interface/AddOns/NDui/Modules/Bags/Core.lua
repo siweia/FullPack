@@ -48,7 +48,7 @@ function module:UpdateAnchors(parent, bags)
 			index = index + 1
 
 			bag:ClearAllPoints()
-			if (index-1) % 4 == 0 and C.db["Bags"]["MultiRows"] then
+			if C.db["Bags"]["MultiRows"] and (index-1) % 4 == 0 then
 				bag:SetPoint("BOTTOMRIGHT", anchorCache[index-4], "BOTTOMLEFT", -5, 0)
 			else
 				bag:SetPoint("BOTTOMLEFT", anchorCache[index-1], "TOPLEFT", 0, 5)
@@ -974,7 +974,8 @@ function module:OnLogin()
 		local spacing = 3
 		local xOffset = 5
 		local yOffset = -offset + xOffset
-		local width, height = self:LayoutButtons("grid", columns, spacing, xOffset, yOffset)
+		local _, height = self:LayoutButtons("grid", columns, spacing, xOffset, yOffset)
+		local width = columns * (iconSize+spacing)-spacing
 		if self.freeSlot then
 			if C.db["Bags"]["GatherEmpty"] then
 				local numSlots = #self.buttons + 1
