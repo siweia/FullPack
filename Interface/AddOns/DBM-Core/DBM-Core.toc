@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: a3ea5f8
+## Version: a1050d5
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibStub\LibStub.lua
@@ -48,7 +48,10 @@ localization.br.lua
 # Pre-core modules
 modules\Modules.lua
 
+modules\Scheduler.lua
+modules\DevTools.lua
 modules\Icons.lua
+modules\TargetScanning.lua
 
 # Core
 DBM-Core.lua
