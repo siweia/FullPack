@@ -2,7 +2,7 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local G = B:RegisterModule("GUI")
 
-local unpack, strfind = unpack, strfind
+local unpack, strfind, gsub = unpack, strfind, gsub
 local tonumber, pairs, ipairs, next, type, tinsert = tonumber, pairs, ipairs, next, type, tinsert
 local cr, cg, cb = DB.r, DB.g, DB.b
 local guiTab, guiPage, f = {}, {}
@@ -27,14 +27,14 @@ G.DefaultSettings = {
 		Cooldown = true,
 		DecimalCD = true,
 		Style = 1,
-		Bar4Fade = false,
-		Bar5Fade = true,
+		Bar4Fader = false,
+		Bar5Fader = true,
 		Scale = 1,
 		BindType = 1,
 		OverrideWA = false,
 		MicroMenu = true,
 		CustomBar = false,
-		CustomBarFader = false,
+		BarXFader = false,
 		CustomBarButtonSize = 34,
 		CustomBarNumButtons = 12,
 		CustomBarNumPerRow = 12,
@@ -230,6 +230,7 @@ G.DefaultSettings = {
 	Nameplate = {
 		Enable = true,
 		maxAuras = 5,
+		PlateAuras = true,
 		AuraSize = 28,
 		AuraFilter = 3,
 		FriendlyCC = false,
@@ -595,6 +596,11 @@ local function updateEquipColor()
 	end
 end
 
+local function toggleBarFader(self)
+	local name = gsub(self.__value, "Fader", "")
+	B:GetModule("Actionbar"):ToggleBarFader(name)
+end
+
 local function updateBuffFrame()
 	local A = B:GetModule("Auras")
 	A:UpdateOptions()
@@ -851,13 +857,13 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{},--blank
 		{1, "Actionbar", "MicroMenu", L["Micromenu"]},
 		{1, "Actionbar", "ShowStance", L["ShowStanceBar"], true},
-		{1, "Actionbar", "Bar4Fade", L["Bar4 Fade"]},
-		{1, "Actionbar", "Bar5Fade", L["Bar5 Fade"], true},
+		{1, "Actionbar", "Bar4Fader", L["Bar4 Fade"].."*", nil, nil, toggleBarFader},
+		{1, "Actionbar", "Bar5Fader", L["Bar5 Fade"].."*", true, nil, toggleBarFader},
 		{4, "Actionbar", "Style", L["Actionbar Style"], false, {L["BarStyle1"], L["BarStyle2"], L["BarStyle3"], L["BarStyle4"], L["BarStyle5"]}},
 		{3, "Actionbar", "Scale", L["Actionbar Scale"].."*", true, {.5, 1.5, .01}, updateActionbarScale},
 		{},--blank
 		{1, "Actionbar", "CustomBar", HeaderTag..L["Enable CustomBar"], nil, nil, nil, L["CustomBarTip"]},
-		{1, "Actionbar", "CustomBarFader", L["CustomBarFader"]},
+		{1, "Actionbar", "BarXFader", L["CustomBarFader"].."*", nil, nil, toggleBarFader},
 		{3, "Actionbar", "CustomBarButtonSize", L["CustomBarButtonSize"].."*", true, {24, 60, 1}, updateCustomBar},
 		{3, "Actionbar", "CustomBarNumButtons", L["CustomBarNumButtons"].."*", nil, {1, 12, 1}, updateCustomBar},
 		{3, "Actionbar", "CustomBarNumPerRow", L["CustomBarNumPerRow"].."*", true, {1, 12, 1}, updateCustomBar},
@@ -907,7 +913,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "PlayerDebuff", L["Player Debuff"]},
 		{1, "UFs", "ToTAuras", L["ToT Debuff"], true},
 		{4, "UFs", "HealthColor", L["HealthColor"].."*", nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}, updateUFTextScale},
-		{3, "UFs", "TargetAurasPerRow", L["TargetAurasPerRow"].."*", true, {5, 10, 1}, updateTargetFrameAuras},
+		{3, "UFs", "TargetAurasPerRow", L["TargetAurasPerRow"].."*", true, {5, 20, 1}, updateTargetFrameAuras},
 		{3, "UFs", "UFTextScale", L["UFTextScale"].."*", nil, {.8, 1.5, .05}, updateUFTextScale},
 		{3, "UFs", "SmoothAmount", HeaderTag..L["SmoothAmount"].."*", true, {.15, .6, .05}, updateSmoothingAmount, L["SmoothAmountTip"]},
 		{},--blank
@@ -966,16 +972,20 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{nil, true},
 	},
 	[5] = {
-		{1, "Nameplate", "Enable", HeaderTag..L["Enable Nameplate"], nil, setupNameplateFilter},
-		{1, "Nameplate", "FriendPlate", NewTag..L["NameplateSize"].."*", nil, setupNameplateSize, refreshNameplates, L["FriendPlateTip"]},
+		{1, "Nameplate", "Enable", HeaderTag..L["Enable Nameplate"], nil, setupNameplateSize, refreshNameplates},
+		{1, "Nameplate", "FriendPlate", NewTag..L["FriendPlate"].."*", nil, nil, refreshNameplates, L["FriendPlateTip"]},
 		{1, "Nameplate", "NameOnlyMode", L["NameOnlyMode"].."*", true, nil, nil, L["NameOnlyModeTip"]},
 		{},--blank
-		{4, "Nameplate", "TargetIndicator", L["TargetIndicator"].."*", nil, {DISABLE, L["TopArrow"], L["RightArrow"], L["TargetGlow"], L["TopNGlow"], L["RightNGlow"]}, refreshNameplates},
+		{1, "Nameplate", "PlateAuras", HeaderTag..L["PlateAuras"].."*", nil, setupNameplateFilter, refreshNameplates},
+		{1, "Nameplate", "ColorBorder", L["ColorBorder"].."*", nil, nil, refreshNameplates},
 		{4, "Nameplate", "AuraFilter", L["NameplateAuraFilter"].."*", true, {L["BlackNWhite"], L["PlayerOnly"], L["IncludeCrowdControl"]}, refreshNameplates},
+		{3, "Nameplate", "maxAuras", L["Max Auras"].."*", false, {1, 20, 1}, refreshNameplates},
+		{3, "Nameplate", "AuraSize", L["Auras Size"].."*", true, {18, 40, 1}, refreshNameplates},
+		{},--blank
 		{1, "Nameplate", "FriendlyCC", L["Friendly CC"].."*"},
-		{1, "Nameplate", "HostileCC", L["Hostile CC"].."*", true},
+		{1, "Nameplate", "HostileCC", L["Hostile CC"].."*"},
+		{4, "Nameplate", "TargetIndicator", L["TargetIndicator"].."*", true, {DISABLE, L["TopArrow"], L["RightArrow"], L["TargetGlow"], L["TopNGlow"], L["RightNGlow"]}, refreshNameplates},
 		{1, "Nameplate", "FullHealth", L["Show FullHealth"].."*", nil, nil, refreshNameplates},
-		{1, "Nameplate", "ColorBorder", L["ColorBorder"].."*", true, nil, refreshNameplates},
 		{1, "Nameplate", "InsideView", L["Nameplate InsideView"].."*", nil, nil, updatePlateInsideView},
 		{1, "Nameplate", "ExplosivesScale", L["ExplosivesScale"], true, nil, nil, L["ExplosivesScaleTip"]},
 		{1, "Nameplate", "QuestIndicator", L["QuestIndicator"]},
@@ -1004,8 +1014,6 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Nameplate", "VerticalSpacing", L["NP VerticalSpacing"].."*", true, {.5, 1.5, .1}, updatePlateSpacing},
 		{3, "Nameplate", "MinScale", L["Nameplate MinScale"].."*", false, {.5, 1, .1}, updatePlateScale},
 		{3, "Nameplate", "MinAlpha", L["Nameplate MinAlpha"].."*", true, {.5, 1, .1}, updatePlateAlpha},
-		{3, "Nameplate", "maxAuras", L["Max Auras"].."*", false, {0, 10, 1}, refreshNameplates},
-		{3, "Nameplate", "AuraSize", L["Auras Size"].."*", true, {18, 40, 1}, refreshNameplates},
 	},
 	[6] = {
 		{1, "Nameplate", "ShowPlayerPlate", HeaderTag..L["Enable PlayerPlate"]},
@@ -1291,12 +1299,13 @@ local function CreateOption(i)
 				cb:SetPoint("TOPLEFT", 20, -offset)
 				offset = offset + 35
 			end
+			cb.__value = value
 			cb.name = B.CreateFS(cb, 14, name, false, "LEFT", 30, 0)
 			cb:SetChecked(CheckUIOption(key, value))
-			cb:SetScript("OnClick", function()
+			cb:SetScript("OnClick", function(self)
 				CheckUIOption(key, value, cb:GetChecked())
 				CheckUIReload(name)
-				if callback then callback() end
+				if callback then callback(self) end
 			end)
 			if data and type(data) == "function" then
 				local bu = B.CreateGear(parent)

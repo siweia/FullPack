@@ -11,7 +11,7 @@ local M = B:GetModule("Misc")
 local select, wipe, sort = select, wipe, sort
 local UnitClass, UnitGroupRolesAssigned = UnitClass, UnitGroupRolesAssigned
 local StaticPopup_Hide, HideUIPanel = StaticPopup_Hide, HideUIPanel
-local C_Timer_After = C_Timer.After
+local C_Timer_After, IsAltKeyDown = C_Timer.After, IsAltKeyDown
 local C_LFGList_GetSearchResultMemberInfo = C_LFGList.GetSearchResultMemberInfo
 local ApplicationViewerFrame = _G.LFGListFrame.ApplicationViewer
 local LFG_LIST_GROUP_DATA_ATLASES = _G.LFG_LIST_GROUP_DATA_ATLASES
@@ -20,7 +20,7 @@ function M:HookApplicationClick()
 	if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
 		LFGListFrame.SearchPanel.SignUpButton:Click()
 	end
-	if LFGListApplicationDialog:IsShown() and LFGListApplicationDialog.SignUpButton:IsEnabled() then
+	if (not IsAltKeyDown()) and LFGListApplicationDialog:IsShown() and LFGListApplicationDialog.SignUpButton:IsEnabled() then
 		LFGListApplicationDialog.SignUpButton:Click()
 	end
 end
@@ -145,6 +145,21 @@ function M:ReplaceGroupRoles(numPlayers, _, disabled)
 	end
 end
 
+function M:QuickJoin_ShowTips()
+	local quickJoinInfo = {
+		text = L["QuickJoinInfo"],
+		buttonStyle = HelpTip.ButtonStyle.GotIt,
+		targetPoint = HelpTip.Point.RightEdgeCenter,
+		onAcknowledgeCallback = B.HelpInfoAcknowledge,
+		callbackArg = "QuickJoin",
+	}
+	LFGListFrame.SearchPanel.SignUpButton:HookScript("OnShow", function()
+		if not NDuiADB["Help"]["QuickJoin"] then
+			HelpTip:Show(PVEFrame, quickJoinInfo)
+		end
+	end)
+end
+
 function M:QuickJoin()
 	for i = 1, 10 do
 		local bu = _G["LFGListSearchPanelScrollFrameButton"..i]
@@ -152,6 +167,7 @@ function M:QuickJoin()
 			bu:HookScript("OnDoubleClick", M.HookApplicationClick)
 		end
 	end
+	M:QuickJoin_ShowTips()
 
 	hooksecurefunc("LFGListInviteDialog_Accept", function()
 		if PVEFrame:IsShown() then HideUIPanel(PVEFrame) end
