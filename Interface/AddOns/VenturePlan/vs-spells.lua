@@ -139,7 +139,10 @@ T.KnownSpells = {
 	[122]={type="nop"},
 	[123]={type="heal", target="friend-front-soft", healATK=30},
 	[124]={type="nuke", target="cleave", damageATK=60},
-	[125]={type="nuke", target="random-enemy", damageATK=60},
+	[125]={
+		{type="nuke", damageATK=60, target="random-enemy"},
+		{type="aura", modDamageDealt=-50, target="random-enemy", duration=1},
+	},
 	[126]={type="heal", target="friend-front-soft", healATK=20},
 	[127]={type="nuke", target="enemy-front", damageATK=60},
 	[128]={type="nuke", target="enemy-back", damageATK=75},
@@ -362,8 +365,8 @@ T.KnownSpells = {
 	}, --Threads of Fate (UNVERIFIED)
 	[310]={
 		{type="nuke", target=0, damageATK=140},
-		{type="aura", target=4, duration=1, modDamageDealt=20},
-	}, --Axe of Determination (UNVERIFIED)
+		{type="aura", modDamageDealt=20, target=4, duration=2},
+	}, --Axe of Determination
 	[311]={
 		{type="heal", target=3, healATK=120},
 		{type="aura", target=3, duration=2, modMaxHPATK=40},
@@ -424,4 +427,5 @@ T.KnownSpells = {
 		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
 	}, --Tainted Bite
 	[349]={type="nuke", target="all-enemies", damageATK=10}, --Anima Swell
+	[356]={type="nuke", damageATK=100, target=1}, --the tooltip suggests the target should have been target="enemy-back"
 }
