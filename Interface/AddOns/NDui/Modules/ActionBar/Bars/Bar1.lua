@@ -90,7 +90,7 @@ function Bar:UpdateActionSize(name)
 		frame:SetWidth(column*size + (column-1)*margin + 2*padding)
 		frame:SetHeight(size*rows + (rows-1)*margin + 2*padding)
 		frame.mover:SetSize(frame:GetSize())
-		if frame.mover2 then frame.mover2.isDisable = true end
+		if frame.child then frame.child.mover.isDisable = true end
 	end
 end
 
@@ -100,6 +100,7 @@ function Bar:CreateBar1()
 
 	local frame = CreateFrame("Frame", "NDui_ActionBar1", UIParent, "SecureHandlerStateTemplate")
 	frame.mover = B.Mover(frame, L["Actionbar"].."1", "Bar1", {"BOTTOM", UIParent, "BOTTOM", 0, 24})
+	Bar.movers[1] = frame.mover
 
 	for i = 1, num do
 		local button = _G["ActionButton"..i]
@@ -163,6 +164,7 @@ function Bar:OnLogin()
 
 	if not C.db["Actionbar"]["Enable"] then return end
 
+	Bar.movers = {}
 	Bar:CreateBar1()
 	Bar:CreateBar2()
 	Bar:CreateBar3()
