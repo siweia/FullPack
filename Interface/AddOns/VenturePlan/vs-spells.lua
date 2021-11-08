@@ -140,8 +140,7 @@ T.KnownSpells = {
 	[123]={type="heal", target="friend-front-soft", healATK=30},
 	[124]={type="nuke", target="cleave", damageATK=60},
 	[125]={
-		{type="nuke", damageATK=60, target="random-enemy"},
-		{type="aura", modDamageDealt=-50, target="random-enemy", duration=1},
+		{type="aura", damageATK1=60, modDamageDealt=-50, target="random-enemy", duration=1},
 	},
 	[126]={type="heal", target="friend-front-soft", healATK=20},
 	[127]={type="nuke", target="enemy-front", damageATK=60},
