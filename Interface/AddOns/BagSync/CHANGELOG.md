@@ -1,12 +1,14 @@
 # BagSync
 
-## [v16.0](https://github.com/Xruptor/BagSync/tree/v16.0) (2021-10-30)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v15.9...v16.0) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v16.1](https://github.com/Xruptor/BagSync/tree/v16.1) (2021-11-04)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v16.0...v16.1) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- TOC Update and complete merge changes.  
-- Merge branch 'master' of github.com:Xruptor/BagSync  
-- Slight change to localize the /bgs and /bagsync slash operators.  
-- Merge pull request #150 from nanjuekaien1/patch-7  
+- Toc and version update.  
+- Removing the Debug lines from LibQTip.  They tend to cause issues with the packager and occasionally cause errors.  I have to do this manually after each LibQTip update.  
+- Updated LibQTip to fix a backdrop error.  Fixes #152  
+- Merge pull request #154 from nanjuekaien1/patch-10  
     Update zhCN.lua  
 - Update zhCN.lua  
-    Got it, it's corrected  
+- Merge pull request #151 from nanjuekaien1/patch-8  
+    Update zhCN.lua  
+- Update zhCN.lua  
