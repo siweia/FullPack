@@ -140,7 +140,7 @@ T.KnownSpells = {
 	[123]={type="heal", target="friend-front-soft", healATK=30},
 	[124]={type="nuke", target="cleave", damageATK=60},
 	[125]={
-		{type="aura", damageATK1=60, modDamageDealt=-50, target="random-enemy", duration=1},
+		{type="aura", target="random-enemy", damageATK1=60, modDamageDealt=-50, duration=1},
 	},
 	[126]={type="heal", target="friend-front-soft", healATK=20},
 	[127]={type="nuke", target="enemy-front", damageATK=60},
@@ -166,7 +166,10 @@ T.KnownSpells = {
 	[149]={type="nuke", target="enemy-front", damageATK=75},
 	[150]={type="nuke", target="cone", damageATK=50},
 	[151]={type="nuke", target=0, damageATK=20},
-	[152]={type="aura", target="all-other-allies", healATK=200, duration=1, firstTurn=5, modDamageDealt=50},
+	[152]={firstTurn=5,
+		{type="heal", target="all-other-allies", healATK=200},	-- Anima Wave: Heal all-other allies for (2*attack) [VERIFIED]
+		{type="aura", target="all-other-allies", modDamageDealt=50, duration=1},	-- Anima Wave: Mod damage done of all-other allies by 50% for 1 rounds [VERIFIED]
+	},
 	[153]={type="nuke", target="cone", damageATK=75},
 	[154]={type="aura", target=4, duration=3, thornsATK=100},
 	[155]={type="aura", target="all-enemies", duration=1, modDamageDealt=-75},
@@ -364,7 +367,7 @@ T.KnownSpells = {
 	}, --Threads of Fate (UNVERIFIED)
 	[310]={
 		{type="nuke", target=0, damageATK=140},
-		{type="aura", modDamageDealt=20, target=4, duration=2},
+		{type="aura", target=4, modDamageDealt=20, duration=2},
 	}, --Axe of Determination
 	[311]={
 		{type="heal", target=3, healATK=120},
@@ -426,5 +429,5 @@ T.KnownSpells = {
 		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
 	}, --Tainted Bite
 	[349]={type="nuke", target="all-enemies", damageATK=10}, --Anima Swell
-	[356]={type="nuke", damageATK=100, target=1}, --the tooltip suggests the target should have been target="enemy-back"
+	[356]={type="nuke", target=1, damageATK=100}, --the tooltip suggests the target should have been target="enemy-back"
 }
