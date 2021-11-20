@@ -64,18 +64,18 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20211102141310"),
+	Revision = parseCurseDate("20211120042548"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.20"
-	DBM.ReleaseRevision = releaseDate(2021, 11, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.1.21"
+	DBM.ReleaseRevision = releaseDate(2021, 11, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.3"
-	DBM.ReleaseRevision = releaseDate(2021, 11, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.5"
+	DBM.ReleaseRevision = releaseDate(2021, 11, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.19"
-	DBM.ReleaseRevision = releaseDate(2021, 11, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.20"
+	DBM.ReleaseRevision = releaseDate(2021, 11, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -3618,6 +3618,16 @@ function DBM:ClearAllStats(modId)
 end
 
 do
+	local gsub = string.gsub
+
+	local function fixElv(optionName)
+		if DBM.Options[optionName]:lower():find("interface\\addons\\elvui\\media\\") then
+			DBM.Options[optionName] = gsub(DBM.Options[optionName], gsub("Interface\\AddOns\\ElvUI\\Media\\", "(%a)", function(v)
+				return "[" .. v:upper() .. v:lower() .. "]"
+			end), "Interface\\AddOns\\ElvUI\\Core\\Media\\")
+		end
+	end
+
 	function loadOptions(self)
 		--init
 		if not DBM_AllSavedOptions then DBM_AllSavedOptions = {} end
@@ -3650,6 +3660,18 @@ do
 		end
 		if not self.Options.SpecialWarningFont or (self.Options.SpecialWarningFont == "Fonts\\2002.TTF" or self.Options.SpecialWarningFont == "Fonts\\ARKai_T.ttf" or self.Options.SpecialWarningFont == "Fonts\\blei00d.TTF" or self.Options.SpecialWarningFont == "Fonts\\FRIZQT___CYR.TTF" or self.Options.SpecialWarningFont == "Fonts\\FRIZQT__.TTF") then
 			self.Options.SpecialWarningFont = "standardFont"
+		end
+		-- Migrate ElvUI changes
+		for _, setting in ipairs({
+			-- Sounds
+			"RaidWarningSound", "SpecialWarningSound", "SpecialWarningSound2", "SpecialWarningSound3", "SpecialWarningSound4", "SpecialWarningSound5", "EventSoundVictory2",
+			"EventSoundWipe", "EventSoundEngage2", "EventSoundMusic", "EventSoundDungeonBGM", "RangeFrameSound1", "RangeFrameSound2",
+			-- Fonts
+			"InfoFrameFont", "WarningFont", "SpecialWarningFont"
+		}) do
+			if type(self.Options[setting]) == "string" and self.Options[setting]:lower() ~= "none" then
+				fixElv(setting)
+			end
 		end
 	end
 end
@@ -6562,7 +6584,7 @@ end
 
 function DBM:UnitAura(uId, spellInput, spellInput2, spellInput3, spellInput4, spellInput5)
 	if not uId then return end
-	for i = 1, isRetail and 60 or 40 do--In Classic, we probably don't need anywhere near 40, but for good measure. Definitely doesn't need to be 60 like retail
+	for i = 1, 60 do
 		local spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura(uId, i)
 		if not spellName then return end
 		if spellInput == spellName or spellInput == spellId or spellInput2 == spellName or spellInput2 == spellId or spellInput3 == spellName or spellInput3 == spellId or spellInput4 == spellName or spellInput4 == spellId or spellInput5 == spellName or spellInput5 == spellId then
@@ -6574,7 +6596,7 @@ end
 --In classic, instead of adding rank back in at beginning where it was pre 8.0, it's 15th arg return at end (value 1)
 function DBM:UnitDebuff(uId, spellInput, spellInput2, spellInput3, spellInput4, spellInput5)
 	if not uId then return end
-	for i = 1, isRetail and 60 or 40 do--In Classic, we probably don't need anywhere near 40, but for good measure. Definitely doesn't need to be 60 like retail
+	for i = 1, 60 do
 		local spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3 = UnitDebuff(uId, i)
 		if not spellName then return end
 		if spellInput == spellName or spellInput == spellId or spellInput2 == spellName or spellInput2 == spellId or spellInput3 == spellName or spellInput3 == spellId or spellInput4 == spellName or spellInput4 == spellId or spellInput5 == spellName or spellInput5 == spellId then
@@ -6586,7 +6608,7 @@ end
 --In classic, instead of adding rank back in at beginning where it was pre 8.0, it's 15th arg return at end (value 1)
 function DBM:UnitBuff(uId, spellInput, spellInput2, spellInput3, spellInput4, spellInput5)
 	if not uId then return end
-	for i = 1, isRetail and 60 or 40 do--In Classic, we probably don't need anywhere near 40, but for good measure. Definitely doesn't need to be 60 like retail
+	for i = 1, 60 do
 		local spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3 = UnitBuff(uId, i)
 		if not spellName then return end
 		if spellInput == spellName or spellInput == spellId or spellInput2 == spellName or spellInput2 == spellId or spellInput3 == spellName or spellInput3 == spellId or spellInput4 == spellName or spellInput4 == spellId or spellInput5 == spellName or spellInput5 == spellId then

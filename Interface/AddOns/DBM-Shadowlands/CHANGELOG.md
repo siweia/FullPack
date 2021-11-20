@@ -1,16 +1,32 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.1.20](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.1.20) (2021-11-02)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.1.19...9.1.20) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.1.21](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.1.21) (2021-11-20)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.1.20...9.1.21) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prepare new core releases  
-- Bump toc files  
-- Updated Halkias sinlight timer based on feedback and log checking  
-- Fixed a bug where the scheduler woud not have correct zone Id do to flawed logic that only updated it if a mod registered a function BEFORE changing zones (which realistically almost never happens, since mods register custom schedulers mid fight) Should fix https://github.com/DeadlyBossMods/DBM-TBC-Classic/issues/78  
-- Auto expand infoframe to 10 on the nine instead of trackig 8 targets only if user manually does it.  
-    Fixed bug where yells would still happen over 8 targets.  
-- Finally fix a bug where stats and wipe/kill message would be wrong difficulty on classic bosses that have poor wipe detection (no valid encounter\_end event or releasing before it fires)  
-- Fix numpty  
-- Added support for classic seasons to Unified Core  
-- This makes me a little less nervous  
-- Bump alphas  
+- prep new tags  
+- Initial drycode for Solitary Guardian  
+- Fix a nil error in DBT  
+- SoM removed debuff cap, as such this should no longer be restricted.  
+- Sanctum of domination should not have hard coded mod name. that should have been removed when 9.1 went live.  
+    Added Preliminary template mods for 9.2  
+- Fixed a bad copy-paste in the error correcting code.  
+    Was calling DBT, not DBM >.>  
+- Add a migration for ElvUI due to changes they made in folder structure;  
+    - ElvUI assets are now located in a nested Core folder  
+    This was causing bar textures, fonts, etc. to start being a little weird when depending on old ElvUI assets.  
+- Update localization.ru.lua  
+- Update localization.ru.lua  
+- Update localization.ru.lua (#690)  
+    A bit of translation.  
+- Update localization.ru.lua (#21)  
+    Translated some phrases. Fixed some existing phrases.  
+- Update localization.ru.lua (#689)  
+    Minor edits.  
+- Update localization.ru.lua (#20)  
+    Translated some phrases. Fixed some existing phrases.  
+- Bump dev.  
+- bump classic toc while testing my new unified cloud based source code folder across multiple computers  
+- Update localization.cn.lua (#19)  
+- Fix warnExpulsion spellID (#688)  
+- Fixed a bug caused by mass replacement, sanctum mods will once again load on unpatched EU  
+- bump next alpha cycle  
