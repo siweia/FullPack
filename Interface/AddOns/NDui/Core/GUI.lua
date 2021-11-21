@@ -352,8 +352,9 @@ G.DefaultSettings = {
 	},
 	Tooltip = {
 		CombatHide = false,
-		Cursor = false,
-		ClassColor = false,
+		CursorMode = 1,
+		ItemQuality = false,
+		TipAnchor = 4,
 		HideRank = false,
 		FactionIcon = true,
 		LFDRole = false,
@@ -891,7 +892,7 @@ G.TabList = {
 	L["ChatFrame"],
 	L["Maps"],
 	NewTag..L["Skins"],
-	L["Tooltip"],
+	NewTag..L["Tooltip"],
 	NewTag..L["Misc"],
 	L["UI Settings"],
 	L["Profile"],
@@ -901,8 +902,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 	[1] = {
 		{1, "Actionbar", "Enable", NewTag..HeaderTag..L["Enable Actionbar"], nil, setupActionBar},
 		{},--blank
-		{1, "Actionbar", "MicroMenu", L["Micromenu"]},
-		{1, "Actionbar", "ShowStance", NewTag..L["ShowStanceBar"], true, setupStanceBar},
+		{1, "Actionbar", "MicroMenu", L["Micromenu"], nil, nil, nil, L["MicroMenuTip"]},
+		{1, "Actionbar", "ShowStance", L["ShowStanceBar"], true, setupStanceBar},
 		{1, "Actionbar", "Bar4Fader", L["Bar4 Fade"].."*", nil, nil, toggleBarFader},
 		{1, "Actionbar", "Bar5Fader", L["Bar5 Fade"].."*", true, nil, toggleBarFader},
 		{},--blank
@@ -1199,11 +1200,11 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Skins", "Rematch", L["Rematch Skin"], true},
 	},
 	[12] = {
+		{3, "Tooltip", "Scale", L["Tooltip Scale"].."*", nil, {.5, 1.5, .1}},
+		{4, "Tooltip", "TipAnchor", NewTag..L["TipAnchor"].."*", true, {L["TOPLEFT"], L["TOPRIGHT"], L["BOTTOMLEFT"], L["BOTTOMRIGHT"]}, nil, L["TipAnchorTip"]},
 		{1, "Tooltip", "CombatHide", L["Hide Tooltip"].."*"},
-		{1, "Tooltip", "Cursor", L["Follow Cursor"].."*"},
-		{1, "Tooltip", "ClassColor", L["Classcolor Border"].."*"},
-		{3, "Tooltip", "Scale", L["Tooltip Scale"].."*", true, {.5, 1.5, .1}},
-		{},--blank
+		{1, "Tooltip", "ItemQuality", NewTag..L["ShowItemQuality"].."*"},
+		{4, "Tooltip", "CursorMode", NewTag..L["Follow Cursor"].."*", true, {DISABLE, L["LEFT"], L["TOP"], L["RIGHT"]}},
 		{1, "Tooltip", "HideTitle", L["Hide Title"].."*"},
 		{1, "Tooltip", "HideRank", L["Hide Rank"].."*", true},
 		{1, "Tooltip", "FactionIcon", L["FactionIcon"].."*"},

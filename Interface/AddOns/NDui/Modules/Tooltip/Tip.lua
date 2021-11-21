@@ -330,20 +330,31 @@ function TT:GameTooltip_ShowProgressBar()
 end
 
 -- Anchor and mover
+local cursorIndex = {
+	[1] = "ANCHOR_NONE",
+	[2] = "ANCHOR_CURSOR_LEFT",
+	[3] = "ANCHOR_CURSOR",
+	[4] = "ANCHOR_CURSOR_RIGHT"
+}
+local anchorIndex = {
+	[1] = "TOPLEFT",
+	[2] = "TOPRIGHT",
+	[3] = "BOTTOMLEFT",
+	[4] = "BOTTOMRIGHT",
+}
 local mover
 function TT:GameTooltip_SetDefaultAnchor(parent)
 	if self:IsForbidden() then return end
 	if not parent then return end
 
-	if C.db["Tooltip"]["Cursor"] then
-		self:SetOwner(parent, "ANCHOR_CURSOR_RIGHT")
-	else
+	local mode = C.db["Tooltip"]["CursorMode"]
+	self:SetOwner(parent, cursorIndex[mode])
+	if mode == 1 then
 		if not mover then
-			mover = B.Mover(self, L["Tooltip"], "GameTooltip", C.Tooltips.TipPos, 240, 120)
+			mover = B.Mover(self, L["Tooltip"], "GameTooltip", C.Tooltips.TipPos, 100, 100)
 		end
-		self:SetOwner(parent, "ANCHOR_NONE")
 		self:ClearAllPoints()
-		self:SetPoint("BOTTOMRIGHT", mover)
+		self:SetPoint(anchorIndex[C.db["Tooltip"]["TipAnchor"]], mover)
 	end
 end
 
@@ -409,7 +420,7 @@ function TT:ReskinTooltip()
 	end
 
 	B.SetBorderColor(self.bg)
-	if C.db["Tooltip"]["ClassColor"] and self.GetItem then
+	if C.db["Tooltip"]["ItemQuality"] and self.GetItem then
 		local _, item = self:GetItem()
 		if item then
 			local quality = select(3, GetItemInfo(item))
