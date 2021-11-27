@@ -191,21 +191,29 @@ G.DefaultSettings = {
 		ShowRaidDebuff = true,
 		RaidDebuffSize = 12,
 		SmartRaid = false,
+		DesaturateIcon = true,
 
 		PlayerWidth = 245,
 		PlayerHeight = 24,
 		PlayerPowerHeight = 4,
 		PlayerPowerOffset = 2,
+		PlayerHPTag = 2,
+		PlayerMPTag = 4,
 		FocusWidth = 200,
 		FocusHeight = 22,
 		FocusPowerHeight = 3,
 		FocusPowerOffset = 2,
+		FocusHPTag = 2,
+		FocusMPTag = 4,
 		PetWidth = 120,
 		PetHeight = 18,
 		PetPowerHeight = 2,
+		PetHPTag = 5,
 		BossWidth = 150,
 		BossHeight = 22,
 		BossPowerHeight = 2,
+		BossHPTag = 5,
+		BossMPTag = 5,
 
 		CastingColor = {r=.3, g=.7, b=1},
 		NotInterruptColor = {r=1, g=.5, b=.5},
@@ -277,7 +285,7 @@ G.DefaultSettings = {
 		PPHealthHeight = 5,
 		PPPowerHeight = 5,
 		PPPowerText = false,
-		FullHealth = true,
+		HealthType = 2,
 		SecureColor = {r=1, g=0, b=1},
 		TransColor = {r=1, g=.8, b=0},
 		InsecureColor = {r=1, g=0, b=0},
@@ -879,10 +887,11 @@ end
 -- Config
 local HeaderTag = "|cff00cc4c"
 local NewTag = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
+G.HealthValues = {DISABLE, L["ShowHealthDefault"], L["ShowHealthCurMax"], L["ShowHealthCurrent"], L["ShowHealthPercent"], L["ShowHealthLoss"], L["ShowHealthLossPercent"]}
 
 G.TabList = {
-	NewTag..L["Actionbar"],
-	NewTag..L["Bags"],
+	L["Actionbar"],
+	L["Bags"],
 	L["Unitframes"],
 	L["RaidFrame"],
 	NewTag..L["Nameplate"],
@@ -891,7 +900,7 @@ G.TabList = {
 	L["Raid Tools"],
 	L["ChatFrame"],
 	L["Maps"],
-	NewTag..L["Skins"],
+	L["Skins"],
 	NewTag..L["Tooltip"],
 	NewTag..L["Misc"],
 	L["UI Settings"],
@@ -900,7 +909,7 @@ G.TabList = {
 
 G.OptionList = { -- type, key, value, name, horizon, doubleline
 	[1] = {
-		{1, "Actionbar", "Enable", NewTag..HeaderTag..L["Enable Actionbar"], nil, setupActionBar},
+		{1, "Actionbar", "Enable", HeaderTag..L["Enable Actionbar"], nil, setupActionBar},
 		{},--blank
 		{1, "Actionbar", "MicroMenu", L["Micromenu"], nil, nil, nil, L["MicroMenuTip"]},
 		{1, "Actionbar", "ShowStance", L["ShowStanceBar"], true, setupStanceBar},
@@ -936,10 +945,10 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Bags", "iLvlToShow", L["iLvlToShow"].."*", nil, {1, 500, 1}, nil, L["iLvlToShowTip"]},
 		{4, "Bags", "BagSortMode", L["BagSortMode"].."*", true, {L["Forward"], L["Backward"], DISABLE}, updateBagSortOrder, L["BagSortTip"]},
 		{},--blank
-		{3, "Bags", "BagsPerRow", NewTag..L["BagsPerRow"].."*", nil, {1, 20, 1}, updateBagAnchor, L["BagsPerRowTip"]},
-		{3, "Bags", "BankPerRow", NewTag..L["BankPerRow"].."*", true, {1, 20, 1}, updateBagAnchor, L["BankPerRowTip"]},
+		{3, "Bags", "BagsPerRow", L["BagsPerRow"].."*", nil, {1, 20, 1}, updateBagAnchor, L["BagsPerRowTip"]},
+		{3, "Bags", "BankPerRow", L["BankPerRow"].."*", true, {1, 20, 1}, updateBagAnchor, L["BankPerRowTip"]},
 		{3, "Bags", "IconSize", L["Bags IconSize"].."*", nil, {20, 50, 1}, updateBagSize},
-		{3, "Bags", "FontSize", NewTag..L["Bags FontSize"].."*", true, {10, 50, 1}, updateBagSize},
+		{3, "Bags", "FontSize", L["Bags FontSize"].."*", true, {10, 50, 1}, updateBagSize},
 		{3, "Bags", "BagsWidth", L["Bags Width"].."*", false, {10, 40, 1}, updateBagSize},
 		{3, "Bags", "BankWidth", L["Bank Width"].."*", true, {10, 40, 1}, updateBagSize},
 	},
@@ -958,6 +967,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "RuneTimer", L["UFs RuneTimer"], true},
 		{1, "UFs", "PlayerDebuff", L["Player Debuff"]},
 		{1, "UFs", "ToTAuras", L["ToT Debuff"], true},
+		{1, "UFs", "DesaturateIcon", L["DesaturateIcon"].."*", nil, nil, nil, L["DesaturateIconTip"]},
 		{4, "UFs", "HealthColor", L["HealthColor"].."*", nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}, updateUFTextScale},
 		{3, "UFs", "TargetAurasPerRow", L["TargetAurasPerRow"].."*", true, {5, 20, 1}, updateTargetFrameAuras},
 		{3, "UFs", "UFTextScale", L["UFTextScale"].."*", nil, {.8, 1.5, .05}, updateUFTextScale},
@@ -1009,7 +1019,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "UFs", "NumGroups", L["Num Groups"], nil, {4, 8, 1}},
 		{3, "UFs", "RaidTextScale", L["UFTextScale"].."*", true, {.8, 1.5, .05}, updateRaidTextScale},
 		{4, "UFs", "RaidHealthColor", L["HealthColor"].."*", nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}, updateRaidTextScale},
-		{4, "UFs", "RaidHPMode", L["RaidHPMode"].."*", true, {L["DisableRaidHP"], L["RaidHPPercent"], L["RaidHPCurrent"], L["RaidHPLost"]}, updateRaidNameText},
+		{4, "UFs", "RaidHPMode", L["HealthValueType"].."*", true, {DISABLE, L["ShowHealthPercent"], L["ShowHealthCurrent"], L["ShowHealthLoss"]}, updateRaidNameText},
 		{},--blank
 		{1, "UFs", "SimpleMode", HeaderTag..L["SimpleRaidFrame"], nil, nil, nil, L["SimpleRaidFrameTip"]},
 		{3, "UFs", "SMUnitsPerColumn", L["SimpleMode Column"], nil, {10, 40, 1}},
@@ -1019,7 +1029,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 	},
 	[5] = {
 		{1, "Nameplate", "Enable", HeaderTag..L["Enable Nameplate"], nil, setupNameplateSize, refreshNameplates},
-		{1, "Nameplate", "FriendPlate", NewTag..L["FriendPlate"].."*", nil, nil, refreshNameplates, L["FriendPlateTip"]},
+		{1, "Nameplate", "FriendPlate", L["FriendPlate"].."*", nil, nil, refreshNameplates, L["FriendPlateTip"]},
 		{1, "Nameplate", "NameOnlyMode", L["NameOnlyMode"].."*", true, nil, nil, L["NameOnlyModeTip"]},
 		{},--blank
 		{1, "Nameplate", "PlateAuras", HeaderTag..L["PlateAuras"].."*", nil, setupNameplateFilter, refreshNameplates},
@@ -1029,18 +1039,18 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Nameplate", "AuraSize", L["Auras Size"].."*", true, {18, 40, 1}, refreshNameplates},
 		{},--blank
 		{4, "Nameplate", "TargetIndicator", L["TargetIndicator"].."*", nil, {DISABLE, L["TopArrow"], L["RightArrow"], L["TargetGlow"], L["TopNGlow"], L["RightNGlow"]}, refreshNameplates},
-		{3, "Nameplate", "ExecuteRatio", "|cffff0000"..L["ExecuteRatio"].."*", true, {0, 90, 1}, nil, L["ExecuteRatioTip"]},
+		{4, "Nameplate", "HealthType", L["HealthValueType"].."*", true, G.HealthValues, refreshNameplates},
 		{1, "Nameplate", "FriendlyCC", L["Friendly CC"].."*"},
-		{1, "Nameplate", "HostileCC", L["Hostile CC"].."*", true},
+		{1, "Nameplate", "HostileCC", L["Hostile CC"].."*"},
+		{3, "Nameplate", "ExecuteRatio", "|cffff0000"..L["ExecuteRatio"].."*", true, {0, 90, 1}, nil, L["ExecuteRatioTip"]},
 		{1, "Nameplate", "FriendlyThru", NewTag..L["Friendly ClickThru"].."*", nil, nil, updateClickThru},
 		{1, "Nameplate", "EnemyThru", NewTag..L["Enemy ClickThru"].."*", true, nil, updateClickThru},
-		{1, "Nameplate", "FullHealth", L["Show FullHealth"].."*", nil, nil, refreshNameplates},
-		{1, "Nameplate", "InsideView", L["Nameplate InsideView"].."*", true, nil, updatePlateInsideView},
 		{1, "Nameplate", "CastbarGlow", L["PlateCastbarGlow"].."*", nil, setupPlateCastbarGlow, nil, L["PlateCastbarGlowTip"]},
 		{1, "Nameplate", "CastTarget", L["PlateCastTarget"].."*", true, nil, nil, L["PlateCastTargetTip"]},
-		{1, "Nameplate", "QuestIndicator", L["QuestIndicator"]},
+		{1, "Nameplate", "InsideView", L["Nameplate InsideView"].."*", nil, nil, updatePlateInsideView},
 		{1, "Nameplate", "ExplosivesScale", L["ExplosivesScale"], true, nil, nil, L["ExplosivesScaleTip"]},
-		{1, "Nameplate", "AKSProgress", L["AngryKeystones Progress"]},
+		{1, "Nameplate", "QuestIndicator", L["QuestIndicator"]},
+		{1, "Nameplate", "AKSProgress", L["AngryKeystones Progress"], true},
 		{},--blank
 		{1, "Nameplate", "ColoredTarget", HeaderTag..L["ColoredTarget"].."*", nil, nil, nil, L["ColoredTargetTip"]},
 		{1, "Nameplate", "ColoredFocus", HeaderTag..L["ColoredFocus"].."*", true, nil, nil, L["ColoredFocusTip"]},
@@ -1178,7 +1188,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Skins", "FlatMode", L["FlatMode"], true},
 		{1, "Skins", "Shadow", L["Shadow"]},
 		{1, "Skins", "FontOutline", L["FontOutline"], true},
-		{1, "Skins", "BgTex", NewTag..L["BgTex"]},
+		{1, "Skins", "BgTex", L["BgTex"]},
 		{1, "Skins", "GreyBD", L["GreyBackdrop"], true, nil, nil, L["GreyBackdropTip"]},
 		{3, "Skins", "SkinAlpha", L["SkinAlpha"].."*", nil, {0, 1, .05}, updateSkinAlpha},
 		{3, "Skins", "FontScale", L["GlobalFontScale"], true, {.5, 1.5, .05}},
@@ -1334,6 +1344,49 @@ local function CheckUIReload(name)
 	end
 end
 
+local function onCheckboxClick(self)
+	CheckUIOption(self.__key, self.__value, self:GetChecked())
+	CheckUIReload(self.__name)
+	if self.__callback then self:__callback() end
+end
+
+local function restoreEditbox(self)
+	self:SetText(CheckUIOption(self.__key, self.__value))
+end
+local function acceptEditbox(self)
+	CheckUIOption(self.__key, self.__value, self:GetText())
+	CheckUIReload(self.__name)
+	if self.__callback then self:__callback() end
+end
+
+local function onSliderChanged(self, v)
+	local current = B:Round(tonumber(v), 2)
+	CheckUIOption(self.__key, self.__value, current)
+	CheckUIReload(self.__name)
+	self.value:SetText(current)
+	if self.__callback then self:__callback() end
+end
+
+local function updateDropdownSelection(self)
+	local dd = self.__owner
+	for i = 1, #dd.__options do
+		local option = dd.options[i]
+		if i == CheckUIOption(dd.__key, dd.__value) then
+			option:SetBackdropColor(1, .8, 0, .3)
+			option.selected = true
+		else
+			option:SetBackdropColor(0, 0, 0, .3)
+			option.selected = false
+		end
+	end
+end
+local function updateDropdownClick(self)
+	local dd = self.__owner
+	CheckUIOption(dd.__key, dd.__value, self.index)
+	CheckUIReload(dd.__name)
+	if dd.__callback then dd:__callback() end
+end
+
 local function CreateOption(i)
 	local parent, offset = guiPage[i].child, 20
 
@@ -1349,14 +1402,13 @@ local function CreateOption(i)
 				cb:SetPoint("TOPLEFT", 20, -offset)
 				offset = offset + 35
 			end
+			cb.__key = key
 			cb.__value = value
+			cb.__name = name
+			cb.__callback = callback
 			cb.name = B.CreateFS(cb, 14, name, false, "LEFT", 30, 0)
 			cb:SetChecked(CheckUIOption(key, value))
-			cb:SetScript("OnClick", function(self)
-				CheckUIOption(key, value, cb:GetChecked())
-				CheckUIReload(name)
-				if callback then callback(self) end
-			end)
+			cb:SetScript("OnClick", onCheckboxClick)
 			if data and type(data) == "function" then
 				local bu = B.CreateGear(parent)
 				bu:SetPoint("LEFT", cb.name, "RIGHT", -2, 1)
@@ -1372,6 +1424,8 @@ local function CreateOption(i)
 			eb:SetMaxLetters(999)
 			eb.__key = key
 			eb.__value = value
+			eb.__name = name
+			eb.__callback = callback
 			eb.__default = (key == "ACCOUNT" and G.AccountSettings[value]) or G.DefaultSettings[key][value]
 			if horizon then
 				eb:SetPoint("TOPLEFT", 345, -offset + 45)
@@ -1380,14 +1434,8 @@ local function CreateOption(i)
 				offset = offset + 70
 			end
 			eb:SetText(CheckUIOption(key, value))
-			eb:HookScript("OnEscapePressed", function()
-				eb:SetText(CheckUIOption(key, value))
-			end)
-			eb:HookScript("OnEnterPressed", function(self)
-				CheckUIOption(key, value, eb:GetText())
-				CheckUIReload(name)
-				if callback then callback(self) end
-			end)
+			eb:HookScript("OnEscapePressed", restoreEditbox)
+			eb:HookScript("OnEnterPressed", acceptEditbox)
 
 			B.CreateFS(eb, 14, name, "system", "CENTER", 0, 25)
 			eb.title = L["Tips"]
@@ -1405,15 +1453,13 @@ local function CreateOption(i)
 				offset = offset + 70
 			end
 			local s = B.CreateSlider(parent, name, min, max, step, x, y)
+			s.__key = key
+			s.__value = value
+			s.__name = name
+			s.__callback = callback
 			s.__default = (key == "ACCOUNT" and G.AccountSettings[value]) or G.DefaultSettings[key][value]
 			s:SetValue(CheckUIOption(key, value))
-			s:SetScript("OnValueChanged", function(_, v)
-				local current = B:Round(tonumber(v), 2)
-				CheckUIOption(key, value, current)
-				CheckUIReload(name)
-				s.value:SetText(current)
-				if callback then callback() end
-			end)
+			s:SetScript("OnValueChanged", onSliderChanged)
 			s.value:SetText(B:Round(CheckUIOption(key, value), 2))
 			if tooltip then
 				s.title = L["Tips"]
@@ -1435,27 +1481,18 @@ local function CreateOption(i)
 				offset = offset + 70
 			end
 			dd.Text:SetText(data[CheckUIOption(key, value)])
+			dd.__key = key
+			dd.__value = value
+			dd.__name = name
+			dd.__options = data
+			dd.__callback = callback
+			dd.button.__owner = dd
+			dd.button:HookScript("OnClick", updateDropdownSelection)
 
-			local opt = dd.options
-			dd.button:HookScript("OnClick", function()
-				for num = 1, #data do
-					if num == CheckUIOption(key, value) then
-						opt[num]:SetBackdropColor(1, .8, 0, .3)
-						opt[num].selected = true
-					else
-						opt[num]:SetBackdropColor(0, 0, 0, .3)
-						opt[num].selected = false
-					end
-				end
-			end)
-			for i in pairs(data) do
-				opt[i]:HookScript("OnClick", function()
-					CheckUIOption(key, value, i)
-					CheckUIReload(name)
-					if callback then callback() end
-				end)
+			for i = 1, #data do
+				dd.options[i]:HookScript("OnClick", updateDropdownClick)
 				if value == "TexStyle" then
-					AddTextureToOption(opt, i) -- texture preview
+					AddTextureToOption(dd.options, i) -- texture preview
 				end
 			end
 
