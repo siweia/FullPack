@@ -889,10 +889,10 @@ function G:SetupUnitFrame(parent)
 	local scroll = G:CreateScroll(panel, 260, 540)
 
 	local sliderRange = {
-		["Player"] = {150, 300},
-		["Focus"] = {150, 300},
-		["Pet"] = {100, 200},
-		["Boss"] = {100, 300},
+		["Player"] = {150, 400},
+		["Focus"] = {150, 400},
+		["Pet"] = {100, 300},
+		["Boss"] = {100, 400},
 	}
 
 	local defaultValue = { -- healthWidth, healthHeight, powerHeight, healthTag, powerTag, powerOffset
@@ -910,8 +910,8 @@ function G:SetupUnitFrame(parent)
 			mult = 55
 			createOptionDropdown(parent, L["PowerValueType"], offset-50-mult, G.HealthValues, nil, "UFs", value.."MPTag", defaultValue[value][4], func)
 		end
-		createOptionSlider(parent, L["Health Width"], sliderRange[value][1], sliderRange[value][2], defaultValue[value][1], offset-110-mult, value.."Width", func)
-		createOptionSlider(parent, L["Health Height"], 15, 50, defaultValue[value][2], offset-180-mult, value.."Height", func)
+		createOptionSlider(parent, L["Width"], sliderRange[value][1], sliderRange[value][2], defaultValue[value][1], offset-110-mult, value.."Width", func)
+		createOptionSlider(parent, L["Height"], 15, 50, defaultValue[value][2], offset-180-mult, value.."Height", func)
 		createOptionSlider(parent, L["Power Height"], 2, 30, defaultValue[value][3], offset-250-mult, value.."PowerHeight", func)
 		if defaultValue[value][6] then
 			createOptionSlider(parent, L["Power Offset"], -20, 20, defaultValue[value][4], offset-320-mult, value.."PowerOffset", func)
@@ -983,8 +983,8 @@ function G:SetupRaidFrame(parent)
 
 	local function createOptionGroup(parent, title, offset, value, func)
 		createOptionTitle(parent, title, offset)
-		createOptionSlider(parent, L["Health Width"], minRange[value][1], 200, defaultValue[value][1], offset-60, value.."Width", func)
-		createOptionSlider(parent, L["Health Height"], minRange[value][2], 60, defaultValue[value][2], offset-130, value.."Height", func)
+		createOptionSlider(parent, L["Width"], minRange[value][1], 200, defaultValue[value][1], offset-60, value.."Width", func)
+		createOptionSlider(parent, L["Height"], minRange[value][2], 60, defaultValue[value][2], offset-130, value.."Height", func)
 		createOptionSlider(parent, L["Power Height"], 2, 30, defaultValue[value][3], offset-200, value.."PowerHeight", func)
 	end
 
@@ -1071,8 +1071,8 @@ function G:SetupCastbar(parent)
 		B.AddTooltip(box, "ANCHOR_RIGHT", L["ToggleCastbarTip"], "info")
 
 		createOptionTitle(parent, title, offset)
-		createOptionSlider(parent, L["Castbar Width"], 100, 800, defaultValue[value][1], offset-60, value.."CBWidth", func)
-		createOptionSlider(parent, L["Castbar Height"], 10, 50, defaultValue[value][2], offset-130, value.."CBHeight", func)
+		createOptionSlider(parent, L["Width"], 100, 800, defaultValue[value][1], offset-60, value.."CBWidth", func)
+		createOptionSlider(parent, L["Height"], 10, 50, defaultValue[value][2], offset-130, value.."CBHeight", func)
 	end
 
 	local function updatePlayerCastbar()
@@ -1129,7 +1129,7 @@ end
 
 local function createOptionCheck(parent, offset, text)
 	local box = B.CreateCheckBox(parent)
-	box:SetPoint("TOPLEFT", 10, -offset)
+	box:SetPoint("TOPLEFT", 10, offset)
 	B.CreateFS(box, 14, text, false, "LEFT", 30, 0)
 	return box
 end
@@ -1167,7 +1167,7 @@ function G:SetupBagFilter(parent)
 
 	local offset = 10
 	for _, value in ipairs(filterOptions) do
-		local box = createOptionCheck(scroll, offset, L[value])
+		local box = createOptionCheck(scroll, -offset, L[value])
 		box:SetChecked(C.db["Bags"][value])
 		box.__value = value
 		box:SetScript("OnClick", filterOnClick)
@@ -1276,8 +1276,8 @@ function G:SetupNameplateSize(parent)
 	}
 	local function createOptionGroup(parent, title, offset, value, func)
 		createOptionTitle(parent, title, offset)
-		createOptionSlider(parent, L["NP Width"], 50, 500, 190, offset-60, optionValues[value][1], func, "Nameplate")
-		createOptionSlider(parent, L["NP Height"], 5, 50, 8, offset-130, optionValues[value][2], func, "Nameplate")
+		createOptionSlider(parent, L["Width"], 50, 500, 190, offset-60, optionValues[value][1], func, "Nameplate")
+		createOptionSlider(parent, L["Height"], 5, 50, 8, offset-130, optionValues[value][2], func, "Nameplate")
 		createOptionSlider(parent, L["NameTextSize"], 10, 50, 14, offset-200, optionValues[value][3], func, "Nameplate")
 		createOptionSlider(parent, L["HealthTextSize"], 10, 50, 16, offset-270, optionValues[value][4], func, "Nameplate")
 		createOptionSlider(parent, L["Health Offset"], -50, 50, 5, offset-340, optionValues[value][5], func, "Nameplate")
@@ -1347,6 +1347,30 @@ function G:SetupStanceBar(parent)
 	createOptionSlider(parent, L["ButtonSize"], 20, 80, 30, offset-60, "BarStanceSize", Bar.UpdateStanceBar, "Actionbar")
 	createOptionSlider(parent, L["ButtonsPerRow"], 1, 10, 10, offset-130, "BarStancePerRow", Bar.UpdateStanceBar, "Actionbar")
 	createOptionSlider(parent, L["ButtonFontSize"], 8, 20, 12, offset-200, "BarStanceFont", Bar.UpdateStanceBar, "Actionbar")
+end
+
+function G:SetupUFClassPower(parent)
+	local guiName = "NDuiGUI_ClassPowerSetup"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, L["UFs ClassPower"].."*")
+	local scroll = G:CreateScroll(panel, 260, 540)
+
+	local UF = B:GetModule("UnitFrames")
+	local parent, offset = scroll.child, -10
+
+	local box = createOptionCheck(parent, offset, L["UFs RuneTimer"])
+	box:SetChecked(C.db["UFs"]["RuneTimer"])
+	box:SetScript("OnClick", function()
+		C.db["UFs"]["RuneTimer"] = not C.db["UFs"]["RuneTimer"]
+		box:SetChecked(C.db["UFs"]["RuneTimer"])
+	end)
+
+	createOptionSlider(parent, L["Width"], 100, 400, 150, offset-70, "CPWidth", UF.UpdateUFClassPower)
+	createOptionSlider(parent, L["Height"], 2, 30, 5, offset-140, "CPHeight", UF.UpdateUFClassPower)
+	createOptionSlider(parent, L["xOffset"], -20, 200, 12, offset-210, "CPxOffset", UF.UpdateUFClassPower)
+	createOptionSlider(parent, L["yOffset"], -200, 20, -2, offset-280, "CPyOffset", UF.UpdateUFClassPower)
 end
 
 function G:SetupActionbarStyle(parent)
