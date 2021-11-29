@@ -5,7 +5,9 @@
 ## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
 ## X-Packaged-Version: NDuiMOD
-## Version: 20210926
+## Version: 20211129
+
+embeds.xml
 
 Core.lua
 Locale.lua
