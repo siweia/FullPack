@@ -31,13 +31,13 @@ local function CreatePlayerStyle(self)
 	UF:CreateQuestSync(self)
 	UF:CreateClassPower(self)
 	UF:StaggerBar(self)
+	UF:CreateAuras(self)
 
 	if C.db["UFs"]["Castbars"] then
 		UF:ReskinMirrorBars()
 		UF:ReskinTimerTrakcer(self)
 	end
 	if not C.db["Misc"]["ExpRep"] then UF:CreateExpRepBar(self) end
-	if C.db["UFs"]["PlayerDebuff"] then UF:CreateDebuffs(self) end
 	if C.db["UFs"]["SwingBar"] then UF:CreateSwing(self) end
 	if C.db["UFs"]["QuakeTimer"] then UF:CreateQuakeTimer(self) end
 end
@@ -87,8 +87,7 @@ local function CreateToTStyle(self)
 	UF:CreateHealthText(self)
 	UF:CreatePowerBar(self)
 	UF:CreateRaidMark(self)
-
-	if C.db["UFs"]["ToTAuras"] then UF:CreateAuras(self) end
+	UF:CreateAuras(self)
 end
 
 local function CreateFocusTargetStyle(self)
@@ -297,7 +296,6 @@ function UF:OnLogin()
 		local player = oUF:Spawn("player", "oUF_Player")
 		B.Mover(player, L["PlayerUF"], "PlayerUF", C.UFs.PlayerPos)
 		UF.ToggleCastBar(player, "Player")
-		UF:ToggleUFClassPower()
 
 		oUF:SetActiveStyle("Target")
 		local target = oUF:Spawn("target", "oUF_Target")
@@ -344,7 +342,9 @@ function UF:OnLogin()
 			end
 		end
 
+		UF:ToggleUFClassPower()
 		UF:UpdateTextScale()
+		UF:ToggleAllAuras()
 	end
 
 	if C.db["UFs"]["RaidFrame"] then
