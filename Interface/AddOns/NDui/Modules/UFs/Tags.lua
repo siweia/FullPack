@@ -5,7 +5,7 @@ local oUF = ns.oUF
 local AFK, DND, DEAD, PLAYER_OFFLINE, LEVEL = AFK, DND, DEAD, PLAYER_OFFLINE, LEVEL
 local select, format, strfind, GetCVarBool = select, format, strfind, GetCVarBool
 local ALTERNATE_POWER_INDEX = Enum.PowerType.Alternate or 10
-local UnitIsDeadOrGhost, UnitIsConnected, UnitHasVehicleUI, UnitIsTapDenied, UnitIsPlayer = UnitIsDeadOrGhost, UnitIsConnected, UnitHasVehicleUI, UnitIsTapDenied, UnitIsPlayer
+local UnitIsDeadOrGhost, UnitIsConnected, UnitIsTapDenied, UnitIsPlayer = UnitIsDeadOrGhost, UnitIsConnected, UnitIsTapDenied, UnitIsPlayer
 local UnitHealth, UnitHealthMax, UnitPower, UnitPowerType, UnitStagger = UnitHealth, UnitHealthMax, UnitPower, UnitPowerType, UnitStagger
 local UnitClass, UnitReaction, UnitLevel, UnitClassification, UnitEffectiveLevel = UnitClass, UnitReaction, UnitLevel, UnitClassification, UnitEffectiveLevel
 local UnitIsAFK, UnitIsDND, UnitIsDead, UnitIsGhost, UnitName, UnitExists = UnitIsAFK, UnitIsDND, UnitIsDead, UnitIsGhost, UnitName, UnitExists
@@ -167,13 +167,15 @@ oUF.Tags.Events["fulllevel"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_C
 
 -- RaidFrame tags
 oUF.Tags.Methods["raidhp"] = function(unit)
-	local healthType
-	if C.db["UFs"]["RaidHPMode"] == 2 then
+	local healthMode, healthType = C.db["UFs"]["RaidHPMode"]
+	if healthMode == 2 then
 		healthType = "percent"
-	elseif C.db["UFs"]["RaidHPMode"] == 3 then
+	elseif healthMode == 3 then
 		healthType = "current"
-	elseif C.db["UFs"]["RaidHPMode"] == 4 then
+	elseif healthMode == 4 then
 		healthType = "loss"
+	elseif healthMode == 5 then
+		healthType = "losspercent"
 	end
 	return oUF.Tags.Methods["VariousHP"](unit, _, healthType)
 end

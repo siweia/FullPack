@@ -117,6 +117,9 @@ function G:SetupRaidDebuffs(parent)
 		[1] = EJ_GetInstanceInfo(1190),
 		[2] = EJ_GetInstanceInfo(1193),
 	}
+	if DB.isNewPatch then
+		raids[3] = EJ_GetInstanceInfo(1195)
+	end
 
 	options[1] = G:CreateDropdown(frame, DUNGEONS.."*", 120, -30, dungeons, L["Dungeons Intro"], 130, 30)
 	options[1]:Hide()
@@ -802,7 +805,7 @@ function G:SetupBuffIndicator(parent)
 end
 
 local function createOptionTitle(parent, title, offset)
-	B.CreateFS(parent, 14, title, nil, "TOP", 0, offset)
+	B.CreateFS(parent, 14, title, "system", "TOP", 0, offset)
 	local line = B.SetGradient(parent, "H", 1, 1, 1, .25, .25, 200, C.mult)
 	line:SetPoint("TOPLEFT", 30, offset-20)
 end
@@ -811,7 +814,7 @@ local function sliderValueChanged(self, v)
 	local current = tonumber(format("%.0f", v))
 	self.value:SetText(current)
 	C.db[self.__key][self.__value] = current
-	self.__update()
+	if self.__update then self.__update() end
 end
 
 local function createOptionSlider(parent, title, minV, maxV, defaultV, yOffset, value, func, key)
@@ -934,7 +937,7 @@ function G:SetupUnitFrame(parent)
 			UF.UpdateFramePowerTag(frame)
 		end
 	end
-	createOptionGroup(scroll.child, L["FocusUF"], -450, "Focus", updateFocusSize)
+	createOptionGroup(scroll.child, L["FocusUF"], -480, "Focus", updateFocusSize)
 
 	local subFrames = {_G.oUF_Pet, _G.oUF_ToT, _G.oUF_FocusTarget}
 	local function updatePetSize()
@@ -943,7 +946,7 @@ function G:SetupUnitFrame(parent)
 			UF.UpdateFrameHealthTag(frame)
 		end
 	end
-	createOptionGroup(scroll.child, L["Pet&*Target"], -890, "Pet", updatePetSize)
+	createOptionGroup(scroll.child, L["Pet&*Target"], -950, "Pet", updatePetSize)
 
 	local function updateBossSize()
 		for _, frame in pairs(ns.oUF.objects) do
@@ -954,7 +957,7 @@ function G:SetupUnitFrame(parent)
 			end
 		end
 	end
-	createOptionGroup(scroll.child, L["Boss&Arena"], -1200, "Boss", updateBossSize)
+	createOptionGroup(scroll.child, L["Boss&Arena"], -1290, "Boss", updateBossSize)
 end
 
 function G:SetupRaidFrame(parent)
@@ -986,24 +989,12 @@ function G:SetupRaidFrame(parent)
 
 	local function resizeRaidFrame()
 		for _, frame in pairs(ns.oUF.objects) do
-			if frame.mystyle == "raid" and not frame.isPartyFrame and not frame.isPartyPet then
-				if C.db["UFs"]["SimpleMode"] then
-					local scale = C.db["UFs"]["SimpleRaidScale"]/10
-					local frameWidth = 100*scale
-					local frameHeight = 20*scale
-					local powerHeight = 2*scale
-					local healthHeight = frameHeight - powerHeight
-					frame:SetSize(frameWidth, frameHeight)
-					frame.Health:SetHeight(healthHeight)
-					frame.Power:SetHeight(powerHeight)
-				else
-					SetUnitFrameSize(frame, "Raid")
-				end
+			if frame.mystyle == "raid" and not frame.isPartyFrame and not frame.isPartyPet and not frame.isSimpleMode then
+				SetUnitFrameSize(frame, "Raid")
 			end
 		end
 	end
 	createOptionGroup(scroll.child, L["RaidFrame"], -10, "Raid", resizeRaidFrame)
-	createOptionSlider(scroll.child, "|cff00cc4c"..L["SimpleMode Scale"], 8, 15, 10, -280, "SimpleRaidScale", resizeRaidFrame)
 
 	local function resizePartyFrame()
 		for _, frame in pairs(ns.oUF.objects) do
@@ -1012,7 +1003,7 @@ function G:SetupRaidFrame(parent)
 			end
 		end
 	end
-	createOptionGroup(scroll.child, L["PartyFrame"], -340, "Party", resizePartyFrame)
+	createOptionGroup(scroll.child, L["PartyFrame"], -300, "Party", resizePartyFrame)
 
 	local function resizePartyPetFrame()
 		for _, frame in pairs(ns.oUF.objects) do
@@ -1021,13 +1012,46 @@ function G:SetupRaidFrame(parent)
 			end
 		end
 	end
-	createOptionGroup(scroll.child, L["PartyPetFrame"], -600, "PartyPet", resizePartyPetFrame)
+	createOptionGroup(scroll.child, L["PartyPetFrame"], -590, "PartyPet", resizePartyPetFrame)
+end
+
+function G:SetupSimpleRaidFrame(parent)
+	local guiName = "NDuiGUI_SimpleRaidFrameSetup"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, L["SimpleRaidFrame"])
+	local scroll = G:CreateScroll(panel, 260, 540)
+	local UF = B:GetModule("UnitFrames")
+
+	local function updateSimpleModeGroupBy()
+		if UF.UpdateSimpleModeHeader then
+			UF:UpdateSimpleModeHeader()
+		end
+	end
+	createOptionDropdown(scroll.child, L["SimpleMode GroupBy"].."*", -30, {GROUP, CLASS, ROLE}, nil, "UFs", "SMGroupByIndex", 1, updateSimpleModeGroupBy)
+
+	local function resizeSimpleRaidFrame()
+		for _, frame in pairs(ns.oUF.objects) do
+			if frame.isSimpleMode then
+				local scale = C.db["UFs"]["SimpleRaidScale"]/10
+				local frameWidth = 100*scale
+				local frameHeight = 20*scale
+				local powerHeight = 2*scale
+				local healthHeight = frameHeight - powerHeight
+				frame:SetSize(frameWidth, frameHeight)
+				frame.Health:SetHeight(healthHeight)
+				frame.Power:SetHeight(powerHeight)
+			end
+		end
+	end
+	createOptionSlider(scroll.child, L["SimpleMode Scale"].."*", 8, 15, 10, -100, "SimpleRaidScale", resizeSimpleRaidFrame)
+	createOptionSlider(scroll.child, L["SimpleMode Column"], 10, 40, 20, -180, "SMUnitsPerColumn")
 end
 
 local function createOptionSwatch(parent, name, value, x, y)
 	local swatch = B.CreateColorSwatch(parent, name, value)
 	swatch:SetPoint("TOPLEFT", x, y)
-	swatch.text:SetTextColor(1, .8, 0)
 end
 
 function G:SetupCastbar(parent)
@@ -1088,7 +1112,7 @@ function G:SetupCastbar(parent)
 			end
 		end
 	end
-	createOptionGroup(scroll.child, L["Player Castbar"], -110, "Player", updatePlayerCastbar)
+	createOptionGroup(scroll.child, L["Player Castbar"], -140, "Player", updatePlayerCastbar)
 
 	local function updateTargetCastbar()
 		if _G.oUF_Target then
@@ -1099,7 +1123,7 @@ function G:SetupCastbar(parent)
 			_G.oUF_Target.Castbar.mover:SetSize(width+height+5, height+5)
 		end
 	end
-	createOptionGroup(scroll.child, L["Target Castbar"], -310, "Target", updateTargetCastbar)
+	createOptionGroup(scroll.child, L["Target Castbar"], -360, "Target", updateTargetCastbar)
 
 	local function updateFocusCastbar()
 		if _G.oUF_Focus then
@@ -1110,7 +1134,7 @@ function G:SetupCastbar(parent)
 			_G.oUF_Focus.Castbar.mover:SetSize(width+height+5, height+5)
 		end
 	end
-	createOptionGroup(scroll.child, L["Focus Castbar"], -510, "Focus", updateFocusCastbar)
+	createOptionGroup(scroll.child, L["Focus Castbar"], -580, "Focus", updateFocusCastbar)
 
 	panel:HookScript("OnHide", function()
 		if _G.oUF_Player then
@@ -1137,7 +1161,7 @@ local function createOptionCheck(parent, offset, text, key, value, callback, too
 	box.__key = key
 	box.__value = value
 	box.__callback = callback
-	B.CreateFS(box, 14, text, "system", "LEFT", 30, 0)
+	B.CreateFS(box, 14, text, nil, "LEFT", 30, 0)
 	box:SetScript("OnClick", toggleOptionCheck)
 	if tooltip then
 		B.AddTooltip(box, "ANCHOR_RIGHT", tooltip, "info", true)
@@ -1293,7 +1317,7 @@ function G:SetupNameplateSize(parent)
 
 	local UF = B:GetModule("UnitFrames")
 	createOptionGroup(scroll.child, L["HostileNameplate"], -10, "enemy", UF.RefreshAllPlates)
-	createOptionGroup(scroll.child, L["FriendlyNameplate"], -630, "friend", UF.RefreshAllPlates)
+	createOptionGroup(scroll.child, L["FriendlyNameplate"], -650, "friend", UF.RefreshAllPlates)
 end
 
 function G:SetupActionBar(parent)
@@ -1328,14 +1352,14 @@ function G:SetupActionBar(parent)
 	end
 
 	createOptionGroup(scroll.child, L["Actionbar"].."1", -10, "Bar1")
-	createOptionGroup(scroll.child, L["Actionbar"].."2", -340, "Bar2")
-	createOptionGroup(scroll.child, L["Actionbar"].."3", -670, "Bar3", "|cffff0000")
-	createOptionGroup(scroll.child, L["Actionbar"].."4", -1000, "Bar4")
-	createOptionGroup(scroll.child, L["Actionbar"].."5", -1330, "Bar5")
-	createOptionGroup(scroll.child, L["Pet Actionbar"], -1660, "BarPet")
+	createOptionGroup(scroll.child, L["Actionbar"].."2", -370, "Bar2")
+	createOptionGroup(scroll.child, L["Actionbar"].."3", -730, "Bar3", "|cffff0000")
+	createOptionGroup(scroll.child, L["Actionbar"].."4", -1090, "Bar4")
+	createOptionGroup(scroll.child, L["Actionbar"].."5", -1450, "Bar5")
+	createOptionGroup(scroll.child, L["Pet Actionbar"], -1810, "BarPet")
 
-	createOptionTitle(scroll.child, L["LeaveVehicle"], -1990)
-	createOptionSlider(scroll.child, L["ButtonSize"], 20, 80, 34, -2050, "VehButtonSize", Bar.UpdateVehicleButton, "Actionbar")
+	createOptionTitle(scroll.child, L["LeaveVehicle"], -2170)
+	createOptionSlider(scroll.child, L["ButtonSize"], 20, 80, 34, -2230, "VehButtonSize", Bar.UpdateVehicleButton, "Actionbar")
 end
 
 function G:SetupStanceBar(parent)
@@ -1384,10 +1408,10 @@ function G:SetupUFAuras(parent)
 	local parent, offset = scroll.child, -10
 
 	local defaultData = {
-		["Player"] = {1, 1, 9},
-		["Target"] = {2, 2, 9},
-		["Focus"] = {3, 2, 9},
-		["ToT"] = {1, 1, 5},
+		["Player"] = {1, 1, 9, 20, 20},
+		["Target"] = {2, 2, 9, 20, 20},
+		["Focus"] = {3, 2, 9, 20, 20},
+		["ToT"] = {1, 1, 5, 6, 6},
 	}
 	local buffOptions = {DISABLE, L["ShowAll"], L["ShowDispell"]}
 	local debuffOptions = {DISABLE, L["ShowAll"], L["BlockOthers"]}
@@ -1397,16 +1421,19 @@ function G:SetupUFAuras(parent)
 		createOptionTitle(parent, title, offset)
 		createOptionDropdown(parent, L["BuffType"], offset-50, buffOptions, nil, "UFs", value.."BuffType", default[1], func)
 		createOptionDropdown(parent, L["DebuffType"], offset-110, debuffOptions, nil, "UFs", value.."DebuffType", default[2], func)
-		createOptionSlider(parent, L["IconsPerRow"], 5, 20, default[3], offset-180, value.."AurasPerRow", func)
+		createOptionSlider(parent, L["MaxBuffs"], 1, 40, default[4], offset-180, value.."NumBuff", func)
+		createOptionSlider(parent, L["MaxDebuffs"], 1, 40, default[5], offset-250, value.."NumDebuff", func)
+		createOptionSlider(parent, L["IconsPerRow"], 5, 20, default[3], offset-320, value.."AurasPerRow", func)
 	end
 
 	createOptionTitle(parent, GENERAL, offset)
 	createOptionCheck(parent, offset-35, L["DesaturateIcon"], "UFs", "Desaturate", UF.UpdateUFAuras, L["DesaturateIconTip"])
 	createOptionCheck(parent, offset-70, L["DebuffColor"], "UFs", "DebuffColor", UF.UpdateUFAuras, L["DebuffColorTip"])
-	createOptionGroup(parent, L["PlayerUF"], offset-110, "Player", UF.UpdateUFAuras)
-	createOptionGroup(parent, L["TargetUF"], offset-350, "Target", UF.UpdateUFAuras)
-	createOptionGroup(parent, L["TotUF"], offset-580, "ToT", UF.UpdateUFAuras)
-	createOptionGroup(parent, L["FocusUF"], offset-830, "Focus", UF.UpdateUFAuras)
+
+	createOptionGroup(parent, L["PlayerUF"], offset-140, "Player", UF.UpdateUFAuras)
+	createOptionGroup(parent, L["TargetUF"], offset-550, "Target", UF.UpdateUFAuras)
+	createOptionGroup(parent, L["TotUF"], offset-960, "ToT", UF.UpdateUFAuras)
+	createOptionGroup(parent, L["FocusUF"], offset-1370, "Focus", UF.UpdateUFAuras)
 end
 
 function G:SetupActionbarStyle(parent)
