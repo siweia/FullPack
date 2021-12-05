@@ -136,8 +136,10 @@ G.DefaultSettings = {
 		AutoRes = true,
 		NumGroups = 6,
 		SimpleMode = false,
-		SMUnitsPerColumn = 20,
-		SMGroupByIndex = 1,
+		SMRScale = 10,
+		SMRPerCol = 20,
+		SMRGroupBy = 1,
+		SMRGroups = 6,
 		InstanceAuras = true,
 		DispellOnly = false,
 		RaidDebuffScale = 1,
@@ -147,7 +149,6 @@ G.DefaultSettings = {
 		HorizonParty = false,
 		ReverseRaid = false,
 		ShowSolo = false,
-		SimpleRaidScale = 10,
 		RaidWidth = 80,
 		RaidHeight = 32,
 		RaidPowerHeight = 2,
@@ -180,6 +181,9 @@ G.DefaultSettings = {
 		PartyPetWidth = 100,
 		PartyPetHeight = 22,
 		PartyPetPowerHeight = 2,
+		PartyPetPerCol = 5,
+		PartyPetMaxCol = 1,
+		RaidPets = false,
 		HealthColor = 1,
 		BuffIndicatorType = 1,
 		BuffIndicatorScale = 1,
@@ -253,6 +257,12 @@ G.DefaultSettings = {
 		ToTBuffType = 1,
 		ToTDebuffType = 1,
 		ToTAurasPerRow = 5,
+		BossNumBuff = 6,
+		BossNumDebuff = 6,
+		BossBuffType = 2,
+		BossDebuffType = 3,
+		BossBuffPerRow = 6,
+		BossDebuffPerRow = 6,
 	},
 	Chat = {
 		Sticky = false,
@@ -608,6 +618,10 @@ end
 
 local function setupSimpleRaidFrame()
 	G:SetupSimpleRaidFrame(guiPage[4])
+end
+
+local function setupPartyPetFrame()
+	G:SetupPartyPetFrame(guiPage[4])
 end
 
 local function setupRaidDebuffs()
@@ -1019,7 +1033,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "SimpleMode", NewTag..L["SimpleRaidFrame"], true, setupSimpleRaidFrame, nil, L["SimpleRaidFrameTip"]},
 		{},--blank
 		{1, "UFs", "PartyFrame", HeaderTag..L["PartyFrame"], nil, nil, nil, L["PartyFrameTip"]},
-		{1, "UFs", "PartyPetFrame", HeaderTag..L["PartyPetFrame"], true},
+		{1, "UFs", "PartyPetFrame", NewTag..HeaderTag..L["PartyPetFrame"], true, setupPartyPetFrame},
 		{1, "UFs", "HorizonParty", L["Horizon PartyFrame"]},
 		{1, "UFs", "PartyAltPower", L["UFs PartyAltPower"], true, nil, nil, L["PartyAltPowerTip"]},
 		{1, "UFs", "PartyWatcher", HeaderTag..L["UFs PartyWatcher"], nil, setupPartyWatcher, nil, L["PartyWatcherTip"]},
