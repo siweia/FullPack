@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211105180310")
+mod:SetRevision("20211205170036")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3)
@@ -130,9 +130,9 @@ local timerDominationChainsCD						= mod:NewCDCountTimer(50.7, 349419, 298213, n
 local timerVeilofDarknessCD							= mod:NewCDCountTimer(48.8, 347726, 209426, nil, nil, 3)--Shortname Darkness
 local timerWailingArrowCD							= mod:NewCDCountTimer(33.9, 347609, 208407, nil, 2, 3)--Shortname Arrow
 local timerWailingArrow								= mod:NewTargetCountTimer(9, 347609, 208407, nil, nil, 5)--6 seconds for pre debuff plus 3 sec cast
-local timerRangersHeartseekerCD						= mod:NewCDCountTimer(33.9, 352663, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerBlackArrowCD								= mod:NewCDCountTimer(33.9, 358704, 208407, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
-local timerBlackArrow								= mod:NewTargetCountTimer(9, 358704, 208407, nil, nil, 5, nil, DBM_CORE_L.MYTHIC_ICON)
+local timerRangersHeartseekerCD						= mod:NewCDCountTimer(33.9, 352663, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerBlackArrowCD								= mod:NewCDCountTimer(33.9, 358704, 208407, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerBlackArrow								= mod:NewTargetCountTimer(9, 358704, 208407, nil, nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
 --Intermission: A Monument to our Suffering
 local timerRiveCD									= mod:NewCDTimer(48.8, 353418, nil, nil, nil, 3)
 local timerNextPhase								= mod:NewPhaseTimer(16.5, 348094, nil, nil, nil, 6)
@@ -141,28 +141,28 @@ local timerChannelIce								= mod:NewCastTimer(5, 352843, nil, nil, nil, 6)
 local timerCallEarth								= mod:NewCastTimer(5, 352842, nil, nil, nil, 6)
 --local timerChannelIceCD							= mod:NewCDCountTimer(48.8, 348148, nil, nil, nil, 6)
 local timerCallEarthCD								= mod:NewCDCountTimer(48.8, 348093, nil, nil, nil, 6)
-local timerRuinCD									= mod:NewCDCountTimer(23, 355540, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerRuinCD									= mod:NewCDCountTimer(23, 355540, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 local timerHauntingWaveCD							= mod:NewCDCountTimer("d23", 352271, nil, nil, nil, 2)--String timer starting with "d" means "allowDouble"
 local timerBansheeWailCD							= mod:NewCDCountTimer(48.8, 348094, nil, nil, nil, 2)
-local timerWindsofIcecrown							= mod:NewBuffActiveTimer(35, 356986, nil, nil, nil, 5, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerWindsofIcecrown							= mod:NewBuffActiveTimer(35, 356986, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerPortal									= mod:NewCastTimer(10, 357102, nil, nil, nil, 6)
 --Unstoppable Force ~9sec cd
 ----Forces of the Maw
 local timerDecrepitOrbsCD							= mod:NewCDTimer(16, 351353, nil, nil, nil, 1)
-local timerFilthCD									= mod:NewCDTimer(13.1, 351589, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.MYTHIC_ICON..DBM_CORE_L.TANK_ICON)
-local timerExpulsionCD								= mod:NewCDTimer(15.8, 351562, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
+local timerFilthCD									= mod:NewCDTimer(13.1, 351589, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.TANK_ICON)
+local timerExpulsionCD								= mod:NewCDTimer(15.8, 351562, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 
 --Stage Three: The Freedom of Choice
-local timerBansheesHeartseekerCD					= mod:NewCDCountTimer(33.9, 353969, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerBansheesHeartseekerCD					= mod:NewCDCountTimer(33.9, 353969, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerShadowDaggerCD							= mod:NewCDCountTimer(23, 353935, nil, nil, nil, 3)--Only used in phase 3, in phase 1 it's tied to windrunner
 local timerBaneArrowsCD								= mod:NewCDCountTimer(23, 354011, nil, nil, nil, 3)
 local timerBansheesFuryCD							= mod:NewCDCountTimer(23, 354068, nil, nil, nil, 2)--Short name NOT used since "Fury" also exists on fight
 local timerBansheesScreamCD							= mod:NewCDCountTimer(23, 353952, 31295, nil, nil, 3)
-local timerRazeCD									= mod:NewCDCountTimer(23, 354147, nil, nil, 2, 2, nil, DBM_CORE_L.DEADLY_ICON)
---local timerBansheesBladesCD							= mod:NewCDCountTimer(33.9, 358181, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.MYTHIC_ICON..DBM_CORE_L.TANK_ICON)
-local timerDeathKnivesCD							= mod:NewCDCountTimer(33.9, 358434, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
-local timerDeathKnives								= mod:NewBuffFadesTimer(9, 358434, nil, nil, nil, 5, nil, DBM_CORE_L.MYTHIC_ICON)
-local timerMercilessCD								= mod:NewCDCountTimer(33.9, 358588, nil, nil, 2, 5, nil, DBM_CORE_L.MYTHIC_ICON)
+local timerRazeCD									= mod:NewCDCountTimer(23, 354147, nil, nil, 2, 2, nil, DBM_COMMON_L.DEADLY_ICON)
+--local timerBansheesBladesCD							= mod:NewCDCountTimer(33.9, 358181, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.TANK_ICON)
+local timerDeathKnivesCD							= mod:NewCDCountTimer(33.9, 358434, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerDeathKnives								= mod:NewBuffFadesTimer(9, 358434, nil, nil, nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerMercilessCD								= mod:NewCDCountTimer(33.9, 358588, nil, nil, 2, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
 
 --mod:AddRangeFrameOption("8")
 mod:AddInfoFrameOption(347807, true)
@@ -211,11 +211,11 @@ local allTimers = {
 	["lfr"] = {
 		[1] = {
 			--Windrunner
-			[347504] = {8.9, 62.0, 63.6, 61.1},
+			[347504] = {8.9, 62.0, 62, 61.1},
 			--Ranger's Heartseeker
-			[352663] = {22.2, 19.3, 19.3, 19.7, 21.3, 18.8, 21.1, 19.4},
+			[352663] = {22.2, 19.3, 18.7, 19.7, 20.8, 18.8, 18.7, 19.4},
 			--Domination Chains
-			[349419] = {29, 64.4, 63.9},
+			[349419] = {29, 63.9, 63.9},
 			--Wailing Arrow
 			[347609] = {41.3, 47.6, 37.3, 39.8},
 			--Veil of Darkness
@@ -223,19 +223,19 @@ local allTimers = {
 		},
 		[3] = {
 			--Bane Arrows
-			[354011] = {36.1, 88.2, 87.9, 89.9, 87.9},
+			[354011] = {36.1, 87.8, 87.9, 89.9, 87.9},
 			--Banshee's Heartseeker
-			[353969] = {38.9, 24.4, 54.9, 3, 14.2, 24.4, 35.5, 11.8, 34.8, 12.5, 36.8, 12.1, 23.3, 45.5, 3},
+			[353969] = {38.9, 24.4, 54.5, 3, 13.3, 24.4, 35.1, 11.8, 34.3, 12.5, 36.1, 12.1, 23.3, 45.5, 3},
 			--Shadow Dagger
-			[353935] = {54, 89.1, 94.4, 84.8},
+			[353935] = {54, 89.1, 93.2, 84.8},
 			--Banshee Scream
-			[353952] = {105.7, 62.1, 63.3, 63.4, 59.9},
+			[353952] = {105.7, 62.1, 62, 63.1, 59.9},
 			--Wailing Arrow
-			[347609] = {86.1, 64.8, 64.9, 66.6, 65},
+			[347609] = {86.1, 64.8, 64.9, 64.4, 65},
 			--Veil of Darkness
-			[347726] = {44, 68.7, 66.6, 67.2, 67.4, 67.4},
+			[347726] = {44, 68.7, 66.2, 67.2, 67.4, 67.4},
 			--Raze
-			[354147] = {95.2, 89.7, 87, 90.1},
+			[354147] = {95.2, 89.4, 86.5, 90.1},
 		},
 	},
 	["normal"] = {
@@ -378,11 +378,11 @@ function mod:OnCombatStart(delay)
 		timerVeilofDarknessCD:Start(50-delay, 1)--Probably shorter to emote
 	else
 		difficultyName = "lfr"
-		timerWindrunnerCD:Start(8.9-delay, 1)
-		timerRangersHeartseekerCD:Start(22.2, 1)
-		timerDominationChainsCD:Start(29-delay, 1)
-		timerWailingArrowCD:Start(41.3-delay, 1)
-		timerVeilofDarknessCD:Start(56.6-delay, 1)--Probably shorter to emote
+		timerWindrunnerCD:Start(8-delay, 1)
+		timerRangersHeartseekerCD:Start(21.8, 1)
+		timerDominationChainsCD:Start(28.5-delay, 1)
+		timerWailingArrowCD:Start(40.8-delay, 1)
+		timerVeilofDarknessCD:Start(55.3-delay, 1)
 	end
 --	berserkTimer:Start(-delay)
 	if self.Options.InfoFrame then
@@ -779,8 +779,8 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnWailingArrowTaunt:Play("tauntboss")
 			end
 		end
-		warnWailingArrow:Show(self.vb.arrowIcon, args.destName)
-		timerWailingArrow:Start(9, args.destName, self.vb.arrowIcon)
+		warnWailingArrow:Show(icon, args.destName)
+		timerWailingArrow:Start(9, args.destName, icon)
 		self.vb.arrowIcon = self.vb.arrowIcon + 1
 	elseif spellId == 358705 then
 		if self:AntiSpam(15, 4) then
@@ -802,8 +802,8 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnBlackArrowTaunt:Play("tauntboss")
 			end
 		end
-		warnBlackArrow:Show(self.vb.arrowIcon, args.destName)
-		timerBlackArrow:Start(9, args.destName, self.vb.arrowIcon)
+		warnBlackArrow:Show(icon, args.destName)
+		timerBlackArrow:Start(9, args.destName, icon)
 		self.vb.arrowIcon = self.vb.arrowIcon + 1
 	elseif spellId == 347607 then
 		local amount = args.amount or 1

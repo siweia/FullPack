@@ -1,8 +1,8 @@
 local mod	= DBM:NewMod(2467, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211119200113")
---mod:SetCreatureID(175730)
+mod:SetRevision("20211202235450")
+mod:SetCreatureID(182777)
 mod:SetEncounterID(2549)
 --mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
 --mod:SetHotfixNoticeRev(20210902000000)
@@ -34,7 +34,7 @@ mod:RegisterEventsInCombat(
 
 --mod:AddTimerLine(BOSS)
 --Stage One: Scrying Fate
---local timerGrimPortentCD						= mod:NewAITimer(28.8, 354365, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
+--local timerGrimPortentCD						= mod:NewAITimer(28.8, 354365, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 

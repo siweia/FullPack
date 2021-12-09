@@ -1,7 +1,7 @@
 local L
 
 ---------------------------
---  Solitary Guardian --
+--  Vigilant Guardian --
 ---------------------------
 --L= DBM:GetModLocalization(2458)
 
@@ -26,7 +26,14 @@ local L
 ---------------------------
 --  Prototype Pantheon --
 ---------------------------
---L= DBM:GetModLocalization(2460)
+L= DBM:GetModLocalization(2460)
+
+L:SetMiscLocalization({
+	Deathtouch		= "Deathtouch",
+	Dispel			= "Dispel",
+	Sin				= "Sin",
+	Stacks			= "Stacks"
+})
 
 ---------------------------
 --  Lihuvim, Principal Architect --
@@ -46,7 +53,14 @@ local L
 ---------------------------
 --  Anduin Wrynn --
 ---------------------------
---L= DBM:GetModLocalization(2469)
+L= DBM:GetModLocalization(2469)
+
+L:SetOptionLocalization({
+	PairingBehavior		= "Set mod behavior for Blasphemy. Raid Leaders preference is used if using DBM",
+	Auto				= "'on you' alert with auto assigned partner. Chat bubbles show unique symbols for matchups",
+	Generic				= "'on you' alert with no assignments. Chat bubbles show generic symbols for two debuffs",--Default
+	None				= "'on you' alert with no assignments. No Chat bubbles"
+})
 
 ---------------------------
 --  Lords of Dread --
@@ -61,7 +75,11 @@ local L
 ---------------------------
 --  The Jailer --
 ---------------------------
---L= DBM:GetModLocalization(2464)
+L= DBM:GetModLocalization(2464)
+
+L:SetMiscLocalization({
+	Pylon		= "Pylon"
+})
 
 -------------
 --  Trash  --
