@@ -1260,6 +1260,14 @@ function UF:CreateClassPower(self)
 	bar:SetSize(barWidth, barHeight)
 	bar:SetPoint(unpack(barPoint))
 
+	-- show bg while size changed
+	if not isDK then
+		bar.bg = B.SetBD(bar)
+		bar.bg:SetFrameLevel(5)
+		bar.bg:SetBackdropBorderColor(1, .8, 0)
+		bar.bg:Hide()
+	end
+
 	local bars = {}
 	for i = 1, 6 do
 		bars[i] = CreateFrame("StatusBar", nil, bar)
@@ -1386,8 +1394,10 @@ function UF:UpdateUFClassPower()
 	local xOffset, yOffset = C.db["UFs"]["CPxOffset"], C.db["UFs"]["CPyOffset"]
 	local bars = playerFrame.ClassPower or playerFrame.Runes
 	if bars then
-		playerFrame.ClassPowerBar:SetSize(barWidth, barHeight)
-		playerFrame.ClassPowerBar:SetPoint("BOTTOMLEFT", playerFrame, "TOPLEFT", xOffset, yOffset)
+		local bar = playerFrame.ClassPowerBar
+		bar:SetSize(barWidth, barHeight)
+		bar:SetPoint("BOTTOMLEFT", playerFrame, "TOPLEFT", xOffset, yOffset)
+		if bar.bg then bar.bg:Show() end
 		local max = bars.__max
 		for i = 1, max do
 			bars[i]:SetHeight(barHeight)
