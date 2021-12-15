@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2442, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211204032249")
+mod:SetRevision("20211212055914")
 mod:SetCreatureID(175725)
 mod:SetEncounterID(2433)
 --mod:SetUsedIcons(1, 2, 3)
@@ -227,7 +227,7 @@ function mod:SPELL_CAST_START(args)
 			timerSpreadingMiseryCD:Stop()
 			timerDeathlinkCD:Start(8.2, 1)
 			timerFractureSoulCD:Start(10.5, 1)--10-13
-			timerDesolationBeamCD:Start(self:IsMythic() and 13.8 or 15.4, 1)--Can be massive delayed for some reason
+			timerDesolationBeamCD:Start(13, 1)--Can be massive delayed for some reason
 			timerAnnihilatingGlareCD:Start(25, self.vb.glareCount+1)
 --			timerStygianAbductorCD:Start(27.7, 1)--VERIFY with trancsriptor
 			if self:IsMythic() then

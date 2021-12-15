@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("SanctumofDomTrash", "DBM-SanctumOfDomination", 1)
+local mod	= DBM:NewMod("SepulcherTrash", "DBM-Sepulcher", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211119200113")
+mod:SetRevision("20211208234422")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 

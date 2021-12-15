@@ -66,18 +66,18 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20211208045522"),
+	Revision = parseCurseDate("20211215032042"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.22"
-	DBM.ReleaseRevision = releaseDate(2021, 12, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.1.23"
+	DBM.ReleaseRevision = releaseDate(2021, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.6"
-	DBM.ReleaseRevision = releaseDate(2021, 12, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.7"
+	DBM.ReleaseRevision = releaseDate(2021, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.21"
-	DBM.ReleaseRevision = releaseDate(2021, 12, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.22"
+	DBM.ReleaseRevision = releaseDate(2021, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -357,7 +357,7 @@ local playerName = UnitName("player")
 local playerLevel = UnitLevel("player")
 local playerRealm = GetRealmName()
 local lastCombatStarted = GetTime()
-local chatPrefix, chatPrefixShort = "<" .. L.DEADLY_BOSS_MODS .. "> ", "<" .. L.DBM .. "> "
+local chatPrefixShort = "<" .. L.DBM .. "> "
 local usedProfile = "Default"
 local dbmIsEnabled = true
 -- Table variables
@@ -5188,6 +5188,7 @@ do
 			mod.engagedDiff = nil
 			mod.engagedDiffText = nil
 			mod.engagedDiffIndex = nil
+			mod.vb.stageTotality = nil
 			if #inCombat == 0 then--prevent error if you pulled multiple boss. (Earth, Wind and Fire)
 				statusWhisperDisabled = false
 				statusGuildDisabled = false
@@ -5464,13 +5465,13 @@ function DBM:GetStage(modId)
 	if modId then
 		local mod = self:GetModByName(modId)
 		if mod and mod.inCombat then
-			return mod.vb.phase or 0
+			return mod.vb.phase or 0, mod.vb.stageTotality or 0
 		end
 	else
 		if #inCombat > 0 then--At least one boss is engaged
 			local mod = inCombat[1]--Get first mod in table
 			if mod then
-				return mod.vb.phase or 0
+				return mod.vb.phase or 0, mod.vb.stageTotality or 0
 			end
 		end
 	end
@@ -5503,6 +5504,10 @@ do
 	end
 
 	function DBM:ValidateSound(path, log, ignoreCustom)
+		-- Ignore build in sounds
+		if type(path) == "number" or string.find(path:lower(), "^sound[\\/]+") then
+			return true
+		end
 		-- Validate LibSharedMedia
 		if not LSMMediaCacheBuilt then
 			buildLSMFileCache()
@@ -5944,7 +5949,7 @@ do
 	local function onWhisper(msg, sender, isRealIdMessage)
 		if statusWhisperDisabled then return end--RL has disabled status whispers for entire raid.
 		if not checkForSafeSender(sender, true, true, true, isRealIdMessage) then return end--Automatically reject all whisper functions from non friends, non guildies, or people in group with us
-		if msg:find(chatPrefix) and not InCombatLockdown() and DBM:AntiSpam(60, "Ogron") and DBM.Options.AutoReplySound then
+		if msg:find(chatPrefixShort) and not InCombatLockdown() and DBM:AntiSpam(60, "Ogron") and DBM.Options.AutoReplySound then
 			--Might need more validation if people figure out they can just whisper people with chatPrefix to trigger it.
 			--However if I have to add more validation it probably won't work in most languages :\ So lets hope antispam and combat check is enough
 			DBM:PlaySound(41928)--"sound\\creature\\aggron1\\VO_60_HIGHMAUL_AGGRON_1_AGGRO_1.ogg"
@@ -5968,7 +5973,7 @@ do
 				local bossesKilled = mod.numBoss - mod.vb.bossLeft
 				hpText = hpText.." ("..BOSSES_KILLED:format(bossesKilled, mod.numBoss)..")"
 			end
-			sendWhisper(sender, chatPrefix..L.STATUS_WHISPER:format(difficultyText..(mod.combatInfo.name or ""), hpText, IsInInstance() and getNumRealAlivePlayers() or getNumAlivePlayers(), DBM:GetNumRealGroupMembers()))
+			sendWhisper(sender, chatPrefixShort..L.STATUS_WHISPER:format(difficultyText..(mod.combatInfo.name or ""), hpText, IsInInstance() and getNumRealAlivePlayers() or getNumAlivePlayers(), DBM:GetNumRealGroupMembers()))
 		elseif #inCombat > 0 and DBM.Options.AutoRespond then
 			if not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
 				savedDifficulty, difficultyText, difficultyIndex, LastGroupSize, difficultyModifier = DBM:GetCurrentInstanceDifficulty()
@@ -5990,9 +5995,9 @@ do
 			end
 			if not autoRespondSpam[sender] then
 				if isRetail and not mod.soloChallenge and IsInScenarioGroup() then
-					sendWhisper(sender, chatPrefix..L.AUTO_RESPOND_WHISPER_SCENARIO:format(playerName, difficultyText..(mod.combatInfo.name or ""), getNumAlivePlayers(), DBM:GetNumGroupMembers()))
+					sendWhisper(sender, chatPrefixShort..L.AUTO_RESPOND_WHISPER_SCENARIO:format(playerName, difficultyText..(mod.combatInfo.name or ""), getNumAlivePlayers(), DBM:GetNumGroupMembers()))
 				else
-					sendWhisper(sender, chatPrefix..L.AUTO_RESPOND_WHISPER:format(playerName, difficultyText..(mod.combatInfo.name or ""), hpText, IsInInstance() and getNumRealAlivePlayers() or getNumAlivePlayers(), DBM:GetNumRealGroupMembers()))
+					sendWhisper(sender, chatPrefixShort..L.AUTO_RESPOND_WHISPER:format(playerName, difficultyText..(mod.combatInfo.name or ""), hpText, IsInInstance() and getNumRealAlivePlayers() or getNumAlivePlayers(), DBM:GetNumRealGroupMembers()))
 				end
 				DBM:AddMsg(L.AUTO_RESPONDED)
 			end
@@ -6329,7 +6334,7 @@ do
 				subTab = modSubTab,
 				optionCategories = {
 				},
-				categorySort = {"announce", "announceother", "announcepersonal", "announcerole", "timer", "sound", "yell", "nameplate", "icon", "misc"},
+				categorySort = {"announce", "announceother", "announcepersonal", "announcerole", "specialannounce", "timer", "sound", "yell", "nameplate", "icon", "misc"},
 				id = name,
 				announces = {},
 				specwarns = {},
@@ -6478,9 +6483,15 @@ function bossModPrototype:SetStage(stage)
 	else
 		self.vb.phase = stage
 	end
+	--Separate variable to use SetStage totality for very niche weak aura practices
+	if not self.vb.stageTotality then
+		self.vb.stageTotality = 0
+	end
+	self.vb.stageTotality = self.vb.stageTotality + 1
 	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
-		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId)--Mod, modId, Stage, Encounter Id (if available).
+		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, self.vb.stageTotality)--Mod, modId, Stage, Encounter Id (if available), total number of times SetStage has been called since combat start
 		--Note, some encounters have more than one encounter Id, for these encounters, the first ID from mod is always returned regardless of actual engage ID triggered fight
+		DBM:Debug("DBM_SetStage: " .. self.vb.phase)
 	end
 end
 
@@ -7773,9 +7784,11 @@ do
 			mt
 		)
 		local catType = "announce"--Default to General announce
-		--Change if Personal or Other
-		if announceType == "target" or announceType == "targetcount" or announceType == "stack" then
-			catType = "announceother"
+		if not self.NoSortAnnounce then--ALL announce objects will be assigned "announce", usually for mods that sort by phase instead
+			--Change if Personal or Other
+			if announceType == "target" or announceType == "targetcount" or announceType == "stack" then
+				catType = "announceother"
+			end
 		end
 		if optionName then
 			obj.option = optionName
@@ -8516,7 +8529,7 @@ do
 		if optionId then
 			obj.voiceOptionId = hasVoice and "Voice"..optionId or nil
 			obj.option = optionId..(optionVersion or "")
-			self:AddSpecialWarningOption(optionId, optionDefault, runSound, "announce")
+			self:AddSpecialWarningOption(optionId, optionDefault, runSound, self.NoSortAnnounce and "specialannounce" or "announce")
 		end
 		tinsert(self.specwarns, obj)
 		return obj
@@ -8587,15 +8600,19 @@ do
 		end
 		if obj.option then
 			local catType = "announce"--Default to General announce
-			--Directly affects another target (boss or player) that you need to know about
-			if announceType == "target" or announceType == "targetcount" or announceType == "close" or announceType == "reflect" then
-				catType = "announceother"
-			--Directly affects you
-			elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "stack" or announceType == "moveto" or announceType == "soak" or announceType == "soakcount" or announceType == "soakpos" then
-				catType = "announcepersonal"
-			--Things you have to do to fulfil your role
-			elseif announceType == "taunt" or announceType == "dispel" or announceType == "interrupt" or announceType == "interruptcount" or announceType == "switch" or announceType == "switchcount" then
-				catType = "announcerole"
+			if self.NoSortAnnounce then--ALL special announce objects will be assigned "specialannounce", usually for mods that sort by phase instead
+				catType = "specialannounce"
+			else
+				--Directly affects another target (boss or player) that you need to know about
+				if announceType == "target" or announceType == "targetcount" or announceType == "close" or announceType == "reflect" then
+					catType = "announceother"
+				--Directly affects you
+				elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "stack" or announceType == "moveto" or announceType == "soak" or announceType == "soakcount" or announceType == "soakpos" then
+					catType = "announcepersonal"
+				--Things you have to do to fulfil your role
+				elseif announceType == "taunt" or announceType == "dispel" or announceType == "interrupt" or announceType == "interruptcount" or announceType == "switch" or announceType == "switchcount" then
+					catType = "announcerole"
+				end
 			end
 			self:AddSpecialWarningOption(obj.option, optionDefault, runSound, catType)
 		end
@@ -10027,6 +10044,14 @@ end
 
 function bossModPrototype:AddTimerLine(text)
 	return self:AddOptionLine(text, "timer")
+end
+
+function bossModPrototype:AddNamePlateLine(text)
+	return self:AddOptionLine(text, "nameplate")
+end
+
+function bossModPrototype:AddIconLine(text)
+	return self:AddOptionLine(text, "icon")
 end
 
 function bossModPrototype:AddMiscLine(text)

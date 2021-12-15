@@ -1,21 +1,22 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211203051721")
+mod:SetRevision("20211215031726")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(1, 2, 3, 6, 7, 8)
 --mod:SetHotfixNoticeRev(20210902000000)
 --mod:SetMinSyncRevision(20210706000000)
 --mod.respawnTime = 29
+mod.NoSortAnnounce = true
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 362405 361989 365295 361815 362771 363024 365120 365872 365958 365805",
-	"SPELL_CAST_SUCCESS 365235 365636",
+	"SPELL_CAST_SUCCESS 365235 365636 366849",
 	"SPELL_SUMMON 365039",
-	"SPELL_AURA_APPLIED 362055 364031 361992 361993 365021 362505 365216 362862 365966",
+	"SPELL_AURA_APPLIED 362055 364031 361992 361993 365021 362505 365216 362862 365966 366849",
 	"SPELL_AURA_APPLIED_DOSE 364248",
 	"SPELL_AURA_REMOVED 362055 361992 361993 365021 362505 365216 365966",
 --	"SPELL_PERIODIC_DAMAGE",
@@ -35,16 +36,23 @@ mod:RegisterEventsInCombat(
 --TODO, track https://ptr.wowhead.com/spell=363028/unraveling-frenzy ? seems pretty passive
 --TODO, verify grim reflection auto marking, and number of spawns
 --TODO, dire hopelessness need repeat yell? it's not about partners finding each other this time, just a player walking into the light
+local P1Info, P15Info, P2Info, P25Info, P3Info = DBM:EJ_GetSectionInfo(24462), DBM:EJ_GetSectionInfo(24494), DBM:EJ_GetSectionInfo(24478), DBM:EJ_GetSectionInfo(24172), DBM:EJ_GetSectionInfo(24417)
 --Stage One: Kingsmourne Hungers
+mod:AddOptionLine(P1Info, "announce")
 local warnDespair								= mod:NewSpellAnnounce(365235, 4)
 local warnBefouledBarrier						= mod:NewSpellAnnounce(365295, 3)
 local warnWickedStar							= mod:NewTargetCountAnnounce(348064, 3, nil, nil, nil, nil, nil, nil, true)
+local warnDominationWordPain					= mod:NewTargetNoFilterAnnounce(366849, 3, nil, "Healer")
 --Intermission: Remnant of a Fallen King
+mod:AddOptionLine(P15Info, "announce")
 local warnArmyofDead							= mod:NewSpellAnnounce(362862, 3)
 --Stage Three: A Moment of Clarity
+mod:AddOptionLine(P3Info, "announce")
 local warnBeaconofHope							= mod:NewCastAnnounce(365872, 1)
 
 --Stage One: Kingsmourne Hungers
+mod:AddOptionLine(P1Info, "specialannounce")
+mod:AddOptionLine(P1Info, "yell")
 local specWarnKingsmourneHungers				= mod:NewSpecialWarningCount(362405, nil, nil, nil, 1, 2)
 local specWarnMalignantward						= mod:NewSpecialWarningDispel(364031, "RemoveMagic", nil, nil, 1, 2)
 local specWarnBlasphemy							= mod:NewSpecialWarningMoveAway(361989, nil, nil, nil, 3, 2)
@@ -58,24 +66,29 @@ local specWarnHopebreaker						= mod:NewSpecialWarningCount(361815, nil, nil, ni
 local specWarnDarkZeal							= mod:NewSpecialWarningCount(364248, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.stack:format(12, 364248), nil, 1, 2)
 local specWarnDarkZealOther						= mod:NewSpecialWarningTaunt(364248, nil, nil, nil, 1, 2)
 --Intermission: Remnant of a Fallen King
+mod:AddOptionLine(P15Info, "specialannounce")
 local specWarnSoulReaper						= mod:NewSpecialWarningDefensive(362771, nil, nil, nil, 1, 2)
 local specWarnSoulReaperTaunt					= mod:NewSpecialWarningTaunt(362771, nil, nil, nil, 1, 2)
 ----Monstrous Soul
 local specWarnNecroticDetonation				= mod:NewSpecialWarningDefensive(363024, nil, nil, nil, 2, 2)--Aoe defensive, big damage followed by heal immunity
 --Stage Two: Grim Reflections
+mod:AddOptionLine(P2Info, "specialannounce")
 local specWarnGrimReflections					= mod:NewSpecialWarningSwitch(365120, "-Healer", nil, nil, 1, 2)
 local specWarnPsychicTerror						= mod:NewSpecialWarningInterruptCount(365008, "HasInterrupt", nil, nil, 1, 2)
 --Intermission: March of the Damned
+mod:AddOptionLine(P25Info, "specialannounce")
 local specWarnMarchofDamned						= mod:NewSpecialWarningDodge(364020, nil, nil, nil, 2, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 --Stage Three: A Moment of Clarity
+mod:AddOptionLine(P3Info, "specialannounce")
+mod:AddOptionLine(P3Info, "yell")
 local specWarnDireBlasphemy						= mod:NewSpecialWarningMoveAway(365958, nil, nil, nil, 3, 2)
 local specWarnDireHopelessness					= mod:NewSpecialWarningYou(365966, nil, nil, nil, 1, 2)
 local yellDireHoppelessness						= mod:NewYell(365966)--Repeat yell?
 local specWarnEmpoweredHopebreaker				= mod:NewSpecialWarningCount(365805, nil, nil, nil, 2, 2)
 
---mod:AddTimerLine(BOSS)
 --Stage One: Kingsmourne Hungers
+mod:AddTimerLine(P1Info)
 local timerKingsmourneHungersCD					= mod:NewAITimer(28.8, 362405, nil, nil, nil, 3)
 local timerLostSoul								= mod:NewBuffFadesTimer(35, 362055, nil, nil, nil, 5)
 --local timerDespairCD							= mod:NewAITimer(35, 362055, nil, nil, nil, 2)
@@ -84,12 +97,16 @@ local timerBefouledBarrierCD					= mod:NewAITimer(28.8, 365295, nil, nil, nil, 5
 local timerWickedStarCD							= mod:NewAITimer(28.8, 365030, nil, nil, nil, 3)
 local timerWickedStar							= mod:NewTargetCountTimer(4, 365021, nil, nil, nil, 5)
 local timerHopebreakerCD						= mod:NewAITimer(28.8, 361815, nil, nil, nil, 2)
+local timerDominationWordPainCD					= mod:NewAITimer(28.8, 366849, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 --Intermission: Remnant of a Fallen King
+mod:AddTimerLine(P15Info)
 local timerSoulReaperCD							= mod:NewAITimer(28.8, 362771, nil, "Healer|Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerArmyofDeadCD							= mod:NewAITimer(28.8, 362862, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Stage Two: Grim Reflections
+mod:AddTimerLine(P2Info)
 local timerGrimReflectionsCD					= mod:NewAITimer(28.8, 365120, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Intermission: March of the Damned
+mod:AddTimerLine(P25Info)
 local timerMarchofDamnedCD						= mod:NewAITimer(28.8, 364020, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 --Stage Three: A Moment of Clarity
 ---In case I decide to split any of timers after all for hopebreaker and dire blasphemy
@@ -98,7 +115,9 @@ local timerMarchofDamnedCD						= mod:NewAITimer(28.8, 364020, nil, nil, nil, 3,
 
 mod:AddRangeFrameOption(8, 363020)
 mod:AddInfoFrameOption(365966, true)
+mod:AddIconLine(P1Info)
 mod:AddSetIconOption("SetIconOnWickedStar", 365021, true, false, {1, 2, 3})
+mod:AddIconLine(P2Info)
 mod:AddSetIconOption("SetIconOnGrimReflection", 365120, true, true, {6, 7, 8})
 --mod:AddNamePlateOption("NPAuraOnBurdenofDestiny", 353432, true)
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
@@ -155,6 +174,7 @@ function mod:OnCombatStart(delay)
 	timerBefouledBarrierCD:Start(1-delay)
 	timerWickedStarCD:Start(1-delay)
 	timerHopebreakerCD:Start(1-delay)
+	timerDominationWordPainCD:Start(1-delay)
 	if UnitIsGroupLeader("player") and not self:IsLFR() then
 		if self.Options.PairingBehavior == "Auto" then
 			self:SendSync("Auto")
@@ -283,6 +303,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 			warnDespair:Show()
 		end
 --		timerDespairCD:Start()
+	elseif spellId == 366849 then
+		timerDominationWordPainCD:Start()
 	end
 end
 
@@ -412,6 +434,12 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif (spellId == 362505 or spellId == 365216) and self:AntiSpam(10, 3) then--Both probably valid for same thing
+		timerKingsmourneHungersCD:Stop()
+		timerBlasphemyCD:Stop()
+		timerBefouledBarrierCD:Stop()
+		timerWickedStarCD:Stop()
+		timerHopebreakerCD:Stop()
+		timerDominationWordPainCD:Stop()
 		if self.vb.phase == 1 then
 			self:SetStage(1.5)
 			timerSoulReaperCD:Start(2)
@@ -428,17 +456,14 @@ function mod:SPELL_AURA_APPLIED(args)
 				DBM.RangeCheck:Show(8)
 			end
 		end
-		timerKingsmourneHungersCD:Stop()
-		timerBlasphemyCD:Stop()
-		timerBefouledBarrierCD:Stop()
-		timerWickedStarCD:Stop()
-		timerHopebreakerCD:Stop()
 	elseif spellId == 362774 and not args:IsPlayer() then
 		specWarnSoulReaperTaunt:Show(args.destName)
 		specWarnSoulReaperTaunt:Play("tauntboss")
 	elseif spellId == 362862 then
 		warnArmyofDead:Show()
 		timerArmyofDeadCD:Start()--I doubt it's cast more than once
+	elseif spellId == 366849 then
+		warnDominationWordPain:CombinedShow(0.3, args.destName)
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -469,6 +494,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerBefouledBarrierCD:Start(2)
 			timerWickedStarCD:Start(2)
 			timerHopebreakerCD:Start(2)
+			timerDominationWordPainCD:Start(2)
 			timerGrimReflectionsCD:Start(2)--Only new ability in stage 2
 		else--end of 2.5
 			self:SetStage(3)
