@@ -6,6 +6,8 @@ local UF = B:GetModule("UnitFrames")
 local format, tostring = string.format, tostring
 
 -- Units
+local UFRangeAlpha = {insideAlpha = 1, outsideAlpha = .4}
+
 local function SetUnitFrameSize(self, unit)
 	local width = C.db["UFs"][unit.."Width"]
 	local height = C.db["UFs"][unit.."Height"] + C.db["UFs"][unit.."PowerHeight"] + C.mult
@@ -147,9 +149,8 @@ end
 
 local function CreateRaidStyle(self)
 	self.mystyle = "raid"
-	self.Range = {
-		insideAlpha = 1, outsideAlpha = .4,
-	}
+	self.Range = UFRangeAlpha
+	self.disableTooltip = C.db["UFs"]["HideTip"]
 
 	UF:CreateHeader(self)
 	UF:CreateHealthBar(self)
@@ -171,12 +172,12 @@ local function CreateRaidStyle(self)
 end
 
 local function CreateSimpleRaidStyle(self)
-	self.isSimpleMode = true
+	self.raidType = "simple"
 	CreateRaidStyle(self)
 end
 
 local function CreatePartyStyle(self)
-	self.isPartyFrame = true
+	self.raidType = "party"
 	CreateRaidStyle(self)
 	UF:InterruptIndicator(self)
 	UF:CreatePartyAltPower(self)
@@ -184,10 +185,9 @@ end
 
 local function CreatePartyPetStyle(self)
 	self.mystyle = "raid"
-	self.isPartyPet = true
-	self.Range = {
-		insideAlpha = 1, outsideAlpha = .4,
-	}
+	self.raidType = "pet"
+	self.Range = UFRangeAlpha
+	self.disableTooltip = C.db["UFs"]["HideTip"]
 
 	UF:CreateHeader(self)
 	UF:CreateHealthBar(self)
