@@ -86,7 +86,6 @@ local function restyleMRTWidget(self)
 		self.styled = true
 	end
 	iconTexture:SetTexCoord(unpack(DB.TexCoord))
-	self.__bg:SetShown(bar:GetWidth() ~= 0)
 
 	local parent = self.parent
 	if parent.optionIconPosition == 3 or parent.optionIconTitles then
@@ -96,10 +95,13 @@ local function restyleMRTWidget(self)
 	else
 		self.icon:SetPoint("LEFT", self, -3, 0)
 	end
+	self.__bg:SetShown(parent.optionAlphaTimeLine ~= 0)
 end
 
-function S:MRT_Skin()
-	if not IsAddOnLoaded("MRT") then return end
+local MRTLoaded
+local function LoadMRTSkin()
+	if MRTLoaded then return end
+	MRTLoaded = true
 
 	local name = "MRTRaidCooldownCol"
 	for i = 1, 10 do
@@ -110,9 +112,25 @@ function S:MRT_Skin()
 				local line = lines[j]
 				if line.UpdateStyle then
 					hooksecurefunc(line, "UpdateStyle", restyleMRTWidget)
+					line:UpdateStyle()
 				end
 			end
 		end
+	end
+end
+
+function S:MRT_Skin()
+	if not IsAddOnLoaded("MRT") then return end
+
+	local isEnabled = VMRT and VMRT.ExCD2 and VMRT.ExCD2.enabled
+	if isEnabled then
+		LoadMRTSkin()
+	else
+		hooksecurefunc(MRTOptionsFrameExCD2, "Load", function(self)
+			if self.chkEnable then
+				self.chkEnable:HookScript("OnClick", LoadMRTSkin)
+			end
+		end)
 	end
 end
 
