@@ -1,11 +1,21 @@
 # <DBM> Challenges
 
-## [r144](https://github.com/DeadlyBossMods/DBM-Challenges/tree/r144) (2021-12-08)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Challenges/compare/r143...r144) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Challenges/releases)
+## [r145](https://github.com/DeadlyBossMods/DBM-Challenges/tree/r145) (2021-12-26)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Challenges/compare/r144...r145) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Challenges/releases)
 
-- Update localization.ru.lua (#21)  
-- Update min core too  
-- Update some local paths  
-- Difficulty does in fact report as timewalker, which means stats record there too, so update legion mage tower scenarios to show timewalker stats category  
-- Fixed another bug where stack count reported incorectly on clear  
-- Fixed voice pack support not working on two fel totem abilities  
+- Update luacheck  
+- Finished Phase 2 support for Xylem  
+    Removed redundant SetZone call from all mage tower mods as well  
+- Move Challenges into other category, as it's not "shadowlands" fitting.  
+- Merge pull request #24 from nanjuekaien1/patch-1  
+    Update localization.cn.lua  
+- Update localization.cn.lua  
+- Refactored how combat works on healing module. untested  
+- Add Darkness Within timer for Xylem  
+- Update README.md  
+- Fix spellID for warning  
+- Add Knife Dance interrupt for Healer challenge  
+- Update subcat for koKR (#22)  
+    Co-authored-by: Adam <MysticalOS@users.noreply.github.com>  
+- Fixed bug that caused ancient knowledge alerts and timers not to function on Queen  
+- Fix victory detectoin on xylem and set it to report boss hp of second boss when in phase 2. mod still has no support for P2 though which means it won't track defeat of first boss for status and wipe messages  
