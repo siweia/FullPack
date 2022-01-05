@@ -362,6 +362,7 @@ G.DefaultSettings = {
 		FriendPlate = false,
 		EnemyThru = false,
 		FriendlyThru = false,
+		BlockDBM = true,
 
 		PlateWidth = 190,
 		PlateHeight = 8,
@@ -825,10 +826,6 @@ local function updatePlateAlpha()
 	B:GetModule("UnitFrames"):UpdatePlateAlpha()
 end
 
-local function updateRaidNameText()
-	B:GetModule("UnitFrames"):UpdateRaidNameText()
-end
-
 local function updateUFTextScale()
 	B:GetModule("UnitFrames"):UpdateTextScale()
 end
@@ -986,7 +983,7 @@ G.TabList = {
 	L["Bags"],
 	L["Unitframes"],
 	NewTag..L["RaidFrame"],
-	L["Nameplate"],
+	NewTag..L["Nameplate"],
 	L["PlayerPlate"],
 	L["Auras"],
 	L["Raid Tools"],
@@ -1095,7 +1092,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "AutoRes", HeaderTag..L["UFs AutoRes"], true},
 		{},--blank
 		{4, "UFs", "RaidHealthColor", L["HealthColor"].."*", nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}, updateRaidTextScale},
-		{4, "UFs", "RaidHPMode", L["HealthValueType"].."*", true, {DISABLE, L["ShowHealthPercent"], L["ShowHealthCurrent"], L["ShowHealthLoss"], L["ShowHealthLossPercent"]}, updateRaidNameText, L["100PercentTip"]},
+		{4, "UFs", "RaidHPMode", L["HealthValueType"].."*", true, {DISABLE, L["ShowHealthPercent"], L["ShowHealthCurrent"], L["ShowHealthLoss"], L["ShowHealthLossPercent"]}, updateRaidTextScale, L["100PercentTip"]},
 		{1, "UFs", "ShowSolo", L["ShowSolo"].."*", nil, nil, updateAllHeaders, L["ShowSoloTip"]},
 		{1, "UFs", "SmartRaid", HeaderTag..L["SmartRaid"].."*", nil, nil, updateAllHeaders, L["SmartRaidTip"]},
 		{3, "UFs", "RaidTextScale", L["UFTextScale"].."*", true, {.8, 1.5, .05}, updateRaidTextScale},
@@ -1132,6 +1129,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Nameplate", "ExplosivesScale", L["ExplosivesScale"], true, nil, nil, L["ExplosivesScaleTip"]},
 		{1, "Nameplate", "QuestIndicator", L["QuestIndicator"]},
 		{1, "Nameplate", "AKSProgress", L["AngryKeystones Progress"], true},
+		{1, "Nameplate", "BlockDBM", NewTag..L["BlockDBM"], nil, nil, nil, L["BlockDBMTip"]},
 		{},--blank
 		{1, "Nameplate", "ColoredTarget", HeaderTag..L["ColoredTarget"].."*", nil, nil, nil, L["ColoredTargetTip"]},
 		{1, "Nameplate", "ColoredFocus", HeaderTag..L["ColoredFocus"].."*", true, nil, nil, L["ColoredFocusTip"]},
