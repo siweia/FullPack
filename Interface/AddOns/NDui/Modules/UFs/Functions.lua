@@ -214,28 +214,32 @@ function UF:UpdateFrameNameTag()
 	name:UpdateTag()
 end
 
-local function UpdateRaidNameAnchor(self, name)
-	name:ClearAllPoints()
+function UF:UpdateRaidNameAnchor(name)
 	if self.raidType == "pet" then
-		if C.db["UFs"]["RaidHPMode"] ~= 1 then
-			name:SetWidth(self:GetWidth()*.55)
-			name:SetJustifyH("LEFT")
-			name:SetPoint("LEFT", 3, -1)
-		else
+		name:ClearAllPoints()
+		if C.db["UFs"]["RaidHPMode"] == 1 then
 			name:SetWidth(self:GetWidth()*.95)
 			name:SetJustifyH("CENTER")
 			name:SetPoint("CENTER")
+		else
+			name:SetWidth(self:GetWidth()*.65)
+			name:SetJustifyH("LEFT")
+			name:SetPoint("LEFT", 3, -1)
 		end
 	elseif self.raidType == "simple" then
-		name:SetWidth(self:GetWidth()*.55)
-		name:SetPoint("LEFT", 4, 0)
+		if C.db["UFs"]["RaidHPMode"] == 1 then
+			name:SetWidth(self:GetWidth()*.95)
+		else
+			name:SetWidth(self:GetWidth()*.65)
+		end
 	else
+		name:ClearAllPoints()
 		name:SetWidth(self:GetWidth()*.95)
 		name:SetJustifyH("CENTER")
-		if C.db["UFs"]["RaidHPMode"] ~= 1 then
-			name:SetPoint("TOP", 0, -3)
-		else
+		if C.db["UFs"]["RaidHPMode"] == 1 then
 			name:SetPoint("CENTER")
+		else
+			name:SetPoint("TOP", 0, -3)
 		end
 	end
 end
@@ -249,7 +253,7 @@ function UF:CreateHealthText(self)
 	self.nameText = name
 	name:SetJustifyH("LEFT")
 	if mystyle == "raid" then
-		UpdateRaidNameAnchor(self, name)
+		UF.UpdateRaidNameAnchor(self, name)
 		name:SetScale(C.db["UFs"]["RaidTextScale"])
 	elseif mystyle == "nameplate" then
 		name:ClearAllPoints()
@@ -432,7 +436,7 @@ function UF:UpdateRaidTextScale()
 	local scale = C.db["UFs"]["RaidTextScale"]
 	for _, frame in pairs(oUF.objects) do
 		if frame.mystyle == "raid" then
-			UpdateRaidNameAnchor(frame, frame.nameText)
+			UF.UpdateRaidNameAnchor(frame, frame.nameText)
 			frame.nameText:SetScale(scale)
 			frame.healthValue:SetScale(scale)
 			frame.healthValue:UpdateTag()
@@ -549,7 +553,7 @@ local function createBarMover(bar, text, value, anchor)
 end
 
 local function updateSpellTarget(self, _, unit)
-	B.PostCastUpdate(self.Castbar, unit)
+	UF.PostCastUpdate(self.Castbar, unit)
 end
 
 function UF:ToggleCastBarLatency(frame)
@@ -557,13 +561,13 @@ function UF:ToggleCastBarLatency(frame)
 	if not frame then return end
 
 	if C.db["UFs"]["LagString"] then
-		frame:RegisterEvent("GLOBAL_MOUSE_UP", B.OnCastSent, true) -- Fix quests with WorldFrame interaction
-		frame:RegisterEvent("GLOBAL_MOUSE_DOWN", B.OnCastSent, true)
-		frame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED", B.OnCastSent, true)
+		frame:RegisterEvent("GLOBAL_MOUSE_UP", UF.OnCastSent, true) -- Fix quests with WorldFrame interaction
+		frame:RegisterEvent("GLOBAL_MOUSE_DOWN", UF.OnCastSent, true)
+		frame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED", UF.OnCastSent, true)
 	else
-		frame:UnregisterEvent("GLOBAL_MOUSE_UP", B.OnCastSent)
-		frame:UnregisterEvent("GLOBAL_MOUSE_DOWN", B.OnCastSent)
-		frame:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED", B.OnCastSent)
+		frame:UnregisterEvent("GLOBAL_MOUSE_UP", UF.OnCastSent)
+		frame:UnregisterEvent("GLOBAL_MOUSE_DOWN", UF.OnCastSent)
+		frame:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED", UF.OnCastSent)
 		if frame.Castbar then frame.Castbar.__sendTime = nil end
 	end
 end
@@ -661,12 +665,12 @@ function UF:CreateCastBar(self)
 
 	cb.Time = timer
 	cb.Text = name
-	cb.OnUpdate = B.OnCastbarUpdate
-	cb.PostCastStart = B.PostCastStart
-	cb.PostCastUpdate = B.PostCastUpdate
-	cb.PostCastStop = B.PostCastStop
-	cb.PostCastFail = B.PostCastFailed
-	cb.PostCastInterruptible = B.PostUpdateInterruptible
+	cb.OnUpdate = UF.OnCastbarUpdate
+	cb.PostCastStart = UF.PostCastStart
+	cb.PostCastUpdate = UF.PostCastUpdate
+	cb.PostCastStop = UF.PostCastStop
+	cb.PostCastFail = UF.PostCastFailed
+	cb.PostCastInterruptible = UF.PostUpdateInterruptible
 
 	self.Castbar = cb
 end

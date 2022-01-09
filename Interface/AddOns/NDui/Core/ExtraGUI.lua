@@ -1014,6 +1014,7 @@ function G:SetupRaidFrame(parent)
 		for _, frame in pairs(ns.oUF.objects) do
 			if frame.mystyle == "raid" and not frame.raidType then
 				SetUnitFrameSize(frame, "Raid")
+				UF.UpdateRaidNameAnchor(frame, frame.nameText)
 			end
 		end
 		if UF.CreateAndUpdateRaidHeader then
@@ -1073,6 +1074,7 @@ function G:SetupSimpleRaidFrame(parent)
 				frame.Power:SetHeight(powerHeight)
 				frame.Auras.size = 18*scale/10
 				UF:UpdateAuraContainer(frame, frame.Auras, 1)
+				UF.UpdateRaidNameAnchor(frame, frame.nameText)
 			end
 		end
 
@@ -1094,6 +1096,7 @@ function G:SetupPartyFrame(parent)
 		for _, frame in pairs(ns.oUF.objects) do
 			if frame.raidType == "party" then
 				SetUnitFrameSize(frame, "Party")
+				UF.UpdateRaidNameAnchor(frame, frame.nameText)
 			end
 		end
 		if UF.CreateAndUpdatePartyHeader then
@@ -1108,10 +1111,11 @@ function G:SetupPartyFrame(parent)
 		options[i] = UF.PartyDirections[i].name
 	end
 	createOptionCheck(scroll.child, -10, L["UFs PartyAltPower"], "UFs", "PartyAltPower", resizePartyFrame, L["PartyAltPowerTip"])
-	createOptionDropdown(scroll.child, L["GrowthDirection"], -70, options, nil, "UFs", "PartyDirec", 1, resizePartyFrame)
-	createOptionSlider(scroll.child, L["Width"], 80, 200, defaultValue[1], -150, "PartyWidth", resizePartyFrame)
-	createOptionSlider(scroll.child, L["Height"], 25, 60, defaultValue[2], -230, "PartyHeight", resizePartyFrame)
-	createOptionSlider(scroll.child, L["Power Height"], 2, 30, defaultValue[3], -310, "PartyPowerHeight", resizePartyFrame)
+	createOptionCheck(scroll.child, -40, L["DescRole"], "UFs", "DescRole", resizePartyFrame, L["DescRoleTip"])
+	createOptionDropdown(scroll.child, L["GrowthDirection"], -100, options, nil, "UFs", "PartyDirec", 1, resizePartyFrame)
+	createOptionSlider(scroll.child, L["Width"], 80, 200, defaultValue[1], -180, "PartyWidth", resizePartyFrame)
+	createOptionSlider(scroll.child, L["Height"], 25, 60, defaultValue[2], -260, "PartyHeight", resizePartyFrame)
+	createOptionSlider(scroll.child, L["Power Height"], 2, 30, defaultValue[3], -340, "PartyPowerHeight", resizePartyFrame)
 end
 
 function G:SetupPartyPetFrame(parent)
@@ -1134,6 +1138,7 @@ function G:SetupPartyPetFrame(parent)
 		for _, frame in pairs(ns.oUF.objects) do
 			if frame.raidType == "pet" then
 				SetUnitFrameSize(frame, "PartyPet")
+				UF.UpdateRaidNameAnchor(frame, frame.nameText)
 			end
 		end
 
