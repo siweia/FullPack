@@ -66,18 +66,18 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220113082439"),
+	Revision = parseCurseDate("20220118185328"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.24"
-	DBM.ReleaseRevision = releaseDate(2022, 1, 13) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.1.25"
+	DBM.ReleaseRevision = releaseDate(2022, 1, 18) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.8"
-	DBM.ReleaseRevision = releaseDate(2022, 1, 13) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.9"
+	DBM.ReleaseRevision = releaseDate(2022, 1, 18) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.23"
-	DBM.ReleaseRevision = releaseDate(2022, 1, 13) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.24"
+	DBM.ReleaseRevision = releaseDate(2022, 1, 18) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -327,6 +327,7 @@ DBM.DefaultOptions = {
 	AutoAcceptGuildInvite = false,
 	FakeBWVersion = false,
 	AITimer = true,
+	ExtendIcons = false,
 	ShortTimerText = true,
 	ChatFrame = "DEFAULT_CHAT_FRAME",
 	CoreSavedRevision = 1,
@@ -7588,7 +7589,8 @@ do
 						end
 						local playerColor = RAID_CLASS_COLORS[playerClass] or color
 						if playerColor then
-							if playerIcon > 0 then
+							local maxIcon = DBM.Options.ExtendIcons and 16 or 8
+							if playerIcon > 0 and playerIcon <= maxIcon then
 								cap = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(playerIcon) .. ("|r|cff%.2x%.2x%.2x%s|r|cff%.2x%.2x%.2x"):format(playerColor.r * 255, playerColor.g * 255, playerColor.b * 255, cap, color.r * 255, color.g * 255, color.b * 255)
 							else
 								cap = ("|r|cff%.2x%.2x%.2x%s|r|cff%.2x%.2x%.2x"):format(playerColor.r * 255, playerColor.g * 255, playerColor.b * 255, cap, color.r * 255, color.g * 255, color.b * 255)
@@ -8228,7 +8230,8 @@ do
 				if DBM.Options.SWarnClassColor then
 					local playerColor = RAID_CLASS_COLORS[playerClass]
 					if playerColor then
-						if playerIcon > 0 then
+						local maxIcon = DBM.Options.ExtendIcons and 16 or 8
+						if playerIcon > 0 and playerIcon <= maxIcon then
 							cap = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(playerIcon) .. ("|r|cff%.2x%.2x%.2x%s|r|cff%.2x%.2x%.2x"):format(playerColor.r * 255, playerColor.g * 255, playerColor.b * 255, cap, DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
 						else
 							cap = ("|r|cff%.2x%.2x%.2x%s|r|cff%.2x%.2x%.2x"):format(playerColor.r * 255, playerColor.g * 255, playerColor.b * 255, cap, DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
@@ -9695,11 +9698,7 @@ do
 				self.name = spellName
 			end
 		end
-		if L.AUTO_TIMER_TEXTS[timerType.."short"] and DBT.Options.StripCDText then
-			return pformat(L.AUTO_TIMER_TEXTS[timerType.."short"], spellName)
-		else
-			return pformat(L.AUTO_TIMER_TEXTS[timerType], spellName)
-		end
+		return pformat(L.AUTO_TIMER_TEXTS[timerType], spellName)
 	end
 end
 
@@ -9816,7 +9815,15 @@ function bossModPrototype:AddSpecialWarningOption(name, default, defaultSound, c
 	self:SetOptionCategory(name, cat)
 end
 
-function bossModPrototype:AddSetIconOption(name, spellId, default, isHostile, iconsUsed)
+--Extended Icon Usage Notes
+--Any time extended icons is used, option must be OFF by default
+--Option must be hidden from GUI if extended icoins not enabled
+--If extended icons are disabled, then on mod load, users option is reset to default (off) to prevent their mod from still executing SetIcon functions (this is because even if it's hidden from GUI, if option was created and enabled, it'd still run)
+function bossModPrototype:AddSetIconOption(name, spellId, default, isHostile, iconsUsed, requiresExtended, conflictWarning)
+	if requiresExtended and not DBM.Options.ExtendIcons then
+		self.Options[name] = false
+		return
+	end--Do not even show option in GUID if user hasn't extended icons
 	self.DefaultOptions[name] = (default == nil) or default
 	if default and type(default) == "string" then
 		default = self:GetRoleFlagValue(default)
@@ -9834,8 +9841,12 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, isHostile, ic
 	end
 	--A table defining used icons by number, insert icon textures to end of option
 	if iconsUsed then
+		local totalIcons = #iconsUsed
+		if not DBM.Options.ExtendIcons and totalIcons > 8 then
+			totalIcons = 8
+		end
 		self.localization.options[name] = self.localization.options[name].." ("
-		for i=1, #iconsUsed do
+		for i=1, totalIcons do
 			--Texture ID 137009 if direct calling RaidTargetingIcons stops working one day
 			if 		iconsUsed[i] == 1 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:0:16:0:16|t"
 			elseif	iconsUsed[i] == 2 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:16:32:0:16|t"
@@ -9845,9 +9856,20 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, isHostile, ic
 			elseif	iconsUsed[i] == 6 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:16:32:16:32|t"
 			elseif	iconsUsed[i] == 7 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:32:48:16:32|t"
 			elseif	iconsUsed[i] == 8 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:48:64:16:32|t"
+			elseif	iconsUsed[i] == 9 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:0:16:32:48|t"
+			elseif	iconsUsed[i] == 10 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:16:32:32:48|t"
+			elseif	iconsUsed[i] == 11 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:32:48:32:48|t"
+			elseif	iconsUsed[i] == 12 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:48:64:32:48|t"
+			elseif	iconsUsed[i] == 13 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:0:16:48:64|t"
+			elseif	iconsUsed[i] == 14 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:16:32:48:64|t"
+			elseif	iconsUsed[i] == 15 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:32:48:48:64|t"
+			elseif	iconsUsed[i] == 16 then		self.localization.options[name] = self.localization.options[name].."|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:48:64:48:64|t"
 			end
 		end
 		self.localization.options[name] = self.localization.options[name]..")"
+		if conflictWarning then
+			self.localization.options[name] = self.localization.options[name] .. L.AUTO_ICONS_OPTION_CONFLICT
+		end
 	end
 end
 

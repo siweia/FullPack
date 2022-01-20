@@ -122,7 +122,6 @@ DBT.DefaultOptions = {
 	ClickThrough = false,
 	KeepBars = true,
 	FadeBars = true,
-	StripCDText = true,
 	Texture = "Interface\\AddOns\\DBM-StatusBarTimers\\textures\\default.blp",
 	Font = "standardFont",
 	FontFlag = "None",
@@ -702,7 +701,7 @@ function barPrototype:SetText(text, inlineIcon)
 		inlineIcon = nil
 	end
 	-- Force change color type 7 to custom inlineIcon
-	_G[self.frame:GetName().."BarName"]:SetText(((self.colorType and self.colorType == 7 and DBT.Options.Bar7CustomInline) and DBM_CORE_L.IMPORTANT_ICON or inlineIcon or "") .. text)
+	_G[self.frame:GetName().."BarName"]:SetText(((self.colorType and self.colorType == 7 and DBT.Options.Bar7CustomInline) and DBM_COMMON_L.IMPORTANT_ICON or inlineIcon or "") .. text)
 end
 
 function barPrototype:SetIcon(icon)

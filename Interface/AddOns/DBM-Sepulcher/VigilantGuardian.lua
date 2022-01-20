@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2458, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220111080351")
+mod:SetRevision("20220115043110")
 mod:SetCreatureID(180773)
 mod:SetEncounterID(2512)
 --mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -21,7 +21,7 @@ mod:RegisterEventsInCombat(
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
 	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2"
 )
 
 --TODO, improvements for https://ptr.wowhead.com/spell=360403/force-field?
