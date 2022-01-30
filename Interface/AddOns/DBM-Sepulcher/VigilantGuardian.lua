@@ -1,19 +1,19 @@
 local mod	= DBM:NewMod(2458, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220115043110")
+mod:SetRevision("20220125053113")
 mod:SetCreatureID(180773)
 mod:SetEncounterID(2512)
 --mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20220111000000)
-mod:SetMinSyncRevision(20220111000000)
+mod:SetHotfixNoticeRev(20220125000000)
+mod:SetMinSyncRevision(20220125000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 360412 361001 360176 360162 364447",
-	"SPELL_CAST_SUCCESS 360412 366693 359610 361001 360404",--364425
+	"SPELL_CAST_SUCCESS 360412 366693 359610 361001 360404 365315 360658 364881",--364425
 	"SPELL_SUMMON 360848 360623",
 	"SPELL_AURA_APPLIED 363447 360458 364447 359610 360415 364881 364962",
 	"SPELL_AURA_APPLIED_DOSE 364447 360415",
@@ -29,6 +29,11 @@ mod:RegisterEventsInCombat(
 --TODO, adjust tank swap stacks for dissonance, if it's even swapped (and not just add soft enrage)
 --TODO, https://ptr.wowhead.com/spell=360654/point-defense-drone useful?
 --TODO, proper energy Conversion cast and alert prio
+--[[
+(ability.id = 360412 or ability.id = 360162) and type = "begincast"
+ or (ability.id = 359610 or ability.id = 365315 or ability.id = 360658 or ability.id = 364881) and type = "cast"
+ or ability.id = 360879
+--]]
 --General
 local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 --Automa
@@ -72,11 +77,11 @@ local timerDissonanceCD							= mod:NewCDTimer(12.2, 350202, nil, "Tank", nil, 5
 local timerVolatileMateriumCD					= mod:NewNextTimer(30.6, 365315, nil, nil, nil, 1)
 local timerSentryCD								= mod:NewNextTimer(71.2, 360658, nil, nil, nil, 1, nil, DBM_COMMON_L.TANK_ICON)--Every odd Volatile
 local timerRefractedBlastCD						= mod:NewCDCountTimer(15, 366693, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--15 but can be delayed by shit
-local timerDeresolutionCD						= mod:NewNextTimer(35.5, 359610, nil, nil, nil, 3)
+local timerDeresolutionCD						= mod:NewCDTimer(35.3, 359610, nil, nil, nil, 3)
 local timerExposedCore							= mod:NewCastTimer(10, 360412, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 --Stage Two: Roll Out, then Transform
 local timerSplitResolutionCD					= mod:NewCDTimer(30.2, 360412, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--30.2-34 (also acts as Pneumatic Impact timer)
-local timerMatterDisolutionCD					= mod:NewCDTimer(30.4, 360415, nil, nil, nil, 3)
+local timerMatterDisolutionCD					= mod:NewCDTimer(30.4, 364881, nil, nil, nil, 3)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -106,10 +111,26 @@ end
 function mod:OnCombatStart(delay)
 	self:SetStage(1)
 	self.vb.refractedCount = 0
-	timerVolatileMateriumCD:Start(18.6-delay)
-	timerSentryCD:Start(18.6)
-	timerRefractedBlastCD:Start(14.9-delay, 1)
-	timerDeresolutionCD:Start(26.3-delay)
+	--Every fucking difficulty has different timers, because why make it easy
+	if self:IsMythic() then
+		timerVolatileMateriumCD:Start(21.9-delay)
+		timerRefractedBlastCD:Start(29.5-delay, 1)
+		timerDeresolutionCD:Start(54.7-delay)
+		timerSentryCD:Start(74.6-delay)
+		--Boss Timers
+		timerSplitResolutionCD:Start(46.2)
+--		timerMatterDisolutionCD:Start()--Not used?
+	elseif self:IsHeroic() then
+		timerVolatileMateriumCD:Start(18.6-delay)
+		timerSentryCD:Start(18.6)
+		timerRefractedBlastCD:Start(14.9-delay, 1)
+		timerDeresolutionCD:Start(26.3-delay)
+	else--Normal, LFR will probably be different too
+		timerVolatileMateriumCD:Start(5-delay)
+		timerSentryCD:Start(39-delay)
+		timerRefractedBlastCD:Start(16.1-delay, 1)
+		timerDeresolutionCD:Start(38.1-delay)
+	end
 	if self.Options.NPAuraOnPoweredDown then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
@@ -178,16 +199,13 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 360412 then
+	if spellId == 360412 then--Exposed Core
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:Hide()
 		end
 --	elseif spellId == 364425 then
 --		warnSurge:Show()
 --	elseif spellId == 366693 then
-
---	elseif spellId == 364881 then
---		timerMatterDisolutionCD:Start()
 	elseif spellId == 359610 then
 		timerDeresolutionCD:Start()
 	elseif spellId == 361001 then
@@ -196,6 +214,16 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerWaveofDisintegrationCD:Start(castsPerGUID[args.sourceGUID][2] == 1 and 13.3 or 11.2, args.sourceGUID)--CD adjusted from SUCCESS --> Start, timers are 14.3 and 12.2
 	elseif spellId == 360404 then
 		warnForceField:Show()
+	elseif spellId == 365315 then--Volatile Materium
+		timerVolatileMateriumCD:Start(self:IsMythic() and 40 or 30)
+	elseif spellId == 360658 then--Pre-Fabricated Sentry
+		timerSentryCD:Start(self:IsMythic() and 100 or 71.2)
+		--scan for sentry being added to boss frames, so we can grab it's guid
+		self:RegisterShortTermEvents(
+			"INSTANCE_ENCOUNTER_ENGAGE_UNIT"
+		)
+	elseif spellId == 364881 then--Matter Disolution
+		timerMatterDisolutionCD:Start()
 	end
 end
 
@@ -297,9 +325,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerSentryCD:Stop()
 		timerRefractedBlastCD:Stop()
 		timerDeresolutionCD:Stop()
-		timerRefractedBlastCD:Start(21, self.vb.refractedCount+1)
-		timerSplitResolutionCD:Start(25.8)
-		timerMatterDisolutionCD:Start(46.5)
+		timerRefractedBlastCD:Start(20.6, self.vb.refractedCount+1)
+		--Blizzard swapped these two in normal testing, recheck heroic
+		timerSplitResolutionCD:Start(self:IsHeroic() and 25.8 or 45.9)
+		timerMatterDisolutionCD:Start(self:IsHeroic() and 46.5 or 25.5)
 	end
 end
 
@@ -353,17 +382,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 360906 then--Refracted Blast
 		self.vb.refractedCount = self.vb.refractedCount + 1
 		warnRefractedBlast:Show(self.vb.refractedCount)
-		timerRefractedBlastCD:Start(nil, self.vb.refractedCount+1)
-	elseif spellId == 365315 then--Volatile Materium
-		timerVolatileMateriumCD:Start()
-	elseif spellId == 360658 then--Pre-Fabricated Sentry
-		timerSentryCD:Start()
-		--scan for sentry being added to boss frames, so we can grab it's guid
-		self:RegisterShortTermEvents(
-			"INSTANCE_ENCOUNTER_ENGAGE_UNIT"
-		)
-	elseif spellId == 364881 then--Matter Disolution
-		timerMatterDisolutionCD:Start()
+		timerRefractedBlastCD:Start(self:IsMythic() and 20 or 15.7, self.vb.refractedCount+1)
 --	elseif spellId == 361936 then--ROLL OUT!
 
 	end

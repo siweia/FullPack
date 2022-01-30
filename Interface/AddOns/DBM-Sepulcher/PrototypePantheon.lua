@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2460, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116063514")
+mod:SetRevision("20220123071805")
 mod:SetCreatureID(181548, 181551, 181546, 181549)
 mod:SetEncounterID(2544)
 mod:SetBossHPInfoToHighest()
@@ -113,7 +113,7 @@ local timerNightHunterCD						= mod:NewAITimer(57.1, 361745, nil, nil, nil, 3, n
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
 mod:AddRangeFrameOption("8")
-mod:AddInfoFrameOption(360687, true)
+mod:AddInfoFrameOption(360687, "Healer")
 mod:AddNamePlateOption("NPAuraOnImprintedSafeguards", 366159, true)--Hostile only, can't anchor to friendly nameplates in raid (seeds)
 mod:AddIconLine(ProtoWar)
 mod:AddSetIconOption("SetIconOnDeathtouch", 360687, false, false, {13, 14, 15, 16}, true)--Technically only 2 debuffs go out, but we allow for even a bad group to have two sets of them out. Off by default do to conflict with seeds
@@ -355,10 +355,8 @@ local allTimers = {
 
 local updateInfoFrame
 do
-	local tsort, twipe = table.sort, table.wipe
+	local twipe = table.wipe
 	local lines, sortedLines = {}, {}
-	local tempLines, tempLinesSorted = {}, {}
-	local function sortFuncDesc(a, b) return tempLines[a] > tempLines[b] end
 	local function addLine(key, value)
 		-- sort by insertion order
 		lines[key] = value
@@ -499,13 +497,13 @@ function mod:SPELL_CAST_START(args)
 		self.vb.ritualistIcon = self.vb.ritualistIconMethod == 3 and 12 or self.vb.ritualistIconMethod == 2 and 4 or 8
 		specWarnNecroticRitual:Show(self.vb.ritualCount)
 		specWarnNecroticRitual:Play("killmob")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.ritualCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.ritualCount+1]
 		if timer then
 			timerNecroticRitualCD:Start(timer, self.vb.ritualCount+1)
 		end
 	elseif spellId == 360636 then
 		self.vb.deathtouchCount = self.vb.deathtouchCount + 1
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.deathtouchCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.deathtouchCount+1]
 		if timer then
 			timerRunecarversDeathtouchCD:Start(timer, self.vb.deathtouchCount+1)
 		end
@@ -515,7 +513,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnHumblingStrikes:Show()
 			specWarnHumblingStrikes:Play("defensive")
 		end
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.humblingCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.humblingCount+1]
 		if timer then
 			timerHumblingStrikesCD:Start(timer, self.vb.humblingCount+1)
 		end
@@ -532,14 +530,14 @@ function mod:SPELL_CAST_START(args)
 		self.vb.stampedeCount = self.vb.stampedeCount + 1
 		specWarnWildStampede:Show(self.vb.stampedeCount)
 		specWarnWildStampede:Play("watchstep")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.stampedeCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.stampedeCount+1]
 		if timer then
 			timerWildStampedeCD:Start(timer, self.vb.stampedeCount+1)
 		end
 	elseif spellId == 361568 then
 		self.vb.seedCount = self.vb.seedCount + 1
 		self.vb.seedIcon = 1
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.seedCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.seedCount+1]
 		if timer then
 			timerWitheringSeedCD:Start(timer, self.vb.seedCount+1)
 		end
@@ -549,7 +547,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnWrackingPain:Show(self.vb.painCount)
 			specWarnWrackingPain:Play("shockwave")
 		end
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.painCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.painCount+1]
 		if timer then
 			timerWrackingPainCD:Start(timer, self.vb.painCount+1)
 		end
@@ -681,7 +679,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 361745 and self:AntiSpam(5, 2) then
 		self.vb.nightCount = self.vb.nightCount + 1
 		self.vb.hunterIcon = 1
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.nightCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.nightCount+1]
 		if timer then
 			timerNightHunterCD:Start(timer, self.vb.nightCount+1)
 		end
@@ -689,7 +687,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.volleyCount = self.vb.volleyCount + 1
 		specWarnPinningVolley:Show(self.vb.volleyCount)
 		specWarnPinningVolley:Play("watchstep")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.volleyCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.volleyCount+1]
 		if timer then
 			timerPinningVolleyCD:Start(timer, self.vb.volleyCount+1)
 		end
@@ -768,7 +766,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.animaCount = self.vb.animaCount + 1
 		specWarnAnimastorm:Show(DBM_COMMON_L.SHELTER)
 		specWarnAnimastorm:Play("findshelter")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.animaCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.animaCount+1]
 		if timer then
 			timerAnimastormCD:Start(timer, self.vb.animaCount+1)
 		end
@@ -881,7 +879,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 361066 then--Ascension's Call
 		self.vb.callCount = self.vb.callCount + 1
 		warnAscensionsCall:Show(self.vb.callCount)
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.callCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.callCount+1]
 		if timer then
 			timerAscensionsCallCD:Start(timer, self.vb.callCount+1)
 		end
@@ -889,7 +887,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.handCount = self.vb.handCount + 1
 		specWarnHandofDestruction:Show()
 		specWarnHandofDestruction:Play("justrun")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.handCount+1]
+		local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.handCount+1]
 		if timer then
 			timerHandofDestructionCD:Start(timer, self.vb.handCount+1)
 		end
@@ -898,20 +896,17 @@ end
 
 do
 	--Delayed function just to make absolute sure RL sync overrides user settings after OnCombatStart functions run
-	local function UpdateRitualistIcons(self, msg)
+	local function UpdateRLPreference(self, msg)
 		if msg == "SetOne" then
 			self.vb.ritualistIconMethod = 1
-			DBM:AddMsg(L.DBMConfigMsg:format(msg))
 		elseif msg == "SetTwo" then
 			self.vb.ritualistIconMethod = 2
-			DBM:AddMsg(L.DBMConfigMsg:format(msg))
 		elseif msg == "SetThree" then
 			self.vb.ritualistIconMethod = 3
-			DBM:AddMsg(L.DBMConfigMsg:format(msg))
 		end
 	end
 	function mod:OnSync(msg)
-		if self:IsLFR() or not self:IsInCombat() then return end--Just in case some shit lord sends syncs in LFR or something, we don't want to trigger DBMConfigMsg
-		self:Schedule(3, UpdateRitualistIcons, self, msg)
+		if self:IsLFR() then return end--Just in case some shit lord sends syncs in LFR or something, we don't want to trigger DBMConfigMsg
+		self:Schedule(3, UpdateRLPreference, self, msg)
 	end
 end

@@ -1,19 +1,19 @@
 local mod	= DBM:NewMod(2470, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220114041418")
+mod:SetRevision("20220127093431")
 mod:SetCreatureID(183501)
 mod:SetEncounterID(2553)
 mod:SetUsedIcons(1, 2, 3, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20211211000000)
-mod:SetMinSyncRevision(20211211000000)
+mod:SetHotfixNoticeRev(20220123000000)
+mod:SetMinSyncRevision(20220123000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 363485 365682 362841 362801 362849 364040",
-	"SPELL_CAST_SUCCESS 362885 364040 366752 362721 363258 364465 364030",
+	"SPELL_CAST_SUCCESS 362885 364040 366752 362721 363258 364465 364030 367711",
 	"SPELL_AURA_APPLIED 365577 365681 365701 362615 362614 362803 362882",
 	"SPELL_AURA_APPLIED_DOSE 365681",
 	"SPELL_AURA_REMOVED 365577 365701 363034 363139 362615 362614 362803",
@@ -28,7 +28,7 @@ mod:RegisterEventsInCombat(
 --TODO, possibly sequence out timers for certain things, like P2 Glpyh might actually be 40, 42, 37
 --[[
 (ability.id = 363485 or ability.id = 362841 or ability.id = 362801 or ability.id = 362849) and type = "begincast"
- or (ability.id = 362885 or ability.id = 366752 or ability.id = 364040 or ability.id = 362721 or ability.id = 363258 or ability.id = 364465) and type = "cast"
+ or (ability.id = 367711 or ability.id = 362885 or ability.id = 366752 or ability.id = 364040 or ability.id = 362721 or ability.id = 363258 or ability.id = 364465) and type = "cast"
  or (ability.id = 363034 or ability.id = 363139) and type = "removebuff"
  or (ability.id = 365682 or ability.id = 364040) and type = "begincast"
  or ability.id = 364030 and type = "cast"
@@ -54,8 +54,8 @@ local specWarnSystemShockTaunt					= mod:NewSpecialWarningTaunt(365681, nil, nil
 local specWarnGenesisRings						= mod:NewSpecialWarningDodgeCount(363520, nil, nil, nil, 2, 2)
 local specWarnFracturingRiftBlasts				= mod:NewSpecialWarningDodge(362841, false, nil, nil, 2, 2, 4)--Mythic only, kinda spammy so off by default
 local specWarnDimensionalTear					= mod:NewSpecialWarningYouPos(362615, nil, 67833, nil, 1, 2)
-local yellDimensionalTear						= mod:NewPosYell(362615, 327770)
-local yellDimensionalTearFades					= mod:NewIconFadesYell(362615, 327770)
+local yellDimensionalTear						= mod:NewPosYell(362615, 67833)
+local yellDimensionalTearFades					= mod:NewIconFadesYell(362615, 67833)
 local specWarnGlyphofRelocation					= mod:NewSpecialWarningMoveAway(362803, nil, nil, nil, 1, 2)
 local yellGlyphofRelocation						= mod:NewYell(362803)
 local yellGlyphofRelocationFades				= mod:NewShortFadesYell(362803)
@@ -76,10 +76,10 @@ local timerSystemShockCD						= mod:NewCDTimer(11.5, 365682, nil, "Tank", nil, 5
 --Boss
 local timerRiftBlastsCD							= mod:NewCDTimer(6, 362841, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)--Initial ones only on phasing, after that they can get kinda desynced plus very frequent
 local timerDimensionalTearCD					= mod:NewNextTimer(8, 362615, 327770, nil, nil, 3)
-local timerGlyphofRelocationCD					= mod:NewCDCountTimer(30, 362801, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerGlyphofRelocationCD					= mod:NewCDCountTimer(60, 362801, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerGlyphExplostion						= mod:NewTargetTimer(5, 362803, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
-local timerHyperlightSparknovaCD				= mod:NewCDCountTimer(28, 362849, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--28-34
-local timerStasisTrapCD							= mod:NewCDTimer(28, 362885, nil, nil, nil, 3)--28-32. it attemts to average 30 but has ~2 in either direction for some reason
+local timerHyperlightSparknovaCD				= mod:NewCDCountTimer(30, 362849, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--28-34
+local timerStasisTrapCD							= mod:NewCDTimer(30, 362885, nil, nil, nil, 3)--28-32. it attemts to average 30 but has ~2 in either direction for some reason
 --Hyperlight Adds
 --local timerDebilitatingRayCD					= mod:NewAITimer(28.8, 364030, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 --local berserkTimer							= mod:NewBerserkTimer(600)
@@ -111,7 +111,7 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		timerCartelPlunderersCD:Start(13.4-delay)
 		timerRiftBlastsCD:Start(13.6-delay)
-		timerGlyphofRelocationCD:Start(44.4-delay, 1)
+		timerGlyphofRelocationCD:Start(44.4-delay, 1)--Only different on pull, it's 40 on phase changes like other modes
 	else
 		timerGlyphofRelocationCD:Start(40-delay, 1)--TODO, recheck
 	end
@@ -189,7 +189,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 362721 then
 		self.vb.tearIcon = 1
 --		timerDimensionalTearCD:Start()--Not used second time per phase?
-	elseif spellId == 363258 then--Slightly faster than SPELL_CAST_START/APPLIED
+	elseif spellId == 363258 then--Decipher Relic, Slightly faster than SPELL_CAST_START/APPLIED
 		warnDecipherRelic:Show()
 		--Stop timers
 		timerGenesisRingsCD:Stop()
@@ -236,6 +236,30 @@ function mod:SPELL_CAST_SUCCESS(args)
 			else
 				specWarnDebilitatingRay:Play("kickcast")
 			end
+		end
+	elseif spellId == 367711 then--Decipher Relic (Stage 4 version)
+		self:SetStage(4)
+		self.vb.sparkCount = 0
+		self.vb.ringCount = 0
+		self.vb.glyphCount = 0
+		warnDecipherRelic:Show()
+		--Stop timers
+		timerGenesisRingsCD:Stop()
+		timerCartelPlunderersCD:Stop()
+		timerRiftBlastsCD:Stop()
+		timerDimensionalTearCD:Stop()
+		timerGlyphofRelocationCD:Stop()
+		timerHyperlightSparknovaCD:Stop()
+		timerStasisTrapCD:Stop()
+		--Restart Timers (exactly same as pull)
+		timerDimensionalTearCD:Start(8)
+		timerHyperlightSparknovaCD:Start(14, 1)
+		timerStasisTrapCD:Start(21)
+		timerGenesisRingsCD:Start(26, 1)
+		timerGlyphofRelocationCD:Start(40, 1)
+		if self:IsMythic() then
+			timerCartelPlunderersCD:Start(12)
+			timerRiftBlastsCD:Start(12.2)
 		end
 	end
 end
@@ -373,7 +397,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 365428 then
 		specWarnCartelPlunderers:Show()
-		specWarnCartelPlunderers:Play("killadd")
+		specWarnCartelPlunderers:Play("killmob")
 		--timerCartelPlunderersCD:Start()
 	end
 end
