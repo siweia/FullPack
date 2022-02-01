@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2447, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220127091649")
+mod:SetRevision("20220128073654")
 mod:SetCreatureID(175730)
 mod:SetEncounterID(2431)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -518,7 +518,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 				--timerDespairCD:Start(0, 1, unitGUID)
 				if not GetRaidTargetIndex(unitID) then--Not already marked
 					if self.Options.SetIconOnMonstrosity then
-						SetRaidTarget(unitID, self.vb.addIcon)
+						self:SetIcon(unitID, self.vb.addIcon)
 					end
 					self.vb.addIcon = self.vb.addIcon - 1
 				end

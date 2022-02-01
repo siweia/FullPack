@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220128073654")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -1005,7 +1005,7 @@ function mod:NAME_PLATE_UNIT_ADDED(unit)
 		local cid = self:GetCIDFromGUID(guid)
 		if cid == 176026 then
 			if not GetRaidTargetIndex(unit) then
-				SetRaidTarget(unit, 8)
+				self:SetIcon(unit, 8)
 			end
 			self:UnregisterShortTermEvents()
 		end
