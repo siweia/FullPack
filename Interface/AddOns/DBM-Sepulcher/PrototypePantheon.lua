@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2460, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220130024544")
+mod:SetRevision("20220206083607")
 mod:SetCreatureID(181548, 181551, 181546, 181549)
 mod:SetEncounterID(2544)
 mod:SetBossHPInfoToHighest()
@@ -37,7 +37,6 @@ mod:RegisterEventsInCombat(
  or (ability.id = 366234) and (type = "applybuff" or type = "applydebuff")
  or (ability.id = 360845 or ability.id = 361044) and type = "begincast"
 --]]
-local ProtoWar, ProtoDuty, ProtoRenewl, ProtoAbsolution = DBM:EJ_GetSectionInfo(24125), DBM:EJ_GetSectionInfo(24130), DBM:EJ_GetSectionInfo(24135), DBM:EJ_GetSectionInfo(24139)
 --General
 local warnCompleteRecon							= mod:NewCastAnnounce(366062, 4)
 
@@ -50,11 +49,7 @@ mod:AddRangeFrameOption("8")
 mod:AddNamePlateOption("NPAuraOnImprintedSafeguards", 366159, true)--Hostile only, can't anchor to friendly nameplates in raid (seeds)
 
 ----Prototype of War
-mod:AddOptionLine(ProtoWar, "announce")
-mod:AddOptionLine(ProtoWar, "specialannounce")
-mod:AddOptionLine(ProtoWar, "yell")
-mod:AddTimerLine(ProtoWar)
-mod:AddIconLine(ProtoWar)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(24125))
 local warnRunecarversDeathtouch					= mod:NewTargetNoFilterAnnounce(360687, 3)
 
 local specWarnNecroticRitual					= mod:NewSpecialWarningSwitchCount(360295, "-Healer", nil, nil, 1, 2)
@@ -67,6 +62,7 @@ local timerRunecarversDeathtouchCD				= mod:NewCDCountTimer(57.1, 360687, nil, n
 mod:AddInfoFrameOption(360687, "Healer")
 mod:AddSetIconOption("SetIconOnDeathtouch", 360687, false, false, {13, 14, 15, 16}, true)--Technically only 2 debuffs go out, but we allow for even a bad group to have two sets of them out. Off by default do to conflict with seeds
 mod:AddSetIconOption("SetIconOnRitualist", 360333, true, true, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})--Conflict arg not passed because by default it won't, user has to introduce conflict via dropdown (and that has a warning)
+mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
 if DBM.Options.ExtendIcons then
 	mod:AddDropdownOption("RitualistIconSetting", {"SetOne", "SetTwo", "SetThree"}, "SetOne", "misc")
 else
@@ -78,10 +74,7 @@ else
 end
 
 ----Prototype of Duty
-mod:AddOptionLine(ProtoDuty, "announce")
-mod:AddOptionLine(ProtoDuty, "specialannounce")
-mod:AddOptionLine(ProtoDuty, "yell")
-mod:AddTimerLine(ProtoDuty)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(24130))
 local warnAscensionsCall						= mod:NewCountAnnounce(361066, 2)
 local warnBastionsWard							= mod:NewCastAnnounce(360845, 1)
 local warnPinned								= mod:NewTargetNoFilterAnnounce(362352, 4)
@@ -96,10 +89,7 @@ local timerAscensionsCallCD						= mod:NewCDCountTimer(57.1, 365272, nil, nil, n
 local timerPinningVolleyCD						= mod:NewCDCountTimer(64.1, 361278, nil, nil, nil, 3)
 
 ----Prototype of Renewal
-mod:AddOptionLine(ProtoRenewl, "specialannounce")
---mod:AddOptionLine(ProtoRenewl, "yell")
-mod:AddTimerLine(ProtoRenewl)
-mod:AddIconLine(ProtoRenewl)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(24135))
 local specWarnAnimabolt							= mod:NewSpecialWarningInterrupt(362383, false, nil, nil, 1, 2)--Kinda spammed, opt in, not opt out
 local specWarnWildStampede						= mod:NewSpecialWarningDodgeCount(361304, nil, nil, nil, 2, 2)
 local specWarnAnimastorm						= mod:NewSpecialWarningMoveTo(362132, nil, nil, nil, 2, 2)
@@ -112,11 +102,7 @@ mod:AddSetIconOption("SetIconOnSeed", 361566, true, true, {1, 2, 3, 4}, nil, tru
 mod:AddNamePlateOption("NPAuraOnWrackingPain", 361689, true)
 
 ----Prototype of Absolution
-mod:AddOptionLine(ProtoAbsolution, "announce")
-mod:AddOptionLine(ProtoAbsolution, "specialannounce")
-mod:AddOptionLine(ProtoAbsolution, "yell")
-mod:AddTimerLine(ProtoAbsolution)
-mod:AddIconLine(ProtoAbsolution)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(24139))
 local warnNightHunter							= mod:NewTargetNoFilterAnnounce(361745, 3)
 
 local specWarnSinfulProjection					= mod:NewSpecialWarningMoveAway(364839, nil, nil, nil, 2, 2)--Sound 2 because everyone gets it

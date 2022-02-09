@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220130024544")
+mod:SetRevision("20220204001459")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3)
@@ -48,13 +48,13 @@ local warnPhase										= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil
 --local berserkTimer								= mod:NewBerserkTimer(600)
 
 --mod:AddRangeFrameOption("8")
-mod:AddInfoFrameOption(347807, true)--Also used for 353929
+mod:AddInfoFrameOption(nil, true)--Aused for 353929 and 347807
 
 --Stage One: A Cycle of Hatred
-mod:AddOptionLine(P1Info, "announce")
-mod:AddOptionLine(P1Info, "specialannounce")
-mod:AddOptionLine(P1Info, "yell")
-mod:AddTimerLine(P1Info)
+--mod:AddOptionLine(P1Info, "announce")
+--mod:AddOptionLine(P1Info, "specialannounce")
+--mod:AddOptionLine(P1Info, "yell")
+--mod:AddTimerLine(P1Info)
 mod:AddIconLine(P1Info)
 local warnWindrunnerOver							= mod:NewEndAnnounce(347504, 2)
 local warnShadowDagger								= mod:NewTargetNoFilterAnnounce(353935, 2, nil, "Healer")
@@ -92,8 +92,8 @@ mod:AddNamePlateOption("NPAuraOnRage", 358711)--Dark Sentinel
 
 --Intermission: A Monument to our Suffering
 mod:AddOptionLine(P15Info, "announce")
-mod:AddOptionLine(P15Info, "specialannounce")
-mod:AddTimerLine(P15Info)
+--mod:AddOptionLine(P15Info, "specialannounce")
+--mod:AddTimerLine(P15Info)
 local warnRive										= mod:NewCountAnnounce(353418, 4)--May default off by default depending on feedback
 
 local specWarnBansheeWail							= mod:NewSpecialWarningMoveAwayCount(348094, nil, nil, nil, 2, 2)
@@ -102,10 +102,10 @@ local timerRiveCD									= mod:NewCDTimer(48.8, 353418, nil, nil, nil, 3)
 local timerNextPhase								= mod:NewPhaseTimer(16.5, 348094, nil, nil, nil, 6)
 
 --Stage Two: The Banshee Queen
-mod:AddOptionLine(P2Info, "announce")
-mod:AddOptionLine(P2Info, "specialannounce")
-mod:AddOptionLine(P2Info, "yell")
-mod:AddTimerLine(P2Info)
+--mod:AddOptionLine(P2Info, "announce")
+--mod:AddOptionLine(P2Info, "specialannounce")
+--mod:AddOptionLine(P2Info, "yell")
+--mod:AddTimerLine(P2Info)
 mod:AddIconLine(P2Info)
 local warnIceBridge									= mod:NewCountAnnounce(348148, 2)
 local warnEarthBridge								= mod:NewCountAnnounce(348093, 2)
@@ -138,8 +138,8 @@ local yellExpulsion									= mod:NewShortPosYell(351562)
 local yellExpulsionFades							= mod:NewIconFadesYell(351562)
 local specWarnExpulsionTarget						= mod:NewSpecialWarningTarget(351562, false, nil, nil, 1, 2, 4)
 
-local timerChannelIce								= mod:NewCastTimer(5, 352843, nil, nil, nil, 6)
-local timerCallEarth								= mod:NewCastTimer(5, 352842, nil, nil, nil, 6)
+local timerChannelIce								= mod:NewCastTimer(5, 348148, nil, nil, nil, 6)
+local timerCallEarth								= mod:NewCastTimer(5, 348093, nil, nil, nil, 6)
 --local timerChannelIceCD							= mod:NewCDCountTimer(48.8, 348148, nil, nil, nil, 6)
 local timerCallEarthCD								= mod:NewCDCountTimer(48.8, 348093, nil, nil, nil, 6)
 local timerRuinCD									= mod:NewCDCountTimer(23, 355540, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
@@ -157,10 +157,10 @@ mod:AddSetIconOption("SetIconOnExpulsion", 351562, true, true, {1, 2, 3})
 mod:AddNamePlateOption("NPAuraOnEnflame", 351109)--Mawsworn Hopebreaker
 
 --Stage Three: The Freedom of Choice
-mod:AddOptionLine(P3Info, "announce")
-mod:AddOptionLine(P3Info, "specialannounce")
-mod:AddOptionLine(P3Info, "yell")
-mod:AddTimerLine(P3Info)
+--mod:AddOptionLine(P3Info, "announce")
+--mod:AddOptionLine(P3Info, "specialannounce")
+--mod:AddOptionLine(P3Info, "yell")
+--mod:AddTimerLine(P3Info)
 mod:AddIconLine(P3Info)
 local warnBansheesHeartseeker						= mod:NewCountAnnounce(353969, 2, nil, "Tank")
 local warnBansheesBane								= mod:NewTargetNoFilterAnnounce(353929, 4)
@@ -191,6 +191,7 @@ local timerDeathKnives								= mod:NewBuffFadesTimer(9, 358434, nil, nil, nil, 
 local timerMercilessCD								= mod:NewCDCountTimer(33.9, 358588, nil, nil, 2, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
 
 mod:AddSetIconOption("SetIconOnDeathKnives2", 358434, false, false, {1, 2, 3})--Conflicts with arrow, which will be more logical choice. might delete this
+--mod:GroupSpells(358705, 358711)--Black Arrow and Rage should be bundled?
 
 --P1+ variable
 mod.vb.arrowIcon = 1

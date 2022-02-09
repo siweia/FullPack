@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2443, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220130024544")
+mod:SetRevision("20220202090223")
 mod:SetCreatureID(176523)
 mod:SetEncounterID(2430)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
@@ -75,7 +75,7 @@ local timerShadowsteelChainsCD					= mod:NewCDCountTimer(40.1, 355504, 246367, n
 mod:AddTimerLine(DBM_COMMON_L.INTERMISSION)
 --Intermission
 local warnEmbers								= mod:NewCountAnnounce(355534, 2, nil, nil, 264364)
-local warnAddsRemaining							= mod:NewAddsLeftAnnounce(357755, 1)
+local warnAddsRemaining							= mod:NewAddsLeftAnnounce(355534, 1)
 
 local timerForgeWeapon							= mod:NewCastTimer(48, 355525, nil, nil, nil, 6)
 local timerEmbersCD								= mod:NewNextCountTimer(5, 355534, 264364, nil, nil, 3)--"Embers"
