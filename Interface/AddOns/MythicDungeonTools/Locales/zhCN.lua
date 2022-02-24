@@ -349,6 +349,8 @@ L["Emissary of the Tides"] = "潮汐使者"
 L["Enable Minimap Button"] = "启用小地图按钮"
 L["Enchanted Broodling"] = "魔化巢蛛"
 L["Enchanted Emissary"] = "魔力使者"
+--[[Translation missing --]]
+--[[ L["Encrypted"] = ""--]] 
 L["Enemies related to seasonal affixes are currently hidden"] = "目前已隐藏与赛季词缀相关的敌人"
 L["Enemy Info"] = "敌人信息"
 L["Enemy Info NPC Creature Type"] = "种类"
@@ -1295,6 +1297,8 @@ L["Upper Library"] = "上层图书馆"
 L["Upper Livery Stables"] = "上层马厩"
 L["Upstairs"] = "上层"
 L["Urg'roth, Breaker of Heroes"] = "乌尔格斯，勇士噬灭者"
+--[[Translation missing --]]
+--[[ L["Urh Relic"] = ""--]] 
 L["Use /mdt reset to restore the default position and scale of MDT."] = "输入 /mdt reset 来重置MDT窗口, 恢复成默认大小和位置"
 L["Use as a starting point:"] = "以此为起点:"
 L["Valarjar Aspirant"] = "瓦拉加尔候选者"
@@ -1347,6 +1351,8 @@ L["Volatile Memory"] = "不稳定的内存器"
 L["Volcanic"] = "火山"
 L["Vol'kaal"] = "沃卡尔"
 L["Vol'zith the Whisperer"] = "低语者沃尔兹斯"
+--[[Translation missing --]]
+--[[ L["Vy Relic"] = ""--]] 
 L["Wandering Pulsar"] = "流浪的脉冲星"
 L["Wandering Shellback"] = "游荡的硬壳龟"
 L["Wanton Sapper"] = "暴虐的工兵"
@@ -1369,6 +1375,8 @@ L["Wicked Oppressor"] = "邪恶的镇压者"
 L["Windspeaker Heldis"] = "风语者海蒂丝"
 L["Withered Fiend"] = "枯法魔"
 L["Withered Manawraith"] = "枯法法力怨灵"
+--[[Translation missing --]]
+--[[ L["Wo Relic"] = ""--]] 
 L["Workshop Defender"] = "车间防御者"
 L["Wrath of Azshara"] = "艾萨拉之怒"
 L["Wrathguard Bladelord"] = "愤怒卫士剑圣"
@@ -1401,3 +1409,4 @@ L["Zolramus Sorcerer"] = "佐尔拉姆斯巫师"
 L["Zo'phex"] = "佐·菲克斯"
 L["Zul'Gurub"] = "祖尔格拉布"
 L["Zuraal the Ascended"] = "晋升者祖拉尔"
+
