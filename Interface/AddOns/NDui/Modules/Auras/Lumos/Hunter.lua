@@ -4,6 +4,49 @@ local A = B:GetModule("Auras")
 
 if DB.MyClass ~= "HUNTER" then return end
 
+local pairs, GetSpellPowerCost = pairs, GetSpellPowerCost
+local POWER_TYPE_FOCUS = 2
+
+local function GetSpellCost(spellID)
+	local costTable = GetSpellPowerCost(spellID)
+	if costTable then
+		for _, costInfo in pairs(costTable) do
+			if costInfo.type == POWER_TYPE_FOCUS then
+				return costInfo.cost
+			end
+		end
+	end
+end
+
+function A:UpdateFocusCost(unit, _, spellID)
+	if unit ~= "player" then return end
+
+	local focusCal = A.MMFocus
+	local cost = GetSpellCost(spellID)
+	if cost then
+		focusCal.cost = focusCal.cost + cost
+	end
+	focusCal:SetFormattedText("%d/40", focusCal.cost%40)
+end
+
+local oldSpec
+function A:ToggleFocusCalculation()
+	if not A.MMFocus then return end
+
+	local spec = GetSpecialization()
+	if C.db["Auras"]["MMT29X4"] and spec == 2 then
+		if self ~= "PLAYER_SPECIALIZATION_CHANGED" or spec ~= oldSpec then -- don't reset when talent changed only
+			A.MMFocus.cost = 0 -- reset calculation when switch on
+		end
+		A.MMFocus:Show()
+		B:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
+	else
+		A.MMFocus:Hide()
+		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
+	end
+	oldSpec = spec
+end
+
 function A:PostCreateLumos(self)
 	local iconSize = self.lumos[1]:GetWidth()
 	local boom = CreateFrame("Frame", nil, self.Health)
@@ -13,6 +56,13 @@ function A:PostCreateLumos(self)
 	boom:Hide()
 
 	self.boom = boom
+
+	-- MM hunter T29 4sets
+	A.MMFocus = B.CreateFS(self.Health, 16)
+	A.MMFocus:ClearAllPoints()
+	A.MMFocus:SetPoint("BOTTOM", self.Health, "TOP", 0, 5)
+	A:ToggleFocusCalculation()
+	B:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", A.ToggleFocusCalculation)
 end
 
 function A:PostUpdateVisibility(self)
