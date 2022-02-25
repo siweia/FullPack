@@ -429,13 +429,14 @@ T.KnownSpells = {
 		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
 	}, --Tainted Bite
 	[349]={type="nuke", target="all-enemies", damageATK=10}, --Anima Swell
+	[356]={type="nuke", target=1, damageATK=100}, --the tooltip suggests the target should have been target="enemy-back"
+	-- 9.2 spells
 	[350]={type="nuke", damageATK=25, target="cleave"},
 	[351]={type="nuke", damageATK=75, target=1, firstTurn=4},
 	[352]={type="nop"},
 	[353]={type="nop"},
 	[354]={type="nuke", damageATK=400, target="enemy-front", firstTurn=5},
 	[355]={type="passive", modDamageDealt=-25, target=1},
-	[356]={type="nuke", target=1, damageATK=100}, --the tooltip suggests the target should have been target="enemy-back"
 	[357]={type="passive", modDamageDealt=-50, target=0},
 	[358]={type="nuke", damageATK=400, target="enemy-front", firstTurn=5},
 	[359]={type="aura", damageATK=50, target=1, duration=0, noFirstTick=true, echo=3},
@@ -448,10 +449,13 @@ T.KnownSpells = {
 	[366]={type="nuke", damageATK=50, target="enemy-front"},
 	[367]={type="nuke", damageATK=75, target="cone"},
 	[368]={type="nuke", damageATK=60, target=1},
-	[369]={type="nuke", damagePerc=100, target="all-enemies", nore=true, echo=2},
+	[369]={
+		[1]={type="nop"},
+		[2]={type="aura", damageATK=50, target="all-enemies", duration=0, noFirstTick=true, echo=2},
+	},
 	[370]={type="aura", modDamageDealt=-50, target="all-enemies", duration=2},
 	[371]={type="aura", modDamageTaken=-25, target="all-other-allies", duration=2},
-	[372]={type="nuke", damageATK=80, target="enemy-front"},
+	[372]={type="nuke", damageATK=40, target="enemy-front"},
 	[373]={
 		[1]={type="nuke", damageATK=100, target=1},
 		[2]={type="heal", healATK=100, target=4},
