@@ -29,6 +29,8 @@ local unitKeystones = {}
 local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 	local keystoneMapName = keystoneMapID and C_ChallengeMode.GetMapUIInfo(keystoneMapID)
 	if keystoneMapID and keystoneMapName then
+		keystoneMapName = gsub(keystoneMapName, ".-%-", "") -- Mechagon
+		keystoneMapName = gsub(keystoneMapName, ".-"..HEADER_COLON, "") -- Tezavesh
 		return string.format("%s (%d)", keystoneMapName, keystoneLevel)
 	end
 end
@@ -69,9 +71,6 @@ local function UpdatePartyKeystones()
 					local color = RAID_CLASS_COLORS[class]
 					entry.Text:SetText(name)
 					entry.Text:SetTextColor(color:GetRGBA())
-
-					keystoneName = gsub(keystoneName, ".-%-", "") -- Mechagon
-					keystoneName = gsub(keystoneName, HEADER_COLON, "") -- Tezavesh
 					entry.Text2:SetText(keystoneName)
 
 					e = e + 1
