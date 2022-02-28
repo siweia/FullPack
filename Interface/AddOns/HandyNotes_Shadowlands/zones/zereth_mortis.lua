@@ -41,7 +41,7 @@ local cata = Map({id = 2066}) -- Catalyst Wards
 
 map.nodes[64743369] = Rare({
     id = 179006,
-    quest = 65549,
+    quest = 65552,
     vignette = 4747,
     rlabel = ns.status.LightBlue('+15 ' .. L['rep']),
     rewards = {
@@ -473,6 +473,7 @@ map.nodes[63202603] = Rare({
         Transmog({item = 190107, slot = L['staff']}), -- Staff of Broken Coils
         Transmog({item = 190458, slot = L['shield'], note = ISKA}), -- Atrophy's Ominous Bulwark
         Transmog({item = 190102, slot = L['1h_mace'], note = ISKA}), -- Chains of Infectious Serrations
+        Transmog({item = 190103, slot = L['2h_mace'], note = ISKA}), -- Pillar of Noxious Dissemination
         Transmog({item = 190126, slot = L['polearm'], note = ISKA}), -- Rotculler's Encroaching Shears
         Transmog({item = 190105, slot = L['1h_mace'], note = DAMARIS}), -- Chilling Domination Mace
         Transmog({item = 190459, slot = L['shield'], note = DAMARIS}), -- Cold Dispiriting Barricade
@@ -1336,11 +1337,11 @@ local Lore = Class('Concordance', ns.node.Node, {
 map.nodes[31775466] = Lore({label = L['concordance_excitable']}) -- quest=65179
 map.nodes[38953127] = Lore({label = L['concordance_excitable']}) -- quest=65213
 map.nodes[50405096] = Lore({label = L['concordance_excitable']}) -- quest=65216
-map.nodes[64616035] = Lore({label = L['concordance_excitable']})
-map.nodes[35037144] = Lore({label = L['concordance_mercurial']})
-map.nodes[39702572] = Lore({label = L['concordance_mercurial']})
-map.nodes[51579134] = Lore({label = L['concordance_mercurial']})
-map.nodes[64262397] = Lore({label = L['concordance_mercurial']})
+map.nodes[64616035] = Lore({label = L['concordance_excitable']}) -- quest=65210
+map.nodes[35037144] = Lore({label = L['concordance_mercurial']}) -- quest=65180
+map.nodes[39702572] = Lore({label = L['concordance_mercurial']}) -- quest=65214
+map.nodes[51579134] = Lore({label = L['concordance_mercurial']}) -- quest=65211
+map.nodes[64262397] = Lore({label = L['concordance_mercurial']}) -- quest=65217
 map.nodes[32196281] = Lore({label = L['concordance_tranquil']}) -- quest=64940
 map.nodes[38844857] = Lore({label = L['concordance_tranquil']}) -- quest=65212
 map.nodes[49367149] = Lore({label = L['concordance_tranquil']}) -- quest=65209
