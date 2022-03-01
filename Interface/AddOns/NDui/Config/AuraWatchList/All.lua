@@ -207,6 +207,10 @@ local list = {
 		{AuraID = 306583, UnitID = "player"},	-- 灌铅脚步
 		{AuraID = 313698, UnitID = "player", Flash = true},	-- 泰坦之赐
 		-- 常驻词缀
+		{AuraID = 366288, UnitID = "player"},	-- 解构
+		{AuraID = 368239, UnitID = "player", Flash = true, Text = "CD"},	-- 减CD密文
+		{AuraID = 368240, UnitID = "player", Flash = true, Text = L["Haste"]},	-- 急速密文
+		{AuraID = 368241, UnitID = "player", Flash = true, Text = L["Speed"]},	-- 移速密文
 		{AuraID = 358777, UnitID = "player"},	-- 痛苦之链
 		{AuraID = 355732, UnitID = "player"},	-- 融化灵魂
 		{AuraID = 356667, UnitID = "player"},	-- 刺骨之寒
@@ -332,6 +336,8 @@ local list = {
 		{AuraID = 347992, UnitID = "target"},	-- 集市，回旋防弹衣
 		{AuraID = 347840, UnitID = "target"},	-- 集市，野性
 		{AuraID = 347015, UnitID = "target", Flash = true},	-- 集市，强化防御
+		{AuraID = 355934, UnitID = "target", Value = true},	-- 集市，强光屏障
+		{AuraID = 349933, UnitID = "target", Flash = true, Value = true},	-- 集市，狂热鞭笞协议
 		-- 团本
 		{AuraID = 345902, UnitID = "target"},	-- 破裂的联结，猎手
 		{AuraID = 334695, UnitID = "target"},	-- 动荡的能量，猎手
