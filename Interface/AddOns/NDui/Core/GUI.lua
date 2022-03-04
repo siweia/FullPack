@@ -480,7 +480,6 @@ G.DefaultSettings = {
 		BlockInvite = false,
 		NzothVision = true,
 		SendActionCD = false,
-		MawThreatBar = true,
 		MDGuildBest = true,
 		FasterSkip = false,
 		EnhanceDressup = true,
@@ -490,6 +489,7 @@ G.DefaultSettings = {
 		InfoSize = 13,
 		MaxAddOns = 12,
 		MenuButton = true,
+		QuickJoin = true,
 	},
 	Tutorial = {
 		Complete = false,
@@ -1010,7 +1010,7 @@ G.TabList = {
 	L["Maps"],
 	L["Skins"],
 	L["Tooltip"],
-	L["Misc"],
+	NewTag..L["Misc"],
 	L["UI Settings"],
 	L["Profile"],
 }
@@ -1348,10 +1348,10 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "Screenshot", L["Auto ScreenShot"].."*", true, nil, updateScreenShot},
 		{1, "Misc", "Focuser", L["Easy Focus"]},
 		{1, "Misc", "MDGuildBest", L["MDGuildBest"], true, nil, nil, L["MDGuildBestTip"]},
-		{1, "Misc", "MawThreatBar", L["MawThreatBar"], nil, nil, nil, L["MawThreatBarTip"]},
+		{1, "Misc", "MenuButton", L["MenuButton"], nil, nil, nil, L["MenuButtonTip"]},
 		{1, "Misc", "EnhanceDressup", L["EnhanceDressup"], true, nil, nil, L["EnhanceDressupTip"]},
 		{1, "Misc", "QuestTool", L["QuestTool"], nil, nil, nil, L["QuestToolTip"]},
-		{1, "Misc", "MenuButton", L["MenuButton"], true, nil, nil, L["MenuButtonTip"]},
+		{1, "Misc", "QuickJoin", NewTag..HeaderTag..L["EnhancedPremade"], true, nil, nil, L["EnhancedPremadeTip"]},
 	},
 	[14] = {
 		{1, "ACCOUNT", "VersionCheck", L["Version Check"]},
