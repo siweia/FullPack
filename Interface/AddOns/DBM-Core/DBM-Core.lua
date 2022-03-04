@@ -66,12 +66,12 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220302225347"),
+	Revision = parseCurseDate("20220304063808"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.2"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 2, 5) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.4"
+	DBM.ReleaseRevision = releaseDate(2022, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.17 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 2, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
