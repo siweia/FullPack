@@ -1,9 +1,10 @@
 # Premade Groups Filter
 
-## [2.7.0](https://github.com/0xbs/premade-groups-filter/tree/2.7.0) (2022-03-04)
-[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/2.6.2...2.7.0) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
+## [2.7.1](https://github.com/0xbs/premade-groups-filter/tree/2.7.1) (2022-03-06)
+[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/2.7.0...2.7.1) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
 
-- Set version to 2.7.0  
-- Switched from C\_LFGList.GetActivityInfo to C\_LFGList.GetActivityInfoTable  
-- Added keywords sfo (Sepulcher of the First Ones), tazs (Tazavesh: Streets of Wonder) and tazg (Tazavesh: So'leah's Gambit)  
-- Updated copyright to year 2022  
+- Set version to 2.7.1  
+- Bumped toc  
+- Added age in seconds via agesecs  
+- Added license header to FixGetPlaystyleString.lua  
+- Fix some locale errors in zhCN  
