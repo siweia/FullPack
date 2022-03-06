@@ -19,8 +19,9 @@ local C_LFGList_GetSearchResultInfo = C_LFGList.GetSearchResultInfo
 local C_LFGList_GetActivityInfoTable = C_LFGList.GetActivityInfoTable
 local C_LFGList_GetSearchResultMemberInfo = C_LFGList.GetSearchResultMemberInfo
 
+local LFGListFrame = _G.LFGListFrame
+local ApplicationViewerFrame = LFGListFrame.ApplicationViewer
 local LE_PARTY_CATEGORY_HOME = _G.LE_PARTY_CATEGORY_HOME or 1
-local ApplicationViewerFrame = _G.LFGListFrame.ApplicationViewer
 local LFG_LIST_GROUP_DATA_ATLASES = _G.LFG_LIST_GROUP_DATA_ATLASES
 local scoreFormat = DB.GreyColor.."(%s) |r%s"
 
@@ -218,11 +219,80 @@ function M:ShowLeaderOverallScore()
 	local searchResultInfo = resultID and C_LFGList_GetSearchResultInfo(resultID)
 	if searchResultInfo then
 		local activityInfo = C_LFGList_GetActivityInfoTable(searchResultInfo.activityID, nil, searchResultInfo.isWarMode)
-		local leaderOverallScore = searchResultInfo.leaderOverallDungeonScore
-		if activityInfo and activityInfo.isMythicPlusActivity and leaderOverallScore then
-			local oldName = self.ActivityName:GetText() 
-			oldName = gsub(oldName, ".-"..HEADER_COLON, "") -- Tazavesh
-			self.ActivityName:SetFormattedText(scoreFormat, TT.GetDungeonScore(leaderOverallScore), oldName)
+		if activityInfo then
+			local showScore = activityInfo.isMythicPlusActivity and searchResultInfo.leaderOverallDungeonScore
+				or activityInfo.isRatedPvpActivity and searchResultInfo.leaderPvpRatingInfo and searchResultInfo.leaderPvpRatingInfo.rating
+			if showScore then
+				local oldName = self.ActivityName:GetText() 
+				oldName = gsub(oldName, ".-"..HEADER_COLON, "") -- Tazavesh
+				self.ActivityName:SetFormattedText(scoreFormat, TT.GetDungeonScore(showScore), oldName)
+			end
+		end
+	end
+end
+
+function M:ReplaceFindGroupButton()
+	if not IsAddOnLoaded("PremadeGroupsFilter") then return end
+
+	local searchPanel = LFGListFrame.SearchPanel
+	local categorySelection = LFGListFrame.CategorySelection
+	categorySelection.FindGroupButton:Hide()
+
+	local bu = CreateFrame("Button", nil, categorySelection, "LFGListMagicButtonTemplate")
+	bu:SetText(LFG_LIST_FIND_A_GROUP)
+	bu:SetSize(135, 22)
+	bu:SetPoint("BOTTOMRIGHT", -3, 4)
+
+	local lastCategory = 0
+	bu:SetScript("OnClick", function()
+		local selectedCategory = categorySelection.selectedCategory
+		if not selectedCategory then return end
+
+		if lastCategory ~= selectedCategory then
+			categorySelection.FindGroupButton:Click()
+		else
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			LFGListSearchPanel_SetCategory(searchPanel, selectedCategory, categorySelection.selectedFilters, LFGListFrame.baseFilters)
+			LFGListSearchPanel_DoSearch(searchPanel)
+			LFGListFrame_SetActivePanel(LFGListFrame, searchPanel)
+		end
+		lastCategory = selectedCategory
+	end)
+
+	if C.db["Skins"]["BlizzardSkins"] then B.Reskin(bu) end
+end
+
+local function clickSortButton(self)
+	self.__owner.Sorting.SortingExpression:SetText(self.sortStr)
+	self.__owner.RefreshButton:Click()
+end
+
+local function createSortButton(parent, texture, sortStr)
+	local bu = B.CreateButton(parent, 24, 24, true, texture)
+	bu.sortStr = sortStr
+	bu.__owner = parent
+	bu:SetScript("OnClick", clickSortButton)
+	B.AddTooltip(bu, "ANCHOR_RIGHT", CLUB_FINDER_SORT_BY)
+
+	tinsert(parent.__sortBu, bu)
+end
+
+function M:AddPGFSortingExpression()
+	if not IsAddOnLoaded("PremadeGroupsFilter") then return end
+
+	local PGFDialog = _G.PremadeGroupsFilterDialog
+	PGFDialog.__sortBu = {}
+
+	createSortButton(PGFDialog, 525134, "mprating desc")
+	createSortButton(PGFDialog, 1455894, "pvprating desc")
+	createSortButton(PGFDialog, 237538, "age asc")
+
+	for i = 1, #PGFDialog.__sortBu do
+		local bu = PGFDialog.__sortBu[i]
+		if i == 1 then
+			bu:SetPoint("BOTTOMLEFT", PGFDialog, "BOTTOMRIGHT", 3, 0)
+		else
+			bu:SetPoint("BOTTOM", PGFDialog.__sortBu[i-1], "TOP", 0, 3)
 		end
 	end
 end
@@ -234,7 +304,7 @@ function M:QuickJoin()
 		local bu = _G["LFGListSearchPanelScrollFrameButton"..i]
 		if bu then
 			bu.Name:SetFontObject(Game14Font)
-			bu.ActivityName:SetFontObject(Game13Font)
+			bu.ActivityName:SetFontObject(Game12Font)
 			bu:HookScript("OnDoubleClick", M.HookApplicationClick)
 		end
 	end
@@ -251,5 +321,7 @@ function M:QuickJoin()
 	hooksecurefunc("LFGListSearchEntry_Update", M.ShowLeaderOverallScore)
 
 	M:AddAutoAcceptButton()
+	M:ReplaceFindGroupButton()
+	M:AddPGFSortingExpression()
 end
 M:RegisterMisc("QuickJoin", M.QuickJoin)
