@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2470, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220304060202")
+mod:SetRevision("20220309115020")
 mod:SetCreatureID(183501)
 mod:SetEncounterID(2553)
 mod:SetUsedIcons(1, 2, 3, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20220303000000)
+mod:SetHotfixNoticeRev(20220308000000)
 mod:SetMinSyncRevision(20220123000000)
 --mod.respawnTime = 29
 
@@ -104,12 +104,54 @@ local difficultyName = "None"
 --The reason being they aren't ALWAYS the same, case and point glyph in stage 1, rings in stage 4 heroic
 --Want to be able to update timers faster on fly if fight continues to get hotfixes, this gives most rapidly changable knobs
 local allTimers = {
-	["easy"] = {--Normal, and LFR
+	["lfr"] = {
+		[1] = {--Unchanged
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+		[2] = {--Gets a little slower
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+		[3] = {--Gets even slower
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+		[4] = {
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+	},
+	["normal"] = {
 		[1] = {--Unchanged
 			--Rings
 			[364465] = 30,
 			--Glyph of Relocation
-			[362801] = 60,--Don't even know if it's still 60 anymore, they buffed it.
+			[362801] = 60,--It's supposed to be 30 too, but when other abilities are also 30, it causes this spell to skip casts
 			--Stasis Trap
 			[362885] = 30,
 			--Hyperlight Sparknova
@@ -151,7 +193,7 @@ local allTimers = {
 			--Rings
 			[364465] = 30,
 			--Glyph of Relocation
-			[362801] = 60,--Don't even know if it's still 60 anymore, they buffed it.
+			[362801] = 60,--It's supposed to be 30 too, but when other abilities are also 30, it causes this spell to skip casts
 			--Stasis Trap
 			[362885] = 30,
 			--Hyperlight Sparknova
@@ -239,10 +281,13 @@ function mod:OnCombatStart(delay)
 	self.vb.glyphCount = 0
 	--For the time being, initial pull timers stil same on all difficulties
 	--This will probably be changed soon enough :D
-	timerDimensionalTearCD:Start(7.9-delay)
-	timerHyperlightSparknovaCD:Start(14-delay, 1)
-	timerStasisTrapCD:Start(21-delay)
-	timerForerunnerRingsCD:Start(26-delay, 1)
+	if not self:IsLFR() then
+		--These are same in 3 modes
+		timerDimensionalTearCD:Start(7.9-delay)
+		timerHyperlightSparknovaCD:Start(14-delay, 1)
+		timerStasisTrapCD:Start(21-delay)
+		timerForerunnerRingsCD:Start(26-delay, 1)
+	end
 	if self:IsMythic() then
 		difficultyName = "mythic"
 		timerCartelEliteCD:Start(13.4-delay)
@@ -251,10 +296,21 @@ function mod:OnCombatStart(delay)
 	else
 		if self:IsHeroic() then
 			difficultyName = "heroic"
+			--This is same inn normal and heroic but different in mythic and lfr
+			timerGlyphofRelocationCD:Start(39.9-delay, 1)
+		elseif self:IsNormal() then
+			difficultyName = "normal"
+			--This is same inn normal and heroic but different in mythic and lfr
+			timerGlyphofRelocationCD:Start(39.9-delay, 1)
 		else
-			difficultyName = "easy"
+			difficultyName = "lfr"
+			timerDimensionalTearCD:Start(11-delay)
+			timerHyperlightSparknovaCD:Start(20-delay, 1)
+			timerStasisTrapCD:Start(30-delay)
+			timerForerunnerRingsCD:Start(37.1-delay, 1)
+			timerGlyphofRelocationCD:Start(57.1-delay, 1)
 		end
-		timerGlyphofRelocationCD:Start(39.9-delay, 1)
+
 	end
 --	if self.Options.InfoFrame then
 --		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(328897))
@@ -280,8 +336,10 @@ function mod:OnTimerRecovery()
 		difficultyName = "mythic"
 	elseif self:IsHeroic() then
 		difficultyName = "heroic"
+	elseif self:IsNormal() then
+		difficultyName = "normal"
 	else
-		difficultyName = "easy"
+		difficultyName = "lfr"
 	end
 end
 
@@ -352,9 +410,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerGlyphofRelocationCD:Stop()
 		timerHyperlightSparknovaCD:Stop()
 		timerStasisTrapCD:Stop()
-		--Only scan for acolytes and mark them with skull and cross, then stop scanning
+		--Only scan for acolytes and overseers and mark them with skull and cross, then stop scanning
 		if self.Options.SetIconOnHyperlightAdds then
-			self:ScanForMobs(184140, 0, 8, 2, {184140, 184143}, 12, "SetIconOnHyperlightAdds")
+			self:ScanForMobs(184140, 0, 8, 2, {184140, 184143, 184792}, 12, "SetIconOnHyperlightAdds")
 		end
 		--Secondary scan that's marking Debilitators with 6 5 and 4
 		if self.Options.SetIconOnHyperlightAdds then
@@ -422,7 +480,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerDimensionalTearCD:Start(33.3)
 			timerForerunnerRingsCD:Start(36, 1)
 			timerGlyphofRelocationCD:Start(53.3, 1)
-		else--Normal, LFR
+		else--Normal, LFR are same here
 			--Timers on non mythic even more altered on P4 start with march 3rd hotfixes
 			timerHyperlightSparknovaCD:Start(20, 1)
 			timerStasisTrapCD:Start(30)
@@ -529,13 +587,20 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerStasisTrapCD:Start(23.3)
 			timerForerunnerRingsCD:Start(28.8, 1)
 			timerGlyphofRelocationCD:Start(44.4, 1)
-		else--Normal and LFR?
+		elseif self:IsNormal() then
 			--Initial timers are even more slowed as of march 3rd hotfixe
 			timerDimensionalTearCD:Start(10)
 			timerHyperlightSparknovaCD:Start(17.5, 1)
 			timerStasisTrapCD:Start(26.2)
 			timerForerunnerRingsCD:Start(32.5, 1)
 			timerGlyphofRelocationCD:Start(50, 1)
+		else--LFR
+			--Initial timers are even more slowed as of march 3rd hotfixe
+			timerDimensionalTearCD:Start(11.4)
+			timerHyperlightSparknovaCD:Start(20, 1)
+			timerStasisTrapCD:Start(30)
+			timerForerunnerRingsCD:Start(37.1, 1)
+			timerGlyphofRelocationCD:Start(57.1, 1)
 		end
 	elseif spellId == 362615 or spellId == 362614 then
 		if self.Options.SetIconOnWormhole then
