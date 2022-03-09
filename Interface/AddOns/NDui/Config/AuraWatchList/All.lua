@@ -91,6 +91,8 @@ local list = {
 		{AuraID = 367241, UnitID = "player"},	-- 原初印记
 		{AuraID = 363522, UnitID = "player"},	-- 角斗士的永恒结界
 		{AuraID = 362699, UnitID = "player"},	-- 角斗士的决心
+		{AuraID = 345231, UnitID = "player"},	-- 角斗士的纹章
+		{AuraID = 368641, UnitID = "player"},	-- 最终符文
 		-- 盟约
 		{AuraID = 331937, UnitID = "player", Flash = true},	-- 沉醉
 		{AuraID = 354053, UnitID = "player", Flash = true, Text = L["Crit"]}, -- 致命缺陷，暴击
@@ -350,6 +352,7 @@ local list = {
 		{AuraID = 367573, UnitID = "target", Flash = true},	-- 源生壁垒，圣物匠
 		{AuraID = 368684, UnitID = "target", Value = true},	-- 回收，黑伦度斯
 		{AuraID = 361651, UnitID = "target", Value = true},	-- 虹吸屏障，道茜歌妮
+		{AuraID = 362505, UnitID = "target", Flash = true},	-- 统御之握，安度因
 		-- PVP
 		{AuraID = 498, UnitID = "target"},		-- 圣佑术
 		{AuraID = 642, UnitID = "target"},		-- 圣盾术
