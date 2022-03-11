@@ -54,6 +54,12 @@ local function updateRoleBonus(roleButton)
 	end
 end
 
+local function styleRewardRole(roleIcon)
+	if roleIcon and roleIcon:IsShown() then
+		B.ReskinSmallRole(roleIcon.texture, roleIcon.role)
+	end
+end
+
 tinsert(C.defaultThemes, function()
 	if not C.db["Skins"]["BlizzardSkins"] then return end
 	-- LFDFrame
@@ -91,11 +97,12 @@ tinsert(C.defaultThemes, function()
 	-- LFGFrame
 	hooksecurefunc("LFGRewardsFrame_SetItemButton", function(parentFrame, _, index)
 		local parentName = parentFrame:GetName()
+		styleRewardButton(parentFrame.MoneyReward)
+
 		local button = _G[parentName.."Item"..index]
 		styleRewardButton(button)
-
-		local moneyReward = parentFrame.MoneyReward
-		styleRewardButton(moneyReward)
+		styleRewardRole(button.roleIcon1)
+		styleRewardRole(button.roleIcon2)
 	end)
 
 	LFGDungeonReadyDialogRoleIconLeaderIcon:SetTexture(nil)
@@ -206,13 +213,14 @@ tinsert(C.defaultThemes, function()
 		if incentiveIndex then
 			local tex
 			if incentiveIndex == LFG_ROLE_SHORTAGE_PLENTIFUL then
-				tex = "Interface\\Icons\\INV_Misc_Coin_19"
+				tex = "coin-copper"
 			elseif incentiveIndex == LFG_ROLE_SHORTAGE_UNCOMMON then
-				tex = "Interface\\Icons\\INV_Misc_Coin_18"
+				tex = "coin-silver"
 			elseif incentiveIndex == LFG_ROLE_SHORTAGE_RARE then
-				tex = "Interface\\Icons\\INV_Misc_Coin_17"
+				tex = "coin-gold"
 			end
-			roleButton.incentiveIcon.texture:SetTexture(tex)
+			roleButton.incentiveIcon.texture:SetInside()
+			roleButton.incentiveIcon.texture:SetAtlas(tex)
 		end
 
 		updateRoleBonus(roleButton)
