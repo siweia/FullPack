@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2463, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220309115020")
+mod:SetRevision("20220311232231")
 mod:SetCreatureID(180906)
 mod:SetEncounterID(2529)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -61,7 +61,7 @@ local specWarnLightshatterBeam					= mod:NewSpecialWarningMoveTo(360977, nil, ni
 local specWarnLightshatterBeamTaunt				= mod:NewSpecialWarningTaunt(360977, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(361002, nil, nil, nil, 1, 8)
 --Stage Two: The Shimmering Cliffs
-local specWarnShatter							= mod:NewSpecialWarningSwitch(362056, "Dps", nil, nil, 1, 2)
+local specWarnShatter							= mod:NewSpecialWarningDodge(362056, nil, nil, nil, 2, 2)
 
 --mod:AddTimerLine(BOSS)
 --Mythic
@@ -252,7 +252,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 364979 then--Casts slightly faster than 362056
 		specWarnShatter:Show()
-		specWarnShatter:Play("targetchange")
+		specWarnShatter:Play("watchstep")
 		local timer = movementTimers[spellId][self.vb.stageTotality][self.vb.shatterCount+1]
 		if timer then
 			timerShatterCD:Start(timer, self.vb.shatterCount+1)
