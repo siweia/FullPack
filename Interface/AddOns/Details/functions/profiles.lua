@@ -528,7 +528,6 @@ function _detalhes:SaveProfile (saveas)
 		local profile = _detalhes:GetProfile (profile_name, true)
 
 	--> save default keys
-
 		for key, _ in pairs (_detalhes.default_profile) do 
 		
 			local current_value = _detalhes [key]
@@ -1226,7 +1225,7 @@ local default_player_data = {
 		},
 		
 	--> death panel buttons
-		on_death_menu = true,
+		on_death_menu = false,
 }
 
 _detalhes.default_player_data = default_player_data
