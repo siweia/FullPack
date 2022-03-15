@@ -66,12 +66,12 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220312002010"),
+	Revision = parseCurseDate("20220315002840"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.6"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.7"
+	DBM.ReleaseRevision = releaseDate(2022, 3, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.17 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 2, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
@@ -355,6 +355,7 @@ DBM.DefaultOptions = {
 
 DBM.Mods = {}
 DBM.ModLists = {}
+local checkDuplicateObjects = {}
 
 ------------------------
 -- Global Identifiers --
@@ -2717,6 +2718,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 	if not first and DBM_GUI and DBM_GUI.currentViewing and optionsFrame:IsShown() then
 		optionsFrame:DisplayFrame(DBM_GUI.currentViewing)
 	end
+	table.wipe(checkDuplicateObjects)
 end
 
 function DBM:SpecChanged(force)
@@ -4442,10 +4444,10 @@ do
 			local v = inCombat[i]
 			if not v.combatInfo then return end
 			if v.noEEDetection then return end
-			if v.respawnTime and success == 0 and self.Options.ShowRespawn and not self.Options.DontShowBossTimers then--No special hacks needed for bad wrath ENCOUNTER_END. Only mods that define respawnTime have a timer, since variable per boss.
+			if (isRetail or v.respawnTime) and success == 0 and self.Options.ShowRespawn and not self.Options.DontShowBossTimers then--No special hacks needed for bad wrath ENCOUNTER_END. Only mods that define respawnTime have a timer, since variable per boss.
 				name = string.split(",", name)
 				DBT:CreateBar(v.respawnTime, L.TIMER_RESPAWN:format(name), isRetail and 237538 or 136106)--Interface\\Icons\\Spell_Holy_BorrowedTime, Spell_nature_timestop
-				fireEvent("DBM_TimerStart", "DBMRespawnTimer", L.TIMER_RESPAWN:format(name), v.respawnTime, isRetail and "237538" or "136106", "extratimer", nil, 0, v.id)
+				fireEvent("DBM_TimerStart", "DBMRespawnTimer", L.TIMER_RESPAWN:format(name), v.respawnTime or 29, isRetail and "237538" or "136106", "extratimer", nil, 0, v.id)
 			end
 			if v.multiEncounterPullDetection then
 				for _, eId in ipairs(v.multiEncounterPullDetection) do
@@ -9902,6 +9904,11 @@ end
 --  Options  --
 ---------------
 function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, extraOptionTwo, spellId, optionType)
+	if checkDuplicateObjects[name] and name ~= "timer_berserk" then
+		DBM:Debug("|cffff0000Option already exists for: |r"..name)
+	else
+		checkDuplicateObjects[name] = true
+	end
 	cat = cat or "misc"
 	self.DefaultOptions[name] = (default == nil) or default
 	if cat == "timer" then
@@ -9930,6 +9937,12 @@ function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, e
 end
 
 function bossModPrototype:AddSpecialWarningOption(name, default, defaultSound, cat, spellId, optionType)
+	if checkDuplicateObjects[name] and name ~= "timer_berserk" then
+		DBM:Debug("|cffff0000Option already exists for: |r"..name)
+		return
+	else
+		checkDuplicateObjects[name] = true
+	end
 	cat = cat or "misc"
 	self.DefaultOptions[name] = (default == nil) or default
 	self.DefaultOptions[name.."SWSound"] = defaultSound or 1

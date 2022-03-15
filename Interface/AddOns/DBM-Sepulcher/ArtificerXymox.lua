@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2470, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220310045518")
+mod:SetRevision("20220313224350")
 mod:SetCreatureID(183501)
 mod:SetEncounterID(2553)
 mod:SetUsedIcons(1, 2, 3, 5, 6, 7, 8)
@@ -53,14 +53,14 @@ local yellGlyphofRelocationFades				= mod:NewShortFadesYell(362803)
 local specWarnGlyphofRelocationTaunt			= mod:NewSpecialWarningTaunt(362803, nil, nil, nil, 1, 2)
 local specWarnStasisTrap						= mod:NewSpecialWarningDodge(362882, nil, nil, nil, 2, 2)
 local yellStasisTrap							= mod:NewYell(362882)--Failing to dodge it
-local specWarnHyperlightSpark					= mod:NewSpecialWarningCount(362849, nil, nil, nil, 2, 2)
+local specWarnHyperlightSpark					= mod:NewSpecialWarningCount(362849, nil, 206794, nil, 2, 2)--Short Text "Nova"
 
-local timerDimensionalTearCD					= mod:NewNextTimer(8, 362615, 327770, nil, nil, 3)
+local timerDimensionalTearCD					= mod:NewNextTimer(8, 362615, 67833, nil, nil, 3)
 local timerCartelEliteCD						= mod:NewCDTimer(28.8, 363485, nil, nil, nil, 1, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerGlyphofRelocationCD					= mod:NewCDCountTimer(60, 362801, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerGlyphExplostion						= mod:NewTargetTimer(5, 362803, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerStasisTrapCD							= mod:NewCDTimer(30, 362882, nil, nil, nil, 3)--28-32. it attemts to average 30 but has ~2 in either direction for some reason
-local timerHyperlightSparknovaCD				= mod:NewCDCountTimer(30, 362849, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--28-34
+local timerHyperlightSparknovaCD				= mod:NewCDCountTimer(30, 362849, 206794, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--28-34
 local berserkTimer								= mod:NewBerserkTimer(600)
 
 mod:AddSetIconOption("SetIconOnWormhole", 362615, true, false, {1, 2})
@@ -99,7 +99,7 @@ mod.vb.tearIcon = 1
 mod.vb.sparkCount = 0
 mod.vb.ringCount = 0
 mod.vb.glyphCount = 0
-local difficultyName = "None"
+local difficultyName = mod:IsMythic() and "mythic" or mod:IsHeroic() and "heroic" or mod:IsNormal() and "normmal" or "lfr"
 --This table may seem excessive, especially in phasess where they are all same (why not just go if phase 2 = then timer == 37)
 --The reason being they aren't ALWAYS the same, case and point glyph in stage 1, rings in stage 4 heroic
 --Want to be able to update timers faster on fly if fight continues to get hotfixes, this gives most rapidly changable knobs
@@ -360,17 +360,21 @@ function mod:SPELL_CAST_START(args)
 --		timerRiftBlastsCD:Start()
 	elseif spellId == 362801 then
 		self.vb.glyphCount = self.vb.glyphCount + 1
-		local timer = allTimers[difficultyName][self.vb.phase][spellId]
-		if timer then
-			timerGlyphofRelocationCD:Start(timer, self.vb.glyphCount+1)
+		if self.vb.phase then
+			local timer = allTimers[difficultyName][self.vb.phase][spellId]
+			if timer then
+				timerGlyphofRelocationCD:Start(timer, self.vb.glyphCount+1)
+			end
 		end
 	elseif spellId == 362849 then
 		self.vb.sparkCount = self.vb.sparkCount + 1
 		specWarnHyperlightSpark:Show(self.vb.sparkCount)
 		specWarnHyperlightSpark:Play("aesoon")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId]
-		if timer then
-			timerHyperlightSparknovaCD:Start(timer, self.vb.sparkCount+1)
+		if self.vb.phase then
+			local timer = allTimers[difficultyName][self.vb.phase][spellId]
+			if timer then
+				timerHyperlightSparknovaCD:Start(timer, self.vb.sparkCount+1)
+			end
 		end
 	elseif spellId == 364040 then
 		if self:AntiSpam(2, 2) then
@@ -387,9 +391,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if (spellId == 362885 or spellId == 366752) and self:AntiSpam(10, 3) then--362885 verified on heroic
 		specWarnStasisTrap:Show()
 		specWarnStasisTrap:Play("watchstep")
-		local timer = allTimers[difficultyName][self.vb.phase][362885]
-		if timer then
-			timerStasisTrapCD:Start(timer)
+		if self.vb.phase then
+			local timer = allTimers[difficultyName][self.vb.phase][362885]
+			if timer then
+				timerStasisTrapCD:Start(timer)
+			end
 		end
 	elseif spellId == 364040 then
 		if self.Options.NPAuraOnAscension then
@@ -419,9 +425,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.ringCount = self.vb.ringCount + 1
 		specWarnForerunnerRings:Show(self.vb.ringCount)
 		specWarnForerunnerRings:Play("watchwave")
-		local timer = allTimers[difficultyName][self.vb.phase][spellId]
-		if timer then
-			timerForerunnerRingsCD:Start(timer, self.vb.ringCount+1)
+		if self.vb.phase then
+			local timer = allTimers[difficultyName][self.vb.phase][spellId]
+			if timer then
+				timerForerunnerRingsCD:Start(timer, self.vb.ringCount+1)
+			end
 		end
 	elseif spellId == 364030 then
 		if not castsPerGUID[args.sourceGUID] then--Shouldn't happen, but failsafe
