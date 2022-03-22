@@ -330,6 +330,8 @@ function PGF.DoFilterSearchResults(results)
     PGF.currentSearchExpression = exp
     if exp == "true" and sortTableSize == 0 then return false end -- skip trivial expression if no sorting
 
+    local playerInfo = PGF.GetPlayerInfo()
+
     -- loop backwards through the results list so we can remove elements from the table
     for idx = #results, 1, -1 do
         local resultID = results[idx]
@@ -352,7 +354,6 @@ function PGF.DoFilterSearchResults(results)
         env.voice = searchResultInfo.voiceChat and searchResultInfo.voiceChat ~= ""
         env.voicechat = searchResultInfo.voiceChat
         env.ilvl = searchResultInfo.requiredItemLevel or 0
-        env.myilvl = select(2, GetAverageItemLevel())
         env.hlvl = searchResultInfo.requiredHonorLevel or 0
         env.friends = searchResultInfo.numBNetFriends + searchResultInfo.numCharFriends + searchResultInfo.numGuildMates
         env.members = searchResultInfo.numMembers
@@ -414,6 +415,15 @@ function PGF.DoFilterSearchResults(results)
 
         PGF.PutSearchResultMemberInfos(resultID, searchResultInfo, env)
         PGF.PutEncounterNames(resultID, env)
+
+        env.myilvl = playerInfo.avgItemLevelEquipped
+        env.myilvlpvp = playerInfo.avgItemLevelPvp
+        env.myaffixrating = playerInfo.affixRating[searchResultInfo.activityID] or 0
+        env.mydungeonrating = playerInfo.dungeonRating[searchResultInfo.activityID] or 0
+        env.myavgaffixrating = playerInfo.avgAffixRating
+        env.mymedianaffixrating = playerInfo.medianAffixRating
+        env.myavgdungeonrating = playerInfo.avgDungeonRating
+        env.mymediandungeonrating = playerInfo.medianDungeonRating
 
         local aID = searchResultInfo.activityID
         env.arena2v2 = aID == 6 or aID == 491 or aID == 731 or aID == 732
@@ -482,12 +492,9 @@ function PGF.DoFilterSearchResults(results)
         env.wm           = aID == 528 or aID == 531 or aID == 529 or aID == 530 or aID == 536  -- Waycrest Manor
         env.sob          = aID == 532 or aID == 535 or aID == 533 or aID == 534                -- Siege of Boralus
                                                     or aID == 658 or aID == 659
-        env.siege        = env.sob
         env.opmj         =               aID == 682               or aID == 679  -- Operation: Mechagon - Junkyard
         env.opmw         =               aID == 684               or aID == 683  -- Operation: Mechagon - Workshop
         env.opm          = env.opmj or env.opmw     or aID == 669                -- Operation: Mechagon
-        env.yard         = env.opmj
-        env.work         = env.opmw
         local bfadungeon = env.ad or env.tosl or env.tur or env.tml or env.kr or env.fh or env.sots or env.td or env.wm or env.sob or env.opm -- all BfA dungeons
 
         -- Shadowlands dungeons
@@ -503,9 +510,6 @@ function PGF.DoFilterSearchResults(results)
         env.tazs        =               aID == 1018              or aID == 1016 -- Tazavesh: Streets of Wonder
         env.tazg        =               aID == 1019              or aID == 1017 -- Tazavesh: So'leah's Gambit
         env.taz         = env.tazs or env.tazg     or aID == 746                -- Tazavesh, the Veiled Market
-        env.taza        = env.taz
-        env.ttvm        = env.taz
-        env.mists       = env.mots
         local sldungeon = env.pf or env.dos or env.hoa or env.mots or env.sd or env.soa or env.nw or env.top or env.taz -- all SL dungeons
 
         -- find more IDs: /run for i=750,2000 do local info = C_LFGList.GetActivityInfoTable(i); if info then print(i, info.fullName) end end
@@ -516,8 +520,8 @@ function PGF.DoFilterSearchResults(results)
         env.legion = legiondungeon or legionraid
         env.bfa    = bfadungeon or bfaraid
         env.sl     = sldungeon or slraid
-        
 
+        PGF.PutRaiderIOAliases(env)
         if PGF.PutRaiderIOMetrics then
             PGF.PutRaiderIOMetrics(env, searchResultInfo.leaderName)
         end
@@ -537,6 +541,18 @@ function PGF.DoFilterSearchResults(results)
     table.sort(results, PGF.SortByExpression)
     LFGListFrame.SearchPanel.totalResults = #results
     return true
+end
+
+function PGF.PutRaiderIOAliases(env)
+    -- Battle for Azeroth
+    env.siege = env.sob  -- Siege of Boralus
+    env.yard  = env.opmj -- Operation: Mechagon - Junkyard
+    env.work  = env.opmw -- Operation: Mechagon - Workshop
+
+    -- Shadowlands
+    env.mists = env.mots -- Mists of Tirna Scithe
+    env.strt  = env.tazs -- Tazavesh: Streets of Wonder
+    env.gmbt  = env.tazg -- Tazavesh: So'leah's Gambit
 end
 
 function PGF.GetDeclinedGroupsKey(searchResultInfo)
