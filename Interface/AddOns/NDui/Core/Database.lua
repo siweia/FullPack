@@ -9,7 +9,7 @@ DB.Version = GetAddOnMetadata("NDui", "Version")
 DB.Support = GetAddOnMetadata("NDui", "X-Support")
 DB.Client = GetLocale()
 DB.ScreenWidth, DB.ScreenHeight = GetPhysicalScreenSize()
-DB.isNewPatch = select(4, GetBuildInfo()) >= 90200 -- 9.2.0
+DB.isNewPatch = select(4, GetBuildInfo()) >= 90205 -- 9.2.5
 
 -- Deprecated
 LE_ITEM_QUALITY_POOR = Enum.ItemQuality.Poor
@@ -182,6 +182,7 @@ DB.ReminderBuffs = {
 			equip = true,
 			instance = true,
 			combat = true,
+			inGroup = true,
 		},
 	},
 	MAGE = {
