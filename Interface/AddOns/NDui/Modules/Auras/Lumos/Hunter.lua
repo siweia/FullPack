@@ -4,11 +4,15 @@ local A = B:GetModule("Auras")
 
 if DB.MyClass ~= "HUNTER" then return end
 
-local pairs, GetSpellPowerCost = pairs, GetSpellPowerCost
+local pairs, GetSpellPowerCost, IsEquippedItem = pairs, GetSpellPowerCost, IsEquippedItem
 local POWER_TYPE_FOCUS = 2
 local playerGUID = UnitGUID("player")
 
 local function GetSpellCost(spellID)
+	if spellID == 19434 then -- aimed shot always 35
+		return 35
+	end
+
 	local costTable = GetSpellPowerCost(spellID)
 	if costTable then
 		for _, costInfo in pairs(costTable) do
@@ -62,6 +66,33 @@ function A:StartAimedShot(unit, _, spellID)
 	end
 end
 
+local hunterSets = {188856, 188858, 188859, 188860, 188861}
+
+function A:CheckSetsCount()
+	local count = 0
+	for _, itemID in pairs(hunterSets) do
+		if IsEquippedItem(itemID) then
+			count = count + 1
+		end
+	end
+
+	if count < 4 then
+		A.MMFocus:Hide()
+		B:UnregisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
+		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
+		B:UnregisterEvent("PLAYER_DEAD", A.ResetFocusCost)
+		B:UnregisterEvent("PLAYER_ENTERING_WORLD", A.ResetFocusCost)
+		B:UnregisterEvent("CLEU", A.CheckTrickState)
+	else
+		A.MMFocus:Show()
+		B:RegisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
+		B:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
+		B:RegisterEvent("PLAYER_DEAD", A.ResetFocusCost)
+		B:RegisterEvent("PLAYER_ENTERING_WORLD", A.ResetFocusCost)
+		B:RegisterEvent("CLEU", A.CheckTrickState)
+	end
+end
+
 local oldSpec
 function A:ToggleFocusCalculation()
 	if not A.MMFocus then return end
@@ -69,19 +100,13 @@ function A:ToggleFocusCalculation()
 	local spec = GetSpecialization()
 	if C.db["Auras"]["MMT29X4"] and spec == 2 then
 		if self ~= "PLAYER_SPECIALIZATION_CHANGED" or spec ~= oldSpec then -- don't reset when talent changed only
-			A.MMFocus.cost = 0 -- reset calculation when switch on
+			A:ResetFocusCost() -- reset calculation when switch on
 		end
 		A.MMFocus:Show()
-		B:RegisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
-		B:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
-		B:RegisterEvent("PLAYER_DEAD", A.ResetFocusCost)
-		B:RegisterEvent("CLEU", A.CheckTrickState)
+		A:CheckSetsCount()
+		B:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", A.CheckSetsCount)
 	else
-		A.MMFocus:Hide()
-		B:UnregisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
-		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
-		B:UnregisterEvent("PLAYER_DEAD", A.ResetFocusCost)
-		B:UnregisterEvent("CLEU", A.CheckTrickState)
+		B:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", A.CheckSetsCount)
 	end
 	oldSpec = spec
 end
