@@ -663,8 +663,6 @@ end
 
 -- Interrupt info on castbars
 function UF:UpdateSpellInterruptor(...)
-	if not C.db["Nameplate"]["Interruptor"] then return end
-
 	local _, _, sourceGUID, sourceName, _, _, destGUID = ...
 	if destGUID == self.unitGUID and sourceGUID and sourceName and sourceName ~= "" then
 		local _, class = GetPlayerInfoByGUID(sourceGUID)
@@ -763,7 +761,6 @@ function UF:UpdateNameplateAuras()
 	element.numTotal = C.db["Nameplate"]["maxAuras"]
 	element.size = C.db["Nameplate"]["AuraSize"]
 	element.showDebuffType = C.db["Nameplate"]["DebuffColor"]
-	element.showStealableBuffs = C.db["Nameplate"]["Dispellable"]
 	element.desaturateDebuff = C.db["Nameplate"]["Desaturate"]
 	element:SetWidth(self:GetWidth())
 	element:SetHeight((element.size + element.spacing) * 2)

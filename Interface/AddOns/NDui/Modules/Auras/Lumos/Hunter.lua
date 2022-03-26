@@ -9,10 +9,6 @@ local POWER_TYPE_FOCUS = 2
 local playerGUID = UnitGUID("player")
 
 local function GetSpellCost(spellID)
-	if spellID == 19434 then -- aimed shot always 35
-		return 35
-	end
-
 	local costTable = GetSpellPowerCost(spellID)
 	if costTable then
 		for _, costInfo in pairs(costTable) do
@@ -73,20 +69,18 @@ function A:ToggleFocusCalculation()
 	local spec = GetSpecialization()
 	if C.db["Auras"]["MMT29X4"] and spec == 2 then
 		if self ~= "PLAYER_SPECIALIZATION_CHANGED" or spec ~= oldSpec then -- don't reset when talent changed only
-			A:ResetFocusCost() -- reset calculation when switch on
+			A.MMFocus.cost = 0 -- reset calculation when switch on
 		end
 		A.MMFocus:Show()
 		B:RegisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
 		B:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
 		B:RegisterEvent("PLAYER_DEAD", A.ResetFocusCost)
-		B:RegisterEvent("PLAYER_ENTERING_WORLD", A.ResetFocusCost)
 		B:RegisterEvent("CLEU", A.CheckTrickState)
 	else
 		A.MMFocus:Hide()
 		B:UnregisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
 		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
 		B:UnregisterEvent("PLAYER_DEAD", A.ResetFocusCost)
-		B:UnregisterEvent("PLAYER_ENTERING_WORLD", A.ResetFocusCost)
 		B:UnregisterEvent("CLEU", A.CheckTrickState)
 	end
 	oldSpec = spec
