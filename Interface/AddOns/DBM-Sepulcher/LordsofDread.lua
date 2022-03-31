@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2457, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220324032302")
+mod:SetRevision("20220330031553")
 mod:SetCreatureID(181398, 181399)
 mod:SetEncounterID(2543)
 mod:SetUsedIcons(1, 2, 6, 7, 8)
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 360006 361913 361923 359960 360717 360145 360229 360284 360300 360304",
 	"SPELL_CAST_SUCCESS 360420",
-	"SPELL_AURA_APPLIED 360300 360012 361934 362020 361945 359963 360418 360146 360148 363191 360241 360287 364985",
+	"SPELL_AURA_APPLIED 360300 360304 360012 361934 362020 361945 359963 360418 360146 360148 363191 360241 360287 364985",
 	"SPELL_AURA_APPLIED_DOSE 360287",
 	"SPELL_AURA_REMOVED 360300 360304 360012 361934 362020 361945 360418 360146 360148 363191 360241 360516 364985",
 --	"SPELL_PERIODIC_DAMAGE",
@@ -211,7 +211,7 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 	elseif spellId == 359960 then
-		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then--Change to boss1/2 if confirmed it's consistent
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Change to boss1/2 if confirmed it's consistent
 			specWarnLeechingClaws:Show()
 			specWarnLeechingClaws:Play("defensive")
 		end
@@ -228,8 +228,6 @@ function mod:SPELL_CAST_START(args)
 		--Kin'tessa
 		timerAnguishingStrikeCD:Stop()
 		timerSlumberCloudCD:Stop()
-		--This timer pauses
-		timerFearfulTrepidationCD:Pause(self.vb.fearfulCount+1)
 	elseif (spellId == 360300 or spellId == 360304) and self:AntiSpam(3, 2) then
 		self.vb.darknessCount = self.vb.darknessCount + 1
 		specWarnUntoDarkness:Show(self.vb.darknessCount)
@@ -242,8 +240,6 @@ function mod:SPELL_CAST_START(args)
 		--Kin'tessa
 		timerAnguishingStrikeCD:Stop()
 		timerFearfulTrepidationCD:Stop()
-		--This timer pauses
-		timerSlumberCloudCD:Pause(self.vb.slumberCount+1)
 	elseif spellId == 360145 then
 		self.vb.fearfulCount = self.vb.fearfulCount + 1
 		self.vb.trepidationIcon = 1
@@ -251,9 +247,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 360229 then
 		self.vb.slumberCount = self.vb.slumberCount + 1--Doesn't reset, used by timers and announce
 		warnSlumberCloud:Show(self.vb.slumberCount)
-		timerSlumberCloudCD:Start(32.8, self.vb.slumberCount+1)
+		timerSlumberCloudCD:Start(self:IsMythic() and 32.8 or 45, self.vb.slumberCount+1)
 	elseif spellId == 360284 then
-		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then--Change to boss1/2 if confirmed it's consistent
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Change to boss1/2 if confirmed it's consistent
 			specWarnAnguishingStrike:Show()
 			specWarnAnguishingStrike:Play("defensive")
 		end
@@ -270,9 +266,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 360300 then
-		timerSwarmofDecay:Start()
-	elseif spellId == 360012 then
+	if spellId == 360012 then
 		self.vb.carrionDebuffs = self.vb.carrionDebuffs + 1
 		if args:IsPlayer() then
 			specWarnCloudofCarrionDebuff:Show()
@@ -314,8 +308,26 @@ function mod:SPELL_AURA_APPLIED(args)
 				end
 			end
 		end
-	elseif spellId == 360516 and self:AntiSpam(3, 4) then
+	elseif (spellId == 360300 or spellId == 360304) and self:AntiSpam(3, 4) then--Darkness
+		timerSwarmofDecay:Start()
+		--This timer pauses, but also has a min time of 5 seconds so first we need to check and extend that if applicable
+		if timerSlumberCloudCD:GetRemaining(self.vb.slumberCount+1) < 4.6 then
+			local elapsed, total = timerSlumberCloudCD:GetTime(self.vb.slumberCount+1)
+			local extend = 4.6 - (total-elapsed)
+			timerSlumberCloudCD:Update(elapsed, total+extend, self.vb.slumberCount+1)
+			DBM:Debug("timerSlumberCloudCD extended by: "..extend, 2)
+		end
+		timerSlumberCloudCD:Pause(self.vb.slumberCount+1)
+	elseif spellId == 360516 and self:AntiSpam(3, 5) then--Infiltration
 		timerUntoDarknessCD:Pause(self.vb.darknessCount+1)--Pauses since bosses stop gaining energy
+		--This timer pauses, but also has a min time of 5 seconds so first we need to check and extend that if applicable
+		if timerFearfulTrepidationCD:GetRemaining(self.vb.fearfulCount+1) < 4.6 then
+			local elapsed, total = timerFearfulTrepidationCD:GetTime(self.vb.fearfulCount+1)
+			local extend = 4.6 - (total-elapsed)
+			timerFearfulTrepidationCD:Update(elapsed, total+extend, self.vb.fearfulCount+1)
+			DBM:Debug("timerFearfulTrepidationCD extended by: "..extend, 2)
+		end
+		timerFearfulTrepidationCD:Pause(self.vb.fearfulCount+1)
 	elseif spellId == 360418 and args:IsPlayer() then
 		timerParanoia:Start()
 	elseif spellId == 360146 then
@@ -399,7 +411,7 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if (spellId == 360300 or spellId == 360304) and self:AntiSpam(3, 5) then--Both Swarm casts tied to Darkness
+	if (spellId == 360300 or spellId == 360304) and self:AntiSpam(3, 6) then--Both Swarm casts tied to Darkness
 		warnUntoDarknessOver:Show()
 		timerSwarmofDecay:Stop()
 		--May still be missing some that actually pause/resume instead, but seems accurate enough
@@ -413,7 +425,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerAnguishingStrikeCD:Start(7.4)--7.4-9.7
 		--This timer resumes
 		timerSlumberCloudCD:Resume(self.vb.slumberCount+1)
-	elseif spellId == 360516 and self:AntiSpam(3, 6) then--Infiltration
+	elseif spellId == 360516 and self:AntiSpam(3, 7) then--Infiltration
 		--May still be missing some that actually pause/resume instead, but seems accurate enough
 		--Mal
 		timerLeechingClawsCD:Start(4.6)--4.6-5.3
@@ -490,7 +502,7 @@ end
 
 --[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 340324 and destGUID == UnitGUID("player") and not playerDebuff and self:AntiSpam(2, 7) then
+	if spellId == 340324 and destGUID == UnitGUID("player") and not playerDebuff and self:AntiSpam(2, 8) then
 		specWarnGTFO:Show(spellName)
 		specWarnGTFO:Play("watchfeet")
 	end
