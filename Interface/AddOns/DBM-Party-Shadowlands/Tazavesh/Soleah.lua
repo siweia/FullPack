@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2455, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220307043642")
+mod:SetRevision("20220402212245")
 mod:SetCreatureID(180863)
 mod:SetEncounterID(2442)
 
@@ -113,7 +113,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnEnergyFragmentation:Show()
 		specWarnEnergyFragmentation:Play("watchwave")--wave or orb?
 		timerEnergyFragmentationCD:Start()
-	elseif spellId == 351646 then
+	elseif spellId == 351646 and self:AntiSpam(3, 1) then
 		specWarnHyperlightNova:Show()
 		specWarnHyperlightNova:Play("watchstep")
 		timerHyperlightNovaCD:Start()
