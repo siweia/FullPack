@@ -419,8 +419,6 @@ local function CheckInstanceStatus()
 end
 
 function UF:QuestIconCheck()
-	if not C.db["Nameplate"]["QuestIndicator"] then return end
-
 	CheckInstanceStatus()
 	B:RegisterEvent("PLAYER_ENTERING_WORLD", CheckInstanceStatus)
 end
@@ -695,9 +693,17 @@ function UF:SpellInterruptor(self)
 end
 
 function UF:ShowUnitTargeted(self)
-	self.tarBy = B.CreateFS(self, 20)
-	self.tarBy:SetPoint("LEFT", self.Health, "RIGHT", 5, 0)
-	self.tarBy:SetTextColor(1, .8, 0)
+	local tex = self:CreateTexture()
+	tex:SetSize(20, 20)
+	tex:SetPoint("LEFT", self, "RIGHT", 5, 0)
+	tex:SetAtlas("target")
+	tex:Hide()
+	local count = B.CreateFS(self, 22)
+	count:SetPoint("LEFT", tex, "RIGHT", 1, 0)
+	count:SetTextColor(1, .8, 0)
+
+	self.tarByTex = tex
+	self.tarBy = count
 end
 
 -- Create Nameplates
@@ -962,6 +968,8 @@ local function GetGroupUnit(index, maxGroups, isInRaid)
 end
 
 function UF:OnUnitTargetChanged()
+	if not isInInstance then return end
+
 	wipe(targetedList)
 
 	local isInRaid = IsInRaid()
@@ -977,6 +985,7 @@ function UF:OnUnitTargetChanged()
 
 	for nameplate in pairs(platesList) do
 		nameplate.tarBy:SetText(targetedList[nameplate.unitGUID] or "")
+		nameplate.tarByTex:SetShown(targetedList[nameplate.unitGUID])
 	end
 end
 
@@ -990,6 +999,7 @@ function UF:RefreshPlateByEvents()
 	else
 		for nameplate in pairs(platesList) do
 			nameplate.tarBy:SetText("")
+			nameplate.tarByTex:Hide()
 		end
 		B:UnregisterEvent("UNIT_TARGET", UF.OnUnitTargetChanged)
 		B:UnregisterEvent("PLAYER_TARGET_CHANGED", UF.OnUnitTargetChanged)
