@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2464, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220402051659")
+mod:SetRevision("20220406065258")
 mod:SetCreatureID(180990)
 mod:SetEncounterID(2537)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -262,7 +262,7 @@ local allTimers = {
 			--Rune of Domination
 			[365147] = {72, 78.9},
 			--Chains of Anguish
-			[365212] = {38, 55, 43, 42.9},
+			[365212] = {38, 54.8, 43, 42.9},
 			--Defile
 			[365169] = {34, 44.9, 44.9, 52},
 		},
@@ -304,7 +304,7 @@ local allTimers = {
 			--Rune of Domination
 			[365147] = {87, 56.9},
 			--Chains of Anguish
-			[365212] = {37, 47, 47.5, 40.5},--88 if he skips 3rd cast
+			[365212] = {37, 46.9, 47.5, 40.4},--87.9 if he skips 3rd cast
 			--Defile
 			[365169] = {56, 24, 39, 40},
 		},
