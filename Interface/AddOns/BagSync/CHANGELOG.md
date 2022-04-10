@@ -1,8 +1,10 @@
 # BagSync
 
-## [v16.3](https://github.com/Xruptor/BagSync/tree/v16.3) (2022-03-27)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v16.2...v16.3) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v16.4](https://github.com/Xruptor/BagSync/tree/v16.4) (2022-04-09)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v16.3...v16.4) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Had to manually edit the LibItemSearch to add a check for Azerite Items to prevent an error in BCC (Burning Crusade Classic).  
-    Filed an issue report with the Library Author. https://github.com/Jaliborc/LibItemSearch-1.2/issues  
-    Fixes #160  
+- Fixed an issue where the currency totals were not showing up properly in the tooltip.  Fixes #161  
+    Fixed an issue where a patch changed the way Currency is scanned by BagSync.  Currencies should now properly be scanned and stored.  
+    Added a new Debug option to show some Debug Info to help with solving Tooltip issues from users.  
+    Added CurrencyID to the ItemID display option in the BagSync Config.  
+    Special thanks to rubenjurado from GitHub, with their help I was able to resolve the currency issue.  
