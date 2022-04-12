@@ -444,6 +444,7 @@ local function RewardBlock_SetRewards(self, xp, rw)
 	local nc = xp and (self[1]:SetReward("xp", xp) and nil or 2) or 1
 	nc = nc + (self[nc]:SetReward(rw and rw[1]) and nil or 1)
 	nc = nc + (self[nc]:SetReward(rw and rw[2]) and nil or 1)
+	nc = nc + (self[nc]:SetReward(rw and rw[3]) and nil or 1)
 	for i=nc, #self do self[i]:SetReward() end
 	if self.Container then
 		self.Container:SetWidth((self[1]:GetWidth()+4)*((xp and 1 or 0) + (rw and #rw or 0))-2)
@@ -1550,7 +1551,7 @@ function Factory.RewardBlock(parent, sz, sp)
 	local t, s, r = CreateFrame("Frame", nil, parent), sz+(sp or 3)
 	t:SetSize(s+sz, sz)
 	r = {Container=t, SetRewards=RewardBlock_SetRewards}
-	for j=1,3 do
+	for j=1,4 do
 		local rew = CreateObject("RewardFrame", t, sz)
 		rew:SetPoint("LEFT", s*j-s, 0)
 		r[j] = rew
@@ -1565,7 +1566,7 @@ function Factory.InlineRewardBlock(parent)
 	t:SetPoint("LEFT")
 	t:SetText(L"Rewards:")
 	f.Rewards = {Label=t}
-	for i=1,3 do
+	for i=1,4 do
 		t = CreateObject("RewardFrame", f, 28)
 		t:SetPoint("LEFT", f.Rewards[i-1] or f.Rewards.Label, "RIGHT", i == 1 and 12 or 4, 0)
 		t.Quantity:Hide()
