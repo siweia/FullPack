@@ -1,22 +1,23 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.2.12](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.12) (2022-04-06)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.11...9.2.12) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.2.13](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.13) (2022-04-12)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.12...9.2.13) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new retail tag  
-- Also add drifting star (user request)  
-- Small Fix to Soazmi  
-    Tweaks to The Menagerie  
-    Updated TimeCapn Hooktail (TODO, fix Hook Swipe when blizzard un-deletes it)  
-    More fixes/additions to Zophex  
-    Updated Soleah  
-- Some Zophex Fixes  
-    Menagerie updated as well  
-- Myza's Oasis Update  
-- Mailroom Mayhem finally done  
-- Slight timer tweaks to Rygelon on all non mythic difficulties to reflect recent undocumented changes blizzard made to some of timings (likely as part of their fix to prevent fight having too few or too many casts of x ability)  
-- update anduin for LFR wing 3 (has shorter intermissions and longer stage 1)  
-    Also added failsafe for boss skipping second intermission and going striaght into stage 3 if raid way overgears fight.  
-- Updated Hylbrande with real data and added add auto marking on top of things Mod should finally feel polished  
-- Add another DC failsafe to extremely niche situations  
-- Bump alphas  
+- Update DBM-WorldEvents.toc (#750)  
+- fixed bug that caused tbc to flag every update as a new patch update (thus causing force update to run every update since patch 2.5.4. It's not intended behavior for the force to run every update, just for major patches. Also prep for new tags  
+- Fixed a bug where Titantic Insight was using wrong spell id and thus showing wrong spell name in options and alerts  
+- Update DBM-SanctumOfDomination.toc (#749)  
+- fix lua error when calling \"whereami\" command in a zone that has no map  
+- Peel back some of debug spam  
+- Remove this useless variable  
+- Add in some core debug  
+- note it so it doesn't happen again  
+- Fixed a logic regression that caused all regular announces to have no sounds unless they had voice pack sounds. apparently only one user out of hundreds f thousands noticed this in 3 weeks. 🤷‍♂️  
+- Fix something that slipped through last  
+- Remove useless stuff from antros  
+- apply antispam for good measure  
+- Add two more requests for Tazavesh trash.  
+- Fix missing spellid regististration on Lihuvim  
+- bump alpha  
+- prep new tbc tag for the ZA fix  
+- bump alpha  
