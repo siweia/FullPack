@@ -65,13 +65,13 @@ end
 
 function M:SoloInfo()
 	if C.db["Misc"]["SoloInfo"] then
-		self:SoloInfo_Update()
-		B:RegisterEvent("PLAYER_ENTERING_WORLD", self.SoloInfo_DelayCheck)
-		B:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", self.SoloInfo_DelayCheck)
+		M:SoloInfo_Update()
+		B:RegisterEvent("PLAYER_ENTERING_WORLD", M.SoloInfo_DelayCheck)
+		B:RegisterEvent("PLAYER_DIFFICULTY_CHANGED", M.SoloInfo_DelayCheck)
 	else
 		if soloInfo then soloInfo:Hide() end
-		B:UnregisterEvent("PLAYER_ENTERING_WORLD", self.SoloInfo_DelayCheck)
-		B:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED", self.SoloInfo_DelayCheck)
+		B:UnregisterEvent("PLAYER_ENTERING_WORLD", M.SoloInfo_DelayCheck)
+		B:UnregisterEvent("PLAYER_DIFFICULTY_CHANGED", M.SoloInfo_DelayCheck)
 	end
 end
 
@@ -143,12 +143,12 @@ function M:RareAlert()
 	M.RareString = "|Hworldmap:%d+:%d+:%d+|h[%s (%.1f, %.1f)%s]|h|r"
 
 	if C.db["Misc"]["RareAlerter"] then
-		self:RareAlert_CheckInstance()
-		B:RegisterEvent("UPDATE_INSTANCE_INFO", self.RareAlert_CheckInstance)
+		M:RareAlert_CheckInstance()
+		B:RegisterEvent("UPDATE_INSTANCE_INFO", M.RareAlert_CheckInstance)
 	else
 		wipe(cache)
-		B:UnregisterEvent("VIGNETTE_MINIMAP_UPDATED", self.RareAlert_Update)
-		B:UnregisterEvent("UPDATE_INSTANCE_INFO", self.RareAlert_CheckInstance)
+		B:UnregisterEvent("VIGNETTE_MINIMAP_UPDATED", M.RareAlert_Update)
+		B:UnregisterEvent("UPDATE_INSTANCE_INFO", M.RareAlert_CheckInstance)
 	end
 end
 
@@ -247,14 +247,14 @@ function M:InterruptAlert()
 	M:InterruptAlert_Toggle()
 
 	if M:InterruptAlert_IsEnabled() then
-		self:InterruptAlert_CheckGroup()
-		B:RegisterEvent("GROUP_LEFT", self.InterruptAlert_CheckGroup)
-		B:RegisterEvent("GROUP_JOINED", self.InterruptAlert_CheckGroup)
-		B:RegisterEvent("PLAYER_ENTERING_WORLD", self.InterruptAlert_CheckGroup)
+		M:InterruptAlert_CheckGroup()
+		B:RegisterEvent("GROUP_LEFT", M.InterruptAlert_CheckGroup)
+		B:RegisterEvent("GROUP_JOINED", M.InterruptAlert_CheckGroup)
+		B:RegisterEvent("PLAYER_ENTERING_WORLD", M.InterruptAlert_CheckGroup)
 	else
-		B:UnregisterEvent("GROUP_LEFT", self.InterruptAlert_CheckGroup)
-		B:UnregisterEvent("GROUP_JOINED", self.InterruptAlert_CheckGroup)
-		B:UnregisterEvent("PLAYER_ENTERING_WORLD", self.InterruptAlert_CheckGroup)
+		B:UnregisterEvent("GROUP_LEFT", M.InterruptAlert_CheckGroup)
+		B:UnregisterEvent("GROUP_JOINED", M.InterruptAlert_CheckGroup)
+		B:UnregisterEvent("PLAYER_ENTERING_WORLD", M.InterruptAlert_CheckGroup)
 		B:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", M.InterruptAlert_Update)
 	end
 end
@@ -417,6 +417,16 @@ end
 --[[
 	放大餐时叫一叫
 ]]
+local groupUnits = {["player"] = true, ["pet"] = true}
+for i = 1, 4 do
+	groupUnits["party"..i] = true
+	groupUnits["partypet"..i] = true
+end
+for i = 1, 40 do
+	groupUnits["raid"..i] = true
+	groupUnits["raidpet"..i] = true
+end
+
 local lastTime = 0
 local itemList = {
 	[54710] = true,		-- 随身邮箱
@@ -429,25 +439,31 @@ local itemList = {
 	[276972] = true,	-- 秘法药锅
 	[286050] = true,	-- 鲜血大餐
 	[265116] = true,	-- 8.0工程战复
-
 	[308458] = true,	-- 惊异怡人大餐
 	[308462] = true,	-- 纵情饕餮盛宴
 	[345130] = true,	-- 9.0工程战复
 	[307157] = true,	-- 永恒药锅
 	[359336] = true,	-- 石头汤锅
 	[324029] = true,	-- 宁心圣典
+
+	[2825]   = true,	-- 嗜血
+	[32182]  = true,	-- 英勇
+	[80353]  = true,	-- 时间扭曲
+	[264667] = true,	-- 原始暴怒，宠物
+	[272678] = true,	-- 原始暴怒，宠物掌控
+	[178207] = true,	-- 狂怒战鼓
+	[230935] = true,	-- 高山战鼓
+	[256740] = true,	-- 漩涡战鼓
+	[292686] = true,	-- 雷皮之槌
+	[309658] = true,	-- 死亡凶蛮战鼓
 }
 
 function M:ItemAlert_Update(unit, _, spellID)
-	if not C.db["Misc"]["PlacedItemAlert"] then return end
+	local now = GetTime()
+	if groupUnits[unit] and itemList[spellID] and lastTime ~= now then
+		SendChatMessage(format(L["SpellItemAlertStr"], UnitName(unit), GetSpellLink(spellID) or GetSpellInfo(spellID)), msgChannel())
 
-	if (UnitInRaid(unit) or UnitInParty(unit)) and spellID and itemList[spellID] and lastTime ~= GetTime() then
-		local who = UnitName(unit)
-		local link = GetSpellLink(spellID)
-		local name = GetSpellInfo(spellID)
-		SendChatMessage(format(L["Place item"], who, link or name), msgChannel())
-
-		lastTime = GetTime()
+		lastTime = now
 	end
 end
 
@@ -459,10 +475,16 @@ function M:ItemAlert_CheckGroup()
 	end
 end
 
-function M:PlacedItemAlert()
-	self:ItemAlert_CheckGroup()
-	B:RegisterEvent("GROUP_LEFT", self.ItemAlert_CheckGroup)
-	B:RegisterEvent("GROUP_JOINED", self.ItemAlert_CheckGroup)
+function M:SpellItemAlert()
+	if C.db["Misc"]["SpellItemAlert"] then
+		M:ItemAlert_CheckGroup()
+		B:RegisterEvent("GROUP_LEFT", M.ItemAlert_CheckGroup)
+		B:RegisterEvent("GROUP_JOINED", M.ItemAlert_CheckGroup)
+	else
+		B:UnregisterEvent("GROUP_LEFT", M.ItemAlert_CheckGroup)
+		B:UnregisterEvent("GROUP_JOINED", M.ItemAlert_CheckGroup)
+		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", M.ItemAlert_Update)
+	end
 end
 
 -- 大幻象水晶及箱子计数
@@ -699,7 +721,7 @@ function M:AddAlerts()
 	M:InterruptAlert()
 	M:VersionCheck()
 	M:ExplosiveAlert()
-	M:PlacedItemAlert()
+	M:SpellItemAlert()
 	M:NVision_Init()
 	M:CheckIncompatible()
 	M:SendCDStatus()
