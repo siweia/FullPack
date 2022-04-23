@@ -22,6 +22,21 @@ local GetSpellCost = {
 	[355589] = 15, -- 哀痛箭
 }
 
+function A:UpdateFocusColor(focusCal)
+	if A.MMFocus.trickActive > 0 then
+		A.MMFocus:SetTextColor(0, 1, 0) -- 有技巧绿色
+	elseif A.MMFocus.cost > 0 then
+		A.MMFocus:SetTextColor(1, 1, 0) -- 无技巧，但集中值不为0，则黄色
+	else
+		A.MMFocus:SetTextColor(1, 0, 0) -- 无技巧，且集中值为0，红色
+	end
+end
+
+function A:UpdateFocusText(value)
+	A.MMFocus.cost = value
+	A.MMFocus:SetFormattedText("%d/40", value)
+end
+
 function A:UpdateFocusCost(unit, _, spellID)
 	if unit ~= "player" then return end
 
@@ -37,12 +52,13 @@ function A:UpdateFocusCost(unit, _, spellID)
 			--print("此时重置集中值为35")
 		end
 	end
-	focusCal:SetFormattedText("%d/40", focusCal.cost%40)
+	A:UpdateFocusText(focusCal.cost % 40)
+	A:UpdateFocusColor()
 end
 
 function A:ResetFocusCost()
-	A.MMFocus.cost = 0
-	A.MMFocus:SetFormattedText("%d/40", A.MMFocus.cost%40)
+	A:UpdateFocusText(0)
+	A:UpdateFocusColor()
 end
 
 function A:ResetOnRaidEncounter(_, _, _, groupSize)
@@ -61,6 +77,7 @@ function A:CheckTrickState(...)
 	local _, eventType, _, sourceGUID, _, _, _, _, _, _, _, spellID = ...
 	if eventSpentIndex[eventType] and spellID == 257622 and sourceGUID == playerGUID then
 		A.MMFocus.trickActive = eventSpentIndex[eventType]
+		A:UpdateFocusColor()
 	end
 end
 
@@ -114,6 +131,14 @@ function A:ToggleFocusCalculation()
 		B:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", A.CheckSetsCount)
 	else
 		B:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED", A.CheckSetsCount)
+		-- if enabled already
+		A.MMFocus:Hide()
+		B:UnregisterEvent("UNIT_SPELLCAST_START", A.StartAimedShot)
+		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", A.UpdateFocusCost)
+		B:UnregisterEvent("PLAYER_DEAD", A.ResetFocusCost)
+		B:UnregisterEvent("PLAYER_ENTERING_WORLD", A.ResetFocusCost)
+		B:UnregisterEvent("ENCOUNTER_START", A.ResetOnRaidEncounter)
+		B:UnregisterEvent("CLEU", A.CheckTrickState)
 	end
 	oldSpec = spec
 end
@@ -129,7 +154,7 @@ function A:PostCreateLumos(self)
 	self.boom = boom
 
 	-- MM hunter T29 4sets
-	A.MMFocus = B.CreateFS(self.Health, 16)
+	A.MMFocus = B.CreateFS(self.Health, 18)
 	A.MMFocus:ClearAllPoints()
 	A.MMFocus:SetPoint("BOTTOM", self.Health, "TOP", 0, 5)
 	A.MMFocus.trickActive = 0
