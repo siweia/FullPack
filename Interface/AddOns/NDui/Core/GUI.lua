@@ -319,6 +319,7 @@ G.DefaultSettings = {
 		MapReveal = true,
 		MapRevealGlow = true,
 		Calendar = false,
+		EasyVolume = true,
 	},
 	Nameplate = {
 		Enable = true,
@@ -376,6 +377,9 @@ G.DefaultSettings = {
 		BlockDBM = true,
 		Dispellable = true,
 		UnitTargeted = false,
+		ColorByDot = false,
+		ColorDots = "",
+		DotColor = {r=1, g=.5, b=.2},
 
 		PlateWidth = 190,
 		PlateHeight = 8,
@@ -821,6 +825,10 @@ local function updatePowerUnitList()
 	B:GetModule("UnitFrames"):CreatePowerUnitTable()
 end
 
+local function refreshColorDots()
+	B:GetModule("UnitFrames"):RefreshColorDots()
+end
+
 local function refreshNameplates()
 	B:GetModule("UnitFrames"):RefreshAllPlates()
 end
@@ -1192,6 +1200,9 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Nameplate", "ColoredFocus", HeaderTag..L["ColoredFocus"].."*", true, nil, nil, L["ColoredFocusTip"]},
 		{5, "Nameplate", "TargetColor", L["TargetNP Color"].."*"},
 		{5, "Nameplate", "FocusColor", L["FocusNP Color"].."*", 2},
+		{1, "Nameplate", "ColorByDot", NewTag..HeaderTag..L["ColorByDot"].."*", nil, nil, nil, L["ColorByDotTip"]},
+		{5, "Nameplate", "DotColor", NewTag..L["DotColor"].."*"},
+		{2, "Nameplate", "ColorDots", NewTag..L["ColorDots"].."*", true, nil, refreshColorDots, L["ColorDotsTip"]},
 		{},--blank
 		{1, "Nameplate", "CustomUnitColor", HeaderTag..L["CustomUnitColor"].."*", nil, nil, updateCustomUnitList, L["CustomUnitColorTip"]},
 		{5, "Nameplate", "CustomColor", L["Custom Color"].."*", 2},
@@ -1317,8 +1328,9 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Map", "Clock", L["Minimap Clock"].."*", true, nil, showMinimapClock},
 		{1, "Map", "CombatPulse", L["Minimap Pulse"]},
 		{1, "Map", "WhoPings", L["Show WhoPings"], true},
-		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"]},
+		{1, "Map", "EasyVolume", NewTag..L["EasyVolume"], nil, nil, nil, L["EasyVolumeTip"]},
 		{1, "Misc", "ExpRep", L["Show Expbar"], true},
+		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"]},
 		{2, "ACCOUNT", "IgnoredButtons", NewTag..L["IgnoredButtons"], nil, nil, nil, L["IgnoredButtonsTip"]},
 	},
 	[11] = {
