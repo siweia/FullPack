@@ -427,6 +427,7 @@ for i = 1, 40 do
 	groupUnits["raidpet"..i] = true
 end
 
+local lastTime = 0
 local itemList = {
 	[54710] = true,		-- 随身邮箱
 	[67826] = true,		-- 基维斯
@@ -458,8 +459,11 @@ local itemList = {
 }
 
 function M:ItemAlert_Update(unit, _, spellID)
-	if groupUnits[unit] and itemList[spellID] then
+	local now = GetTime()
+	if groupUnits[unit] and itemList[spellID] and lastTime ~= now then
 		SendChatMessage(format(L["SpellItemAlertStr"], UnitName(unit), GetSpellLink(spellID) or GetSpellInfo(spellID)), msgChannel())
+
+		lastTime = now
 	end
 end
 
