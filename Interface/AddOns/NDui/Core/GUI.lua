@@ -319,6 +319,7 @@ G.DefaultSettings = {
 		MapReveal = true,
 		MapRevealGlow = true,
 		Calendar = false,
+		EasyVolume = true,
 	},
 	Nameplate = {
 		Enable = true,
@@ -376,6 +377,9 @@ G.DefaultSettings = {
 		BlockDBM = true,
 		Dispellable = true,
 		UnitTargeted = false,
+		ColorByDot = false,
+		ColorDots = "",
+		DotColor = {r=1, g=.5, b=.2},
 
 		PlateWidth = 190,
 		PlateHeight = 8,
@@ -821,6 +825,10 @@ local function updatePowerUnitList()
 	B:GetModule("UnitFrames"):CreatePowerUnitTable()
 end
 
+local function refreshColorDots()
+	B:GetModule("UnitFrames"):RefreshColorDots()
+end
+
 local function refreshNameplates()
 	B:GetModule("UnitFrames"):RefreshAllPlates()
 end
@@ -1030,7 +1038,7 @@ local NewTag = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 G.HealthValues = {DISABLE, L["ShowHealthDefault"], L["ShowHealthCurMax"], L["ShowHealthCurrent"], L["ShowHealthPercent"], L["ShowHealthLoss"], L["ShowHealthLossPercent"]}
 
 G.TabList = {
-	NewTag..L["Actionbar"],
+	L["Actionbar"],
 	L["Bags"],
 	NewTag..L["Unitframes"],
 	L["RaidFrame"],
@@ -1042,7 +1050,7 @@ G.TabList = {
 	NewTag..L["Maps"],
 	L["Skins"],
 	L["Tooltip"],
-	NewTag..L["Misc"],
+	L["Misc"],
 	L["UI Settings"],
 	L["Profile"],
 }
@@ -1064,8 +1072,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{},--blank
 		{1, "Actionbar", "Cooldown", HeaderTag..L["Show Cooldown"]},
 		{1, "Actionbar", "OverrideWA", L["HideCooldownOnWA"].."*", true},
-		{3, "Actionbar", "MmssTH", NewTag..L["MmssThreshold"].."*", nil, {60, 600, 1}, nil, L["MmssThresholdTip"]},
-		{3, "Actionbar", "TenthTH", NewTag..L["TenthThreshold"].."*", true, {0, 60, 1}, nil, L["TenthThresholdTip"]},
+		{3, "Actionbar", "MmssTH", L["MmssThreshold"].."*", nil, {60, 600, 1}, nil, L["MmssThresholdTip"]},
+		{3, "Actionbar", "TenthTH", L["TenthThreshold"].."*", true, {0, 60, 1}, nil, L["TenthThresholdTip"]},
 		{},--blank
 		{1, "Actionbar", "Hotkeys", L["Actionbar Hotkey"].."*", nil, nil, updateHotkeys},
 		{1, "Actionbar", "Macro", L["Actionbar Macro"], true},
@@ -1192,6 +1200,9 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Nameplate", "ColoredFocus", HeaderTag..L["ColoredFocus"].."*", true, nil, nil, L["ColoredFocusTip"]},
 		{5, "Nameplate", "TargetColor", L["TargetNP Color"].."*"},
 		{5, "Nameplate", "FocusColor", L["FocusNP Color"].."*", 2},
+		{1, "Nameplate", "ColorByDot", NewTag..HeaderTag..L["ColorByDot"].."*", nil, nil, nil, L["ColorByDotTip"]},
+		{5, "Nameplate", "DotColor", NewTag..L["DotColor"].."*"},
+		{2, "Nameplate", "ColorDots", NewTag..L["ColorDots"].."*", true, nil, refreshColorDots, L["ColorDotsTip"]},
 		{},--blank
 		{1, "Nameplate", "CustomUnitColor", HeaderTag..L["CustomUnitColor"].."*", nil, nil, updateCustomUnitList, L["CustomUnitColorTip"]},
 		{5, "Nameplate", "CustomColor", L["Custom Color"].."*", 2},
@@ -1205,8 +1216,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{5, "Nameplate", "InsecureColor", L["Insecure Color"].."*", 2},
 		{5, "Nameplate", "OffTankColor", L["OffTank Color"].."*", 3},
 		{},--blank
-		{1, "Nameplate", "CVarOnlyNames", NewTag..L["CVarOnlyNames"], nil, nil, updatePlateCVars, L["CVarOnlyNamesTip"]},
-		{1, "Nameplate", "CVarShowNPCs", NewTag..L["CVarShowNPCs"].."*", nil, nil, updatePlateCVars, L["CVarShowNPCsTip"]},
+		{1, "Nameplate", "CVarOnlyNames", L["CVarOnlyNames"], nil, nil, updatePlateCVars, L["CVarOnlyNamesTip"]},
+		{1, "Nameplate", "CVarShowNPCs", L["CVarShowNPCs"].."*", nil, nil, updatePlateCVars, L["CVarShowNPCsTip"]},
 		{3, "Nameplate", "VerticalSpacing", L["NP VerticalSpacing"].."*", true, {.5, 1.5, .1}, updatePlateCVars},
 		{3, "Nameplate", "MinScale", L["Nameplate MinScale"].."*", nil, {.5, 1, .1}, updatePlateCVars},
 		{3, "Nameplate", "MinAlpha", L["Nameplate MinAlpha"].."*", true, {.3, 1, .1}, updatePlateCVars},
@@ -1317,9 +1328,10 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Map", "Clock", L["Minimap Clock"].."*", true, nil, showMinimapClock},
 		{1, "Map", "CombatPulse", L["Minimap Pulse"]},
 		{1, "Map", "WhoPings", L["Show WhoPings"], true},
-		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"]},
+		{1, "Map", "EasyVolume", NewTag..L["EasyVolume"], nil, nil, nil, L["EasyVolumeTip"]},
 		{1, "Misc", "ExpRep", L["Show Expbar"], true},
-		{2, "ACCOUNT", "IgnoredButtons", NewTag..L["IgnoredButtons"], nil, nil, nil, L["IgnoredButtonsTip"]},
+		{1, "Map", "ShowRecycleBin", L["Show RecycleBin"]},
+		{2, "ACCOUNT", "IgnoredButtons", L["IgnoredButtons"], nil, nil, nil, L["IgnoredButtonsTip"]},
 	},
 	[11] = {
 		{1, "Skins", "BlizzardSkins", HeaderTag..L["BlizzardSkins"], nil, nil, nil, L["BlizzardSkinsTips"]},
@@ -1399,7 +1411,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "EnhanceDressup", L["EnhanceDressup"], true, nil, nil, L["EnhanceDressupTip"]},
 		{1, "Misc", "QuestTool", L["QuestTool"], nil, nil, nil, L["QuestToolTip"]},
 		{1, "Misc", "QuickJoin", HeaderTag..L["EnhancedPremade"], nil, nil, nil, L["EnhancedPremadeTip"]},
-		{3, "Misc", "MaxZoom", NewTag..L["MaxZoom"].."*", true, {1, 2.6, .1}, updateMaxZoomLevel},
+		{3, "Misc", "MaxZoom", L["MaxZoom"].."*", true, {1, 2.6, .1}, updateMaxZoomLevel},
 	},
 	[14] = {
 		{1, "ACCOUNT", "VersionCheck", L["Version Check"]},
