@@ -2,25 +2,28 @@ local ADDON, Addon = ...
 local Mod = Addon:NewModule('Schedule')
 
 local rowCount = 3
+local SEASON_AFFIX_ID = 130
 local requestPartyKeystones
 
-local SEASON_AFFIX_ID = 130
+-- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
 local affixSchedule = {
-	[1]  = {[1]=10, [2]=11,  [3]=124},
-	[2]  = {[1]=9,  [2]=6,   [3]=3},
-	[3]  = {[1]=10, [2]=122, [3]=12},
-	[4]  = {[1]=9,  [2]=123, [3]=4},
-	[5]  = {[1]=10, [2]=7,   [3]=14},
-	[6]  = {[1]=9,  [2]=8,   [3]=124},
-	[7]  = {[1]=10, [2]=6,   [3]=13},
-	[8]  = {[1]=9,  [2]=11,  [3]=3},
-	[9]  = {[1]=10, [2]=123, [3]=4},
-	[10] = {[1]=9,  [2]=122, [3]=14},
-	[11] = {[1]=10, [2]=8,   [3]=12},
-	[12] = {[1]=9,  [2]=7,   [3]=13},
+	-- Shadowlands Season 2
+	[1]  = {[1]=10, [2]=11,  [3]=124}, -- 1 Fortified Bursting Storming - march 8,2022
+	[2]  = {[1]=9,  [2]=6,   [3]=3},   -- 2 Tyrannical Raging Volcanic - march 15, 2022
+	[3]  = {[1]=10, [2]=122, [3]=12},  -- 3 Fortified Inspiring Grievous - march 22, 2022
+	[4]  = {[1]=9,  [2]=123, [3]=4},   -- 4 Tyrannical Spiteful Necrotic - march 29, 2022
+	[5]  = {[1]=10, [2]=7,   [3]=14},  -- 5 Fortified Bolstering Quaking - april 5, 2022
+	[6]  = {[1]=9,  [2]=8,   [3]=124}, -- 6 Tyrannical Sanguine Storming - april 12, 2022
+	[7]  = {[1]=10, [2]=6,   [3]=13},  -- 7 Fortified Raging Explosive - april 19, 2022
+	[8]  = {[1]=9,  [2]=11,  [3]=3},   -- 8 Tyrannical Bursting Volcanic - april 26, 2022
+	[9]  = {[1]=10, [2]=123, [3]=4},   -- 9 Fortified Spiteful Necrotic - may 3, 2022
+	[10] = {[1]=9,  [2]=122, [3]=14},  -- 10 Tyrannical Inspiring Quaking - may 10, 2022
+	[11] = {[1]=10, [2]=8,   [3]=12},  -- 11 Fortified Sanguine Grievous - may 17, 2022
+	[12] = {[1]=9,  [2]=7,   [3]=13},  -- 12 Tyrannical Bolstering Explosive - may 24, 2022
 }
 
-local affixScheduleUnknown = not next(affixSchedule)
+local scheduleEnabled = true
+local affixScheduleUnknown = not next(affixSchedule) -- unknown affix if empty schedule
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
@@ -41,6 +44,7 @@ local function UpdatePartyKeystones()
 		Mod:SendPartyKeystonesRequest()
 	end
 
+	if not scheduleEnabled then return end
 	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
 
 	local playerRealm = GetRealmName()
@@ -72,7 +76,6 @@ local function UpdatePartyKeystones()
 					entry.Text:SetText(name)
 					entry.Text:SetTextColor(color:GetRGBA())
 					entry.Text2:SetText(keystoneName)
-
 					e = e + 1
 				end
 			end
@@ -94,6 +97,8 @@ local function UpdatePartyKeystones()
 end
 
 local function UpdateFrame()
+	if not scheduleEnabled then return end
+
 	Mod:CheckAffixes()
 	Mod.AffixFrame:Show()
 	Mod.PartyFrame:Show()
@@ -162,6 +167,8 @@ local function makeAffix(parent)
 end
 
 function Mod:Blizzard_ChallengesUI()
+	if not scheduleEnabled then return end
+
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
 	frame:SetSize(246, 92)
 	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 30, 30)
@@ -427,6 +434,8 @@ function Mod:CHALLENGE_MODE_UPDATED()
 end
 
 function Mod:Startup()
+	scheduleEnabled = Addon.Config.schedule
+
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "SetPartyKeystoneRequest")
 	self:RegisterEvent("BAG_UPDATE")

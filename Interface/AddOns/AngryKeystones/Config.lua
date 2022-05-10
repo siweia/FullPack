@@ -17,6 +17,7 @@ local configDefaults = {
 	hideTalkingHead = true,
 	resetPopup = false,
 	announceKeystones = false,
+	schedule = true,
 }
 local callbacks = {}
 
@@ -255,7 +256,7 @@ Panel_OnRefresh = function(self)
 		checkboxes = {}
 		dropdowns = {}
 
-		local checkboxes_order = { "silverGoldTimer", "autoGossip", "progressTooltip", "completionMessage", "hideTalkingHead", "resetPopup", "announceKeystones" }
+		local checkboxes_order = { "silverGoldTimer", "autoGossip", "progressTooltip", "completionMessage", "hideTalkingHead", "resetPopup", "announceKeystones", "schedule" }
 		if Addon.Locale:HasRumors() then table.insert(checkboxes_order, 5, "cosRumors") end
 
 		for i,key in ipairs(checkboxes_order) do
