@@ -5,7 +5,7 @@
 ## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
 ## X-Packaged-Version: NDuiMOD
-## Version: 20220301
+## Version: 20220510
 
 embeds.xml
 
