@@ -339,10 +339,8 @@ L["Earthrager"] = "地怒者"
 L["Ebonclaw Worg"] = "黑爪座狼"
 L["Echelon"] = "艾谢朗"
 L["Edit"] = "编辑"
---[[Translation missing --]]
---[[ L["Efficiency Score"] = ""--]] 
---[[Translation missing --]]
---[[ L["EfficiencyScoreTip"] = ""--]] 
+L["Efficiency Score"] = "效率分"
+L["EfficiencyScoreTip"] = "效率分用于展示该NPC的进度值和血量之间的效率比。"
 L["Elder Leaxa"] = "长者莉娅克萨"
 L["Elemental"] = "元素"
 L["Elfyra"] = "艾尔菲拉"
