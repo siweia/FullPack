@@ -78,7 +78,8 @@ G.DefaultSettings = {
 		BagsiLvl = true,
 		BagSortMode = 1,
 		ItemFilter = true,
-		FavouriteItems = {},
+		CustomItems = {},
+		CustomNames = {},
 		GatherEmpty = false,
 		ShowNewItem = true,
 		SplitCount = 1,
@@ -616,6 +617,17 @@ loader:SetScript("OnEvent", function(self, _, addon)
 	else
 		C.db = NDuiPDB[NDuiADB["ProfileIndex"][DB.MyFullName] - 1]
 	end
+	-- Transfer favourite items START
+	if C.db["Bags"] and C.db["Bags"]["FavouriteItems"] and next(C.db["Bags"]["FavouriteItems"]) then
+		for itemID in pairs(C.db["Bags"]["FavouriteItems"]) do
+			if not C.db["Bags"]["CustomItems"] then
+				C.db["Bags"]["CustomItems"] = {}
+			end
+			C.db["Bags"]["CustomItems"][itemID] = 1
+		end
+		C.db["Bags"]["FavouriteItems"] = nil
+	end
+	-- Transfer favourite items END
 	InitialSettings(G.DefaultSettings, C.db, true)
 
 	B:SetupUIScale(true)
@@ -1114,7 +1126,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "Castbars", HeaderTag..L["UFs Castbar"], nil, setupCastbar},
 		{1, "UFs", "LagString", L["Castbar LagString"].."*", true, nil, toggleCastBarLatency},
 		{1, "UFs", "SwingBar", L["UFs SwingBar"].."*", nil, setupSwingBars, toggleSwingBars},
-		{1, "UFs", "QuakeTimer", L["UFs QuakeTimer"], true},
+		{1, "UFs", "QuakeTimer", L["UFs QuakeTimer"], true, nil, nil, L["QuakeTimerTip"]},
 		{},--blank
 		{1, "UFs", "CombatText", HeaderTag..L["UFs CombatText"]},
 		{1, "UFs", "ScrollingCT", NewTag..L["ScrollingCT"].."*", true},

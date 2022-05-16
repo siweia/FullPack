@@ -228,16 +228,23 @@ end
 function S:ATT()
 	if not IsAddOnLoaded("AllTheThings") then return end
 
-	local frame = _G["AllTheThings-Window-CurrentInstance"]
-	if frame then
-		B.SetBD(frame, nil, 2, -2, -2, 2)
-		B.ReskinClose(frame.CloseButton, nil, -4, -4)
-		B.ReskinScroll(frame.ScrollBar)
-		frame.Grip:SetTexture([[Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up]])
-		local up = frame.ScrollBar:GetChildren()
-		up:ClearAllPoints()
-		up:SetPoint("TOPRIGHT", 0, 10)
-	end
+	local ATT = _G.AllTheThings
+	if not ATT then return end
+
+	hooksecurefunc(ATT, "GetWindow", function(self, suffix)
+		local frame = self.Windows[suffix]
+		if frame and not frame.styled then
+			B.SetBD(frame, nil, 2, -2, -2, 2)
+			B.ReskinClose(frame.CloseButton, nil, -4, -4)
+			B.ReskinScroll(frame.ScrollBar)
+			frame.Grip:SetTexture([[Interface\ChatFrame\UI-ChatIM-SizeGrabber-Up]])
+			local up = frame.ScrollBar:GetChildren()
+			up:ClearAllPoints()
+			up:SetPoint("TOPRIGHT", 0, 10)
+
+			frame.styled = true
+		end
+	end)
 end
 
 function S:TrinketMenu()
@@ -339,6 +346,70 @@ function S:ERT()
 	end)
 end
 
+function S:PSFJ()
+	if not IsAddOnLoaded("ProtoformSynthesisFieldJournal") then return end
+
+	local frame = _G.ProtoformSynthesisFieldJournal
+	B.StripTextures(frame)
+	B.SetBD(frame)
+
+	B.ReskinClose(frame.CloseButton)
+	B.ReskinTab(frame.PanelTabs.PetTab)
+	B.ReskinTab(frame.PanelTabs.MountTab)
+	B.ReskinTab(frame.PanelTabs.SettingsTab)
+
+	local function handlePSFJScroll(scrollBar)
+		B.ReskinScroll(scrollBar)
+		S.ReskinScrollEnd(scrollBar.TopButton, "up")
+		S.ReskinScrollEnd(scrollBar.BottomButton, "down")
+	end
+
+	frame.List.Background:Hide()
+	handlePSFJScroll(frame.List.ScrollFrame.ScrollBar)
+	frame.Settings.Background:Hide()
+	handlePSFJScroll(frame.Settings.ScrollFrame.ScrollBar)
+
+	local function onEnter(button)
+		button.bg:SetBackdropBorderColor(0, .6, 1)
+	end
+
+	local function onLeave(button)
+		button.bg:SetBackdropBorderColor(0, 0, 0)
+	end
+
+	hooksecurefunc(frame.List, "Update", function(self)
+		local buttons = self.ScrollFrame.Buttons
+		if buttons then
+			for i = 1, #buttons do
+				local button = buttons[i]
+				if not button.styled then
+					button:HideBackdrop()
+					button.bg = B.CreateBDFrame(button, .25)
+					button.bg:SetInside(nil, 2, 2)
+					button:HookScript("OnEnter", onEnter)
+					button:HookScript("OnLeave", onLeave)
+
+					button.styled = true
+				end
+			end
+		end
+	end)
+
+	local done
+	hooksecurefunc(frame.Settings, "Update", function(self)
+		if done then return end
+		done = true
+
+		local buttons = self.ScrollFrame.Buttons
+		for i = 1, #buttons do
+			local button = buttons[i]
+			if button.CheckButton then
+				B.ReskinCheck(button.CheckButton)
+			end
+		end
+	end)
+end
+
 function S:OtherSkins()
 	if not C.db["Skins"]["BlizzardSkins"] then return end
 
@@ -350,4 +421,5 @@ function S:OtherSkins()
 	S:ATT()
 	S:TrinketMenu()
 	S:ERT()
+	S:PSFJ()
 end
