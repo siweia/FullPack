@@ -1,16 +1,128 @@
-tag 593aa772f9728dd2cd089309f937ea25b92066a9 DetailsRetail.9.2.0.9780.146
+tag 1bc6001aa6c78e6c78192338420e5ddd8deeaf2e DetailsRetail.9.2.0.9814.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Thu Apr 28 19:09:38 2022 -0300
+Date:	Mon May 16 14:27:33 2022 -0300
 
-commit dfd3fa84067a67dffb4f4d87b2def99dd8ee1b90
+commit 026aa2223ace0cbec92e1e016c358ba2b8a6eada
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Apr 28 16:44:04 2022 -0300
+Date:   Mon May 16 14:26:54 2022 -0300
 
-    Improvements on skin installation
+    Added /keystone command; update on OpenRaid library; Several appearance settings added
 
-commit 1afb89790459faec706ca4c1c11c04c07d201ec8
+commit a988f7b42951942c22c28d7ee7ef5ffdc719e105
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Apr 28 15:52:11 2022 -0300
+Date:   Sun May 15 21:05:02 2022 -0300
 
-    Open Raid Library update
+    Added /keystone and OpenRaidLib update
+
+commit 85f033d6801bfbe3e33305dac1a4cb5ed789e3b4
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Tue May 10 15:18:59 2022 -0300
+
+    Open Raid Lib: added cooldown added and removed events; added Keystone information
+
+commit ea25cda43dab841e422e9bb39dd9ebac8e1b0456
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun May 8 11:10:26 2022 -0300
+
+    Making sure we have a unitId before query UnitHealth on death log
+
+commit 81b6edddd83da7111bd9cf24a2c8b2ce9618a0f9
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sat May 7 15:31:01 2022 -0300
+
+    Added Arena auto hide option
+
+commit eceb99bbf26a640b89305c203a6b4e0d8ddff574
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu May 5 18:29:49 2022 -0300
+
+    Fixed spec icons with Alpha offset; attribute_string now parented to baseframe
+
+commit 7fddbdd5425d8b8c1c67c17fceb0413f91a9b3a7
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu May 5 14:25:22 2022 -0300
+
+    Fix for vanguard plugin
+
+commit a71aae6c63df1db3305d39f36217642618cf356b
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu May 5 12:57:59 2022 -0300
+
+    Only show the blizzard death recap inside dungeons and raids
+
+commit 51030c5ef8e8a5436e050ce555649d6c71c4498d
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed May 4 19:28:12 2022 -0300
+
+    TBC issues with lib open raid
+
+commit 51030c5ef8e8a5436e050ce555649d6c71c4498d
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed May 4 19:28:12 2022 -0300
+
+    TBC issues with lib open raid
+
+commit 3d2dea908694993388673d531eb29a67105bade5
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon May 2 19:40:17 2022 -0300
+
+    Added custom title bar
+
+commit 3d2dea908694993388673d531eb29a67105bade5
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon May 2 19:40:17 2022 -0300
+
+    Added custom title bar
+
+commit 6851fd472800058449bcec88ec062cd0a48c0d17
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Mon May 2 17:27:13 2022 -0500
+
+    Change to SetReverseFill
+    
+    Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill
+    
+    Deprecate right_to_left_texture in class_damage
+
+commit d66915822168a58a2f3cc04b809964e8fe6e4672
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon May 2 16:41:29 2022 -0300
+
+    Make line border color use alpha from its fixed color even when using color by the player class
+
+commit 3f09a59721c0f161c53f91208745484abc215262
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon May 2 16:38:39 2022 -0300
+
+    Added 'Line Border color by Player class' option
+
+commit 1b6dc4e2329771c364429ebec1e54ac2936c871d
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Mon May 2 16:37:41 2022 -0300
+
+    Fix for deathlogs min healing always resetting to 1 on logon
+
+commit 08a077b596a3fd9d51a85e79a4094f5b563b951b
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun May 1 19:23:20 2022 -0300
+
+    Added Borders to Row's Area and Window Area, renamed the old border to Skin Border
+
+commit 08f78be5050132cda9b4a0fcb7dff76bc0c83d7f
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun May 1 14:46:17 2022 -0300
+
+    Added auto alignment for Align Text Columns
+
+commit 1490f47ac98887245e3d4ab3e954033c77eab2df
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sat Apr 30 11:23:40 2022 -0300
+
+    Fix for old versions of the lib sending invalid data
+
+commit 6f12b4331093e103408c0d9219aaa4319cb8868d
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Apr 29 19:01:50 2022 -0300
+
+    Added option to add an overlay above the window lines
 
