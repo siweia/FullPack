@@ -156,7 +156,7 @@ end
 	闭上你的嘴！
 	打断、偷取及驱散法术时的警报
 ]]
-local function msgChannel()
+function M:GetMsgChannel()
 	return IsPartyLFG() and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY"
 end
 
@@ -229,7 +229,7 @@ function M:InterruptAlert_Update(...)
 			end
 
 			if sourceSpellID and destSpellID then
-				SendChatMessage(format(infoText, sourceName..GetSpellLink(sourceSpellID), destName..GetSpellLink(destSpellID)), msgChannel())
+				SendChatMessage(format(infoText, sourceName..GetSpellLink(sourceSpellID), destName..GetSpellLink(destSpellID)), M:GetMsgChannel())
 			end
 		end
 	end
@@ -336,7 +336,7 @@ end
 
 function M:VersionCheck_UpdateGroup()
 	if not IsInGroup() then return end
-	M:VersionCheck_Send(msgChannel())
+	M:VersionCheck_Send(M:GetMsgChannel())
 end
 
 function M:VersionCheck()
@@ -417,6 +417,7 @@ end
 --[[
 	放大餐时叫一叫
 ]]
+local myGUID = UnitGUID("player")
 local groupUnits = {["player"] = true, ["pet"] = true}
 for i = 1, 4 do
 	groupUnits["party"..i] = true
@@ -459,20 +460,40 @@ local spellList = {
 
 function M:ItemAlert_Update(unit, castID, spellID)
 	if groupUnits[unit] and spellList[spellID] and (spellList[spellID] ~= castID) then
-		SendChatMessage(format(L["SpellItemAlertStr"], UnitName(unit), GetSpellLink(spellID) or GetSpellInfo(spellID)), msgChannel())
+		SendChatMessage(format(L["SpellItemAlertStr"], UnitName(unit), GetSpellLink(spellID) or GetSpellInfo(spellID)), M:GetMsgChannel())
 		spellList[spellID] = castID
+	end
+end
+
+local bloodLustDebuffs = {
+	[57723]  = true, -- 筋疲力尽
+	[57724]  = true, -- 心满意足
+	[80354]  = true, -- 时空错位
+	[264689] = true, -- 疲倦
+}
+
+function M:CheckBloodlustStatus(...)
+	local _, eventType, _, sourceGUID, _, _, _, _, _, _, _, spellID = ...
+	if eventType == "SPELL_AURA_REMOVED" and bloodLustDebuffs[spellID] and sourceGUID == myGUID then
+		SendChatMessage(format(L["BloodlustStr"], GetSpellLink(spellID), M.factionSpell), M:GetMsgChannel())
 	end
 end
 
 function M:ItemAlert_CheckGroup()
 	if IsInGroup() then
 		B:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", M.ItemAlert_Update)
+		B:RegisterEvent("CLEU", M.CheckBloodlustStatus)
 	else
 		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", M.ItemAlert_Update)
+		B:UnregisterEvent("CLEU", M.CheckBloodlustStatus)
 	end
 end
 
 function M:SpellItemAlert()
+	local faction = UnitFactionGroup("player")
+	M.factionSpell = faction == "Alliance" and 32182 or 2825
+	M.factionSpell = GetSpellLink(M.factionSpell)
+
 	if C.db["Misc"]["SpellItemAlert"] then
 		M:ItemAlert_CheckGroup()
 		B:RegisterEvent("GROUP_LEFT", M.ItemAlert_CheckGroup)
@@ -481,6 +502,7 @@ function M:SpellItemAlert()
 		B:UnregisterEvent("GROUP_LEFT", M.ItemAlert_CheckGroup)
 		B:UnregisterEvent("GROUP_JOINED", M.ItemAlert_CheckGroup)
 		B:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", M.ItemAlert_Update)
+		B:UnregisterEvent("CLEU", M.CheckBloodlustStatus)
 	end
 end
 
@@ -660,9 +682,9 @@ function M:SendCurrentSpell(thisTime, spellID)
 	local spellLink = GetSpellLink(spellID)
 	if start and duration > 0 then
 		local remain = start + duration - thisTime
-		SendChatMessage(format(L["CooldownRemaining"], spellLink, GetRemainTime(remain)), msgChannel())
+		SendChatMessage(format(L["CooldownRemaining"], spellLink, GetRemainTime(remain)), M:GetMsgChannel())
 	else
-		SendChatMessage(format(L["CooldownCompleted"], spellLink), msgChannel())
+		SendChatMessage(format(L["CooldownCompleted"], spellLink), M:GetMsgChannel())
 	end
 end
 
@@ -670,9 +692,9 @@ function M:SendCurrentItem(thisTime, itemID, itemLink)
 	local start, duration = GetItemCooldown(itemID)
 	if start and duration > 0 then
 		local remain = start + duration - thisTime
-		SendChatMessage(format(L["CooldownRemaining"], itemLink, GetRemainTime(remain)), msgChannel())
+		SendChatMessage(format(L["CooldownRemaining"], itemLink, GetRemainTime(remain)), M:GetMsgChannel())
 	else
-		SendChatMessage(format(L["CooldownCompleted"], itemLink), msgChannel())
+		SendChatMessage(format(L["CooldownCompleted"], itemLink), M:GetMsgChannel())
 	end
 end
 
