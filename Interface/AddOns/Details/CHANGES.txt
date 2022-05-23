@@ -1,10 +1,10 @@
-tag 9e988c6c20988cf9bc0243aaf55605553d3f1786 DetailsRetail.9.2.0.9816.146
+tag 832d548b64050467ec0c8578ba920a6d9aae4b65 DetailsRetail.9.2.0.9817.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Thu May 19 17:39:26 2022 -0300
+Date:	Sat May 21 15:29:54 2022 -0300
 
-commit 4d87c826452ac7d0f0d6a21fd3ff6b075f5fd4f9
+commit 0bb2a71291d236654cf62b36b08c2fbb1c1d4a59
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu May 19 17:39:04 2022 -0300
+Date:   Sat May 21 15:29:30 2022 -0300
 
-    Don't remove scape sequence from displayName, it looks like to break covenants plugin
+    Updated /keystone to store guild keystones
 
