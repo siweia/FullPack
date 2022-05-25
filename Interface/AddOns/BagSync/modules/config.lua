@@ -341,6 +341,18 @@ options.args.display = {
 					disabled = function() return not BSYC.options["enableGuild"] end,
 					hidden = function() return BSYC.IsClassic end,
 				},
+				guildbankscanalert = {
+					order = 8,
+					type = "toggle",
+					name = L.DisplayGuildBankScanAlert,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "display.showGuildBankScanAlert",
+					disabled = function() return not BSYC.options["enableGuild"] end,
+					hidden = function() return BSYC.IsClassic end,
+				},
 			}
 		},
 		grouptags = {
@@ -574,6 +586,15 @@ options.args.color = {
 			get = get,
 			set = set,
 			arg = "color.itemid",
+		},
+		resetcolors = {
+			order = 8,
+			type = "execute",
+			name = L.DefaultColors,
+			func = function()
+				BSYC:GetModule("Data"):ResetColors()
+				InterfaceOptionsFrame:Hide()
+			end,
 		},
 	},
 }

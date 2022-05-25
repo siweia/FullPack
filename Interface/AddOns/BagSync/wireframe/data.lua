@@ -102,6 +102,7 @@ function Data:OnEnable()
 	if BSYC.options.enableXR_BNETRealmNames == nil then BSYC.options.enableXR_BNETRealmNames = true end
 	if BSYC.options.showGuildInGoldTooltip == nil then BSYC.options.showGuildInGoldTooltip = true end
 	if BSYC.options.showGuildCurrentCharacter == nil then BSYC.options.showGuildCurrentCharacter = false end
+	if BSYC.options.showGuildBankScanAlert == nil then BSYC.options.showGuildBankScanAlert = true end
 	
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
@@ -136,6 +137,18 @@ function Data:OnEnable()
 		BSYC:Print("[v|cFF20ff20"..ver.."|r] /bgs, /bagsync")
 	end
 
+end
+
+function Data:ResetColors()
+	if BSYC.options.colors == nil then BSYC.options.colors = {} end
+	BSYC.options.colors.first = { r = 128/255, g = 1, b = 0 }
+	BSYC.options.colors.second = { r = 1, g = 1, b = 1 }
+	BSYC.options.colors.total = { r = 244/255, g = 164/255, b = 96/255 }
+	BSYC.options.colors.guild = { r = 101/255, g = 184/255, b = 192/255 } --very grayish light blue
+	BSYC.options.colors.debug = { r = 77/255, g = 216/255, b = 39/255 } --fel green
+	BSYC.options.colors.cross = { r = 1, g = 125/255, b = 10/255 }
+	BSYC.options.colors.bnet = { r = 53/255, g = 136/255, b = 1 }
+	BSYC.options.colors.itemid = { r = 82/255, g = 211/255, b = 134/255 }
 end
 
 function Data:CleanDB()
