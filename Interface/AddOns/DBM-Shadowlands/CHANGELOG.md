@@ -1,18 +1,25 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.2.18](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.18) (2022-05-17)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.17...9.2.18) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.2.19](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.19) (2022-05-31)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.18...9.2.19) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new retail and tbc tags  
-- remove aggregation on wicked star, all difficulties now only get 1 at a time so it's no longer required  
-- update luacheck  
-- Switch night hunter to Melee > ranged / raid roster index icon sorting priority. This will now prioritize melee over ranged, and if multiple melee prioritize raid roster raid index. ranged will also be sorted by raid roster index too.  
-- Improve notes  
-- Add support for more auto icon localized texts. Renames too so yes every old module is also being updated here in a second.  
-- Logic fixes to last and fixes to arg differences on SetAlphaIcon compat  
-- Cleaned up new icon code and added more functions. DBM now has an auto object that can set icons using following sorted methods: 1. Setting icons on targets prioriizing melee over ranged, and if multiple melee then prioritizing sorting multiple melee alphabetical 2. Setting icons on targets prioriizing melee over ranged, and if multiple melee then prioritizing sorting multiple melee by raid roster numeric index. 3. Setting icons on targets prioritizing ranged over melee, then if multiple ranged then prioritizing sorting multiple ranged alphabetical 4. Setting icons on targets prioritizing ranged over melee, then if multiple ranged then prioritizing sorting multiple ranged by raid roster index. 5. Simply not caring about ranged or melee and just setting icons sorting them alphabetically 6. Simply not caring about ranged or melee and just setting icons by raid roster index. technically 5 and 6 aren't new features. they've been supported for years but code was cleaned up and streamlined so all 6 of above functions use a single prototype  
-- Refine comment and code to show intent, but it's still not done.  
-- tweak  
-- Update localization.ru.lua (#760)  
-    A more correct translation.  
+- Bump version  
+- toc bump  
+- toc bump  
+- Add proper detection of HoA difficulty indices  
+- Add 3 trash warnings to Necrotic wake requested by user.  
+- Fixed a bug where the informational nerf was applyed to voice pack sounds even if the setting wasn't enabed Informational nerf now also disables the range checker, since the range checker uses information not normally available to player (it basically exploits a bug blizzard never fixed in item check code). As such, it goes beyond the scope of providing information avaialble to base UI and should be included in the nerf.  
+- Update localization.cn.lua (#126)  
+- Update zhTW (#125)  
+- Update koKR (#124)  
+- Update localization.ru.lua (#762)  
+- Update localization.ru.lua (#122)  
+- Update localization.ru.lua (#123)  
+- Update localization.ru.lua (#121)  
+- Also remap adds alerts to only use \"adds are coming\" when in \"informational only\" mode.  
+- Fixed a bug where filtered role specla announcements still played voice alerts Fixed a bug where the soak filter type wasn't filtering alerts that contain a soak position Added a new optiont to completely disable instructional alerts/audio. This is WIP (especially on voice pack end) but the goal is to provide ability to make DBM purely informational and do literally zero handholding or instruction what so ever. This will likely become the default (and maybe even mandatory if blizzard wills it) in the future when it's complete and no longer WIP.  
+- Update zhTW (#118)  
+- Update localization.ru.lua (#120) Translation of some phrases.  
+- Update localization.cn.lua (#119)  
+- Update koKR (#117)  
 - Bump alphas  
