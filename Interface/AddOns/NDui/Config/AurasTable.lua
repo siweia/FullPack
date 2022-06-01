@@ -160,6 +160,48 @@ function module:CheckMajorSpells()
 	end
 end
 
+local function checkNameplateFilter(index)
+	local VALUE = (index == 1 and C.WhiteList) or (index == 2 and C.BlackList)
+	if VALUE then
+		for spellID in pairs(VALUE) do
+			local name = GetSpellInfo(spellID)
+			if name then
+				if NDuiADB["NameplateFilter"][index][spellID] then
+					NDuiADB["NameplateFilter"][index][spellID] = nil
+				end
+			else
+				if DB.isDeveloper then print("Invalid nameplate filter ID: "..spellID) end
+			end
+		end
+
+		for spellID, value in pairs(NDuiADB["NameplateFilter"][index]) do
+			if value == false and VALUE[spellID] == nil then
+				NDuiADB["NameplateFilter"][index][spellID] = nil
+			end
+		end
+	end
+end
+
+local function cleanupNameplateUnits(VALUE)
+	for npcID in pairs(C[VALUE]) do
+		if C.db["Nameplate"][VALUE][npcID] then
+			C.db["Nameplate"][VALUE][npcID] = nil
+		end
+	end
+	for npcID, value in pairs(C.db["Nameplate"][VALUE]) do
+		if value == false and C[VALUE][npcID] == nil then
+			C.db["Nameplate"][VALUE][npcID] = nil
+		end
+	end
+end
+
+function module:CheckNameplateFilters()
+	checkNameplateFilter(1)
+	checkNameplateFilter(2)
+	cleanupNameplateUnits("CustomUnits")
+	cleanupNameplateUnits("PowerUnits")
+end
+
 function module:OnLogin()
 	for instName, value in pairs(RaidDebuffs) do
 		for spell, priority in pairs(value) do
@@ -183,4 +225,5 @@ function module:OnLogin()
 	module:CheckPartySpells()
 	module:CheckCornerSpells()
 	module:CheckMajorSpells()
+	module:CheckNameplateFilters()
 end

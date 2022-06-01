@@ -759,6 +759,12 @@ local replaceEncryptedIcons = {
 	[368103] = 648208, -- 急速
 	[368243] = 237538, -- CD
 }
+
+local dispellType = {
+	["Magic"] = true,
+	[""] = true,
+}
+
 function UF.PostUpdateIcon(element, _, button, _, _, duration, expiration, debuffType)
 	if duration then button.iconbg:Show() end
 
@@ -783,6 +789,10 @@ function UF.PostUpdateIcon(element, _, button, _, _, duration, expiration, debuf
 		button.iconbg:SetBackdropBorderColor(color[1], color[2], color[3])
 	else
 		button.iconbg:SetBackdropBorderColor(0, 0, 0)
+	end
+
+	if element.alwaysShowStealable and dispellType[debuffType] and not UnitIsPlayer(unit) and (not button.isDebuff) then
+		button.stealable:Show()
 	end
 
 	if element.disableCooldown then
@@ -821,21 +831,15 @@ function UF.PostUpdateGapIcon(_, _, icon)
 	end
 end
 
-local colorDots = {}
-function UF:RefreshColorDots()
-	wipe(colorDots)
-	B.SplitList(colorDots, C.db["Nameplate"]["ColorDots"])
-end
-
 local isCasterPlayer = {
 	["player"] = true,
 	["pet"] = true,
 	["vehicle"] = true,
 }
-function UF.CustomFilter(element, unit, button, name, _, _, _, _, _, caster, isStealable, _, spellID, _, _, _, nameplateShowAll)
+function UF.CustomFilter(element, unit, button, name, _, _, debuffType, _, _, caster, isStealable, _, spellID, _, _, _, nameplateShowAll)
 	local style = element.__owner.mystyle
 
-	if C.db["Nameplate"]["ColorByDot"] and style == "nameplate" and caster == "player" and colorDots[spellID] then
+	if C.db["Nameplate"]["ColorByDot"] and style == "nameplate" and caster == "player" and C.db["Nameplate"]["DotSpells"][spellID] then
 		element.hasTheDot = true
 	end
 
@@ -854,12 +858,12 @@ function UF.CustomFilter(element, unit, button, name, _, _, _, _, _, caster, isS
 		end
 	elseif style == "nameplate" or style == "boss" or style == "arena" then
 		if element.__owner.plateType == "NameOnly" then
-			return NDuiADB["NameplateFilter"][1][spellID] or C.WhiteList[spellID]
-		elseif NDuiADB["NameplateFilter"][2][spellID] or C.BlackList[spellID] then
+			return UF.NameplateFilter[1][spellID]
+		elseif UF.NameplateFilter[2][spellID] then
 			return false
-		elseif element.showStealableBuffs and isStealable and not UnitIsPlayer(unit) then
+		elseif (element.showStealableBuffs and isStealable or element.alwaysShowStealable and dispellType[debuffType]) and not UnitIsPlayer(unit) and (not button.isDebuff) then
 			return true
-		elseif NDuiADB["NameplateFilter"][1][spellID] or C.WhiteList[spellID] then
+		elseif UF.NameplateFilter[1][spellID] then
 			return true
 		else
 			local auraFilter = C.db["Nameplate"]["AuraFilter"]

@@ -168,7 +168,7 @@ do
 	end
 end
 
--- Itemlevel
+-- Scan tooltip
 do
 	local iLvlDB = {}
 	local itemLevelString = "^"..gsub(ITEM_LEVEL, "%%d", "")
@@ -198,7 +198,7 @@ do
 
 		local step = 1
 		for i = 1, 10 do
-			local tex = _G[tip:GetName().."Texture"..i]
+			local tex = _G["NDui_ScanTooltipTexture"..i]
 			local texture = tex and tex:IsShown() and tex:GetTexture()
 			if texture then
 				if texture == essenceTextureID then
@@ -236,7 +236,7 @@ do
 		local essence = slotInfo.essences[step]
 		if essence and next(essence) and (strfind(lineText, ITEM_SPELL_TRIGGER_ONEQUIP, nil, true) and strfind(lineText, essenceDescription, nil, true)) then
 			for i = 5, 2, -1 do
-				local line = _G[tip:GetName().."TextLeft"..index-i]
+				local line = _G["NDui_ScanTooltipTextLeft"..index-i]
 				local text = line and line:GetText()
 
 				if text and (not strmatch(text, "^[ +]")) and essence and next(essence) then
@@ -263,7 +263,7 @@ do
 			slotInfo.gems, slotInfo.essences = B:InspectItemTextures()
 
 			for i = 1, tip:NumLines() do
-				local line = _G[tip:GetName().."TextLeft"..i]
+				local line = _G["NDui_ScanTooltipTextLeft"..i]
 				if not line then break end
 
 				local text = line:GetText()
@@ -296,7 +296,7 @@ do
 			end
 
 			for i = 2, 5 do
-				local line = _G[tip:GetName().."TextLeft"..i]
+				local line = _G["NDui_ScanTooltipTextLeft"..i]
 				if not line then break end
 
 				local text = line:GetText()
@@ -310,6 +310,61 @@ do
 
 			return iLvlDB[link]
 		end
+	end
+
+	local pendingNPCs, nameCache, callbacks = {}, {}, {}
+	local loadingStr = "..."
+	local pendingFrame = CreateFrame("Frame")
+	pendingFrame:Hide()
+	pendingFrame:SetScript("OnUpdate", function(self, elapsed)
+		self.elapsed = (self.elapsed or 0) + elapsed
+		if self.elapsed > 1 then
+			if next(pendingNPCs) then
+				for npcID, count in pairs(pendingNPCs) do
+					if count > 2 then
+						nameCache[npcID] = UNKNOWN
+						if callbacks[npcID] then
+							callbacks[npcID](UNKNOWN)
+						end
+						pendingNPCs[npcID] = nil
+					else
+						local name = B.GetNPCName(npcID, callbacks[npcID])
+						if name and name ~= loadingStr then
+							pendingNPCs[npcID] = nil
+						else
+							pendingNPCs[npcID] = pendingNPCs[npcID] + 1
+						end
+					end
+				end
+			else
+				self:Hide()
+			end
+
+			self.elapsed = 0
+		end
+	end)
+
+	function B.GetNPCName(npcID, callback)
+		local name = nameCache[npcID]
+		if not name then
+			tip:SetOwner(UIParent, "ANCHOR_NONE")
+			tip:SetHyperlink(format("unit:Creature-0-0-0-0-%d", npcID))
+			name = _G.NDui_ScanTooltipTextLeft1:GetText() or loadingStr
+			if name == loadingStr then
+				if not pendingNPCs[npcID] then
+					pendingNPCs[npcID] = 1
+					pendingFrame:Show()
+				end
+			else
+				nameCache[npcID] = name
+			end
+		end
+		if callback then
+			callback(name)
+			callbacks[npcID] = callback
+		end
+
+		return name
 	end
 end
 
@@ -1621,7 +1676,9 @@ do
 		local swatch = CreateFrame("Button", nil, self, "BackdropTemplate")
 		swatch:SetSize(18, 18)
 		B.CreateBD(swatch, 1)
-		swatch.text = B.CreateFS(swatch, 14, name, false, "LEFT", 26, 0)
+		if name then
+			swatch.text = B.CreateFS(swatch, 14, name, false, "LEFT", 26, 0)
+		end
 		local tex = swatch:CreateTexture()
 		tex:SetInside()
 		tex:SetTexture(DB.bdTex)
