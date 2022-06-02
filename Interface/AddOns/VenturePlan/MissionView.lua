@@ -479,12 +479,12 @@ local function Predictor_OnEnter(self)
 	GameTooltip:AddLine(L'"Do not believe its lies! Balance druids are not emergency rations."', 1, 0.835, 0.09, 1)
 	GameTooltip:Show()
 end
+local oodBuild = GetBuildInfo() ~= "9.2.5"
 local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, recoverFutures, recoverHighBound)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 	local res = sim.res
 	local rngModel = res.hadDrops or (res.hadWins and res.hadLosses)
 	local inProgress = not res.isFinished and not rngModel
-	local oodBuild = GetBuildInfo() ~= "9.2.0"
 	local hprefix = (oodBuild or incompleteModel) and "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t " or ""
 	if inProgress then
 		hprefix = hprefix .. "|cffff3300" .. L"Preliminary:" .. "|r "
