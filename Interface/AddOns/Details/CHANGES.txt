@@ -1,10 +1,16 @@
-tag 832d548b64050467ec0c8578ba920a6d9aae4b65 DetailsRetail.9.2.0.9817.146
+tag 1f9e7c7adecc485d47a16219179835f0d42cc528 DetailsRetail.9.2.5.9818.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sat May 21 15:29:54 2022 -0300
+Date:	Wed Jun 1 15:11:03 2022 -0300
 
-commit 0bb2a71291d236654cf62b36b08c2fbb1c1d4a59
+commit 7b8beeca360795d01afe1fbd9ddb6b6de247d6c9
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat May 21 15:29:30 2022 -0300
+Date:   Wed Jun 1 15:10:15 2022 -0300
 
-    Updated /keystone to store guild keystones
+    Toc Updates
+
+commit 53798fbd2fd21d78fbe8b4061e230c8ae29b6d15
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun May 29 14:11:32 2022 -0300
+
+    Don't refresh nicknames if nicknames are disabled
 
