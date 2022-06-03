@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("BagSync", "zhCN")
 if not L then return end
 
 --  zhCN client (NGA-[男爵凯恩]补齐)
---  Last update: 2021/11/03
+--  Last update: 2022/05/27
 
 L.Yes = "Yes"
 L.No = "No"
@@ -19,6 +19,8 @@ L.TooltipReagent = "材料银行:"
 L.TooltipAuction = "拍卖:"
 L.TooltipTotal = "总计:"
 L.TooltipItemID = "[物品ID]:"
+L.TooltipDebug = "[Debug]:"
+L.TooltipCurrencyID = "[货币ID]:"
 L.TooltipFakeID = "[虚拟ID]:"
 L.TooltipDelimiter = ", "
 L.TooltipRealmKey = "服务器:"
@@ -53,7 +55,7 @@ L.ProfessionInformation = "|cffddff00左键|r |cff00ff00查看专业配方|r"
 L.ClickViewProfession = "点击查看专业: "
 L.ClickHere = "点这里"
 L.ErrorUserNotFound = "BagSync: 错误,未找到用户!"
-L.EnterItemID = "输入物品ID(用 http://Wowhead.com/ 查询)"
+L.EnterItemID = "输入物品ID(请用 http://Wowhead.com/ 查询.)"
 L.AddGuild = "添加公会"
 L.AddItemID = "添加物品ID"
 L.RemoveItemID = "移除物品ID"
@@ -86,6 +88,7 @@ L.ScanGuildBankStart = "公会银行内信息正在查询服务器,请稍候....
 L.ScanGuildBankDone = "公会银行扫描完成!"
 L.ScanGuildBankError = "警告: 公会银行扫描不完整"
 L.ScanGuildBankScanInfo = "扫描公会标签 (%s/%s)"
+L.DefaultColors = "默认颜色"
 -- ----THESE ARE FOR SLASH COMMANDS OPERATORS
 L.SlashItemName = "[物品名称]"
 L.SlashSearch = "搜索"
@@ -127,6 +130,7 @@ L.DisplayLineSeperator = "显示空行分割线"
 L.DisplayCrossRealm = "显示不同服务器信息 |cffff7d0a[XR]|r"
 L.DisplayBNET = "显示战网账号信息 |cff3587ff[BNet]|r |cFFDF2B2B(不推荐)|r"
 L.DisplayItemID = "显示 [物品ID] "
+L.DisplaySourceDebugInfo = "在鼠标提示中显示有用的 [Debug] 信息."
 L.DisplayTooltipTags = "标识符号"
 L.DisplayTooltipStorage = "仓库"
 L.DisplayTooltipExtra = "其他统计"
@@ -138,13 +142,14 @@ L.DisplayRealmAstrick = "显示 [*] 而不是显示 |cffff7d0a[XR]|r 和 |cff358
 L.DisplayShortRealmName = "显示短位名字 |cffff7d0a[XR]|r 和 |cff3587ff[BNet]|r"
 L.DisplayFactionIcons = "显示阵营图案"
 L.DisplayGuildCurrentCharacter = "仅显示当前游戏角色的 [公会] 物品"
+L.DisplayGuildBankScanAlert = "显示公会银行扫描窗口。"
 L.DisplayShowUniqueItemsTotals = "启用该选项将允许物品总数量增加独特的物品,无论物品的统计信息。|cFF99CC33（推荐）|r"
 L.DisplayShowUniqueItemsTotals_2 = [[
 某些物品例如 |cffff7d0a[Legendaries]|r 可以共享相同的名字但具有不同的统计数据。由于这些物品是彼此独立处理,因此有时不计入总物品数。启用此选项将完全忽略独特的物品统计数据并一视同仁,,只要它们共享相同的物品名称。
 
 禁用此选项将独立显示物品计数,因此将考虑物品统计信息。物品总数将只显示每个游戏角色共享相同的唯一物品和完全相同的统计数据|cFFDF2B2B(不推荐)|r
 ]]
-L.DisplayShowUniqueItemsTotalsTitle = "显示唯一物品的总数在提示上"
+L.DisplayShowUniqueItemsTotalsTitle = "在鼠标提示上显示唯一物品的总数"
 L.DisplayShowUniqueItemsEnableText = "启用唯一物品的总数"
 L.ColorPrimary = "主要 BagSync 提示颜色"
 L.ColorSecondary = "辅助 BagSync 提示颜色"
