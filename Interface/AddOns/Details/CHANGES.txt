@@ -1,16 +1,34 @@
-tag 1f9e7c7adecc485d47a16219179835f0d42cc528 DetailsRetail.9.2.5.9818.146
+tag 87e5d87655da45431a6ceb8d18ed435d634a7fbd DetailsRetail.9.2.5.9820.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Wed Jun 1 15:11:03 2022 -0300
+Date:	Fri Jun 3 13:19:59 2022 -0300
+
+commit b46c0e65e15961dea671531c0bd2798f04ebafb5
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Jun 3 13:19:36 2022 -0300
+
+    Version Bump
+
+commit 30781c05d3a2bdae8af858e10d3db1930ed34350
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Jun 3 13:19:02 2022 -0300
+
+    On classic versions, attempt to guess the role by talent points
+
+commit 70e1af340beb4e8a4e389ce2eb344979f15f3264
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Jun 3 12:48:07 2022 -0300
+
+    framework update
+
+commit 70e1af340beb4e8a4e389ce2eb344979f15f3264
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Jun 3 12:48:07 2022 -0300
+
+    framework update
 
 commit 7b8beeca360795d01afe1fbd9ddb6b6de247d6c9
 Author: Tercio Jose <terciob19@hotmail.com>
 Date:   Wed Jun 1 15:10:15 2022 -0300
 
     Toc Updates
-
-commit 53798fbd2fd21d78fbe8b4061e230c8ae29b6d15
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 29 14:11:32 2022 -0300
-
-    Don't refresh nicknames if nicknames are disabled
 
