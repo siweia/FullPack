@@ -215,26 +215,32 @@ G.DefaultSettings = {
 		RCCName = true,
 		HideTip = false,
 		DescRole = true,
+		PlayerAbsorb = false,
 
 		PlayerWidth = 245,
 		PlayerHeight = 24,
+		PlayerNameOffset = 0,
 		PlayerPowerHeight = 4,
 		PlayerPowerOffset = 2,
 		PlayerHPTag = 2,
 		PlayerMPTag = 4,
 		FocusWidth = 200,
 		FocusHeight = 22,
+		FocusNameOffset = 0,
 		FocusPowerHeight = 3,
 		FocusPowerOffset = 2,
 		FocusHPTag = 2,
 		FocusMPTag = 4,
 		PetWidth = 120,
 		PetHeight = 18,
+		PetNameOffset = 0,
 		PetPowerHeight = 2,
 		PetHPTag = 4,
 		BossWidth = 150,
 		BossHeight = 22,
+		BossNameOffset = 0,
 		BossPowerHeight = 2,
+		BossPowerOffset = 2,
 		BossHPTag = 5,
 		BossMPTag = 5,
 
@@ -903,6 +909,12 @@ local function updateUFTextScale()
 	B:GetModule("UnitFrames"):UpdateTextScale()
 end
 
+local function togglePlayerAbsorb()
+	if _G.oUF_Player then
+		B:GetModule("UnitFrames").UpdateFrameHealthTag(_G.oUF_Player)
+	end
+end
+
 local function toggleUFClassPower()
 	B:GetModule("UnitFrames"):ToggleUFClassPower()
 end
@@ -1073,7 +1085,7 @@ G.HealthValues = {DISABLE, L["ShowHealthDefault"], L["ShowHealthCurMax"], L["Sho
 G.TabList = {
 	L["Actionbar"],
 	L["Bags"],
-	L["Unitframes"],
+	NewTag..L["Unitframes"],
 	L["RaidFrame"],
 	NewTag..L["Nameplate"],
 	L["PlayerPlate"],
@@ -1135,12 +1147,13 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Bags", "BankWidth", L["Bank Width"].."*", true, {10, 40, 1}, updateBagSize},
 	},
 	[3] = {
-		{1, "UFs", "Enable", HeaderTag..L["Enable UFs"], nil, setupUnitFrame, nil, L["HideUFWarning"]},
+		{1, "UFs", "Enable", NewTag..HeaderTag..L["Enable UFs"], nil, setupUnitFrame, nil, L["HideUFWarning"]},
 		{1, "UFs", "Arena", L["Arena Frame"], true},
 		{1, "UFs", "ShowAuras", L["ShowAuras"].."*", nil, setupUFAuras, toggleAllAuras},
 		{1, "UFs", "ClassPower", L["UFs ClassPower"].."*", true, setupClassPower, toggleUFClassPower},
 		{1, "UFs", "Portrait", L["UFs Portrait"]},
 		{1, "UFs", "CCName", L["ClassColor Name"].."*", true, nil, updateUFTextScale},
+		{1, "UFs", "PlayerAbsorb", NewTag..L["PlayerAbsorb"].."*", nil, nil, togglePlayerAbsorb, L["PlayerAbsorbTip"]},
 		{3, "UFs", "UFTextScale", L["UFTextScale"].."*", nil, {.8, 1.5, .05}, updateUFTextScale},
 		{4, "UFs", "HealthColor", L["HealthColor"].."*", true, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"]}, updateUFTextScale},
 		{},--blank
