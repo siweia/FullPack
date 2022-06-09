@@ -82,7 +82,7 @@ T.KnownSpells = {
 	[82]={type="passive", target=4, thornsATK=25},
 	[83]={type="nuke", target="cleave", damageATK=120},
 	[84]={type="aura", target="all-enemies", duration=2, firstTurn=4, modDamageDealt=-100},
-	[85]={type="aura", target=3, duration=2, firstTurn=3, modDamageTaken=-5000},
+	[85]={type="aura", target=3, duration=2, firstTurn=3, modDamageTaken=-50},
 	[87]={type="nuke", target="enemy-back", damageATK=60},
 	[88]={
 		{type="aura", target=4, modDamageDealt=30, duration=3},
