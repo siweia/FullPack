@@ -1,10 +1,10 @@
-tag b880e5831b74b16f9eb48a9b893fde48e871cccb DetailsRetail.9.2.5.9822.146
+tag ac314744089c122a3c852fe6209b7b6ae646dc91 DetailsRetail.9.2.5.9824.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Tue Jun 7 10:57:03 2022 -0300
+Date:	Thu Jun 9 10:04:25 2022 -0300
 
-commit bba0d69bf60c2e67892451ee5d9d824db8996552
+commit 419999fb097ed9c700515e934483a5ad29eb4c3c
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Jun 7 10:56:44 2022 -0300
+Date:   Thu Jun 9 09:59:35 2022 -0300
 
-    Framework Update
+    Check if the left text has a valid text string before sending it to Truncate
 
