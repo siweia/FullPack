@@ -549,7 +549,8 @@ G.AccountSettings = {
 	SkadaRequest = false,
 	BWRequest = false,
 	RaidAuraWatch = {},
-	RaidClickSets = {},
+	RaidClickSets = {}, -- deprecated
+	ClickSets = {},
 	TexStyle = 2,
 	KeystoneInfo = {},
 	AutoBubbles = false,
@@ -575,6 +576,14 @@ G.TextureList = {
 	[3] = {texture = DB.flatTex, name = L["Flat"]},
 }
 
+local ignoredTable = {
+	["AuraWatchList"] = true,
+	["AuraWatchMover"] = true,
+	["InternalCD"] = true,
+	["Mover"] = true,
+	["TempAnchor"] = true,
+}
+
 local function InitialSettings(source, target, fullClean)
 	for i, j in pairs(source) do
 		if type(j) == "table" then
@@ -591,9 +600,9 @@ local function InitialSettings(source, target, fullClean)
 
 	for i, j in pairs(target) do
 		if source[i] == nil then target[i] = nil end
-		if fullClean and type(j) == "table" then
+		if fullClean and type(j) == "table" and not ignoredTable[i] then
 			for k, v in pairs(j) do
-				if type(v) ~= "table" and source[i] and source[i][k] == nil then
+				if source[i] and source[i][k] == nil then
 					target[i][k] = nil
 				end
 			end
