@@ -9,20 +9,18 @@ end
 T.Util, T.L, T.LT = U, L, nil
 
 local overdesc = {
-	[ 25]={L"Inflicts {} damage to all enemies in melee, and increases own damage dealt by 20% for three turns.", "damageATK"},
-	[ 52]={L"Inflicts {} damage to all enemies at range.", "damageATK"},
-	[ 85]=L"Reduces the damage taken by the closest ally by 50% for two turns.",
-	[107]={L"Debuffs all enemies, dealing {1} damage this turn and during each of the next three turns. Additionally, increases all damage taken by the nearest enemy by {2} for three turns.", "damageATK", "plusDamageTakenATK"},
-	[121]={L"Reduces all enemies' damage dealt by {}% during the next turn.", "modDamageDealt"},
-	[125]={L"Inflicts {} damage to a random enemy.", "damageATK"},
-	[194]={L"Buffs the closest ally, increasing all damage dealt by {1} and reducing all damage taken by {2}% for two turns. Inflicts {3} damage to self.", "plusDamageDealtATK", "modDamageTaken", "damageATK"},
-	[227]={L"Every other turn, a random enemy is attacked for {}% of their maximum health.", "damagePerc"},
-	[242]={L"Heals the closest ally for {1}, and increases all damage taken by the ally by {2}% for two turns.", "healATK", "modDamageTaken"},
-	[251]={L"Reduces all enemies' damage dealt by {}% for two turns.", "modDamageDealt"},
+	[ 25]={L"Inflicts {} damage to all enemies in melee, and increases own damage dealt by 20% for three turns.", "dp"},
+	[ 52]={L"Inflicts {} damage to all enemies at range.", "dp"},
+	[121]={L"Reduces all enemies' damage dealt by {}% during the next turn.", "dom"},
+	[194]={L"Buffs the closest ally, increasing all damage dealt by {1} and reducing all damage taken by {2}% for two turns. Inflicts {3} damage to self.", "plusDamageDealtATK", "dim", "dp"},
+	[227]={L"Every other turn, a random enemy is attacked for {}% of their maximum health.", "dh"},
+	[242]={L"Heals the closest ally for {1}, and increases all damage taken by the ally by {2}% for two turns.", "hp", "dim"},
+	[251]={L"Reduces all enemies' damage dealt by {}% for two turns.", "dom"},
 	[223]={L"Debuffs all enemies, dealing {1} damage during each of the next {2} turns. Multiple applications of this effect overlap.", "eDamage", "duration1"},
 	[300]={L"Debuffs all enemies, dealing {1} damage during each of the next {2} turns. Multiple applications of this effect overlap.", "eDamage", "duration1"},
-	[301]={L"Every other turn, a random enemy is attacked for {}% of their maximum health.", "damagePerc"},
+	[301]={L"Every other turn, a random enemy is attacked for {}% of their maximum health.", "dh"},
 }
+local nonPassiveZeroCD = {[303]=1}
 local CLOCK_ICON do
 	local ai = C_Texture.GetAtlasInfo("auctionhouse-icon-clock")
 	CLOCK_ICON = ("|T%s:0:0:0:-0.5:%d:%d:%d:%d:%d:%d:%%d:%%d:%%d|t "):format(ai.file, 2048, 2048, ai.leftTexCoord*2048, ai.rightTexCoord*2048, ai.topTexCoord*2048, ai.bottomTexCoord*2048)
@@ -47,6 +45,13 @@ local MS_TIER = {} do
 		MS_TIER[tonumber(x,16)] = (i+1)/2
 	end
 end
+local torghastCompanions, torghastCompanionIDs = 10, {1213, 1214, 1215, 1216, 1217, 1220, 1221, 1222, 1223, 1257, 1267, 1268, 1269, 1277, 1278, 1279, 1280, 1281, 1282, 1306, 1307, 1308, 1309, 1310, 1311, 1325, 1326, 1327, 1328, 1329, 1330, 1331, 1332, 1333} do
+	local r = {}
+	for i=1,#torghastCompanionIDs do
+		r[torghastCompanionIDs[i]] = 1
+	end
+	torghastCompanionIDs = r
+end
 
 local GetMaskBoard do
 	local b, u, om = {}, {curHP=1}
@@ -67,9 +72,9 @@ local function GetTargetMask(si, casterBoardIndex, boardMask)
 		return 0
 	end
 	local board, tm, isForked = GetMaskBoard(boardMask), 0, false
-	for i=si.type and 0 or 1,#si do
+	for i=si.h and 0 or 1,#si do
 		local ei = si[i] or si
-		local eit = ei and ei.target
+		local eit = ei and ei.t
 		if eit then
 			isForked = isForked or T.VSim.forkTargetMap[eit]
 			local ta = T.VSim.GetTargets(casterBoardIndex, T.VSim.forkTargetMap[eit] or eit, board)
@@ -95,25 +100,23 @@ local GetBlipWidth do
 	end
 end
 local function FormatSpellPulse(si)
-	local t = si.type
+	local t = si.h
 	local bm = "|TInterface/Minimap/PartyRaidBlipsV2:8:8:0:0:64:32:0:20:0:20:%s|t"
 	local on, off = bm:format("255:120:0"), bm:format("80:80:80")
-	if t == "heal" or t == "nuke" or t == "nukem" or (si.duration and si.duration <= 1 and si.echo) then
-		if si.echo then
-			return on .. (off):rep(si.echo-1) .. on
+	if t == "heal" or t == "nuke" or t == "nukem" or (si.d and si.d <= 1 and si.e) then
+		if si.e then
+			return on .. (off):rep(si.e-1) .. on
 		end
-	elseif (t == "heal" or t == "nuke") and (si.duration and si.duration > 1) then
-		return on .. (off):rep(si.duration-1)
 	elseif t == "aura" then
-		local r, p = (si.noFirstTick or si.period) and (si.damageATK1 and bm:format("255:220:0") or off) or on, si.period or 1
-		for i=2, si.duration do
+		local r, p = si.p and (si.dp1 and bm:format("255:220:0") or off) or on, si.p or 1
+		for i=2, si.d do
 			r = r .. (i % p == 0 and on or off)
 		end
 		return r
 	end
 end
 local FormatAbilityDescriptionOverride do
-	local overdescUnscaledKeys = {damagePerc=1, modDamageDealt=1, modDamageTaken=1}
+	local overdescUnscaledKeys = {dh=1, dom=1, dim=1}
 	local function getSpellData(si, vk)
 		local vv = si and si[vk]
 		for i=1,si and not vv and #si or 0 do
@@ -122,10 +125,10 @@ local FormatAbilityDescriptionOverride do
 		return vv
 	end
 	local function getSpellValue(si, vk, atk, ms)
-		if vk == "eDamage" and ms and si.cATKb and si.cATKa and si.damageATK then
-			return math.floor((si.cATKa+si.cATKb*ms)*si.damageATK/100)
+		if vk == "eDamage" and ms and si.cATKb and si.cATKa and si.dp then
+			return math.floor((si.cATKa+si.cATKb*ms)*si.dp/100)
 		elseif vk == "duration1" then
-			local vv = getSpellData(si, "duration")
+			local vv = getSpellData(si, "d")
 			return vv and (vv - 1)
 		end
 		local vv = getSpellData(si, vk)
@@ -669,28 +672,34 @@ function U.GetTimeStringFromSeconds(sec, shorter, roundUp, disallowSeconds)
 		return (shorter and COOLDOWN_DURATION_DAYS or INT_GENERAL_DURATION_DAYS):format(h(sec/84600))
 	end
 end
-function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantStats, mid, boardIndex, boardMask, showHealthFooter)
-	local mhp, hp, atk, role, aat, level
+function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantStats, _mid, boardIndex, boardMask, showHealthFooter, postStatsLine)
+	local mhp, hp, atk, level
 	autoCombatantStats = autoCombatantStats or info and (info.followerID and C_Garrison.GetFollowerAutoCombatStats(info.followerID) or info.autoCombatantStats)
+	local aa = info.auto or info.autoCombatAutoAttack and info.autoCombatAutoAttack.autoCombatSpellID
 	if info then
-		role, level = info.role, info.level and ("|cffa8a8a8" .. UNIT_LEVEL_TEMPLATE:format(info.level)) or ""
+		level = info.level and ("|cffa8a8a8" .. UNIT_LEVEL_TEMPLATE:format(info.level)) or ""
+		if info.followerID and aa == nil then
+			local _, faa = C_Garrison.GetFollowerAutoCombatSpells(info.followerID, info.level or 1)
+			aa = faa and faa.autoCombatSpellID
+		end
 	end
 	if autoCombatantStats then
-		local s1 = autoCombatSpells and autoCombatSpells[1]
 		mhp, hp, atk = autoCombatantStats.maxHealth, autoCombatantStats.currentHealth, autoCombatantStats.attack
-		aat = T.VSim:GetAutoAttack(role, boardIndex, mid, s1 and s1.autoCombatSpellID)
 	end
 	
 	GameTooltip:ClearLines()
 	GameTooltip:AddDoubleLine(info.name, level or "")
 
-	local atype = U.FormatTargetBlips(GetTargetMask(T.KnownSpells[aat], boardIndex, boardMask), boardMask, " ")
+	local atype = U.FormatTargetBlips(GetTargetMask(T.KnownSpells[aa], boardIndex, boardMask), boardMask, " ")
 	if atype == "" then
-		atype = aat == 11 and " " .. L"(melee)" or aat == 15 and " " .. L"(ranged)" or ""
+		atype = aa == 11 and " " .. L"(melee)" or aa == 15 and " " .. L"(ranged)" or ""
 	else
 		atype = "  " .. atype
 	end
 	GameTooltip:AddLine("|A:ui_adv_health:20:20|a" .. (hp and BreakUpLargeNumbers(hp) or "???") .. (mhp and mhp ~= hp and ("|cffa0a0a0/|r" .. BreakUpLargeNumbers(mhp)) or "").. "  |A:ui_adv_atk:20:20|a" .. (atk and BreakUpLargeNumbers(atk) or "???") .. "|cffa8a8a8" .. atype, 1,1,1)
+	if postStatsLine then
+		GameTooltip:AddLine(postStatsLine)
+	end
 	if info and info.isMaxLevel == false and info.xp and info.levelXP and info.level and not info.isAutoTroop then
 		GameTooltip:AddLine(GARRISON_FOLLOWER_TOOLTIP_XP:gsub("%%[^%%]*d", "%%s"):format(BreakUpLargeNumbers(info.levelXP - info.xp)), 0.7, 0.7, 0.7)
 	end
@@ -700,7 +709,7 @@ function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantSta
 		GameTooltip:AddLine(" ")
 		local si = T.KnownSpells[s.autoCombatSpellID]
 		local pfx = si and "" or "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t "
-		local cdt = s.cooldown ~= 0 and (L"[CD: %dT]"):format(s.cooldown) or SPELL_PASSIVE_EFFECT
+		local cdt = (s.cooldown ~= 0 or nonPassiveZeroCD[s.autoCombatSpellID]) and (L"[CD: %dT]"):format(s.cooldown) or SPELL_PASSIVE_EFFECT
 		GameTooltip:AddDoubleLine(pfx .. "|T" .. s.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. NORMAL_FONT_COLOR_CODE .. s.name, "|cffa8a8a8" .. cdt .. "|r")
 		local dc, guideLine = 0.95, U.GetAbilityGuide(s.autoCombatSpellID, boardIndex, boardMask)
 		local od = U.GetAbilityDescriptionOverride(s.autoCombatSpellID, atk)
@@ -720,6 +729,24 @@ function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantSta
 	end
 
 	GameTooltip:Show()
+end
+function U.AddCombatantSimInfo(GameTooltip, boardIndex, sim)
+	if not (sim and sim.res and sim.res.isFinished) then return end
+	if not sim.board[boardIndex] then return end
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddLine("|TInterface/Icons/INV_Misc_Book_01:0:0:0:0:64:64:4:60:4:60|t " .. ITEM_QUALITY_COLORS[5].hex .. L"Cursed Adventurer's Guide")
+	local lo, hi, dlo, dhi = sim.res.min[boardIndex], sim.res.max[boardIndex], sim.res.min[19+boardIndex], sim.res.max[19+boardIndex]
+	GameTooltip:AddDoubleLine(RAID_HEALTH_TEXT_HEALTH .. HEADER_COLON, (lo ~= hi and lo .. " - " .. hi or lo) .. " / " .. sim.board[boardIndex].maxHP, 1,1,1, 1,1,1)
+	if dlo ~= math.huge then
+		local h = (L"Turns survived: %s"):format(""):gsub("%s+$", "")
+		local hs = ""
+		if hi > 0 then
+			hs = " - "
+		elseif dhi ~= dlo then
+			hs = " - " .. (dhi-1)
+		end
+		GameTooltip:AddDoubleLine(h, (dlo-1) .. hs, 1,1,1, 1,1,1)
+	end
 end
 function U.FormatTargetBlips(tm, bm, prefix, ac, padHeight)
 	local isForked = tm >= 2^18
@@ -761,7 +788,7 @@ function U.FormatTargetBlips(tm, bm, prefix, ac, padHeight)
 end
 function U.GetAbilityGuide(spellID, boardIndex, boardMask, padHeight)
 	local si, guideLine = T.KnownSpells[spellID]
-	if not (si and si.type ~= "nop") then
+	if not (si and si.h ~= "nop") then
 		return
 	end
 	if si.firstTurn then
@@ -774,7 +801,7 @@ function U.GetAbilityGuide(spellID, boardIndex, boardMask, padHeight)
 			guideLine = L"Targets:" .. " " .. b
 		end
 	end
-	if si.healATK or si.damageATK or si.healPerc or si.damagePerc then
+	if si.hp or si.dp or si.healPerc or si.dh then
 		local p = FormatSpellPulse(si)
 		if p then
 			guideLine = L"Ticks:" .. " " .. p .. (guideLine and "    " .. guideLine or "")
@@ -787,7 +814,7 @@ function U.GetAbilityGuide(spellID, boardIndex, boardMask, padHeight)
 end
 function U.GetAbilityDescriptionOverride(spellID, atk, ms)
 	local si = T.KnownSpells[spellID]
-	if si and si.type == "nop" then
+	if si and si.h == "nop" then
 		return L"It does nothing."
 	end
 	local od = overdesc[spellID]
@@ -806,6 +833,17 @@ function U.GetInProgressGroup(followers, into)
 	end
 	into[-1] = nil
 	return into
+end
+
+function U.GetNumMissingTorghastCompanions(followers)
+	local c = 0
+	for i=1,#followers do
+		local fid = followers[i].garrFollowerID
+		if torghastCompanionIDs[fid] then
+			c = c + 1
+		end
+	end
+	return torghastCompanions - c
 end
 
 function U.FollowerIsFavorite(id)

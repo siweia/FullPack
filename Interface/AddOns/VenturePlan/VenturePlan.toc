@@ -1,6 +1,6 @@
 ## Interface: 90205
 ## Title: Venture Plan
-## Version: 4.16 T
+## Version: 4.22
 ## Notes: Interface improvements for Adventures.
 ## Notes-deDE: Verbesserungen der Benutzeroberfläche für den Befehlstisch.
 ## Notes-esES: Mejoras de la interfaz para las aventuras.
@@ -13,14 +13,13 @@
 ## Notes-zhTW: 冒險介面改善
 ## Notes-ptBR: Melhorias na interface de Aventuras.
 ## Author: foxlit
-## License: All rights reserved. Do not modify or redistribute.
+## License: All rights reserved. Do not redistribute, in whole or in part, without explicit prior permission from the author.
 ## X-Website: https://www.townlong-yak.com/addons/venture-plan
 ## SavedVariablesPerCharacter: VP_SPC
 Libs/Evie.lua
 Locale.lua
 Util.lua
 Widgets.lua
-vs-spells.lua
 vs.lua
 MissionList.lua
 MissionView.lua
