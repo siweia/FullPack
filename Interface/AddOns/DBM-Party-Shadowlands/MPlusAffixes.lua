@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("MPlusAffixes", "DBM-Party-Shadowlands", 10)
+local mod	= DBM:NewMod("MPlusAffixesSL", "DBM-Party-Shadowlands", 10)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220614214033")
+mod:SetRevision("20220715040826")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
