@@ -1,4 +1,4 @@
-if not(GetLocale() == "koKR") then
+if not (GetLocale() == "koKR") then
   return
 end
 local addonName, MDT = ...
@@ -180,16 +180,12 @@ L["Captain Eudora"] = "선장 유도라"
 L["Captain Jolly"] = "선장 졸리"
 L["Captain Raoul"] = "선장 라울"
 L["Carrion Worm"] = "오물 구더기"
---[[Translation missing --]]
---[[ L["Cartel Lackey"] = ""--]] 
 L["Cartel Muscle"] = "중개단 불한당"
 L["Cartel Skulker"] = "중개단 잠복꾼"
 L["Cartel Smuggler"] = "중개단 밀수업자"
 L["Cartel Wiseguy"] = "중개단 폭력단원"
 L["Catacombs"] = "지하무덤"
 L["Cathedral of Eternal Night"] = "영원한 밤의 대성당"
---[[Translation missing --]]
---[[ L["Chains of Damnation"] = ""--]] 
 L["Chamber Sentinel"] = "묘실의 파수병"
 L["Channeler Varisz"] = "역술사 바리즈"
 L["Charged Dust Devil"] = "충전된 먼지 악마"
@@ -219,7 +215,7 @@ L["Chosen Blood Matron"] = "선택받은 혈어미"
 --[[ L["Click to toggle AddOn Window"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Clicking this button will attempt to join the ongoing Live Session of your group or create a new one if none is found"] = ""--]] 
-L["Coastwalker Goliath"] = "해안반랑자 거수"
+L["Coastwalker Goliath"] = "해안방랑자 거수"
 L["Coin-Operated Crowd Pummeler"] = "동전 투입식 군중 난타기"
 L["Coldmist Stalker"] = "얼음안개 땅거미"
 L["Coldmist Widow"] = "얼음안개 과부거미"
@@ -239,8 +235,6 @@ L["Copy"] = "복사"
 L["Cordana Felsong"] = "콜다나 펠송"
 L["Corpse Collector"] = "시체 수집꾼"
 L["Corpse Harvester"] = "시체 수확자"
---[[Translation missing --]]
---[[ L["Corsair Brute"] = ""--]] 
 L["Corsair Officer"] = "해적 장교"
 L["Corstilax"] = "코스틸락스"
 L["Court of Stars"] = "별의 궁정"
@@ -347,10 +341,13 @@ L["Dreadwing Raven"] = "공포날개 까마귀"
 L["Dredged Sailor"] = "건져 올린 선원"
 L["Dresaron"] = "드레사론"
 L["Droman Oulfarran"] = "수풀사령관 울파란"
+--[[Translation missing --]]
+--[[ L["dropdownAssignPlayer"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["dropdownClear"] = ""--]] 
 L["Drowned Depthbringer"] = "익사한 심연인도자"
 L["Drums of War"] = "전쟁 북"
---[[Translation missing --]]
---[[ L["Drunk Pirate"] = ""--]] 
+L["Drunk Pirate"] = "술 취한 해적"
 L["Drust Boughbreaker"] = "드러스트 가지파괴자"
 L["Drust Harvester"] = "드러스트 수확자"
 L["Drust Soulcleaver"] = "드러스트 영혼절단자"
@@ -413,6 +410,8 @@ L["Expert Technician"] = "전문 기술병"
 L["Explosive"] = "폭탄"
 L["Export"] = "내보내기"
 L["Export the preset as a text string"] = "길을 텍스트 문자열으로 내보내기"
+--[[Translation missing --]]
+--[[ L["ExportStringShareExternalWebsite"] = ""--]] 
 L["Eye of Azshara"] = "아즈샤라의 눈"
 L["Eye of Azshara Sublevel"] = "아즈샤라의 눈"
 --[[Translation missing --]]
@@ -472,6 +471,8 @@ L["Forsworn Usurper"] = "이탈자 강탈자"
 L["Forsworn Vanguard"] = "이탈자 선봉대"
 L["Forsworn Warden"] = "이탈자 감시관"
 L["Fortified"] = "경화"
+--[[Translation missing --]]
+--[[ L["Forward Train Cars"] = ""--]] 
 L["Foul Mother"] = "부정한 어미"
 --[[Translation missing --]]
 --[[ L["frackingNote"] = ""--]] 
@@ -535,6 +536,8 @@ L["Graveyard"] = "묘지"
 L["Grease Bot"] = "기름 로봇"
 L["Grievous"] = "치명상"
 L["Grimhorn the Enslaver"] = "험악뿔 구속자"
+--[[Translation missing --]]
+--[[ L["GrimrailDepot"] = ""--]] 
 L["Grip"] = "죽음의 손아귀"
 L["Gripping Terror"] = "옭아매는 공포"
 L["Gritslime Snail"] = "모래점액 달팽이"
@@ -643,6 +646,8 @@ L["Inspiring"] = "고취"
 L["Interment Construct"] = "매장된 피조물"
 L["Interrogation Specialist"] = "심문 전문가"
 L["Invalid import string"] = "가져오는 문자열이 무효합니다 "
+--[[Translation missing --]]
+--[[ L["IronDocks"] = ""--]] 
 L["Ironhull Apprentice"] = "아이언헐 수습생"
 L["Irontide Bonesaw"] = "무쇠파도 해골톱날"
 L["Irontide Buccaneer"] = "무쇠파도 해적단원"
@@ -710,7 +715,7 @@ L["Lady Velandras Ravencrest"] = "여군주 벨란드라스 레이븐크레스�
 L["Lady Waycrest"] = "부인 웨이크레스트"
 L["Lakesis"] = "라케시스"
 L["Language"] = "언어"
-L["LargePresetWarning"] = "매우 큰 길을 공유하려고 합니다 (%d characters)%s대신에 내보내기 기능을 사용하여 wago.io를 통해 큰 길을 공유하기를 추천합니다.%s정말 이 길을 공유하고 싶나요?%s"
+L["LargePresetWarning"] = "매우 큰 길을 공유하려고 합니다 (%d characters)%s대신에 내보내기 기능을 사용하여 external websites를 통해 큰 길을 공유하기를 추천합니다.%s정말 이 길을 공유하고 싶나요?%s"
 L["Lashing Voidling"] = "채찍 공허괴물"
 L["Legion"] = "군단"
 L["Legion Hound"] = "군단 지옥사냥개"
@@ -829,6 +834,8 @@ L["Nal'asha"] = "날아샤"
 L["Nalthor the Rimebinder"] = "냉기결속사 날토르"
 L["Nal'tira"] = "날티라"
 L["Nar'zudah"] = "나르주다"
+--[[Translation missing --]]
+--[[ L["Nathrezim Infiltrator"] = ""--]] 
 L["Necrotic"] = "괴저"
 L["Necrotic Spiderling"] = "괴저 새끼거미"
 L["Nefarious Darkspeaker"] = "사악한 암흑예언자"
@@ -877,7 +884,7 @@ L["Overseer Korgus"] = "감독관 코르거스"
 L["Overseer's Redoubt"] = "감독관의 보루"
 L["Overseer's Summit"] = "감독관의 정점"
 L["P.O.S.T. Master"] = "우.정.국.장."
-L["P.O.S.T. Worker"] = "우.정.국 직원"
+L["P.O.S.T. Worker"] = "우.정.국. 직원"
 L["Paceran the Virulent"] = "맹독의 파세란"
 L["Pallid Gorger"] = "창백한 탐식자"
 L["Patchwerk Soldier"] = "패치워크 병사"
@@ -908,7 +915,7 @@ L["Players can join the live session by either clicking this button or the Live 
 L["Please report any bugs on https://github.com/Nnoggie/MythicDungeonTools/issues"] = "아무 버그가 있으시면은 https://github.com/Nnoggie/MythicDungeonTools/issues 에서 신고하시기를 바랍니다"
 L["Polymorph"] = "변이"
 L["Portal Guardian"] = "차원문 수호자"
-L["Portalmancer Zo'honn"] = "차원문술사 조다흐"
+L["Portalmancer Zo'honn"] = "차원문술사 조혼"
 L["Portrait"] = "초상화"
 L["Posh Vacationer"] = "호화로운 행락객"
 L["Preset '%s' already exists"] = "'%s%'(이)라는 길이 이미 있습니다"
@@ -940,6 +947,8 @@ L["Quaking"] = "전율"
 L["Queen Patlaa"] = "여왕 파틀라아"
 L["Queen Wasi"] = "여왕 와시"
 L["Raal the Gluttonous"] = "식탐귀 라알"
+--[[Translation missing --]]
+--[[ L["Rafters"] = ""--]] 
 L["Raging"] = "분노"
 L["Raging Bloodhorn"] = "분노의 핏빛뿔"
 L["Rainbow"] = "무지개"
@@ -954,6 +963,8 @@ L["Reanimated Mage"] = "되살아난 마법사"
 L["Reanimated Warrior"] = "되살아난 전사"
 L["Reanimation Totem"] = "되살리기 토템"
 L["Reaping"] = "수확"
+--[[Translation missing --]]
+--[[ L["Rear Train Cars"] = ""--]] 
 L["receiveErrorUpdate"] = "MDT가 길을 받지 못 했습니다. 길을 보내신 %s님이 MDT의 최신 버전을 설치하신 것을 확인하십시오"
 L["Receiving: ..."] = "받는중: ..."
 L["Red, Green and Blue"] = "빨간색과 초록색과 파란색"
@@ -1108,6 +1119,8 @@ L["Shrine of the Storm Sublevel"] = "폭풍의 사원"
 L["Shrine Templar"] = "사원 기사단원"
 L["shrineGraveyardNote1"] = "군주 스통송을 패배시킬 후에 얻습니다"
 L["Shroud Hound"] = "지옥안개 사냥개"
+--[[Translation missing --]]
+--[[ L["Shrouded"] = ""--]] 
 L["Shrouded Fang"] = "가려진 송곳니"
 L["Shuffling Corpse"] = "절룩이는 시체"
 L["Siege of Boralus"] = "보랄러스 공성전"
@@ -1145,11 +1158,7 @@ L["Slimy Morsel"] = "점액 덩이"
 L["Slithering Ooze"] = "미끈미끈한 수액"
 L["Slow"] = "감속"
 L["Smashspite the Hateful"] = "혐오스러운 원한강타"
---[[Translation missing --]]
---[[ L["Smuggled Creature"] = ""--]] 
 L["Snarling Dockhound"] = "으르렁거리는 부두사냥개"
---[[Translation missing --]]
---[[ L["So' Cartel Assassin"] = ""--]] 
 L["So'azmi"] = "소아즈미"
 L["Soggodon the Breaker"] = "분쇄자 소고돈"
 L["Soggy Shiprat"] = "축축한 배쥐"
@@ -1327,6 +1336,8 @@ L["Toxic Lurker"] = "맹독 잠복꾼"
 L["Toxic Monstrosity"] = "독성 흉물"
 L["Toxic Saurid"] = "독성 사우리드"
 L["Tracker Zo'korss"] = "추적자 조코르스"
+--[[Translation missing --]]
+--[[ L["Train Depot"] = ""--]] 
 L["Tred'ova"] = "트레도바"
 L["Trixie Tazer"] = "트릭시 테이저"
 L["Trothak"] = "트로삭"
@@ -1361,7 +1372,7 @@ L["Upper Library"] = "도서관 상층"
 L["Upper Livery Stables"] = "마구간 상층"
 L["Upstairs"] = "2층"
 L["Urg'roth, Breaker of Heroes"] = "영웅학살자 우르그로스"
-L["Urh Relic"] = "우르"
+L["Urh Relic"] = "우르 유물"
 L["Use /mdt reset to restore the default position and scale of MDT."] = "MDT의 위치와 규모가 기본으로 리싯하도록 '/mdt reset' 하시면 됩니다"
 L["Use as a starting point:"] = "출발점으로 사용하기"
 L["Valarjar Aspirant"] = "발라리아르 지원자"
@@ -1377,8 +1388,6 @@ L["Valarjar Trapper"] = "발라리아르 덫사냥꾼"
 L["Vault of the Betrayer"] = "배신자의 금고"
 L["Vault of the Wardens"] = "감시관의 금고"
 L["Vault of the Wardens Sublevel"] = "감시관의 금고"
---[[Translation missing --]]
---[[ L["Vault Purifier"] = ""--]] 
 L["Venomfang"] = "맹독송곳니"
 L["Venomous Ophidian"] = "맹독 뱀"
 L["Venomous Sniper"] = "맹독 저격수"
@@ -1415,9 +1424,7 @@ L["Volatile Memory"] = "불안정한 기억"
 L["Volcanic"] = "화산"
 L["Vol'kaal"] = "볼카알"
 L["Vol'zith the Whisperer"] = "속삭임의 볼지스"
-L["Vy Relic"] = "바이"
---[[Translation missing --]]
---[[ L["Wandering Pulsar"] = ""--]] 
+L["Vy Relic"] = "바이 유물"
 L["Wandering Shellback"] = "떠도는 등껍질거북"
 L["Wanton Sapper"] = "통제불가 공병"
 L["Warlord Parjesh"] = "전쟁군주 파르제쉬"
@@ -1439,7 +1446,7 @@ L["Wicked Oppressor"] = "사악한 탄압자"
 L["Windspeaker Heldis"] = "바람예언자 헬디스"
 L["Withered Fiend"] = "메마른 마귀"
 L["Withered Manawraith"] = "메마른 마나 망령"
-L["Wo Relic"] = "워오"
+L["Wo Relic"] = "워오 유물"
 L["Workshop Defender"] = "작업실 방어병"
 L["Wrath of Azshara"] = "아즈샤라의 분노"
 L["Wrathguard Bladelord"] = "격노수호병 검군주"
@@ -1459,8 +1466,6 @@ L["You can always return to the current Live Session preset by clicking the 'Ret
 --[[ L["You can choose from different color palettes in the automatic pull coloring settings menu."] = ""--]] 
 L["You can cycle through different floors by holding CTRL and using the mousewheel."] = "CTRL을 누르시면서 마우스 휠을 사용하신다면 다른 층들에 바꾸실 수 있습니다"
 L["You can cycle through dungeons by holding ALT and using the mousewheel."] = "ALT를 누르시면서 마우스 휠을 사용하신다면 다른 던전들에 바꾸실 수 있습니다"
-L["You can find MDT exports from other users on the wago.io website"] = "'wago.io'라는 웹사이트에서 다른 선수분들의 MDT 길들을 찾으실 수 있습니다"
-L["You can share MDT exports on the wago.io website"] = "'wago.io'라는 웹사이트에서 내보내신 길들을 공유하실 수 있습니다"
 L["Zanazal the Wise"] = "현자 자나잘"
 L["Zanchuli Witch-Doctor"] = "잔추리 의술사"
 L["Zo'gron"] = "조그론"
@@ -1471,6 +1476,8 @@ L["Zolramus Necromancer"] = "조르라무스 강령술사"
 L["Zolramus Siphoner"] = "조르라무스 착취자"
 L["Zolramus Sorcerer"] = "조르라무스 마술사"
 L["Zo'phex"] = "조펙스"
+--[[Translation missing --]]
+--[[ L["Zul'gamux"] = ""--]] 
 L["Zul'Gurub"] = "줄구룹"
 L["Zuraal the Ascended"] = "승천자 주라알"
 
