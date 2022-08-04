@@ -34,6 +34,7 @@ local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 	if keystoneMapID and keystoneMapName then
 		keystoneMapName = gsub(keystoneMapName, ".-%-", "") -- Mechagon
 		keystoneMapName = gsub(keystoneMapName, ".-"..HEADER_COLON, "") -- Tezavesh
+		keystoneMapName = gsub(keystoneMapName, ".-（(.-)）", "%1") -- Karazan
 		return string.format("%s (%d)", keystoneMapName, keystoneLevel)
 	end
 end
