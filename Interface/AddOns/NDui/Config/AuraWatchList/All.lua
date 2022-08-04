@@ -305,6 +305,7 @@ local list = {
 		-- 大米
 		{AuraID = 226510, UnitID = "target"},	-- 血池回血
 		{AuraID = 343502, UnitID = "target"},	-- 鼓舞光环
+		{AuraID = 373724, UnitID = "target", Value = true},	-- S4，鲜血屏障
 		-- 5人本
 		{AuraID = 321754, UnitID = "target", Value = true},	-- 通灵战潮，冰缚之盾
 		{AuraID = 343470, UnitID = "target", Value = true},	-- 通灵战潮，碎骨之盾
@@ -345,6 +346,8 @@ local list = {
 		{AuraID = 347015, UnitID = "target", Flash = true},	-- 集市，强化防御
 		{AuraID = 355934, UnitID = "target", Value = true},	-- 集市，强光屏障
 		{AuraID = 349933, UnitID = "target", Flash = true, Value = true},	-- 集市，狂热鞭笞协议
+		{AuraID = 229495, UnitID = "target"},	-- 卡拉赞国王易伤，S4
+		{AuraID = 227817, UnitID = "target", Value = true},	-- 卡拉赞圣女盾，S4
 		-- 团本
 		{AuraID = 345902, UnitID = "target"},	-- 破裂的联结，猎手
 		{AuraID = 334695, UnitID = "target"},	-- 动荡的能量，猎手
