@@ -131,8 +131,9 @@ local defaultSavedVars = {
 do
   for i = 1, 80 do
     defaultSavedVars.global.presets[i] = {
-      [1] = { text = "Default", value = {}, objects = {}, colorPaletteInfo = { autoColoring = true, colorPaletteIdx = 4 } },
-      [2] = { text = "<New Preset>", value = 0 },
+      [1] = { text = L["Default"], value = {}, objects = {},
+        colorPaletteInfo = { autoColoring = true, colorPaletteIdx = 4 } },
+      [2] = { text = L["<New Preset>"], value = 0 },
     }
     defaultSavedVars.global.currentPreset[i] = 1
   end
@@ -223,9 +224,9 @@ do
       C_MythicPlus.RequestCurrentAffixes()
       C_MythicPlus.RequestMapInfo()
       C_MythicPlus.RequestRewards()
+      if db.loadOnStartUp then MDT:ShowInterface(true) end
     end)
     eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    if db.loadOnStartUp then MDT:ShowInterface(true) end
   end
 end
 
@@ -233,8 +234,8 @@ end
 --https://www.wowhead.com/affixes
 --lvl 4 affix, lvl 7 affix, tyrannical/fortified, seasonal affix
 local affixWeeks = {
-  [1] = { 0, 0, 9, 131 }, -- bolstering explosive tyrannical shrouded
-  [2] = { 122, 14, 10, 131 }, -- bursting storming fortified shrouded
+  [1] = { 122, 14, 9, 131 }, -- bolstering explosive tyrannical shrouded
+  [2] = { 0, 0, 10, 131 }, -- bursting storming fortified shrouded
   [3] = { 0, 0, 9, 131 }, -- raging volcanic tyrannical shrouded
   [4] = { 0, 0, 10, 131 }, -- inspiring grievous fortified shrouded
   [5] = { 0, 0, 9, 131 }, -- spiteful necrotic tyrannical shrouded
@@ -261,6 +262,16 @@ function MDT:UpdateAffixWeeks()
   C_MythicPlus.RequestMapInfo()
   C_MythicPlus.RequestRewards()
 
+  -- Save current weeks affixes to db
+  local current_affixes = C_MythicPlus.GetCurrentAffixes()
+  -- retry after 5 if Blizzard not ready yet
+  if not current_affixes then
+    C_Timer.After(5, function()
+      MDT:UpdateAffixWeeks()
+    end)
+    return
+  end
+
   local season_start = { -- Edit this at the start of the season - IMPORTANT: This is North America launch in PST time
     ["year"] = 2022,
     ["month"] = 8,
@@ -280,8 +291,6 @@ function MDT:UpdateAffixWeeks()
   local elapsed_season = utc_region_week_start - (utc_na_season_start + region_offset) -- total time since season start
   local current_week_idx = math.floor(elapsed_season / one_week) % #affixWeeks + 1 -- weekly affix rotation index of current week for player
 
-  -- Save current weeks affixes to db
-  local current_affixes = C_MythicPlus.GetCurrentAffixes()
   db.knownAffixWeeks[current_week_idx] = {}
   for k, idx in pairs({ 2, 3, 1, 4 }) do
     tinsert(db.knownAffixWeeks[current_week_idx], current_affixes[idx]["id"])
@@ -297,6 +306,12 @@ function MDT:UpdateAffixWeeks()
       affixWeeks[week_idx] = known_affixes
     end
   end
+
+  local sidepanel = MDT.main_frame.sidePanel
+  if not sidepanel then return end -- sidepanel not ready yet, will handle setting these itself anyway
+  local dropdown = sidepanel.affixDropdown
+  dropdown:UpdateAffixList()
+  dropdown:SetValue(MDT:GetCurrentPreset().week)
 end
 
 MDT.mapInfo = {}
@@ -652,7 +667,7 @@ function MDT:MakeTopBottomTextures(frame)
     if MDT:IsFrameOffScreen() then
       MDT:ResetMainFramePos(true)
     else
-      local from, _, to, x, y = MDT.main_frame:GetPoint()
+      local from, _, to, x, y = MDT.main_frame:GetPoint(nil)
       db.anchorFrom = from
       db.anchorTo = to
       db.xoffset, db.yoffset = x, y
@@ -701,6 +716,7 @@ function MDT:MakeTopBottomTextures(frame)
     if MDT:IsFrameOffScreen() then
       MDT:ResetMainFramePos(true)
     else
+      ---@diagnostic disable-next-line: missing-parameter
       local from, _, to, x, y = MDT.main_frame:GetPoint()
       db.anchorFrom = from
       db.anchorTo = to
@@ -806,6 +822,7 @@ function MDT:MakeSidePanel(frame)
   frame.sidePanelNewButton:SetWidth(buttonWidth)
   --button fontInstance
   local fontInstance = CreateFont("MDTButtonFont")
+  if not fontInstance then return end
   fontInstance:CopyFontObject(frame.sidePanelNewButton.frame:GetNormalFontObject())
   local fontName, height = fontInstance:GetFont()
   fontInstance:SetFont(fontName, 10)
@@ -1783,8 +1800,8 @@ function MDT:UpdatePullTooltip(tooltip)
 
       local text = L["Forces"] .. ": " .. MDT:FormatEnemyForces(pullForces, totalForcesMax, false)
       text = text .. "\n" .. L["Total"] .. ": " .. MDT:FormatEnemyForces(totalForces, totalForcesMax, true)
-      local pullHealth = MDT:SumCurrentPullHealth(tooltip.currentPull)
-      text = text .. "\n" .. L["Efficiency Score"] .. ": " .. MDT:GetEfficiencyScoreString(pullForces, pullHealth)
+      -- local pullHealth = MDT:SumCurrentPullHealth(tooltip.currentPull)
+      -- text = text .. "\n" .. L["Efficiency Score"] .. ": " .. MDT:GetEfficiencyScoreString(pullForces, pullHealth)
 
       tooltip.botString:SetText(text)
       tooltip.botString:Show()
@@ -1983,6 +2000,7 @@ end
 function MDT:SetPingOffsets(mapScale)
   local scale = 0.35
   local offset = (10.25 / 1000) * mapScale
+  ---@diagnostic disable-next-line: redundant-parameter
   MDT.ping:SetTransform(offset, offset, 0, 0, 0, 0, scale)
 end
 
@@ -2043,13 +2061,14 @@ function MDT:GetEffectivePresetSeason(preset)
   if db.MDI.enabled then
     local mdiWeek = preset.mdi.beguiling
     season = (mdiWeek == 1 or mdiWeek == 2 or mdiWeek == 3) and 3 or mdiWeek == 13 and 2 or
-        (mdiWeek == 14 or mdiWeek == 15) and 4
+        (mdiWeek == 14 or mdiWeek == 15) and 4 or 4
   end
   return season
 end
 
 function MDT:ReturnToLivePreset()
   local preset, presetIdx = self:GetCurrentLivePreset()
+  ---@diagnostic disable-next-line: need-check-nil
   self:UpdateToDungeon(preset.value.currentDungeonIdx, true)
   db.currentPreset[db.currentDungeonIdx] = presetIdx
   self:UpdatePresetDropDown()
@@ -2208,7 +2227,7 @@ function MDT:MakeMapTexture(frame)
 end
 
 local function round(number, decimals)
-  return (("%%.%df"):format(decimals)):format(number)
+  return tonumber((("%%.%df"):format(decimals)):format(number))
 end
 
 function MDT:CalculateEnemyHealth(boss, baseHealth, level, ignoreFortified)
@@ -2297,12 +2316,12 @@ function MDT:OpenNewPresetDialog()
   local presetList = {}
   local countPresets = 0
   for k, v in pairs(db.presets[db.currentDungeonIdx]) do
-    if v.text ~= "<New Preset>" then
+    if v.text ~= L["<New Preset>"] then
       table.insert(presetList, k, v.text)
       countPresets = countPresets + 1
     end
   end
-  table.insert(presetList, 1, "Empty")
+  table.insert(presetList, 1, L["Empty"])
   MDT.main_frame.PresetCreationDropDown:SetList(presetList)
   MDT.main_frame.PresetCreationDropDown:SetValue(1)
   MDT.main_frame.PresetCreationEditbox:SetText(L["defaultPresetName"] .. " " .. countPresets + 1)
@@ -2350,8 +2369,10 @@ end
 ---Makes sure profiles are valid and have their fields set
 function MDT:EnsureDBTables()
   --dungeonIdx doesnt exist
-  if not MDT.dungeonList[db.currentDungeonIdx] or string.find(MDT.dungeonList[db.currentDungeonIdx], ">") then
-    db.currentDungeonIdx = 1
+  if not MDT.dungeonList[db.currentDungeonIdx] or string.find(MDT.dungeonList[db.currentDungeonIdx], ">") or
+      not db.selectedDungeonList then
+    db.currentDungeonIdx = defaultSavedVars.global.currentDungeonIdx
+    db.selectedDungeonList = defaultSavedVars.global.selectedDungeonList
   end
   local preset = MDT:GetCurrentPreset()
   preset.week = preset.week or MDT:GetCurrentAffixWeek()
