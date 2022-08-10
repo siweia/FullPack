@@ -29,6 +29,8 @@ L["Achillite"] = "아칠라이트"
 L["Acidic Bile"] = "산성 위액괴물"
 L["Adderis"] = "애더리스"
 L["Addled Thug"] = "띨띨한 불량배"
+--[[Translation missing --]]
+--[[ L["AddOn Conflict"] = ""--]] 
 L["Adorned Starseer"] = "화려한 별예언가"
 L["Advent Nevermore"] = "강림자 네버모어"
 L["Advisor Melandrus"] = "조언가 멜란드루스"
@@ -236,6 +238,8 @@ L["Colossal Tentacle"] = "거대한 촉수"
 L["Commander Shemdah'sohn"] = "사령관 셈다손"
 L["Commander Zo'far"] = "사령관 조파르"
 L["Commerce Enforcer"] = "상업구 집행자"
+--[[Translation missing --]]
+--[[ L["conflictPrompt"] = ""--]] 
 L["Congealed Slime"] = "응결된 점액"
 --[[Translation missing --]]
 --[[ L["ConnectedTip"] = ""--]] 
@@ -817,6 +821,8 @@ L["Mchimba the Embalmer"] = "장의사 음침바"
 L["MDI Mode"] = "MDI 모드"
 L["MDT: Error importing preset"] = "MDT: 길을 가져오기 오류 "
 L["MDT: Spells for %s:"] = "MDT: %s의 마법"
+--[[Translation missing --]]
+--[[ L["MDT: Use /mdt minimap to show the minimap icon again"] = ""--]] 
 L["Mech Jockey"] = "로봇 조종사"
 L["Mechagon"] = "메카곤"
 L["Mechagon - Junkyard"] = "작전명: 메카곤 고철장"
@@ -835,6 +841,8 @@ L["Mechanical"] = "기계"
 L["Mechanized Peacekeeper"] = "기계화 평화감시단"
 L["Mephistroth"] = "메피스트로스"
 L["Merektha"] = "메레크타"
+--[[Translation missing --]]
+--[[ L["Middle-click to disable Minimap Button"] = ""--]] 
 L["Midnight"] = "천둥이"
 L["Mightstone Breaker"] = "막돌 파괴자"
 L["Millhouse Manastorm"] = "밀하우스 마나스톰"

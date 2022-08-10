@@ -27,6 +27,8 @@ L["Achillite"] = "Achillite"
 L["Acidic Bile"] = "Bile acide"
 L["Adderis"] = "Viperis"
 L["Addled Thug"] = "Criminel confus"
+--[[Translation missing --]]
+--[[ L["AddOn Conflict"] = ""--]] 
 L["Adorned Starseer"] = "Stellomancien distingué"
 L["Advent Nevermore"] = "Aurore la Résolue"
 L["Advisor Melandrus"] = "Conseiller Melandrus"
@@ -218,6 +220,8 @@ L["Colossal Tentacle"] = "Tentacule colossal"
 L["Commander Shemdah'sohn"] = "Commandant Shemdah’sohn"
 L["Commander Zo'far"] = "Commandant Zo'far"
 L["Commerce Enforcer"] = "Massacreur du marché"
+--[[Translation missing --]]
+--[[ L["conflictPrompt"] = ""--]] 
 L["Congealed Slime"] = "Gelée figée"
 L["ConnectedTip"] = "Les connexions de groupe dans MDT ne reflètent pas si les PNJs sont liés entre eux dans le jeu. "
 L["Control Undead"] = "Asservir un mort-vivant "
@@ -776,6 +780,8 @@ L["Mchimba the Embalmer"] = "Mchimba l'Embaumeur"
 L["MDI Mode"] = "Mode MDI "
 L["MDT: Error importing preset"] = "MDT : une erreur est survenue dans l'import de la route "
 L["MDT: Spells for %s:"] = "MDT : Sorts pour %s : "
+--[[Translation missing --]]
+--[[ L["MDT: Use /mdt minimap to show the minimap icon again"] = ""--]] 
 L["Mech Jockey"] = "Jockey mécanique"
 L["Mechagon"] = "Mécagone"
 L["Mechagon - Junkyard"] = "Opération Mécagone - La casse "
@@ -794,6 +800,8 @@ L["Mechanical"] = "Machine "
 L["Mechanized Peacekeeper"] = "Pacificateur mécanisé"
 L["Mephistroth"] = "Méphistroth"
 L["Merektha"] = "Merekpha"
+--[[Translation missing --]]
+--[[ L["Middle-click to disable Minimap Button"] = ""--]] 
 L["Midnight"] = "Minuit"
 L["Mightstone Breaker"] = "Briseur pierre-puissance"
 L["Millhouse Manastorm"] = "Milhouse Tempête-de-Mana"

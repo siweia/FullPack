@@ -27,6 +27,8 @@ L["Achillite"] = "Achillite"
 L["Acidic Bile"] = "Bile Acida"
 L["Adderis"] = "Viperis"
 L["Addled Thug"] = "Teppista Confuso"
+--[[Translation missing --]]
+--[[ L["AddOn Conflict"] = ""--]] 
 L["Adorned Starseer"] = "Veggente Stellare Decorato"
 L["Advent Nevermore"] = "Baluardo dell'Avvento Fatomorto"
 L["Advisor Melandrus"] = "Consigliere Melandrus"
@@ -223,6 +225,8 @@ L["Colossal Tentacle"] = "Tentacolo Colossale"
 L["Commander Shemdah'sohn"] = "Comandante Shemdah'sohn"
 L["Commander Zo'far"] = "Comandante Zo'far"
 L["Commerce Enforcer"] = "Esecutore del Commercio"
+--[[Translation missing --]]
+--[[ L["conflictPrompt"] = ""--]] 
 L["Congealed Slime"] = "Poltiglia Coagulata"
 --[[Translation missing --]]
 --[[ L["ConnectedTip"] = ""--]] 
@@ -824,6 +828,8 @@ L["Mchimba the Embalmer"] = "Mchimba l'Imbalsamatore"
 L["MDI Mode"] = "Modalità MDI"
 L["MDT: Error importing preset"] = "MDT: Si è verificato un errore durante l'importazione del percorso"
 L["MDT: Spells for %s:"] = "MDT: Abilità di %s:"
+--[[Translation missing --]]
+--[[ L["MDT: Use /mdt minimap to show the minimap icon again"] = ""--]] 
 L["Mech Jockey"] = "Manovratore di Mech"
 --[[Translation missing --]]
 --[[ L["Mechagon"] = ""--]] 
@@ -843,6 +849,8 @@ L["Mechanical"] = "Unità Meccanica"
 L["Mechanized Peacekeeper"] = "Pacificatore Meccanizzato"
 L["Mephistroth"] = "Mefistroth"
 L["Merektha"] = "Merektha"
+--[[Translation missing --]]
+--[[ L["Middle-click to disable Minimap Button"] = ""--]] 
 L["Midnight"] = "Mezzanotte"
 L["Mightstone Breaker"] = "Spezzatore di Pietragrossa"
 L["Millhouse Manastorm"] = "Millhouse Manalampo"
