@@ -160,6 +160,9 @@ L["Borka the Brute"] = "Borka der Schläger"
 L["Bottom Feeder"] = "Siltfresser"
 L["Bound Energy"] = "Gebundene Energie"
 L["Bound Voidlord"] = "Gebundener Leerenfürst"
+--[[Translation missing --]]
+--[[ L[ [=[Bounty stacks 
+after this pull]=] ] = ""--]] 
 L["Brawling Patron"] = "Prügelnder Gast"
 L["Brittlebone Crossbowman"] = "Morschknochenarmbrustschütze"
 L["Brittlebone Mage"] = "Morschknochenmagier"

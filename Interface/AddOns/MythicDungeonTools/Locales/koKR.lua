@@ -169,6 +169,9 @@ L["Borka the Brute"] = "육중한 보르카"
 L["Bottom Feeder"] = "밑바닥 포식자"
 L["Bound Energy"] = "속박된 마력"
 L["Bound Voidlord"] = "구속된 공허군주"
+--[[Translation missing --]]
+--[[ L[ [=[Bounty stacks 
+after this pull]=] ] = ""--]] 
 L["Brawling Patron"] = "난동 피우는 손님"
 L["Brittlebone Crossbowman"] = "불완전뼈 석궁수"
 L["Brittlebone Mage"] = "불완전뼈 마법사"

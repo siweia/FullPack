@@ -170,6 +170,9 @@ L["Bone Magus"] = "Magus d'Ossa"
 L["Bottom Feeder"] = "Granchio di Fondale"
 L["Bound Energy"] = "Energia Vincolata"
 L["Bound Voidlord"] = "Signore del Vuoto Vincolato"
+--[[Translation missing --]]
+--[[ L[ [=[Bounty stacks 
+after this pull]=] ] = ""--]] 
 L["Brawling Patron"] = "Cliente Rissosa"
 L["Brittlebone Crossbowman"] = "Balestriere Ossafragili"
 L["Brittlebone Mage"] = "Mago Ossafragili"
