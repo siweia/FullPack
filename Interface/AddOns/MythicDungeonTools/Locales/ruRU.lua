@@ -160,9 +160,8 @@ L["Borka the Brute"] = "Борка Бесчеловечный"
 L["Bottom Feeder"] = "Донный краб"
 L["Bound Energy"] = "Обузданная энергия"
 L["Bound Voidlord"] = "Подчиненный повелитель Бездны"
---[[Translation missing --]]
---[[ L[ [=[Bounty stacks 
-after this pull]=] ] = ""--]] 
+L[ [=[Bounty stacks 
+after this pull]=] ] = "Награды стакаются после этого пула"
 L["Brawling Patron"] = "Драчливый завсегдатай"
 L["Brittlebone Crossbowman"] = "Хрупкий арбалетчик"
 L["Brittlebone Mage"] = "Хрупкий маг"
@@ -1292,7 +1291,7 @@ L["The Robodrome"] = "Рободром"
 L["The Rook's Host"] = "Гнездовье Черной Ладьи"
 L["The Rupture"] = "Разлом"
 L["The Sand Queen"] = "Королева песков"
-L["The selected affixes are not the ones of the current week"] = "Выбранные аффиксы не соответствуют текущей недели"
+L["The selected affixes are not the ones of the current week"] = "Выбранные аффиксы не соответствуют текущей неделе"
 L["The selected dungeon level is below 10"] = "Выбранный уровень подземелья ниже 10"
 L["The selected level will affect displayed npc health"] = "Выбранный уровень повлияет на отображаемое количество здоровья НИП"
 L["The Servant's Quarters"] = "Комнаты слуг"

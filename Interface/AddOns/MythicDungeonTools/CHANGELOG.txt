@@ -1,3 +1,9 @@
+v3.9.6.1
+- Mechagon - Workshop count changes: Nathrezim Infiltrator : 4 -> 3 and Zul'gamux: 12 -> 9
+v3.9.6
+- affix rotation update
+v3.9.5.9
+- various bugfixes
 v3.9.5.8
 - Added tooltip for shrouded bounty stack counter
 - backend updates
