@@ -28,17 +28,29 @@ local function Board_GetBaseFollowerInfo(slot, skipTroops, rewardXP, noBoardInde
 		if rewardXP then
 			willLevel = not ii.isMaxLevel and ii.xp and ii.levelXP and (ii.xp + rewardXP) >= ii.levelXP
 		end
-		return {boardIndex=noBoardIndex ~= true and slot or nil, id=ii.followerID, role=ii.role, stats=acs, auto=f.autoCombatAutoAttack.autoCombatSpellID, spells=f.autoCombatSpells, willLevel=willLevel}
+		return {boardIndex=noBoardIndex ~= true and slot or nil, id=ii.followerID, oid=ii.garrFollowerID, stats=acs, auto=f.autoCombatAutoAttack.autoCombatSpellID, spells=f.autoCombatSpells, willLevel=willLevel}
 	end
 end
-local function GetMissionEnemies(mid)
-	local en = C_Garrison.GetMissionDeploymentInfo(mid).enemies
-	for i=1,#en do
-		local eni = en[i]
-		local a = eni.autoCombatAutoAttack
-		eni.auto, eni.autoCombatAutoAttack = a and a.autoCombatSpellID
+local function Board_GetZeroGroup()
+	local ff, s0,s1,s2,s3,s4 = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
+	for i=4, 0, -1 do
+		s0, s1, s2, s3, s4 = ff[i].info and ff[i].info.garrFollowerID or nil, s0, s1, s2, s3
 	end
-	return en
+	return U.GetPartyID(s0,s1,s2,s3,s4) or 0
+end
+local GetMissionEnemies = U.GetMissionEnemies
+local function Board_SetSimResult(sim)
+	local rewardXP, lm, ff = MissionRewards and MissionRewards.xpGainL or 0, 0, CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
+	if sim and sim.res and sim.res.hadWins and not sim.res.hadLosses then
+		rewardXP = MissionRewards and MissionRewards.xpGain or 0
+	end
+	for i=0,4 do
+		local ii = ff[i].info
+		if ii and not ii.isAutoTroop and not ii.isMaxLevel and ii.xp and ii.levelXP and (ii.xp + rewardXP) >= ii.levelXP then
+			lm = lm + 2^i
+		end
+	end
+	BoardEX:SetSimResult(sim, lm)
 end
 
 local CAG, SetSimResultHint = {} do
@@ -139,10 +151,8 @@ local CAG, SetSimResultHint = {} do
 				end
 			end
 		end
-		local mi  = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
-		local eei = C_Garrison.GetAutoMissionEnvironmentEffect(mi.missionID)
-		local me = GetMissionEnemies(mi.missionID)
-		local espell = eei and eei.autoCombatSpellInfo
+		local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
+		local me, espell = GetMissionEnemies(mi.missionID)
 		reRangeT = reRange > 0 and 60*reRangeT/reRange or nil
 		return {team=team, enemies=me, espell=espell, mid=mi.missionID, msc=mi.missionScalar,
 			reStart=reRange > 0 and GetServerTime() or nil, reRange=reRange > 0 and reRange or nil, reRangeT=reRangeT, reCount=reRange > 0 and 0 or nil, reLow=0}
@@ -150,13 +160,13 @@ local CAG, SetSimResultHint = {} do
 	function CAG:Start(overrideDeadline)
 		local tag, rtag = GetGroupTags()
 		if not state or state.tag ~= tag then
-			local os, md, ms = state, CAG:GatherMissionData()
+			local os, md = state, CAG:GatherMissionData()
 			state, md.tag, md.rtag, reSim = md, tag, rtag, nil
 			if os and os.rtag == rtag and os.reFinish and md.reStart then
 				md.reFinish, md.reStart, md.reRange, md.reRangeT, md.reLow = os.reFinish, nil, nil
 			end
-			simArch, ms = T.VSim:New(md.team, md.enemies, md.espell, md.mid, md.msc)
-			md.missingSpells, simArch.dropForks = ms and next(ms) and true or nil, true
+			simArch = T.VSim:New(md.team, md.enemies, md.espell, md.mid, md.msc)
+			md.missingSpells, simArch.dropForks = simArch.res.hadMissingSpells, true
 			deadline = debugprofilestop() + (overrideDeadline or 40)
 			simArch:Run(qdeadline)
 			return not isDone(simArch.res) or setupRetry()
@@ -191,7 +201,7 @@ local CAG, SetSimResultHint = {} do
 	function CAG:Reset()
 		simArch, reSim, state = nil
 	end
-	function SetSimResultHint(g, sim, ms)
+	function SetSimResultHint(g, sim)
 		state = CAG:GatherMissionData()
 		local ng = {}
 		for slot, ii in pairs(g) do
@@ -202,14 +212,20 @@ local CAG, SetSimResultHint = {} do
 			ng[#ng+1] = nge
 		end
 		state.tag, state.rtag = GetComputedGroupTags(ng)
-		simArch, state.team, state.missingSpells = sim, ng, ms and next(ms) and true or nil
+		simArch, state.team, state.missingSpells = sim, ng, sim.res.hadMissingSpells
 	end
 	EV.GARRISON_MISSION_NPC_CLOSED = CAG.Reset
 end
 local Tact = {} do
-	local pt, state, deadline = {}
+	local state, deadline
 	local function cmpFollowerID(a,b)
 		return a.followerID < b.followerID
+	end
+	local function cmppool(a,b)
+		if a.troop ~= b.troop then
+			return a.troop
+		end
+		return a.oid < b.oid
 	end
 	local function GetGroupTags()
 		local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
@@ -232,30 +248,8 @@ local Tact = {} do
 		htag = tag .. htag
 		return htag, tag
 	end
-	local function GetShuffleGroup(gid)
-		local rgid, g, um, maxScore, pen, wmask = gid, {}, 0, 4, 0, 0
-		for i=0,4 do
-			pt[i] = i
-		end
-		for i=1, #state.companions do
-			local p, li, ci = rgid % (6-i), 5-i, state.companions[i]
-			rgid = (rgid - p) / (6-i)
-			p, pt[li], pt[p] = pt[p], pt[p], pt[li]
-			g[p], um = ci, um + 2^p
-			if not ci.willLevel then
-				maxScore, wmask = maxScore + 5*ci.stats.maxHealth, wmask + 2^p
-			end
-		end
-		for p=0, 4-#state.companions do
-			p = pt[p]
-			local i = rgid % 3
-			rgid = (rgid - i) / 3
-			local ti = state.troops[i+1]
-			if ti then
-				g[p], pen = ti, pen + 1
-			end
-		end
-		return g, maxScore-pen, pen, wmask
+	local function orderGroupID(gid, zg)
+		return gid == 0 and zg or gid == zg and 0 or gid
 	end
 	local function GetHealthScore(rm)
 		return (rm[18] or 0)*5+4-state.cpenalty
@@ -275,20 +269,20 @@ local Tact = {} do
 		repeat
 			local sim = state.csim
 			if not sim then
-				local ng = state.nextGroup
+				local ng, cg = state.nextGroup
 				if ng >= state.numGroups then
 					state.finished = true
-					local g = state.bestGroup and GetShuffleGroup(state.bestGroup)
-					return true, g, state.bestSim
+					local g = state.bestGroup and U.GetShuffleGroup(state.pool, state.bestGroup)
+					return true, g, state.bestSim, state.bestGroup
 				end
-				local ms, team, maxScore, troopPenalty, wmask = nil, GetShuffleGroup(ng)
-				if maxScore > state.bestScore then
-					sim, ms = T.VSim:New(team, state.enemies, state.espell, state.missionID, state.missionScalar)
+				state.nextGroup, cg = ng + 1, orderGroupID(ng, state.zeroGroup)
+				local team, numTroops, wmask = U.GetShuffleGroup(state.pool, cg)
+				if (state.baseMaxScore - numTroops) > state.bestScore then
+					sim = T.VSim:New(team, state.enemies, state.espell, state.missionID, state.missionScalar)
 					sim.wmask, sim.dropForks = wmask, true
-					state.csim, state.cmiss, state.cgroup, state.cpenalty = sim, ms, ng, troopPenalty
+					state.csim, state.cgroup, state.cpenalty = sim, cg, numTroops
 					state.numFutures = state.numFutures + 1
 				end
-				state.nextGroup = ng+1
 			end
 			if sim then
 				sim:Run(interrupt)
@@ -297,7 +291,7 @@ local Tact = {} do
 				elseif sim.res.isFinished then
 					local h = GetHealthScore(sim.res.min)
 					if h > state.bestScore then
-						state.bestScore, state.bestGroup, state.bestSim, state.bestMiss = h, state.cgroup, sim, state.cmiss
+						state.bestScore, state.bestGroup, state.bestSim = h, state.cgroup, sim
 					end
 					state.csim = nil
 				end
@@ -306,47 +300,42 @@ local Tact = {} do
 	end
 	function Tact:GatherMissionData()
 		local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
-		local eei = C_Garrison.GetAutoMissionEnvironmentEffect(mi.missionID)
-		local me = GetMissionEnemies(mi.missionID)
-		local espell = eei and eei.autoCombatSpellInfo
-		local ct, tt = {}, {} do
+		local me, espell = GetMissionEnemies(mi.missionID)
+		local pool, maxHP = U.GetPoolTroopBase(), 0 do
 			local rewardXP = MissionRewards and MissionRewards.xpGain or 0
 			for i=0,4 do
-				ct[#ct+1] = Board_GetBaseFollowerInfo(i, true, rewardXP, true)
+				local fi = Board_GetBaseFollowerInfo(i, true, rewardXP, true)
+				pool[#pool+1], maxHP = fi, maxHP + (fi and not fi.willLevel and fi.stats.maxHealth or 0)
 			end
-			for _, fi in ipairs(C_Garrison.GetAutoTroops(123)) do
-				local spells, auto = C_Garrison.GetFollowerAutoCombatSpells(fi.followerID, fi.level)
-				tt[#tt+1] = {
-					role=fi.role,
-					stats=C_Garrison.GetFollowerAutoCombatStats(fi.followerID),
-					spells=spells,
-					auto=auto.autoCombatSpellID,
-					id=fi.followerID,
-				}
-			end
+			table.sort(pool, cmppool)
 		end
-		return {missionID=mi.missionID, missionScalar=mi.missionScalar, enemies=me, espell=espell, companions=ct, troops=tt}
+		return {missionID=mi.missionID, missionScalar=mi.missionScalar, enemies=me, espell=espell, pool=pool, baseMaxScore=4 + 5*maxHP}
 	end
 	function Tact:Start()
 		if not Board_HasCompanion() then
 			return
 		end
-		local ht, it = GetGroupTags()
-		if state and not (it ~= state.itag or (state.finished and state.htag ~= ht)) then
+		local os, ht, it = state, GetGroupTags()
+		if os and not (it ~= os.itag or (os.finished and os.htag ~= ht)) then
 			return true
 		end
 		state = self:GatherMissionData()
-		local ng = 3^(5-#state.companions)
-		for i=1, #state.companions do
+		local ng = 3^(7-#state.pool)
+		for i=1, #state.pool-2 do
 			ng = ng * (6-i)
 		end
-		state.numGroups, state.nextGroup, state.bestGroup, state.bestScore = ng, 0, false, -1e12
+		state.numGroups, state.nextGroup, state.bestGroup, state.bestScore, self.transferGroup = ng, 0, false, -1e12, nil
 		state.numFutures, state.htag, state.itag = 0, ht, it
+		if os and os.itag == state.itag and os.bestGroup then
+			state.zeroGroup = os.bestGroup
+		else
+			state.zeroGroup = Board_GetZeroGroup()
+		end
 		return true
 	end
 	function Tact:IsRunning()
 		if state and not state.finished then
-			return true, state.nextGroup, state.numGroups, state.numFutures, not not state.bestGroup
+			return true, state.nextGroup, state.numGroups, state.numFutures, state.bestGroup
 		elseif state and GetGroupTags() == state.htag then
 			return false, true, not not state.bestGroup
 		else
@@ -355,23 +344,17 @@ local Tact = {} do
 	end
 	function Tact:Interrupt()
 		if state and state.bestGroup then
-			return GetShuffleGroup(state.bestGroup)
+			return U.GetShuffleGroup(state.pool, state.bestGroup)
 		end
 	end
-	function Tact:TransferHint(g)
+	function Tact:GetBest(g)
 		if state and state.bestGroup and state.bestSim then
-			SetSimResultHint(g or GetShuffleGroup(state.bestGroup), state.bestSim, state.bestMiss)
+			g = g or U.GetShuffleGroup(state.pool, state.bestGroup)
+			self.transferGroup = state.bestGroup
+			return g, state.bestSim
 		end
 	end
-	function Tact:CheckBoard(later)
-		if later then
-			if not Tact.pendingBoardCheck then
-				C_Timer.After(0, Tact.CheckBoard)
-			end
-			Tact.pendingBoardCheck = true
-			return
-		end
-		Tact.pendingBoardCheck = nil
+	function Tact:CheckBoard()
 		if state and not state.finished and state.itag ~= select(2, GetGroupTags()) then
 			state = nil
 		end
@@ -398,7 +381,7 @@ local function GetIncomingAAMask(slot, bm)
 
 	local board = U.GetMaskBoard(bm)
 	if slot < 5 then
-		for _,v in pairs(GetMissionEnemies(mid)) do
+		for _,v in pairs((GetMissionEnemies(mid, true))) do
 			local i = v.boardIndex
 			local aa = T.KnownSpells[v.auto]
 			if aa and VS.GetTargets(i, aa.t, board)[1] == slot then
@@ -430,7 +413,7 @@ local function Puck_OnEnter(self)
 	local bi, bm = self.boardIndex, GenBoardMask()
 	local info, acs = self.info
 	if bi > 4 then
-		for _,v in pairs(GetMissionEnemies(mid)) do
+		for _,v in pairs((GetMissionEnemies(mid, true))) do
 			if v.boardIndex == bi then
 				info, acs = v, {currentHealth=v.health, maxHealth=v.maxHealth, attack=v.attack}
 				break
@@ -505,7 +488,7 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 	else
 		GameTooltip:SetText(hprefix .. (sim.won and L"Victorious" or L"Defeated"), 1,1,1)
 	end
-	BoardEX:SetSimResult(sim)
+	Board_SetSimResult(sim)
 
 	if incompleteModel then
 		GameTooltip:AddLine(L"Not all abilities have been taken into account.", 0.9,0.25,0.15)
@@ -615,7 +598,7 @@ local function Predictor_OnUpdate(self, elapsed)
 	local rcd, isDone = (self.rsCooldown or 0) - elapsed, CAG:Run()
 	if isDone then
 		self:SetScript("OnUpdate", nil)
-		BoardEX:SetSimResult((CAG:GetResult()))
+		Board_SetSimResult((CAG:GetResult()))
 	end
 	if (rcd < 0 or isDone) and GameTooltip:IsOwned(self) then
 		Predictor_ShowResult(self, CAG:GetResult())
@@ -638,9 +621,16 @@ local function Predictor_OnLeave(self)
 		GameTooltip:Hide()
 	end
 end
+local function Tact_ScheduledBoardCheck()
+	Tact.pendingBoardCheck = nil
+	return Tact:CheckBoard()
+end
 local function MissionGroup_OnUpdate()
 	if MissionGroup_HoldUpdate == GetTime() then return end
-	Tact:CheckBoard(true)
+	if not Tact.pendingBoardCheck then
+		Tact.pendingBoardCheck = 1
+		C_Timer.After(0, Tact_ScheduledBoardCheck)
+	end
 	local o = GameTooltip:IsVisible() and GameTooltip:GetOwner() or GetMouseFocus()
 	if o and not o:IsForbidden() and o.GetScript then
 		local l, p, t = 3, o, CovenantMissionFrame.MissionTab.MissionPage.Board
@@ -653,7 +643,7 @@ local function MissionGroup_OnUpdate()
 	end
 	FollowerList:SyncToBoard()
 	Predictor_DoStart(CAGHost, 1)
-	BoardEX:SetSimResult((CAG:GetResult()))
+	Board_SetSimResult((CAG:GetResult()))
 end
 local function MissionRewards_OnShow(self)
 	local MP = CovenantMissionFrame.MissionTab.MissionPage
@@ -662,16 +652,16 @@ local function MissionRewards_OnShow(self)
 	MP.Stage.Title:SetText(mi and mi.name or "")
 	self.Rewards:SetRewards(mi and mi.xp, mi and mi.rewards)
 	self.Duration:SetText(d and L"Duration:" .. " |cffffffff" .. d or "")
-	local xp = mi and mi.xp or 0
+	local xpL, xp = mi and mi.xp or 0, 0
 	for i=1,mi and mi.rewards and #mi.rewards or 0 do
 		local r = mi.rewards[i]
 		if r.followerXP then
 			xp = xp + r.followerXP
 		end
 	end
-	self.xpGain = xp
+	self.xpGain, self.xpGainL = xpL+xp, xpL
 	if FollowerList then
-		FollowerList:SyncXPGain(xp)
+		FollowerList:SyncXPGain(self.xpGain)
 	end
 end
 local function HealAllButton_DoUpdate()
@@ -793,7 +783,8 @@ local function Shuffler_OnEnter(self, source)
 		local nc = NORMAL_FONT_COLOR
 		GameTooltip:AddDoubleLine(L"Futures considered:", BreakUpLargeNumbers(a3), 1,1,1, nc.r, nc.g, nc.b)
 		if a4 then
-			GameTooltip:AddLine(L"Use: Interrupt the guide's deliberations.", 0, 1, 0, 1)
+			local ex = a4 and Tact.transferGroup and a4 ~= Tact.transferGroup and "|A:flightpath:0:0|a " or ""
+			GameTooltip:AddLine(ex .. L"Use: Interrupt the guide's deliberations.", 0, 1, 0, 1)
 		end
 		sb:Activate(GameTooltip, a1, a2)
 		return
@@ -813,7 +804,8 @@ local function Shuffler_OnLeave(self)
 		GameTooltip:Hide()
 	end
 end
-local function Shuffler_AssignGroup(g)
+local function Shuffler_AssignGroup(g, sim)
+	SetSimResultHint(g, sim)
 	MissionGroup_HoldUpdate = GetTime()
 	local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
 	for i=0,4 do
@@ -832,8 +824,7 @@ local function Shuffler_OnUpdate(self)
 	if fin then
 		self:SetScript("OnUpdate", nil)
 		if g then
-			Tact:TransferHint(g)
-			Shuffler_AssignGroup(g)
+			Shuffler_AssignGroup(Tact:GetBest(g))
 			Shuffler_OnLeave(self)
 			return
 		end
@@ -847,17 +838,51 @@ local function Shuffler_OnClick(self)
 	if ir then
 		local g = hg and Tact:Interrupt()
 		if g then
-			Tact:TransferHint(g)
-			Shuffler_AssignGroup(g)
+			Shuffler_AssignGroup(Tact:GetBest(g))
 		end
-	elseif Tact:Start() then
-		self:SetScript("OnUpdate", Shuffler_OnUpdate)
-		Shuffler_OnUpdate(self)
+	else
+		if Tact:Start() then
+			self:SetScript("OnUpdate", Shuffler_OnUpdate)
+			Shuffler_OnUpdate(self)
+		end
 	end
 	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
 end
 local function Shuffler_OnHide()
 	Tact:Reset()
+end
+local function Hinter_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+	GameTooltip:SetText(ITEM_QUALITY_COLORS[5].hex .. L"Cursed Adventuring Log")
+	GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1,1)
+	GameTooltip:AddLine(L"Use: Remember the adventuring parties that have succeeded here in the past.", 0, 1, 0, 1)
+	GameTooltip:AddLine(L'"Some of the entires do not appear to be written by your hand."', 1, 0.835, 0.09, 1)
+	GameTooltip:Show()
+end
+local function Hinter_OnClick(self)
+	local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
+	local mid = mi.missionID
+	local ga = U.GetSuggestedGroups(mid, 8, 3, mi.offerEndTime)
+	if ga and #ga.ord > 0 then
+		if GameTooltip:IsOwned(self) then GameTooltip:Hide() end
+		local gl, sl = T.CreateObject("GroupList")
+		U.FlushMissionPredictionQueue()
+		sl:Acquire(self, nil, 24, nil, true)
+		sl:SetGroups(mid, mi.offerEndTime, ga)
+		gl:SetPoint("BOTTOM", self, "TOP", 32, 0)
+		gl:SetFrameLevel(2000)
+	else
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+		GameTooltip:SetText(ITEM_QUALITY_COLORS[5].hex .. L"Cursed Adventuring Log")
+		GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1,1)
+		GameTooltip:AddLine(L"The log appears to contain nothing useful at the moment.", 1, 0, 0, 1)
+		GameTooltip:Show()
+	end
+end
+local function Hinter_OnUpdate(self)
+	if U.RunMissionPredictionQueue(5) then
+		self:SetScript("OnUpdate", nil)
+	end
 end
 local function HookOnShow(f, h)
 	f:HookScript("OnShow", h)
@@ -889,9 +914,15 @@ function EV:I_ADVENTURES_UI_LOADED()
 	CAGHost:SetScript("OnEnter", Predictor_OnEnter)
 	CAGHost:SetScript("OnLeave", Predictor_OnLeave)
 	CAGHost:SetScript("OnClick", Predictor_OnClick)
+	local cal = T.CreateObject("CommonHoverTooltip", T.CreateObject("IconButton", MP.Board, 32, "Interface/Icons/INV_Archaeology_80_Witch_Book"))
+	cal:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	cal:SetPoint("BOTTOMLEFT", CAGHost, "BOTTOMRIGHT", 4, -1)
+	cal:SetScript("OnEnter", Hinter_OnEnter)
+	cal:SetScript("OnClick", Hinter_OnClick)
+	function EV.I_MPQ_ITEM_ADDED() cal:SetScript("OnUpdate", Hinter_OnUpdate) end
 	local cat = T.CreateObject("IconButton", MP.Board, 32, "Interface/Icons/INV_Misc_Book_06")
 	cat:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	cat:SetPoint("TOPLEFT", CAGHost, "TOPRIGHT", 4, 0)
+	cat:SetPoint("TOPLEFT", CAGHost, "TOPRIGHT", 4, 1)
 	cat:SetScript("OnEnter", Shuffler_OnEnter)
 	cat:SetScript("OnLeave", Shuffler_OnLeave)
 	cat:SetScript("OnClick", Shuffler_OnClick)

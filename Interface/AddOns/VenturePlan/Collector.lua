@@ -1,5 +1,5 @@
 local _, T = ...
-local EV = T.Evie
+local EV, U = T.Evie, T.Util
 
 local function GetCompletedMissionInfo(mid)
 	local ma = C_Garrison.GetCompleteMissions(123)
@@ -124,7 +124,7 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 		s.previewMask, s.schoolMask, s.icon, s.spellTutorialFlag = nil
 	end
 	
-	local fm, mi = {}, GetCompletedMissionInfo(mid)
+	local fm, fb, mi = {}, {}, GetCompletedMissionInfo(mid)
 	for i=1,#mi.followers do
 		local fid = mi.followers[i]
 		local mci = C_Garrison.GetFollowerMissionCompleteInfo(fid)
@@ -138,6 +138,10 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 			boardIndex=mci.boardIndex, health=stat.currentHealth, maxHealth=stat.maxHealth, attack=stat.attack,
 			spells=spa, auto=aa and aa.autoCombatSpellID
 		}
+		fb[1+mci.boardIndex] = C_Garrison.GetFollowerInfo(fid).garrFollowerID
+	end
+	if cr.winner then
+		U.SaveMissionGroup(mid, unpack(fb,1,5))
 	end
 	cr.followers = fm
 	cr.missionScalar = mi.missionScalar

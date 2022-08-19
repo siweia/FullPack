@@ -1906,7 +1906,7 @@ function VS:New(team, encounters, envSpell, _mid, mscalar, forkLimit)
 		board=board, turn=0, queue=q, sq={}, sqh=1, sqt=0,
 		liveFriends=nf, liveEnemies=#encounters, over=nf == 0,
 		checkpoints={}, boardOrder=boardOrder, bom={[-1]=14},
-		res={min={}, max={}, hadWins=false, hadLosses=false, hadDrops=false, isFinished=false, n=0},
+		res={min={}, max={}, hadWins=false, hadLosses=false, hadDrops=false, isFinished=false, hadMissingSpells=missingSpells and true or nil, n=0},
 		pmask=pmask,
 		forkLimit=forkLimit,
 	}, VSIm)
