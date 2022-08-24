@@ -1,22 +1,22 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.2.30](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.30) (2022-08-16)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.29...9.2.30) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.2.31](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.31) (2022-08-23)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.30...9.2.31) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- bump tocs, prepare tag  
-- TOC bumps  
-- Fix typo  
-- Eranog Drycode  
-- Fixed a bug where blood barrier had wrong spellid/name  
-- small timer tweak  
+- Slip a world boss tweak in there as well  
+- prep new retail tag  
+- Update affixes with week 4 ability rotation/timers  
+- Small bug  
+- Kurog drycode. One of worst ones I ever had to do. bosses shouldn't have this many spells.  
+- Cleanup lots of unused in Sepulcher  
+    Fixed invalid option bug on Eranog  
+    Updated templates a little for WIP drycodes  
+    Added 1 M+ affix  
+- support more than 1 Nathrezim Infiltrator at a time for timers  
+- How did these not push earlier?  
 - Fix lua error  
-- More aggressive filtering and throttling for guild boss engage/defeat syncs in classic wow  
-- Update guardian to post hotfix affix behavior (which is actually quite a bit worse than pre hotfix, it's now possible to do entire fight without even seeing it 🤷‍♂️)  
-- Just don't do a stage 2 timer for affix on sylvanas, it's not reliable. post hotfix it's even less accurate somehow (despite blizzards attempt to make it more accurate).  
-    Fixed a bug causing first one of stage 3 not to show (I forgot to type it into table)  
-- German localization for Core  
-- German localization for GUI  
-- Fix another typo  
-- Fix typo  
-- slight timer tweak  
+- Fix core not swapping specs when using dual spec in wrath classic  
+- Improve robustness of DBM in event libraries are missing. More change needed in hudmap but for most part this should make DBM not fail as hard if libs are missing due to improper install  
+- Add Strunraan stub  
+- Fully update Sepulcher affix timers  
 - bump alpha  
