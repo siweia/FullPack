@@ -169,8 +169,7 @@ L["STRING_CUSTOM_TARGET_DESC"] = [=[Эта цель источник.
 
 Кнопка справа показывает список нипов из сражений в рейде.]=]
 L["STRING_CUSTOM_TEMPORARILY"] = "(|cFFFFC000временно|r)"
---[[Translation missing --]]
---[[ L["STRING_CUSTOM_TEXTURE_GUIDE"] = ""--]] 
+L["STRING_CUSTOM_TEXTURE_GUIDE"] = "Чтобы загрузить файл текстуры в клиент World of Warcraft, вам нужен файл в формате .TGA, а также его ширина и высота должны быть кратны 8. Поместите текстуру в папку /место установленного клиента WoW/retail/Interface/"
 L["STRING_DAMAGE"] = "Урон"
 L["STRING_DAMAGE_DPS_IN"] = "Урон, полученный от "
 L["STRING_DAMAGE_FROM"] = "Получил урон от"
