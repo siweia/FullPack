@@ -50,11 +50,19 @@ local function hackBagID(button)
 	return button.bagID
 end
 
+if not BagSlotButton_OnEnter then
+	function BagSlotButton_OnEnter(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetInventoryItem("player", self:GetID())
+		GameTooltip:Show()
+	end
+end
+
 local buttonNum = 0
 function BagButton:Create(bagID)
 	buttonNum = buttonNum+1
 	local name = addon.."BagButton"..buttonNum
-	local isBankBag = (bagID>=5 and bagID<=11)
+	local isBankBag = NDui[4].isNewPatch and bagID > 5 and bagID < 13 or (bagID>=5 and bagID<=11)
 	local button = setmetatable(CreateFrame("ItemButton", name, nil, "BackdropTemplate"), self.__index)
 
 	local invID = (isBankBag and bagID-4) or ContainerIDToInventoryID(bagID)
@@ -95,7 +103,7 @@ function BagButton:Update()
 		end
 	end
 
-	if(self.OnUpdate) then self:OnUpdate() end
+	if(self.OnUpdateButton) then self:OnUpdateButton() end
 end
 
 local function highlight(button, func, bagID)

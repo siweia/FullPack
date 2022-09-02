@@ -384,10 +384,19 @@ function module:GetEmptySlot(name)
 		if slotID then
 			return -1, slotID
 		end
-		for bagID = 5, 11 do
-			local slotID = module:GetContainerEmptySlot(bagID)
-			if slotID then
-				return bagID, slotID
+		if DB.isNewPatch then
+			for bagID = 6, 12 do
+				local slotID = module:GetContainerEmptySlot(bagID)
+				if slotID then
+					return bagID, slotID
+				end
+			end
+		else
+			for bagID = 5, 11 do
+				local slotID = module:GetContainerEmptySlot(bagID)
+				if slotID then
+					return bagID, slotID
+				end
 			end
 		end
 	elseif name == "Reagent" then
@@ -857,8 +866,8 @@ function module:OnLogin()
 	MyButton:Scaffold("Default")
 
 	function MyButton:OnCreate()
-		self:SetNormalTexture(nil)
-		self:SetPushedTexture(nil)
+		self:SetNormalTexture("")
+		self:SetPushedTexture(DB.blankTex)
 		self:SetHighlightTexture(DB.bdTex)
 		self:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
 		self:GetHighlightTexture():SetInside()
@@ -958,7 +967,7 @@ function module:OnLogin()
 		end
 	end
 
-	function MyButton:OnUpdate(item)
+	function MyButton:OnUpdateButton(item)
 		if self.JunkIcon then
 			if (MerchantFrame:IsShown() or customJunkEnable) and (item.quality == LE_ITEM_QUALITY_POOR or NDuiADB["CustomJunkList"][item.id]) and item.hasPrice then
 				self.JunkIcon:Show()
@@ -1149,7 +1158,7 @@ function module:OnLogin()
 		buttons[1] = module.CreateCloseButton(self, f)
 		buttons[2] = module.CreateSortButton(self, name)
 		if name == "Bag" then
-			module.CreateBagBar(self, settings, 4)
+			module.CreateBagBar(self, settings, 5)
 			buttons[3] = module.CreateBagToggle(self)
 			buttons[4] = module.CreateSplitButton(self)
 			buttons[5] = module.CreateFavouriteButton(self)
@@ -1209,8 +1218,8 @@ function module:OnLogin()
 
 	local BagButton = Backpack:GetClass("BagButton", true, "BagButton")
 	function BagButton:OnCreate()
-		self:SetNormalTexture(nil)
-		self:SetPushedTexture(nil)
+		self:SetNormalTexture(DB.blankTex)
+		self:SetPushedTexture(DB.blankTex)
 		self:SetHighlightTexture(DB.bdTex)
 		self:GetHighlightTexture():SetVertexColor(1, 1, 1, .25)
 		self:GetHighlightTexture():SetInside()
@@ -1221,7 +1230,7 @@ function module:OnLogin()
 		self.Icon:SetTexCoord(unpack(DB.TexCoord))
 	end
 
-	function BagButton:OnUpdate()
+	function BagButton:OnUpdateButton()
 		self:SetBackdropBorderColor(0, 0, 0)
 
 		local id = GetInventoryItemID("player", (self.GetInventorySlot and self:GetInventorySlot()) or self.invID)
@@ -1283,4 +1292,9 @@ function module:OnLogin()
 	end
 	local shiftUpdater = CreateFrame("Frame", nil, f.main)
 	shiftUpdater:SetScript("OnUpdate", onUpdate)
+
+	if DB.isNewPatch then
+		MicroButtonAndBagsBar:Hide()
+		MicroButtonAndBagsBar:UnregisterAllEvents()
+	end
 end

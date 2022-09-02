@@ -6,6 +6,7 @@ local _G = _G
 local type, pairs, tonumber, wipe, next, select, unpack = type, pairs, tonumber, table.wipe, next, select, unpack
 local strmatch, gmatch, strfind, format, gsub = string.match, string.gmatch, string.find, string.format, string.gsub
 local min, max, floor, rad = math.min, math.max, math.floor, math.rad
+local CreateColor = CreateColor
 
 -- Math
 do
@@ -84,7 +85,7 @@ do
 				self.timer:SetText(text)
 			else
 				self:SetScript("OnUpdate", nil)
-				self.timer:SetText(nil)
+				self.timer:SetText("")
 			end
 			self.elapsed = 0
 		end
@@ -388,6 +389,7 @@ do
 	end
 
 	function B:HideOption()
+		if not self then return end -- isNewPatch
 		self:SetAlpha(0)
 		self:SetScale(.0001)
 	end
@@ -537,7 +539,11 @@ do
 
 		local tex = self:CreateTexture(nil, "BACKGROUND")
 		tex:SetTexture(DB.bdTex)
-		tex:SetGradientAlpha(orientation, r, g, b, a1, r, g, b, a2)
+		if DB.isNewPatch then
+			tex:SetGradient(orientation, CreateColor(r, g, b, a1), CreateColor(r, g, b, a2))
+		else
+			tex:SetGradientAlpha(orientation, r, g, b, a1, r, g, b, a2)
+		end
 		if width then tex:SetWidth(width) end
 		if height then tex:SetHeight(height) end
 
@@ -605,6 +611,7 @@ do
 		if not a then tinsert(C.frames, self) end
 	end
 
+	local gradientFrom, gradientTo = CreateColor(0, 0, 0, .5), CreateColor(.3, .3, .3, .3)
 	function B:CreateGradient()
 		local tex = self:CreateTexture(nil, "BORDER")
 		tex:SetInside()
@@ -612,7 +619,11 @@ do
 		if C.db["Skins"]["FlatMode"] then
 			tex:SetVertexColor(.3, .3, .3, .25)
 		else
-			tex:SetGradientAlpha("Vertical", 0, 0, 0, .5, .3, .3, .3, .3)
+			if DB.isNewPatch then
+				tex:SetGradient("Vertical", gradientFrom, gradientTo)
+			else
+				tex:SetGradientAlpha("Vertical", 0, 0, 0, .5, .3, .3, .3, .3)
+			end
 		end
 
 		return tex
@@ -877,10 +888,10 @@ do
 		"Center",
 	}
 	function B:Reskin(noHighlight, override)
-		if self.SetNormalTexture and not override then self:SetNormalTexture("") end
-		if self.SetHighlightTexture then self:SetHighlightTexture("") end
-		if self.SetPushedTexture then self:SetPushedTexture("") end
-		if self.SetDisabledTexture then self:SetDisabledTexture("") end
+		if self.SetNormalTexture and not override then self:SetNormalTexture(DB.blankTex) end
+		if self.SetHighlightTexture then self:SetHighlightTexture(DB.blankTex) end
+		if self.SetPushedTexture then self:SetPushedTexture(DB.blankTex) end
+		if self.SetDisabledTexture then self:SetDisabledTexture(DB.blankTex) end
 
 		local buttonName = self.GetName and self:GetName()
 		for _, region in pairs(blizzRegions) do
@@ -1011,7 +1022,7 @@ do
 		local thumb = self:GetThumb()
 		if thumb then
 			B.StripTextures(thumb, 0)
-			B.CreateBDFrame(thumb, 0, true):SetBackdropColor(cr, cg, cb, .75)
+			B.CreateBDFrame(thumb, 0):SetBackdropColor(cr, cg, cb, .25)
 		end
 	end
 
@@ -1183,8 +1194,8 @@ do
 
 	-- Handle checkbox and radio
 	function B:ReskinCheck(forceSaturation)
-		self:SetNormalTexture("")
-		self:SetPushedTexture("")
+		self:SetNormalTexture(DB.blankTex)
+		self:SetPushedTexture(DB.blankTex)
 
 		local bg = B.CreateBDFrame(self, 0, true)
 		bg:SetInside(self, 4, 4)
@@ -1236,7 +1247,7 @@ do
 
 	-- Handle slider
 	function B:ReskinSlider(vertical)
-		self:SetBackdrop(nil)
+		if self.SetBackdrop then self:SetBackdrop(nil) end -- isNewPatch
 		B.StripTextures(self)
 
 		local bg = B.CreateBDFrame(self, 0, true)
@@ -1272,7 +1283,7 @@ do
 	local function resetCollapseTexture(self, texture)
 		if self.settingTexture then return end
 		self.settingTexture = true
-		self:SetNormalTexture("")
+		self:SetNormalTexture(DB.blankTex)
 
 		if texture and texture ~= "" then
 			if strfind(texture, "Plus") or strfind(texture, "Closed") then
@@ -1288,8 +1299,9 @@ do
 	end
 
 	function B:ReskinCollapse(isAtlas)
-		self:SetHighlightTexture("")
-		self:SetPushedTexture("")
+		self:SetNormalTexture(DB.blankTex)
+		self:SetHighlightTexture(DB.blankTex)
+		self:SetPushedTexture(DB.blankTex)
 
 		local bg = B.CreateBDFrame(self, .25, true)
 		bg:ClearAllPoints()
@@ -1413,8 +1425,11 @@ do
 
 	function B:StyleSearchButton()
 		B.StripTextures(self)
-		if self.icon then B.ReskinIcon(self.icon) end
 		B.CreateBDFrame(self, .25)
+		local icon = self.icon or self.Icon
+		if icon then
+			B.ReskinIcon(icon)
+		end
 
 		self:SetHighlightTexture(DB.bdTex)
 		local hl = self:GetHighlightTexture()
@@ -1522,7 +1537,7 @@ do
 	end
 
 	function B:CreateCheckBox()
-		local cb = CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
+		local cb = CreateFrame("CheckButton", nil, self, "InterfaceOptionsBaseCheckButtonTemplate")
 		cb:SetScript("OnClick", nil) -- reset onclick handler
 		B.ReskinCheck(cb)
 

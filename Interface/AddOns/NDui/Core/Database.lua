@@ -9,7 +9,7 @@ DB.Version = GetAddOnMetadata("NDui", "Version")
 DB.Support = GetAddOnMetadata("NDui", "X-Support")
 DB.Client = GetLocale()
 DB.ScreenWidth, DB.ScreenHeight = GetPhysicalScreenSize()
-DB.isNewPatch = select(4, GetBuildInfo()) >= 90207 -- 9.2.7
+DB.isNewPatch = select(4, GetBuildInfo()) >= 100000 -- 10.0
 
 -- Deprecated
 LE_ITEM_QUALITY_POOR = Enum.ItemQuality.Poor
@@ -65,6 +65,7 @@ DB.NDuiString = "|cff0080ffNDui:|r"
 -- Textures
 local Media = "Interface\\Addons\\NDui\\Media\\"
 DB.bdTex = "Interface\\ChatFrame\\ChatFrameBackground"
+DB.blankTex = Media.."blankTex"
 DB.glowTex = Media.."glowTex"
 DB.normTex = Media.."normTex"
 DB.gradTex = Media.."gradTex"

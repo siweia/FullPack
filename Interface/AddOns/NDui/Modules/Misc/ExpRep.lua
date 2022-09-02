@@ -252,6 +252,10 @@ function M:Expbar()
 	bar.restBar = rest
 
 	M:SetupScript(bar)
+
+	if DB.isNewPatch then
+		StatusTrackingBarManager:UnregisterAllEvents()
+	end
 end
 M:RegisterMisc("ExpRep", M.Expbar)
 
@@ -285,6 +289,7 @@ function M:HookParagonRep()
 end
 
 function M:ParagonReputationSetup()
+	if DB.isNewPatch then return end -- todo
 	if not C.db["Misc"]["ParagonRep"] then return end
 	hooksecurefunc("ReputationFrame_Update", M.HookParagonRep)
 end
