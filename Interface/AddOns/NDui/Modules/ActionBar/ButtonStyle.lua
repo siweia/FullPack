@@ -7,6 +7,7 @@ local Bar = B:GetModule("Actionbar")
 local _G = getfenv(0)
 local pairs, gsub, unpack = pairs, gsub, unpack
 local IsEquippedAction = IsEquippedAction
+local NUM_STANCE_SLOTS = NUM_STANCE_SLOTS or 10
 
 local function CallButtonFunctionByName(button, func, ...)
 	if button and func and button[func] then
@@ -178,6 +179,9 @@ function Bar:HookHotKey(button)
 	if button.UpdateHotkeys then
 		hooksecurefunc(button, "UpdateHotkeys", Bar.UpdateHotKey)
 	end
+	if DB.isNewPatch and button.SetHotkeys then
+		hooksecurefunc(button, "SetHotkeys", Bar.UpdateHotKey)
+	end
 end
 
 function Bar:UpdateEquipItemColor()
@@ -226,6 +230,10 @@ function Bar:StyleActionButton(button, cfg)
 	--hide stuff
 	if floatingBG then floatingBG:Hide() end
 	if NewActionTexture then NewActionTexture:SetTexture(nil) end
+	if button.SlotArt then button.SlotArt:Hide() end
+	if button.RightDivider then button.RightDivider:Hide() end
+	if button.SlotBackground then button.SlotBackground:Hide() end
+	if button.IconMask then button.IconMask:Hide() end
 
 	--backdrop
 	SetupBackdrop(icon)
@@ -375,9 +383,13 @@ function Bar:StyleAllActionButtons(cfg)
 	--extra action button
 	Bar:StyleExtraActionButton(cfg)
 	--spell flyout
-	SpellFlyoutBackgroundEnd:SetTexture(nil)
-	SpellFlyoutHorizontalBackground:SetTexture(nil)
-	SpellFlyoutVerticalBackground:SetTexture(nil)
+	if DB.isNewPatch then
+		-- todo
+	else
+		SpellFlyoutBackgroundEnd:SetTexture(nil)
+		SpellFlyoutHorizontalBackground:SetTexture(nil)
+		SpellFlyoutVerticalBackground:SetTexture(nil)
+	end
 	local function checkForFlyoutButtons()
 		local i = 1
 		local button = _G["SpellFlyoutButton"..i]
@@ -420,14 +432,14 @@ function Bar:ReskinBars()
 			},
 		},
 		checkedTexture = {
-			file = "",
+			file = DB.blankTex,
 			points = {
 				{"TOPLEFT", C.mult, -C.mult},
 				{"BOTTOMRIGHT", -C.mult, C.mult},
 			},
 		},
 		highlightTexture = {
-			file = "",
+			file = DB.blankTex,
 			points = {
 				{"TOPLEFT", C.mult, -C.mult},
 				{"BOTTOMRIGHT", -C.mult, C.mult},
@@ -465,7 +477,9 @@ function Bar:ReskinBars()
 	Bar:StyleAllActionButtons(cfg)
 
 	-- Update hotkeys
-	hooksecurefunc("PetActionButton_SetHotkeys", Bar.UpdateHotKey)
+	if not DB.isNewPatch then
+		hooksecurefunc("PetActionButton_SetHotkeys", Bar.UpdateHotKey)
+	end
 	Bar:UpdateStanceHotKey()
 	B:RegisterEvent("UPDATE_BINDINGS", Bar.UpdateStanceHotKey)
 end
