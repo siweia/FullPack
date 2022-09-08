@@ -1,24 +1,19 @@
 # BagSync
 
-## [v16.7](https://github.com/Xruptor/BagSync/tree/v16.7) (2022-06-02)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v16.6...v16.7) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v16.8](https://github.com/Xruptor/BagSync/tree/v16.8) (2022-09-08)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v16.7...v16.8) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Updated the zhTW localization.  Special thanks to BlueNightSky from GitHub.  
-    Updated the zhCN localization.  Special thanks to 枫聖 (nanjuekaien1) from GitHub,  
-- Merge pull request #171 from BlueNightSky/patch-1  
-    Update zhTW.lua  
-- Update zhTW.lua  
-- Merge branch 'master' of https://github.com/Xruptor/BagSync  
-- Merge pull request #170 from nanjuekaien1/patch-14  
-    Update zhCN.lua  
-- Update zhCN.lua  
-- Merge branch 'master' of https://github.com/Xruptor/BagSync  
-- Merge pull request #169 from nanjuekaien1/patch-13  
-    Update zhCN.lua  
-- Updated Libraries that BagSync uses.  
-- Update zhCN.lua  
-- Merge pull request #167 from nanjuekaien1/patch-12  
-    Update zhCN.lua  
-- Update zhCN.lua  
-- Updated the new Debug option to make it a bit clearer.  
-    Added more information to display in tooltip with the new Debug option.  
+- Updated TOC to latest version.  
+    Updated TBC to Wrath Classic (thanks to nanjuekaien1)  
+    deDe local rework thanks to DlargeX  
+- Merge pull request #176 from nanjuekaien1/patch-15  
+    Update core.lua  
+- Merge pull request #175 from DlargeX/master  
+    deDe local rework  
+- Update release.yml  
+- Update BagSync.toc  
+- Update core.lua  
+- Update deDE.lua  
+- Update deDE.lua  
+- Update deDE.lua  
+- Update deDE.lua  
