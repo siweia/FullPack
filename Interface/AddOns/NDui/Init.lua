@@ -118,7 +118,7 @@ local function IncorrectExpansion() -- left it for the future
 end
 
 B:RegisterEvent("PLAYER_LOGIN", function()
-	if DB.isNewPatch then
+	if DB.isNewPatch and not DB.isDeveloper then
 		C.db["Bags"]["Enable"] = false -- todo: why the fuck it taints?
 	end
 
@@ -137,6 +137,8 @@ B:RegisterEvent("PLAYER_LOGIN", function()
 	end
 
 	B.Modules = modules
+
+	if B.InitCallback then B:InitCallback() end
 end)
 
 _G[addonName] = ns

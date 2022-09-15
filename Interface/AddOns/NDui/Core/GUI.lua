@@ -150,7 +150,7 @@ G.DefaultSettings = {
 		SMRGroups = 6,
 		SMRDirec = 1,
 		InstanceAuras = true,
-		DispellOnly = false,
+		DispellType = 1,
 		RaidDebuffScale = 1,
 		SpecRaidPos = false,
 		RaidHealthColor = 1,
@@ -159,7 +159,7 @@ G.DefaultSettings = {
 		RaidHeight = 32,
 		RaidPowerHeight = 2,
 		RaidHPMode = 1,
-		AurasClickThrough = false,
+		AuraClickThru = false,
 		CombatText = true,
 		HotsDots = true,
 		AutoAttack = true,
@@ -216,6 +216,7 @@ G.DefaultSettings = {
 		HideTip = false,
 		DescRole = true,
 		PlayerAbsorb = false,
+		AutoBuffs = false,
 
 		PlayerWidth = 245,
 		PlayerHeight = 24,
@@ -463,7 +464,6 @@ G.DefaultSettings = {
 		ConduitInfo = true,
 		HideAllID = false,
 		MythicScore = true,
-		DomiRank = true,
 	},
 	Misc = {
 		Mail = true,
@@ -532,7 +532,6 @@ G.AccountSettings = {
 	ChatFilterList = "%*",
 	ChatFilterWhiteList = "",
 	TimestampFormat = 4,
-	NameplateFilter = {[1]={}, [2]={}},
 	RaidDebuffs = {},
 	Changelog = {},
 	totalGold = {},
@@ -549,8 +548,6 @@ G.AccountSettings = {
 	DBMRequest = false,
 	SkadaRequest = false,
 	BWRequest = false,
-	RaidAuraWatch = {},
-	RaidClickSets = {}, -- deprecated
 	ClickSets = {},
 	TexStyle = 2,
 	KeystoneInfo = {},
@@ -568,6 +565,10 @@ G.AccountSettings = {
 	SmoothAmount = .25,
 	AutoRecycle = true,
 	IgnoredButtons = "",
+	RaidBuffsWhite = {},
+	RaidDebuffsBlack = {},
+	NameplateWhite = {},
+	NameplateBlack = {},
 }
 
 -- Initial settings
@@ -616,6 +617,29 @@ loader:RegisterEvent("ADDON_LOADED")
 loader:SetScript("OnEvent", function(self, _, addon)
 	if addon ~= "NDui" then return end
 
+	-- Transfer old data START
+	if NDuiADB["NameplateFilter"] then
+		if NDuiADB["NameplateFilter"][1] then
+			if not NDuiADB["NameplateWhite"] then NDuiADB["NameplateWhite"] = {} end
+			for spellID, value in pairs(NDuiADB["NameplateFilter"][1]) do
+				NDuiADB["NameplateWhite"][spellID] = value
+			end
+		end
+		if NDuiADB["NameplateFilter"][2] then
+			if not NDuiADB["NameplateBlack"] then NDuiADB["NameplateBlack"] = {} end
+			for spellID, value in pairs(NDuiADB["NameplateFilter"][2]) do
+				NDuiADB["NameplateBlack"][spellID] = value
+			end
+		end
+	end
+	if NDuiADB["RaidAuraWatch"] then
+		if not NDuiADB["RaidBuffsWhite"] then NDuiADB["RaidBuffsWhite"] = {} end
+		for spellID in pairs(NDuiADB["RaidAuraWatch"]) do
+			NDuiADB["RaidBuffsWhite"][spellID] = true
+		end
+	end
+	-- Transfer old data END
+
 	InitialSettings(G.AccountSettings, NDuiADB)
 	if not next(NDuiPDB) then
 		for i = 1, 5 do NDuiPDB[i] = {} end
@@ -634,29 +658,6 @@ loader:SetScript("OnEvent", function(self, _, addon)
 	else
 		C.db = NDuiPDB[NDuiADB["ProfileIndex"][DB.MyFullName] - 1]
 	end
-	-- Transfer old data START
-	if C.db["Bags"] and C.db["Bags"]["FavouriteItems"] and next(C.db["Bags"]["FavouriteItems"]) then
-		for itemID in pairs(C.db["Bags"]["FavouriteItems"]) do
-			if not C.db["Bags"]["CustomItems"] then
-				C.db["Bags"]["CustomItems"] = {}
-			end
-			C.db["Bags"]["CustomItems"][itemID] = 1
-		end
-		C.db["Bags"]["FavouriteItems"] = nil
-	end
-	if C.db["Nameplate"] and C.db["Nameplate"]["UnitList"] then
-		if not C.db["Nameplate"]["CustomUnits"] then
-			C.db["Nameplate"]["CustomUnits"] = {}
-		end
-		B.SplitList(C.db["Nameplate"]["CustomUnits"], C.db["Nameplate"]["UnitList"])
-	end
-	if C.db["Nameplate"] and C.db["Nameplate"]["ColorDots"] then
-		if not C.db["Nameplate"]["DotSpells"] then
-			C.db["Nameplate"]["DotSpells"] = {}
-		end
-		B.SplitList(C.db["Nameplate"]["DotSpells"], C.db["Nameplate"]["ColorDots"])
-	end
-	-- Transfer old data END
 	InitialSettings(G.DefaultSettings, C.db, true)
 
 	B:SetupUIScale(true)
@@ -721,8 +722,16 @@ local function setupClickCast()
 	G:SetupClickCast(guiPage[4])
 end
 
-local function setupBuffIndicator()
-	G:SetupBuffIndicator(guiPage[4])
+local function setupDebuffsIndicator()
+	G:SetupDebuffsIndicator(guiPage[4])
+end
+
+local function setupBuffsIndicator()
+	G:SetupBuffsIndicator(guiPage[4])
+end
+
+local function setupSpellsIndicator()
+	G:SetupSpellsIndicator(guiPage[4])
 end
 
 local function setupPartyWatcher()
@@ -937,14 +946,6 @@ local function updateRaidTextScale()
 	B:GetModule("UnitFrames"):UpdateRaidTextScale()
 end
 
-local function refreshRaidFrameIcons()
-	B:GetModule("UnitFrames"):RefreshRaidFrameIcons()
-end
-
-local function updateRaidAuras()
-	B:GetModule("UnitFrames"):UpdateRaidAuras()
-end
-
 local function updateRaidHealthMethod()
 	B:GetModule("UnitFrames"):UpdateRaidHealthMethod()
 end
@@ -984,6 +985,10 @@ end
 
 local function updateScrollingFont()
 	B:GetModule("UnitFrames"):UpdateScrollingFont()
+end
+
+local function updateRaidAurasOptions()
+	B:GetModule("UnitFrames"):RaidAuras_UpdateOptions()
 end
 
 local function updateMinimapScale()
@@ -1191,21 +1196,21 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "UFs", "PWOnRight", L["PartyWatcherOnRight"].."*", nil, nil, updatePartyElements},
 		{1, "UFs", "PartyWatcherSync", L["PartyWatcherSync"], true, nil, nil, L["PartyWatcherSyncTip"]},
 		{},--blank
-		{1, "UFs", "ShowRaidDebuff", L["ShowRaidDebuff"].."*", nil, nil, updateRaidAuras, L["ShowRaidDebuffTip"]},
-		{1, "UFs", "ShowRaidBuff", L["ShowRaidBuff"].."*", true, nil, updateRaidAuras, L["ShowRaidBuffTip"]},
-		{1, "UFs", "DebuffClickThru", L["DebuffClickThru"].."*", nil, nil, updateRaidAuras, L["ClickThroughTip"]},
-		{1, "UFs", "BuffClickThru", L["BuffClickThru"].."*", true, nil, updateRaidAuras, L["ClickThroughTip"]},
-		{3, "UFs", "RaidDebuffSize", L["RaidDebuffSize"].."*", nil, {5, 30, 1}, updateRaidAuras},
-		{3, "UFs", "RaidBuffSize", L["RaidBuffSize"].."*", true, {5, 30, 1}, updateRaidAuras},
+		{1, "UFs", "ShowRaidDebuff", NewTag..L["ShowRaidDebuff"].."*", nil, setupDebuffsIndicator, updateRaidAurasOptions, L["ShowRaidDebuffTip"]},
+		{1, "UFs", "ShowRaidBuff", NewTag..L["ShowRaidBuff"].."*", true, setupBuffsIndicator, updateRaidAurasOptions, L["ShowRaidBuffTip"]},
+		{1, "UFs", "DebuffClickThru", L["DebuffClickThru"].."*", nil, nil, updateRaidAurasOptions, L["ClickThroughTip"]},
+		{1, "UFs", "BuffClickThru", L["BuffClickThru"].."*", true, nil, updateRaidAurasOptions, L["ClickThroughTip"]},
+		{3, "UFs", "RaidDebuffSize", L["RaidDebuffSize"].."*", nil, {5, 30, 1}, updateRaidAurasOptions},
+		{3, "UFs", "RaidBuffSize", L["RaidBuffSize"].."*", true, {5, 30, 1}, updateRaidAurasOptions},
 		{},--blank
-		{1, "UFs", "RaidBuffIndicator", HeaderTag..L["RaidBuffIndicator"], nil, setupBuffIndicator, nil, L["RaidBuffIndicatorTip"]},
-		{4, "UFs", "BuffIndicatorType", L["BuffIndicatorType"].."*", nil, {L["BI_Blocks"], L["BI_Icons"], L["BI_Numbers"]}, refreshRaidFrameIcons},
-		{3, "UFs", "BuffIndicatorScale", L["BuffIndicatorScale"].."*", true, {.8, 2, .1}, refreshRaidFrameIcons},
+		{1, "UFs", "RaidBuffIndicator", HeaderTag..L["RaidBuffIndicator"].."*", nil, setupSpellsIndicator, updateRaidAurasOptions, L["RaidBuffIndicatorTip"]},
+		{4, "UFs", "BuffIndicatorType", L["BuffIndicatorType"].."*", nil, {L["BI_Blocks"], L["BI_Icons"], L["BI_Numbers"]}, updateRaidAurasOptions},
+		{3, "UFs", "BuffIndicatorScale", L["BuffIndicatorScale"].."*", true, {.8, 2, .1}, updateRaidAurasOptions},
 		{},--blank
-		{1, "UFs", "InstanceAuras", HeaderTag..L["Instance Auras"], nil, setupRaidDebuffs, nil, L["InstanceAurasTip"]},
-		{1, "UFs", "DispellOnly", L["DispellableOnly"].."*", nil, nil, nil, L["DispellableOnlyTip"]},
-		{1, "UFs", "AurasClickThrough", L["RaidAuras ClickThrough"], nil, nil, nil, L["ClickThroughTip"]},
-		{3, "UFs", "RaidDebuffScale", L["RaidDebuffScale"].."*", true, {.8, 2, .1}, refreshRaidFrameIcons},
+		{1, "UFs", "InstanceAuras", HeaderTag..L["Instance Auras"].."*", nil, setupRaidDebuffs, updateRaidAurasOptions, L["InstanceAurasTip"]},
+		{1, "UFs", "AuraClickThru", L["RaidAuras ClickThrough"].."*", true, nil, updateRaidAurasOptions, L["ClickThroughTip"]},
+		{4, "UFs", "DispellType", L["Dispellable"].."*", nil, {L["Always"], L["Filter"], DISABLE}, updateRaidAurasOptions, L["DispellTypeTip"]},
+		{3, "UFs", "RaidDebuffScale", L["RaidDebuffScale"].."*", true, {.8, 2, .1}, updateRaidAurasOptions},
 		{},--blank
 		{1, "UFs", "RaidClickSets", HeaderTag..L["Enable ClickSets"], nil, setupClickCast},
 		{1, "UFs", "AutoRes", HeaderTag..L["UFs AutoRes"], true},
@@ -1428,8 +1433,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Tooltip", "MythicScore", L["MDScore"].."*", nil, nil, nil, L["MDScoreTip"]},
 		{1, "Tooltip", "HideAllID", "|cffff0000"..L["HideAllID"], true},
 		{},--blank
-		{1, "Tooltip", "DomiRank", L["DomiRank"], nil, nil, nil, L["DomiRankTip"]},
-		{1, "Tooltip", "ConduitInfo", L["Show ConduitInfo"], true},
+		{1, "Tooltip", "ConduitInfo", L["Show ConduitInfo"]},
 		{},--blank
 		{1, "Tooltip", "AzeriteArmor", HeaderTag..L["Show AzeriteArmor"]},
 		{1, "Tooltip", "OnlyArmorIcons", L["Armor icons only"].."*", true},

@@ -893,7 +893,7 @@ function module:OnLogin()
 		self.Favourite:SetSize(30, 30)
 		self.Favourite:SetPoint("TOPLEFT", -12, 9)
 
-		self.Quest = B.CreateFS(self, 30, "!", "system", "LEFT", 3, 0)
+		self.QuestTag = B.CreateFS(self, 30, "!", "system", "LEFT", 3, 0)
 		self.iLvl = B.CreateFS(self, C.db["Bags"]["FontSize"], "", false, "BOTTOMLEFT", 1, 2)
 
 		if showNewItem then
@@ -1053,9 +1053,9 @@ function module:OnLogin()
 
 	function MyButton:OnUpdateQuest(item)
 		if item.questID and not item.questActive then
-			self.Quest:Show()
+			self.QuestTag:Show()
 		else
-			self.Quest:Hide()
+			self.QuestTag:Hide()
 		end
 
 		if item.questID or item.isQuestItem then
@@ -1168,7 +1168,7 @@ function module:OnLogin()
 		buttons[1] = module.CreateCloseButton(self, f)
 		buttons[2] = module.CreateSortButton(self, name)
 		if name == "Bag" then
-			module.CreateBagBar(self, settings, 5)
+			module.CreateBagBar(self, settings, DB.isNewPatch and 5 or 4)
 			buttons[3] = module.CreateBagToggle(self)
 			buttons[4] = module.CreateSplitButton(self)
 			buttons[5] = module.CreateFavouriteButton(self)
@@ -1274,7 +1274,7 @@ function module:OnLogin()
 
 	-- Update infobar slots
 	local INFO = B:GetModule("Infobar")
-	if INFO.modules then
+	if INFO and INFO.modules then
 		for _, info in pairs(INFO.modules) do
 			if info.name == "Gold" then
 				Backpack.OnOpen = function()

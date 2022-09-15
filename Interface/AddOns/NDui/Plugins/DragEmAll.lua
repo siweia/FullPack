@@ -13,7 +13,6 @@ local frames = {
 
 	-- Blizz Frames
 	["AddonList"] = false,
-	["AudioOptionsFrame"] = false,
 	["ChannelFrame"] = false,
 	["ChatConfigFrame"] = false,
 	["DressUpFrame"] = false,
@@ -22,31 +21,37 @@ local frames = {
 	["GuildInviteFrame"] = false,
 	["GuildRegistrarFrame"] = false,
 	["HelpFrame"] = false,
-	["InterfaceOptionsFrame"] = false,
 	["ItemTextFrame"] = false,
 	["LootFrame"] = false,
 	["MailFrame"] = false,
 	["MerchantFrame"] = false,
 	["ModelPreviewFrame"] = false,
 	["OpenMailFrame"] = false,
-	["PaperDollFrame"] = true,
+	--["PaperDollFrame"] = true,
 	["PetitionFrame"] = false,
 	["PetStableFrame"] = false,
 	["PVEFrame"] = false,
 	["QuestFrame"] = false,
 	["RaidParentFrame"] = false,
-	["ReputationFrame"] = true,
+	--["ReputationFrame"] = true,
 	["SendMailFrame"] = true,
 	["SpellBookFrame"] = false,
 	["SplashFrame"] = false,
 	["StackSplitFrame"] = false,
 	["TabardFrame"] = false,
 	["TaxiFrame"] = false,
-	["TokenFrame"] = true,
+	--["TokenFrame"] = true,
 	["TradeFrame"] = false,
 	["TutorialFrame"] = false,
-	["VideoOptionsFrame"] = false,
 }
+if DB.isNewPatch then
+	frames["SettingsPanel"] = false
+	frames["ProfessionsFrame"] = false
+else
+	frames["AudioOptionsFrame"] = false
+	frames["InterfaceOptionsFrame"] = false
+	frames["VideoOptionsFrame"] = false
+end
 
 -- Frame Existing Check
 local function IsFrameExists()

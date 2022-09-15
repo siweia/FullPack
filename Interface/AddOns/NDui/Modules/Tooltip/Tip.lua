@@ -491,7 +491,6 @@ function TT:OnLogin()
 	TT:TargetedInfo()
 	TT:AzeriteArmor()
 	TT:ConduitCollectionData()
-	TT:DominationRank()
 	B:RegisterEvent("MODIFIER_STATE_CHANGED", TT.ResetUnit)
 end
 
@@ -547,6 +546,11 @@ TT:RegisterTooltips("NDui", function()
 	}
 	for _, f in pairs(tooltips) do
 		f:HookScript("OnShow", TT.ReskinTooltip)
+	end
+
+	if SettingsTooltip then -- isNewPatch
+		TT.ReskinTooltip(SettingsTooltip)
+		SettingsTooltip:SetScale(UIParent:GetScale())
 	end
 
 	-- DropdownMenu

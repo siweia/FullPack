@@ -448,21 +448,6 @@ function G:SetupClickCast(parent)
 	for fullkey, value in pairs(NDuiADB["ClickSets"][DB.MyClass]) do
 		createBar(scroll.child, fullkey, value)
 	end
-
-	if next(NDuiADB["RaidClickSets"][DB.MyClass]) then
-		local oldTip = B.CreateButton(panel, 35, 35, true, 134400)
-		oldTip:SetPoint("TOPRIGHT", -10, -10)
-		oldTip:SetScript("OnEnter", function(self)
-			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-			GameTooltip:ClearLines()
-			GameTooltip:AddLine("Old data:")
-			for fullkey, v in pairs(NDuiADB["RaidClickSets"][DB.MyClass]) do
-				GameTooltip:AddDoubleLine(fullkey, v[3])
-			end
-			GameTooltip:Show()
-		end)
-		oldTip:SetScript("OnLeave", B.HideTooltip)
-	end
 end
 
 local function updatePartyWatcherSpells()
@@ -636,10 +621,18 @@ function G:SetupNameplateFilter(parent)
 		B.AddTooltip(icon, "ANCHOR_RIGHT", spellID)
 		close:SetScript("OnClick", function()
 			bar:Hide()
-			if (index == 1 and C.WhiteList[spellID]) or (index == 2 and C.BlackList[spellID]) then
-				NDuiADB["NameplateFilter"][index][spellID] = false
-			else
-				NDuiADB["NameplateFilter"][index][spellID] = nil
+			if index == 1 then
+				if C.WhiteList[spellID] then
+					NDuiADB["NameplateWhite"][spellID] = false
+				else
+					NDuiADB["NameplateWhite"][spellID] = nil
+				end
+			elseif index == 2 then
+				if C.BlackList[spellID] then
+					NDuiADB["NameplateBlack"][spellID] = false
+				else
+					NDuiADB["NameplateBlack"][spellID] = nil
+				end
 			end
 			frameData[index].barList[spellID] = nil
 			sortBars(frameData[index].barList)
@@ -654,7 +647,8 @@ function G:SetupNameplateFilter(parent)
 	end
 
 	local function isAuraExisted(index, spellID)
-		local modValue = NDuiADB["NameplateFilter"][index][spellID]
+		local key = index == 1 and "NameplateWhite" or "NameplateBlack"
+		local modValue = NDuiADB[key][spellID]
 		local locValue = (index == 1 and C.WhiteList[spellID]) or (index == 2 and C.BlackList[spellID])
 		return modValue or (modValue == nil and locValue)
 	end
@@ -664,7 +658,8 @@ function G:SetupNameplateFilter(parent)
 		if not spellID or not GetSpellInfo(spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Incorrect SpellID"]) return end
 		if isAuraExisted(index, spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
 
-		NDuiADB["NameplateFilter"][index][spellID] = true
+		local key = index == 1 and "NameplateWhite" or "NameplateBlack"
+		NDuiADB[key][spellID] = true
 		createBar(parent.child, index, spellID)
 		parent.box:SetText("")
 	end
@@ -677,7 +672,8 @@ function G:SetupNameplateFilter(parent)
 		button1 = YES,
 		button2 = NO,
 		OnAccept = function()
-			wipe(NDuiADB["NameplateFilter"][filterIndex])
+			local key = filterIndex == 1 and "NameplateWhite" or "NameplateBlack"
+			wipe(NDuiADB[key])
 			ReloadUI()
 		end,
 		whileDead = 1,
@@ -708,7 +704,8 @@ function G:SetupNameplateFilter(parent)
 			StaticPopup_Show("RESET_NDUI_NAMEPLATEFILTER")
 		end)
 
-		for spellID, value in pairs(UF.NameplateFilter[index]) do
+		local key = index == 1 and "NameplateWhite" or "NameplateBlack"
+		for spellID, value in pairs(UF[key]) do
 			if value then
 				createBar(scroll.child, index, spellID)
 			end
@@ -720,18 +717,16 @@ local function updateCornerSpells()
 	B:GetModule("UnitFrames"):UpdateCornerSpells()
 end
 
-function G:SetupBuffIndicator(parent)
-	local guiName = "NDuiGUI_BuffIndicator"
+function G:SetupSpellsIndicator(parent)
+	local guiName = "NDuiGUI_SpellsIndicator"
 	toggleExtraGUI(guiName)
 	if extraGUIs[guiName] then return end
 
-	local panel = createExtraGUI(parent, guiName)
+	local panel = createExtraGUI(parent, guiName, L["BuffIndicator"].."*")
 	panel:SetScript("OnHide", updateCornerSpells)
 
-	local frameData = {
-		[1] = {text = L["RaidBuffWatch"].."*", offset = -25, width = 160, barList = {}},
-		[2] = {text = L["BuffIndicator"].."*", offset = -315, width = 50, barList = {}},
-	}
+	local barList = {}
+
 	local decodeAnchor = {
 		["TL"] = "TOPLEFT",
 		["T"] = "TOP",
@@ -744,29 +739,25 @@ function G:SetupBuffIndicator(parent)
 	}
 	local anchors = {"TL", "T", "TR", "L", "R", "BL", "B", "BR"}
 
-	local function createBar(parent, index, spellID, anchor, r, g, b, showAll)
+	local function createBar(parent, spellID, anchor, r, g, b, showAll)
 		local name, _, texture = GetSpellInfo(spellID)
 		local bar = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 		bar:SetSize(220, 30)
 		B.CreateBD(bar, .25)
-		frameData[index].barList[spellID] = bar
+		barList[spellID] = bar
 
 		local icon, close = G:CreateBarWidgets(bar, texture)
 		B.AddTooltip(icon, "ANCHOR_RIGHT", spellID)
 		close:SetScript("OnClick", function()
 			bar:Hide()
-			if index == 1 then
-				NDuiADB["RaidAuraWatch"][spellID] = nil
+			local value = C.CornerBuffs[DB.MyClass][spellID]
+			if value then
+				NDuiADB["CornerSpells"][DB.MyClass][spellID] = {}
 			else
-				local value = C.CornerBuffs[DB.MyClass][spellID]
-				if value then
-					NDuiADB["CornerSpells"][DB.MyClass][spellID] = {}
-				else
-					NDuiADB["CornerSpells"][DB.MyClass][spellID] = nil
-				end
+				NDuiADB["CornerSpells"][DB.MyClass][spellID] = nil
 			end
-			frameData[index].barList[spellID] = nil
-			sortBars(frameData[index].barList)
+			barList[spellID] = nil
+			sortBars(barList)
 		end)
 
 		name = L[anchor] or name
@@ -776,39 +767,29 @@ function G:SetupBuffIndicator(parent)
 		if anchor then text:SetTextColor(r, g, b) end
 		if showAll then B.CreateFS(bar, 14, "ALL", false, "RIGHT", -30, 0) end
 
-		sortBars(frameData[index].barList)
+		sortBars(barList)
 	end
 
-	local function addClick(parent, index)
+	local function addClick(parent)
 		local spellID = tonumber(parent.box:GetText())
 		if not spellID or not GetSpellInfo(spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Incorrect SpellID"]) return end
 		local anchor, r, g, b, showAll
-		if index == 1 then
-			if NDuiADB["RaidAuraWatch"][spellID] then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
-			NDuiADB["RaidAuraWatch"][spellID] = true
-		else
-			anchor, r, g, b = parent.dd.Text:GetText(), parent.swatch.tex:GetColor()
-			showAll = parent.showAll:GetChecked() or nil
-			local modValue = NDuiADB["CornerSpells"][DB.MyClass][spellID]
-			if (modValue and next(modValue)) or (C.CornerBuffs[DB.MyClass][spellID] and not modValue) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
-			anchor = decodeAnchor[anchor]
-			NDuiADB["CornerSpells"][DB.MyClass][spellID] = {anchor, {r, g, b}, showAll}
-		end
-		createBar(parent.child, index, spellID, anchor, r, g, b, showAll)
+		anchor, r, g, b = parent.dd.Text:GetText(), parent.swatch.tex:GetColor()
+		showAll = parent.showAll:GetChecked() or nil
+		local modValue = NDuiADB["CornerSpells"][DB.MyClass][spellID]
+		if (modValue and next(modValue)) or (C.CornerBuffs[DB.MyClass][spellID] and not modValue) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
+		anchor = decodeAnchor[anchor]
+		NDuiADB["CornerSpells"][DB.MyClass][spellID] = {anchor, {r, g, b}, showAll}
+		createBar(parent.child, spellID, anchor, r, g, b, showAll)
 		parent.box:SetText("")
 	end
 
-	local currentIndex
-	StaticPopupDialogs["RESET_NDUI_RaidAuraWatch"] = {
+	StaticPopupDialogs["RESET_NDUI_RaidBuffsWhite"] = {
 		text = L["Reset to default list"],
 		button1 = YES,
 		button2 = NO,
 		OnAccept = function()
-			if currentIndex == 1 then
-				NDuiADB["RaidAuraWatch"] = nil
-			else
-				wipe(NDuiADB["CornerSpells"][DB.MyClass])
-			end
+			wipe(NDuiADB["CornerSpells"][DB.MyClass])
 			ReloadUI()
 		end,
 		whileDead = 1,
@@ -821,64 +802,263 @@ function G:SetupBuffIndicator(parent)
 		GameTooltip:Show()
 	end
 
+	local frame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
+	frame:SetSize(280, 540)
+	frame:SetPoint("TOPLEFT", 10, -50)
+	B.CreateBD(frame, .25)
+
+	local scroll = G:CreateScroll(frame, 240, 485)
+	scroll.box = B.CreateEditBox(frame, 50, 25)
+	scroll.box:SetPoint("TOPLEFT", 10, -10)
+	scroll.box:SetMaxLetters(6)
+	B.AddTooltip(scroll.box, "ANCHOR_TOPRIGHT", L["ID Intro"], "info", true)
+
+	scroll.add = B.CreateButton(frame, 45, 25, ADD)
+	scroll.add:SetPoint("TOPRIGHT", -8, -10)
+	scroll.add:SetScript("OnClick", function()
+		addClick(scroll)
+	end)
+
+	scroll.reset = B.CreateButton(frame, 45, 25, RESET)
+	scroll.reset:SetPoint("RIGHT", scroll.add, "LEFT", -5, 0)
+	scroll.reset:SetScript("OnClick", function()
+		StaticPopup_Show("RESET_NDUI_RaidBuffsWhite")
+	end)
+
+	scroll.dd = B.CreateDropDown(frame, 60, 25, anchors)
+	scroll.dd:SetPoint("TOPLEFT", 10, -10)
+	scroll.dd.options[1]:Click()
+
+	for i = 1, 8 do
+		scroll.dd.options[i]:HookScript("OnEnter", optionOnEnter)
+		scroll.dd.options[i]:HookScript("OnLeave", B.HideTooltip)
+	end
+	scroll.box:SetPoint("TOPLEFT", scroll.dd, "TOPRIGHT", 5, 0)
+
+	local swatch = B.CreateColorSwatch(frame)
+	swatch:SetPoint("LEFT", scroll.box, "RIGHT", 5, 0)
+	scroll.swatch = swatch
+
+	local showAll = B.CreateCheckBox(frame)
+	showAll:SetPoint("LEFT", swatch, "RIGHT", 2, 0)
+	showAll:SetHitRectInsets(0, 0, 0, 0)
+	showAll.bg:SetBackdropBorderColor(1, .8, 0, .5)
+	B.AddTooltip(showAll, "ANCHOR_TOPRIGHT", L["ShowAllTip"], "info", true)
+	scroll.showAll = showAll
+
 	local UF = B:GetModule("UnitFrames")
+	for spellID, value in pairs(UF.CornerSpells) do
+		local r, g, b = unpack(value[2])
+		createBar(scroll.child, spellID, value[1], r, g, b, value[3])
+	end
+end
 
-	for index, value in ipairs(frameData) do
-		B.CreateFS(panel, 14, value.text, "system", "TOPLEFT", 20, value.offset)
+local function refreshBuffsIndicator()
+	B:GetModule("UnitFrames"):UpdateRaidBuffsWhite()
+end
 
-		local frame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
-		frame:SetSize(280, 250)
-		frame:SetPoint("TOPLEFT", 10, value.offset - 25)
-		B.CreateBD(frame, .25)
+function G:SetupBuffsIndicator(parent)
+	local guiName = "NDuiGUI_BuffsIndicator"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
 
-		local scroll = G:CreateScroll(frame, 240, 200)
-		scroll.box = B.CreateEditBox(frame, value.width, 25)
-		scroll.box:SetPoint("TOPLEFT", 10, -10)
-		scroll.box:SetMaxLetters(6)
-		B.AddTooltip(scroll.box, "ANCHOR_TOPRIGHT", L["ID Intro"], "info", true)
+	local panel = createExtraGUI(parent, guiName, L["WhiteList"].."*")
+	panel:SetScript("OnHide", refreshBuffsIndicator)
 
-		scroll.add = B.CreateButton(frame, 45, 25, ADD)
-		scroll.add:SetPoint("TOPRIGHT", -8, -10)
-		scroll.add:SetScript("OnClick", function()
-			addClick(scroll, index)
+	local barList = {}
+
+	local function createBar(parent, spellID, isNew)
+		local name, _, texture = GetSpellInfo(spellID)
+		local bar = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+		bar:SetSize(220, 30)
+		B.CreateBD(bar, .25)
+		barList[spellID] = bar
+
+		local icon, close = G:CreateBarWidgets(bar, texture)
+		B.AddTooltip(icon, "ANCHOR_RIGHT", spellID)
+		close:SetScript("OnClick", function()
+			bar:Hide()
+			if C.RaidBuffsWhite[spellID] then
+				NDuiADB["RaidBuffsWhite"][spellID] = false
+			else
+				NDuiADB["RaidBuffsWhite"][spellID] = nil
+			end
+			barList[spellID] = nil
+			sortBars(barList)
 		end)
 
-		scroll.reset = B.CreateButton(frame, 45, 25, RESET)
-		scroll.reset:SetPoint("RIGHT", scroll.add, "LEFT", -5, 0)
-		scroll.reset:SetScript("OnClick", function()
-			currentIndex = index
-			StaticPopup_Show("RESET_NDUI_RaidAuraWatch")
+		local spellName = B.CreateFS(bar, 14, name, false, "LEFT", 30, 0)
+		spellName:SetWidth(180)
+		spellName:SetJustifyH("LEFT")
+		if isNew then spellName:SetTextColor(0, 1, 0) end
+
+		sortBars(barList)
+	end
+
+	local function isAuraExisted(spellID)
+		local modValue = NDuiADB["RaidBuffsWhite"][spellID]
+		local locValue = C.RaidBuffsWhite[spellID]
+		return modValue or (modValue == nil and locValue)
+	end
+
+	local function addClick(parent)
+		local spellID = tonumber(parent.box:GetText())
+		if not spellID or not GetSpellInfo(spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Incorrect SpellID"]) return end
+		if isAuraExisted(spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
+
+		NDuiADB["RaidBuffsWhite"][spellID] = true
+		createBar(parent.child, spellID, true)
+		parent.box:SetText("")
+	end
+
+	StaticPopupDialogs["RESET_NDUI_BUFFS_WHITE"] = {
+		text = L["Reset to default list"],
+		button1 = YES,
+		button2 = NO,
+		OnAccept = function()
+			wipe(NDuiADB["RaidBuffsWhite"])
+			ReloadUI()
+		end,
+		whileDead = 1,
+	}
+
+	local frame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
+	frame:SetSize(280, 540)
+	frame:SetPoint("TOPLEFT", 10, -50)
+	B.CreateBD(frame, .25)
+
+	local scroll = G:CreateScroll(frame, 240, 485)
+	scroll.box = B.CreateEditBox(frame, 160, 25)
+	scroll.box:SetPoint("TOPLEFT", 10, -10)
+	B.AddTooltip(scroll.box, "ANCHOR_TOPRIGHT", L["ID Intro"], "info", true)
+
+	scroll.add = B.CreateButton(frame, 45, 25, ADD)
+	scroll.add:SetPoint("TOPRIGHT", -8, -10)
+	scroll.add:SetScript("OnClick", function()
+		addClick(scroll)
+	end)
+
+	scroll.reset = B.CreateButton(frame, 45, 25, RESET)
+	scroll.reset:SetPoint("RIGHT", scroll.add, "LEFT", -5, 0)
+	scroll.reset:SetScript("OnClick", function()
+		StaticPopup_Show("RESET_NDUI_BUFFS_WHITE")
+	end)
+
+	local UF = B:GetModule("UnitFrames")
+	for spellID, value in pairs(UF.RaidBuffsWhite) do
+		if value then
+			createBar(scroll.child, spellID)
+		end
+	end
+
+	local box = B.CreateCheckBox(frame)
+	box:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, 5)
+	box:SetChecked(C.db["UFs"]["AutoBuffs"])
+	box:SetHitRectInsets(-50, 0, 0, 0)
+	box:SetScript("OnClick", function()
+		C.db["UFs"]["AutoBuffs"] = box:GetChecked()
+	end)
+	local text = B.CreateFS(box, 24, "|cffff0000???")
+	text:ClearAllPoints()
+	text:SetPoint("RIGHT", box, "LEFT")
+	B.AddTooltip(box, "ANCHOR_TOPRIGHT", L["AutoBuffsTip"], "info", true)
+end
+
+local function refreshDebuffsIndicator()
+	B:GetModule("UnitFrames"):UpdateRaidDebuffsBlack()
+end
+
+function G:SetupDebuffsIndicator(parent)
+	local guiName = "NDuiGUI_DebuffsIndicator"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, L["BlackList"].."*")
+	panel:SetScript("OnHide", refreshDebuffsIndicator)
+
+	local barList = {}
+
+	local function createBar(parent, spellID, isNew)
+		local name, _, texture = GetSpellInfo(spellID)
+		local bar = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+		bar:SetSize(220, 30)
+		B.CreateBD(bar, .25)
+		barList[spellID] = bar
+
+		local icon, close = G:CreateBarWidgets(bar, texture)
+		B.AddTooltip(icon, "ANCHOR_RIGHT", spellID)
+		close:SetScript("OnClick", function()
+			bar:Hide()
+			if C.RaidDebuffsBlack[spellID] then
+				NDuiADB["RaidDebuffsBlack"][spellID] = false
+			else
+				NDuiADB["RaidDebuffsBlack"][spellID] = nil
+			end
+			barList[spellID] = nil
+			sortBars(barList)
 		end)
-		if index == 1 then
-			for spellID in pairs(NDuiADB["RaidAuraWatch"]) do
-				createBar(scroll.child, index, spellID)
-			end
-		else
-			scroll.dd = B.CreateDropDown(frame, 60, 25, anchors)
-			scroll.dd:SetPoint("TOPLEFT", 10, -10)
-			scroll.dd.options[1]:Click()
 
-			for i = 1, 8 do
-				scroll.dd.options[i]:HookScript("OnEnter", optionOnEnter)
-				scroll.dd.options[i]:HookScript("OnLeave", B.HideTooltip)
-			end
-			scroll.box:SetPoint("TOPLEFT", scroll.dd, "TOPRIGHT", 5, 0)
+		local spellName = B.CreateFS(bar, 14, name, false, "LEFT", 30, 0)
+		spellName:SetWidth(180)
+		spellName:SetJustifyH("LEFT")
+		if isNew then spellName:SetTextColor(0, 1, 0) end
 
-			local swatch = B.CreateColorSwatch(frame)
-			swatch:SetPoint("LEFT", scroll.box, "RIGHT", 5, 0)
-			scroll.swatch = swatch
+		sortBars(barList)
+	end
 
-			local showAll = B.CreateCheckBox(frame)
-			showAll:SetPoint("LEFT", swatch, "RIGHT", 2, 0)
-			showAll:SetHitRectInsets(0, 0, 0, 0)
-			showAll.bg:SetBackdropBorderColor(1, .8, 0, .5)
-			B.AddTooltip(showAll, "ANCHOR_TOPRIGHT", L["ShowAllTip"], "info", true)
-			scroll.showAll = showAll
+	local function isAuraExisted(spellID)
+		local modValue = NDuiADB["RaidDebuffsBlack"][spellID]
+		local locValue = C.RaidDebuffsBlack[spellID]
+		return modValue or (modValue == nil and locValue)
+	end
 
-			for spellID, value in pairs(UF.CornerSpells) do
-				local r, g, b = unpack(value[2])
-				createBar(scroll.child, index, spellID, value[1], r, g, b, value[3])
-			end
+	local function addClick(parent)
+		local spellID = tonumber(parent.box:GetText())
+		if not spellID or not GetSpellInfo(spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Incorrect SpellID"]) return end
+		if isAuraExisted(spellID) then UIErrorsFrame:AddMessage(DB.InfoColor..L["Existing ID"]) return end
+
+		NDuiADB["RaidDebuffsBlack"][spellID] = true
+		createBar(parent.child, spellID, true)
+		parent.box:SetText("")
+	end
+
+	StaticPopupDialogs["RESET_NDUI_DEBUFFS_BLACK"] = {
+		text = L["Reset to default list"],
+		button1 = YES,
+		button2 = NO,
+		OnAccept = function()
+			wipe(NDuiADB["RaidDebuffsBlack"])
+			ReloadUI()
+		end,
+		whileDead = 1,
+	}
+
+	local frame = CreateFrame("Frame", nil, panel, "BackdropTemplate")
+	frame:SetSize(280, 540)
+	frame:SetPoint("TOPLEFT", 10, -50)
+	B.CreateBD(frame, .25)
+
+	local scroll = G:CreateScroll(frame, 240, 485)
+	scroll.box = B.CreateEditBox(frame, 160, 25)
+	scroll.box:SetPoint("TOPLEFT", 10, -10)
+	B.AddTooltip(scroll.box, "ANCHOR_TOPRIGHT", L["ID Intro"], "info", true)
+
+	scroll.add = B.CreateButton(frame, 45, 25, ADD)
+	scroll.add:SetPoint("TOPRIGHT", -8, -10)
+	scroll.add:SetScript("OnClick", function()
+		addClick(scroll)
+	end)
+
+	scroll.reset = B.CreateButton(frame, 45, 25, RESET)
+	scroll.reset:SetPoint("RIGHT", scroll.add, "LEFT", -5, 0)
+	scroll.reset:SetScript("OnClick", function()
+		StaticPopup_Show("RESET_NDUI_DEBUFFS_BLACK")
+	end)
+
+	local UF = B:GetModule("UnitFrames")
+	for spellID, value in pairs(UF.RaidDebuffsBlack) do
+		if value then
+			createBar(scroll.child, spellID)
 		end
 	end
 end
@@ -890,10 +1070,7 @@ local function createOptionTitle(parent, title, offset)
 end
 
 local function toggleOptionCheck(self)
-	local value = C.db[self.__key][self.__value]
-	value = not value
-	self:SetChecked(value)
-	C.db[self.__key][self.__value] = value
+	C.db[self.__key][self.__value] = self:GetChecked()
 	if self.__callback then self:__callback() end
 end
 
@@ -1172,8 +1349,6 @@ function G:SetupSimpleRaidFrame(parent)
 				frame:SetSize(frameWidth, frameHeight)
 				frame.Health:SetHeight(healthHeight)
 				frame.Power:SetHeight(powerHeight)
-				frame.Auras.size = 18*scale/10
-				UF:UpdateAuraContainer(frame, frame.Auras, 1)
 				UF.UpdateRaidNameAnchor(frame, frame.nameText)
 			end
 		end

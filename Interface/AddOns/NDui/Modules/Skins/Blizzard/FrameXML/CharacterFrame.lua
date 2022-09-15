@@ -87,7 +87,7 @@ tinsert(C.defaultThemes, function()
 	local function UpdateHighlight(self)
 		local highlight = self:GetHighlightTexture()
 		highlight:SetColorTexture(1, 1, 1, .25)
-		highlight:SetInside()
+		highlight:SetInside(self.bg)
 	end
 
 	local function UpdateCosmetic(self)
@@ -271,17 +271,27 @@ tinsert(C.defaultThemes, function()
 	-- TitlePane
 	if DB.isNewPatch then
 		B.ReskinTrimScroll(PaperDollFrame.TitleManagerPane.ScrollBar)
-	end
 
-	local titles = false
-	hooksecurefunc("PaperDollTitlesPane_Update", function()
-		if titles == false then
-			for i = 1, 17 do
-				_G["PaperDollTitlesPaneButton"..i]:DisableDrawLayer("BACKGROUND")
+		hooksecurefunc(PaperDollFrame.TitleManagerPane.ScrollBox, "Update", function(self)
+			for i = 1, self.ScrollTarget:GetNumChildren() do
+				local child = select(i, self.ScrollTarget:GetChildren())
+				if not child.styled then
+					child:DisableDrawLayer("BACKGROUND")
+					child.styled = true
+				end
 			end
-			titles = true
-		end
-	end)
+		end)
+	else
+		local titles = false
+		hooksecurefunc("PaperDollTitlesPane_Update", function()
+			if titles == false then
+				for i = 1, 17 do
+					_G["PaperDollTitlesPaneButton"..i]:DisableDrawLayer("BACKGROUND")
+				end
+				titles = true
+			end
+		end)
+	end
 
 	-- Reputation Frame
 	ReputationDetailCorner:Hide()

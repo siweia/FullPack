@@ -750,8 +750,10 @@ do
 		local color = DB.QualityColors[quality or 1]
 		self.__owner.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 	end
+
+	local greyRGB = DB.QualityColors[0].r
 	local function updateIconBorderColor(self, r, g, b)
-		if not r or (r==.65882 and g==.65882 and b==.65882) or (r>.99 and g>.99 and b>.99) then
+		if not r or r == greyRGB or (r>.99 and g>.99 and b>.99) then
 			r, g, b = 0, 0, 0
 		end
 		self.__owner.bg:SetBackdropBorderColor(r, g, b)
@@ -998,6 +1000,7 @@ do
 
 	local function reskinTrimScrollArrow(self, direction)
 		if not self then return end
+		if not self.Texture then return end -- CovenantMissonFrame, isNewPatch
 
 		self.Texture:SetAlpha(0)
 		self.Overlay:SetAlpha(0)
@@ -1128,9 +1131,9 @@ do
 
 		self:SetDisabledTexture(DB.bdTex)
 		local dis = self:GetDisabledTexture()
-		dis:SetVertexColor(0, 0, 0, .3)
+		dis:SetVertexColor(0, 0, 0, .5)
 		dis:SetDrawLayer("OVERLAY")
-		dis:SetAllPoints()
+		dis:SetInside()
 
 		local tex = self:CreateTexture(nil, "ARTWORK")
 		tex:SetAllPoints()
@@ -1208,17 +1211,21 @@ do
 		hl:SetVertexColor(cr, cg, cb, .25)
 
 		local ch = self:GetCheckedTexture()
-		ch:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
-		ch:SetTexCoord(0, 1, 0, 1)
+		if DB.isNewPatch then
+			ch:SetAtlas("checkmark-minimal")
+		else
+			ch:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
+		end
 		ch:SetDesaturated(true)
+		ch:SetTexCoord(0, 1, 0, 1)
 		ch:SetVertexColor(cr, cg, cb)
 
 		self.forceSaturation = forceSaturation
 	end
 
 	function B:ReskinRadio()
-		self:SetNormalTexture("")
-		self:SetHighlightTexture("")
+		self:GetNormalTexture():SetAlpha(0)
+		self:GetHighlightTexture():SetAlpha(0)
 		self:SetCheckedTexture(DB.bdTex)
 
 		local ch = self:GetCheckedTexture()
