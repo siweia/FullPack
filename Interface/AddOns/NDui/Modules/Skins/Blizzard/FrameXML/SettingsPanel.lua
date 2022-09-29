@@ -14,6 +14,19 @@ tinsert(C.defaultThemes, function()
 	B.ReskinEditBox(frame.SearchBox)
 	B.Reskin(frame.ApplyButton)
 	B.Reskin(frame.CloseButton)
+	if frame.Bg then frame.Bg:Hide() end
+
+	local function resetTabAnchor(tab)
+		tab.Text:SetPoint("BOTTOM", 0, 4)
+	end
+	local function reskinSettingsTab(tab)
+		if not tab then return end
+		B.StripTextures(tab, 0)
+		resetTabAnchor(tab)
+		hooksecurefunc(tab, "OnSelected", resetTabAnchor)
+	end
+	reskinSettingsTab(frame.GameTab)
+	reskinSettingsTab(frame.AddOnsTab)
 
 	B.CreateBDFrame(frame.CategoryList, .25):SetInside()
 	hooksecurefunc(frame.CategoryList.ScrollBox, "Update", function(self)
@@ -26,6 +39,14 @@ tinsert(C.defaultThemes, function()
 					bg:SetPoint("TOPLEFT", 5, -5)
 					bg:SetPoint("BOTTOMRIGHT", -5, 0)
 				end
+
+				local toggle = child.Toggle
+				if toggle then
+					B.ReskinCollapse(toggle)
+					toggle:GetPushedTexture():SetAlpha(0)
+					toggle.bg:SetPoint("TOPLEFT", 2, -4)
+				end
+
 				child.styled = true
 			end
 		end

@@ -763,6 +763,11 @@ do
 			self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
 		end
 	end
+	local function resetIconBorder(button, quality)
+		if not quality then
+			button.IconBorder:Hide()
+		end
+	end
 	function B:ReskinIconBorder(needInit, useAtlas)
 		self:SetAlpha(0)
 		self.__owner = self:GetParent()
@@ -780,6 +785,10 @@ do
 			end
 		end
 		hooksecurefunc(self, "Hide", resetIconBorderColor)
+
+		if self.__owner.SetItemButtonQuality then
+			hooksecurefunc(self.__owner, "SetItemButtonQuality", resetIconBorder)
+		end
 	end
 
 	local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
@@ -939,6 +948,14 @@ do
 	-- Handle tabs
 	function B:ReskinTab()
 		self:DisableDrawLayer("BACKGROUND")
+		if DB.isNewPatch then
+			if self.LeftHighlight then
+				self.LeftHighlight:SetAlpha(0)
+			end
+			if self.RightHighlight then
+				self.RightHighlight:SetAlpha(0)
+			end
+		end
 
 		local bg = B.CreateBDFrame(self)
 		bg:SetPoint("TOPLEFT", 8, -3)
@@ -1294,9 +1311,9 @@ do
 		self:SetNormalTexture(DB.blankTex)
 
 		if texture and texture ~= "" then
-			if strfind(texture, "Plus") or strfind(texture, "Closed") then
+			if strfind(texture, "Plus") or strfind(texture, "[Cc]losed") then
 				self.__texture:DoCollapse(true)
-			elseif strfind(texture, "Minus") or strfind(texture, "Open") then
+			elseif strfind(texture, "Minus") or strfind(texture, "[Oo]pen") then
 				self.__texture:DoCollapse(false)
 			end
 			self.bg:Show()

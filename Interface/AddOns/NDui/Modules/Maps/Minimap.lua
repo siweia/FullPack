@@ -86,11 +86,14 @@ function module:ReskinRegions()
 		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIcon", updateMinimapButtons)
 
 		-- QueueStatus Button
+		QueueStatusButton:SetParent(Minimap)
 		QueueStatusButton:ClearAllPoints()
 		QueueStatusButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -5, -5)
-		QueueStatusButton:Hide()
-		QueueStatusButtonIcon:SetAlpha(0)
 		QueueStatusButton:SetFrameLevel(999)
+		QueueStatusButton:SetSize(33, 33)
+		QueueStatusButtonIcon:SetAlpha(0)
+		QueueStatusFrame:ClearAllPoints()
+		QueueStatusFrame:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
 	
 		local queueIcon = Minimap:CreateTexture(nil, "ARTWORK")
 		queueIcon:SetPoint("CENTER", QueueStatusButton)
@@ -215,6 +218,7 @@ function module:RecycleBin()
 		["TimeManagerClockButton"] = true,
 		["FeedbackUIButton"] = true,
 		["MiniMapBattlefieldFrame"] = true,
+		["QueueStatusButton"] = true,
 		["QueueStatusMinimapButton"] = true,
 		["GarrisonLandingPageMinimapButton"] = true,
 		["MinimapZoneTextButton"] = true,
@@ -576,6 +580,14 @@ function module:BuildMinimapDropDown()
 	dropdown.noResize = true
 	_G.UIDropDownMenu_Initialize(dropdown, _G.MiniMapTrackingDropDown_Initialize, "MENU")
 
+	if DB.isNewPatch then
+		hooksecurefunc(_G.MinimapCluster.Tracking.Button, "Update", function()
+			if _G.UIDROPDOWNMENU_OPEN_MENU == dropdown then
+				UIDropDownMenu_RefreshAll(dropdown)
+			end
+		end)
+	end
+
 	module.MinimapTracking = dropdown
 end
 
@@ -584,7 +596,7 @@ function module:Minimap_OnMouseUp(btn)
 		--if InCombatLockdown() then UIErrorsFrame:AddMessage(DB.InfoColor..ERR_NOT_IN_COMBAT) return end -- fix by LibShowUIPanel
 		ToggleCalendar()
 	elseif btn == "RightButton" then
-		ToggleDropDownMenu(1, nil, module.MinimapTracking, "cursor")
+		ToggleDropDownMenu(1, nil, module.MinimapTracking, self, -100, 100)
 	else
 		if DB.isNewPatch then
 			Minimap:OnClick()

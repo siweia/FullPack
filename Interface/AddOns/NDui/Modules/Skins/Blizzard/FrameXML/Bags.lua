@@ -2,8 +2,8 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 
 local MAX_CONTAINER_ITEMS = 36
-
 local backpackTexture = "Interface\\Buttons\\Button-Backpack-Up"
+local ContainerIDToInventoryID = DB.isNewPatch and C_Container.ContainerIDToInventoryID or ContainerIDToInventoryID
 
 local function handleMoneyFrame(frame)
 	if frame.MoneyFrame then
@@ -40,12 +40,6 @@ local function ReskinSortButton(button)
 	highlight:SetAllPoints(button)
 end
 
-local function resetIconBorder(button, quality)
-	if not quality then
-		button.IconBorder:Hide()
-	end
-end
-
 local function ReskinBagSlot(bu)
 	bu:SetNormalTexture(DB.blankTex)
 	bu:SetPushedTexture(DB.blankTex)
@@ -55,9 +49,6 @@ local function ReskinBagSlot(bu)
 	bu.icon:SetTexCoord(unpack(DB.TexCoord))
 	bu.bg = B.CreateBDFrame(bu.icon, .25)
 	B.ReskinIconBorder(bu.IconBorder)
-	if bu.SetItemButtonQuality then
-		hooksecurefunc(bu, "SetItemButtonQuality", resetIconBorder)
-	end
 
 	local questTexture = bu.IconQuestTexture
 	if questTexture then
@@ -117,7 +108,8 @@ tinsert(C.defaultThemes, function()
 			name:SetDrawLayer("OVERLAY")
 			name:ClearAllPoints()
 			name:SetPoint("TOP", 0, -10)
-			B.ReskinClose(_G[frameName.."CloseButton"])
+			B.ReskinClose(frame.CloseButton)
+			if frame.Bg then frame.Bg:Hide() end
 	
 			B.StripTextures(frame)
 			B.SetBD(frame)
@@ -155,6 +147,7 @@ tinsert(C.defaultThemes, function()
 		B.ReskinPortraitFrame(ContainerFrameCombinedBags)
 		createBagIcon(ContainerFrameCombinedBags, 1)
 		ContainerFrameCombinedBags.PortraitButton.Highlight:SetTexture("")
+		if ContainerFrameCombinedBags.Bg then ContainerFrameCombinedBags.Bg:Hide() end
 	else
 		-- [[ Bags ]]
 	
