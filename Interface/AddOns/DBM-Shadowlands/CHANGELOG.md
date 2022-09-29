@@ -1,15 +1,30 @@
 # <DBM> World Bosses (Shadowlands)
 
-## [9.2.34](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.34) (2022-09-15)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.33...9.2.34) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [9.2.35](https://github.com/DeadlyBossMods/DBM-Retail/tree/9.2.35) (2022-09-29)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/9.2.34...9.2.35) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new tags for wrath classic and retail Retail: Mostly Affix updates Wrath: more TBC fixes fo stuff pre patch broke  
-- Push rest of event affix timer changes + weekly affix timer updates  
-- Few affix timmer udpates  
-    This isn't done, have a lot more updates, but wanted to push some of them out now before bed.  
-- Terros drycode  
-- Always unschedule on encounter end (even if not initialized yet), to avoid reporting failed detection on early wipes/resets Closes #807  
-- Update castle nathria affixes timer data.  
-- Revert "Apparently arc counting is hard. Every single phase change announce ever put in DBM core, is using wrong arg for sound version"  
-- Weekly Kurog update it seems  
+- prep some new tags  
+- while at it, update affixes with this weeks data too and finally prune that unused affix from mod.  
+- Added last weeks affix data, which got lost in all the other stuff to do.  
+- Push redesigned Eranog update. Fun to have to redo half a mod the day before it's tested.  
+- Fix bad copy paste  
+-  - Broodkeeper Diurna drycode  
+     - Dathea, Ascended drycode  
+     - The Primalist Council drycode  
+     - Fixed few bugs in other Vault drycodes.  
+- missed one start timer  
+- weekly Kurog update, which looks to be a lot of mythic stuff  
+- Fix last  
+- Remove useless coren timer  
+- define dispel type on dispel filters  
+- Further tweaks to interrupt filter code - Allow focus to be used on tbc and wrath clients - Disallow the unit channel specifc check from running on classic flavors since it's not needed there. - Improved notes  
+- bump alpha  
+- finish cleaning up unused variable  
+- Fix a regressioni spotted in interrupt filter at last minute, will have to redo wrath tag though.  
+- prep new wrath tag  
+- don't unregister role popup on classic, only retail. Closes https://github.com/DeadlyBossMods/DBM-WoTLKC/issues/5  
+- Bump specRole in loading priority.  
+- This was alsos upposd to be moved  
+- re-arrange methods to fix errors  
+- Fixes  
 - Bump alphas  
