@@ -14,7 +14,6 @@ tinsert(C.defaultThemes, function()
 	B.ReskinEditBox(frame.SearchBox)
 	B.Reskin(frame.ApplyButton)
 	B.Reskin(frame.CloseButton)
-	if frame.Bg then frame.Bg:Hide() end
 
 	local function resetTabAnchor(tab)
 		tab.Text:SetPoint("BOTTOM", 0, 4)
@@ -54,6 +53,7 @@ tinsert(C.defaultThemes, function()
 
 	B.CreateBDFrame(frame.Container, .25):SetInside()
 	B.Reskin(frame.Container.SettingsList.Header.DefaultsButton)
+	B.ReskinTrimScroll(frame.Container.SettingsList.ScrollBar, true)
 
 	local function ReskinDropDownArrow(button, direction)
 		button.NormalTexture:SetAlpha(0)
@@ -147,6 +147,9 @@ tinsert(C.defaultThemes, function()
 				end
 				if child.PushToTalkKeybindButton then
 					B.Reskin(child.PushToTalkKeybindButton)
+				end
+				if child.SliderWithSteppers then
+					B.ReskinStepperSlider(child.SliderWithSteppers)
 				end
 
 				child.styled = true
