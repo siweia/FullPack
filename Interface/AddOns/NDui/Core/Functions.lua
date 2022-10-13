@@ -737,15 +737,15 @@ do
 
 	local AtlasToQuality = {
 		["error"] = 99,
-		["uncollected"] = LE_ITEM_QUALITY_POOR,
-		["gray"] = LE_ITEM_QUALITY_POOR,
-		["white"] = LE_ITEM_QUALITY_COMMON,
-		["green"] = LE_ITEM_QUALITY_UNCOMMON,
-		["blue"] = LE_ITEM_QUALITY_RARE,
-		["purple"] = LE_ITEM_QUALITY_EPIC,
-		["orange"] = LE_ITEM_QUALITY_LEGENDARY,
-		["artifact"] = LE_ITEM_QUALITY_ARTIFACT,
-		["account"] = LE_ITEM_QUALITY_HEIRLOOM,
+		["uncollected"] = Enum.ItemQuality.Poor,
+		["gray"] = Enum.ItemQuality.Poor,
+		["white"] = Enum.ItemQuality.Common,
+		["green"] = Enum.ItemQuality.Uncommon,
+		["blue"] = Enum.ItemQuality.Rare,
+		["purple"] = Enum.ItemQuality.Epic,
+		["orange"] = Enum.ItemQuality.Legendary,
+		["artifact"] = Enum.ItemQuality.Artifact,
+		["account"] = Enum.ItemQuality.Heirloom,
 	}
 	local function updateIconBorderColorByAtlas(self, atlas)
 		local atlasAbbr = atlas and strmatch(atlas, "%-(%w+)$")
@@ -1372,7 +1372,7 @@ do
 		stepper:HookScript("OnLeave", B.Texture_OnLeave)
 	end
 
-	function B:ReskinStepperSlider()
+	function B:ReskinStepperSlider(minimal)
 		B.StripTextures(self)
 		reskinStepper(self.Back, "left")
 		reskinStepper(self.Forward, "right")
@@ -1384,8 +1384,9 @@ do
 		thumb:SetSize(20, 30)
 
 		local bg = B.CreateBDFrame(self.Slider, 0, true)
-		bg:SetPoint("TOPLEFT", 10, -13)
-		bg:SetPoint("BOTTOMRIGHT", -10, 13)
+		local offset = minimal and 10 or 13
+		bg:SetPoint("TOPLEFT", 10, -offset)
+		bg:SetPoint("BOTTOMRIGHT", -10, offset)
 		local bar = CreateFrame("StatusBar", nil, bg)
 		bar:SetStatusBarTexture(DB.normTex)
 		bar:SetStatusBarColor(1, .8, 0, .5)

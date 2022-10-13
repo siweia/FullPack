@@ -84,7 +84,13 @@ tinsert(C.defaultThemes, function()
 	end)
 
 	for i = 1, 5 do
-		B.StripTextures(_G["CombatConfigTab"..i])
+		local tab = _G["CombatConfigTab"..i]
+		if tab then
+			B.StripTextures(tab)
+			if tab.Text then
+				tab.Text:SetWidth(tab.Text:GetWidth() + 10)
+			end
+		end
 	end
 
 	local line = ChatConfigFrame:CreateTexture()
@@ -142,6 +148,23 @@ tinsert(C.defaultThemes, function()
 	for _, box in pairs(combatBoxes) do
 		B.ReskinCheck(box)
 	end
+
+	hooksecurefunc("ChatConfig_UpdateSwatches", function(frame)
+		if not frame.swatchTable then return end
+
+		local nameString = frame:GetName().."Swatch"
+		local baseName, colorSwatch
+		for index in ipairs(frame.swatchTable) do
+			baseName = nameString..index
+			local bu = _G[baseName]
+			if not bu.styled then
+				B.StripTextures(bu)
+				B.CreateBDFrame(bu, .25):SetInside()
+				B.ReskinColorSwatch(_G[baseName.."ColorSwatch"])
+				bu.styled = true
+			end
+		end
+	end)
 
 	local bg = B.CreateBDFrame(ChatConfigCombatSettingsFilters, .25)
 	bg:SetPoint("TOPLEFT", 3, 0)

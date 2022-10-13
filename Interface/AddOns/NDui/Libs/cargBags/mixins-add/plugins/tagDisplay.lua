@@ -95,9 +95,20 @@ end
 -- Tags
 local function GetNumFreeSlots(name)
 	if name == "Bag" then
-		return CalculateTotalNumberOfFreeBagSlots()
+		if DB.isNewPatch then
+			local totalFree, freeSlots, bagFamily = 0
+			for i = 0, 4 do -- reagent bank excluded
+				freeSlots, bagFamily = GetContainerNumFreeSlots(i)
+				if bagFamily == 0 then
+					totalFree = totalFree + freeSlots
+				end
+			end
+			return totalFree
+		else
+			return CalculateTotalNumberOfFreeBagSlots()
+		end
 	elseif name == "Bank" then
-		local numFreeSlots = DB.isNewPatch and 0 or GetContainerNumFreeSlots(-1) -- todo: bagID not allow to be negative in 45779, wait for blizz to fix itself
+		local numFreeSlots = GetContainerNumFreeSlots(-1)
 		if DB.isNewPatch then
 			for bagID = 6, 12 do
 				numFreeSlots = numFreeSlots + GetContainerNumFreeSlots(bagID)
@@ -109,11 +120,7 @@ local function GetNumFreeSlots(name)
 		end
 		return numFreeSlots
 	elseif name == "Reagent" then
-		if DB.isNewPatch then
-			return 0 -- todo: bagID not allow to be negative in 45779, wait for blizz to fix itself
-		else
-			return GetContainerNumFreeSlots(-3)
-		end
+		return GetContainerNumFreeSlots(-3)
 	end
 end
 

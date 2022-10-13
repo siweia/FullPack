@@ -138,6 +138,17 @@ function TT:ShowUnitMythicPlusScore(unit)
 	end
 end
 
+local passedNames = {
+	["GetUnit"] = true,
+	["GetWorldCursor"] = true,
+}
+function TT:RefreshLines()
+	local getterName = self.info and self.info.getterName
+	if passedNames[getterName] then
+		TT.OnTooltipSetUnit(self)
+	end
+end
+
 function TT:OnTooltipSetUnit()
 	if self:IsForbidden() then return end
 	if C.db["Tooltip"]["CombatHide"] and InCombatLockdown() then self:Hide() return end
@@ -257,10 +268,14 @@ function TT:OnTooltipSetUnit()
 		end
 	end
 
-	self.StatusBar:SetStatusBarColor(r, g, b)
+	if not DB.isNewPatch then
+		self.StatusBar:SetStatusBarColor(r, g, b)
+	end
 
 	TT.InspectUnitSpecAndLevel(self, unit)
 	TT.ShowUnitMythicPlusScore(self, unit)
+	TT.ScanTargets(self, unit)
+	TT.PetInfo_Setup(self, unit)
 end
 
 function TT:StatusBar_OnValueChanged(value)
@@ -277,6 +292,20 @@ function TT:StatusBar_OnValueChanged(value)
 		self:SetStatusBarColor(.6, .6, .6) -- Wintergrasp building
 	else
 		self.text:SetText(B.Numb(value).." | "..B.Numb(max))
+	end
+end
+
+function TT:RefreshStatusBar(value)
+	if not self.text then
+		self.text = B.CreateFS(self, 12, "")
+	end
+	local unit = self.guid and UnitTokenFromGUID(self.guid)
+	local unitHealthMax = unit and UnitHealthMax(unit)
+	if unitHealthMax and unitHealthMax ~= 0 then
+		self.text:SetText(B.Numb(value*unitHealthMax).." | "..B.Numb(unitHealthMax))
+		self:SetStatusBarColor(B.UnitColor(unit))
+	else
+		self.text:SetFormattedText("%d%%", value*100)
 	end
 end
 
@@ -471,24 +500,33 @@ function TT:FixStoneSoupError()
 end
 
 function TT:OnLogin()
-	GameTooltip.StatusBar = GameTooltipStatusBar
+	if not GameTooltip.StatusBar then -- isNewPatch
+		GameTooltip.StatusBar = GameTooltipStatusBar
+	end
 	GameTooltip:HookScript("OnTooltipCleared", TT.OnTooltipCleared)
-	GameTooltip:HookScript("OnTooltipSetUnit", TT.OnTooltipSetUnit)
-	GameTooltip.StatusBar:SetScript("OnValueChanged", TT.StatusBar_OnValueChanged)
+	if DB.isNewPatch then
+		hooksecurefunc(GameTooltip, "ProcessLines", TT.RefreshLines)
+		hooksecurefunc(GameTooltip.StatusBar, "SetValue", TT.RefreshStatusBar)
+	else
+		GameTooltip:HookScript("OnTooltipSetUnit", TT.OnTooltipSetUnit)
+		GameTooltip.StatusBar:SetScript("OnValueChanged", TT.StatusBar_OnValueChanged)
+	end
 	hooksecurefunc("GameTooltip_ShowStatusBar", TT.GameTooltip_ShowStatusBar)
 	hooksecurefunc("GameTooltip_ShowProgressBar", TT.GameTooltip_ShowProgressBar)
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", TT.GameTooltip_SetDefaultAnchor)
-	hooksecurefunc("GameTooltip_AnchorComparisonTooltips", TT.GameTooltip_ComparisonFix)
+	if not DB.isNewPatch then
+		hooksecurefunc("GameTooltip_AnchorComparisonTooltips", TT.GameTooltip_ComparisonFix)
+		-- todo
+		GameTooltip:HookScript("OnTooltipSetItem", TT.FixRecipeItemNameWidth)
+		ItemRefTooltip:HookScript("OnTooltipSetItem", TT.FixRecipeItemNameWidth)
+		EmbeddedItemTooltip:HookScript("OnTooltipSetItem", TT.FixRecipeItemNameWidth)
+	end
 	TT:SetupTooltipFonts()
-	GameTooltip:HookScript("OnTooltipSetItem", TT.FixRecipeItemNameWidth)
-	ItemRefTooltip:HookScript("OnTooltipSetItem", TT.FixRecipeItemNameWidth)
-	EmbeddedItemTooltip:HookScript("OnTooltipSetItem", TT.FixRecipeItemNameWidth)
 	TT:FixStoneSoupError()
 
 	-- Elements
 	TT:ReskinTooltipIcons()
 	TT:SetupTooltipID()
-	TT:TargetedInfo()
 	TT:AzeriteArmor()
 	TT:ConduitCollectionData()
 	B:RegisterEvent("MODIFIER_STATE_CHANGED", TT.ResetUnit)
