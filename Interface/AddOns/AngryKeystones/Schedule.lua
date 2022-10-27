@@ -291,7 +291,7 @@ function Mod:Blizzard_ChallengesUI()
 	keystoneText:SetWidth(220)
 	Mod.KeystoneText = keystoneText
 
-	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)
+	hooksecurefunc(ChallengesFrame, "Update", UpdateFrame)
 end
 
 function Mod:GetInventoryKeystone()

@@ -69,7 +69,8 @@ end
 
 function Mod:GOSSIP_SHOW()
 	local npcId = GossipNPCID()
-	local numOptions = C_GossipInfo.GetNumOptions()
+	local options = C_GossipInfo.GetOptions()
+	local numOptions = #options
 
 	if Addon.Config.cosRumors and Addon.Locale:HasRumors() and npcId == cosRumorNPC and numOptions == 0 then
 		self:CoSRumor()
@@ -79,19 +80,17 @@ function Mod:GOSSIP_SHOW()
 	if numOptions ~= 1 then return end -- only automate one gossip option
 
 	if Addon.Config.autoGossip and IsInActiveChallengeMode() and not npcBlacklist[npcId] then
-		local options = C_GossipInfo.GetOptions()
-		if options[1].type == "gossip" then
-			local popupWasShown = IsStaticPopupShown()
-			C_GossipInfo.SelectOption(1)
-			local popupIsShown = IsStaticPopupShown()
-			if popupIsShown then
-				if not popupWasShown then
-					StaticPopup1Button1:Click()
-					C_GossipInfo.CloseGossip()
-				end
-			else
+		local firstOptionID = options[1] and options[1].gossipOptionID
+		local popupWasShown = IsStaticPopupShown()
+		C_GossipInfo.SelectOption(firstOptionID)
+		local popupIsShown = IsStaticPopupShown()
+		if popupIsShown then
+			if not popupWasShown then
+				StaticPopup1Button1:Click()
 				C_GossipInfo.CloseGossip()
 			end
+		else
+			C_GossipInfo.CloseGossip()
 		end
 	end
 end
