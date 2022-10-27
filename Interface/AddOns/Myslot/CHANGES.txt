@@ -1,10 +1,34 @@
-lightweight tag 44c27c03171e8dbb3f93af130f6814472cbb083f v5.8.0-v9.2.7
+lightweight tag 1459dd879d10c8455b22099a220be690435e9087 v5.8.2-v10.0.0
 Author:	Boshi Lian <farmer1992@gmail.com>
-Date:	Mon Sep 5 04:46:53 2022 -0700
+Date:	Wed Oct 26 23:36:52 2022 -0700
 
-commit 44c27c03171e8dbb3f93af130f6814472cbb083f
+commit 1459dd879d10c8455b22099a220be690435e9087
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Mon Sep 5 04:46:53 2022 -0700
+Date:   Wed Oct 26 23:36:52 2022 -0700
 
-    bump ver
+    Squashed commit of the following:
+    
+    commit 4199f88c38541f278ac73b556461bacd70a88d57
+    Author: Boshi Lian <farmer1992@gmail.com>
+    Date:   Mon Sep 5 04:35:03 2022 -0700
+    
+        fix weird totem err
+    
+    commit 8da2d8bf1ea7b0aeffbda4713145a9f29a9c0068
+    Author: Boshi Lian <farmer1992@gmail.com>
+    Date:   Sun Oct 16 02:22:32 2022 -0700
+    
+        fix flyout nil format
+    
+    commit 86fffafddd61482c6cf4e00a4f4495b26fd17974
+    Author: Boshi Lian <farmer1992@gmail.com>
+    Date:   Sun Oct 16 02:04:40 2022 -0700
+    
+        fix highlight text err
+    
+    commit 7060103f2b96226e31cbbc1573fcb06fb5b8bd96
+    Author: Boshi Lian <farmer1992@gmail.com>
+    Date:   Sun Oct 16 02:04:28 2022 -0700
+    
+        bump ver 10
 
