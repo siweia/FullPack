@@ -1,34 +1,16 @@
-lightweight tag 1459dd879d10c8455b22099a220be690435e9087 v5.8.2-v10.0.0
+lightweight tag 16437b2a6964e6ea35f36b809f649a3b3163e6a7 v5.9.0-v10.0.0
 Author:	Boshi Lian <farmer1992@gmail.com>
-Date:	Wed Oct 26 23:36:52 2022 -0700
+Date:	Thu Oct 27 09:59:58 2022 -0700
 
-commit 1459dd879d10c8455b22099a220be690435e9087
+commit 16437b2a6964e6ea35f36b809f649a3b3163e6a7
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Wed Oct 26 23:36:52 2022 -0700
+Date:   Thu Oct 27 09:59:58 2022 -0700
 
-    Squashed commit of the following:
-    
-    commit 4199f88c38541f278ac73b556461bacd70a88d57
-    Author: Boshi Lian <farmer1992@gmail.com>
-    Date:   Mon Sep 5 04:35:03 2022 -0700
-    
-        fix weird totem err
-    
-    commit 8da2d8bf1ea7b0aeffbda4713145a9f29a9c0068
-    Author: Boshi Lian <farmer1992@gmail.com>
-    Date:   Sun Oct 16 02:22:32 2022 -0700
-    
-        fix flyout nil format
-    
-    commit 86fffafddd61482c6cf4e00a4f4495b26fd17974
-    Author: Boshi Lian <farmer1992@gmail.com>
-    Date:   Sun Oct 16 02:04:40 2022 -0700
-    
-        fix highlight text err
-    
-    commit 7060103f2b96226e31cbbc1573fcb06fb5b8bd96
-    Author: Boshi Lian <farmer1992@gmail.com>
-    Date:   Sun Oct 16 02:04:28 2022 -0700
-    
-        bump ver 10
+    support extra bars for dragon flight
+
+commit 9cd83361dfe9cfac33c90e94068e7f4ca60d323a
+Author: Boshi Lian <farmer1992@gmail.com>
+Date:   Thu Oct 27 09:44:31 2022 -0700
+
+    better mount performance
 
