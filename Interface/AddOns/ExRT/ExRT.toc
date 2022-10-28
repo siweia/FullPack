@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Method Raid Tools [Storage]
 ## SavedVariables: VExRT
 ## Notes: Required for data migration
