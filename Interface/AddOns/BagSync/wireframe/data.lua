@@ -103,6 +103,7 @@ function Data:OnEnable()
 	if BSYC.options.showGuildInGoldTooltip == nil then BSYC.options.showGuildInGoldTooltip = true end
 	if BSYC.options.showGuildCurrentCharacter == nil then BSYC.options.showGuildCurrentCharacter = false end
 	if BSYC.options.showGuildBankScanAlert == nil then BSYC.options.showGuildBankScanAlert = true end
+	if BSYC.options.focusSearchEditBox == nil then BSYC.options.focusSearchEditBox = false end
 	
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
@@ -276,7 +277,14 @@ function Data:LoadSlashCommand()
 				StaticPopup_Show("BAGSYNC_RESETDATABASE")
 				return true
 			elseif cmd == L.SlashConfig then
-				InterfaceOptionsFrame:Show() --has to be here to load the about frame onLoad
+				if not BSYC.IsRetail then
+					--only do this for Expansions less than Retail
+					InterfaceOptionsFrame:Show() --has to be here to load the about frame onLoad
+				else
+					if InCombatLockdown() or GameMenuFrame:IsShown() or InterfaceOptionsFrame then
+						return false
+					end
+				end
 				InterfaceOptionsFrame_OpenToCategory(BSYC.aboutPanel) --force the panel to show
 				return true
 			else
