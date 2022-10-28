@@ -401,7 +401,7 @@ function PGF.DoFilterSearchResults(results)
             env.pvpactivityname = searchResultInfo.leaderPvpRatingInfo.activityName
             env.pvprating       = searchResultInfo.leaderPvpRatingInfo.rating
             env.pvptierx        = searchResultInfo.leaderPvpRatingInfo.tier
-            env.pvptier         = C.TIER_MAP[searchResultInfo.leaderPvpRatingInfo.tier]
+            env.pvptier         = C.PVP_TIER_MAP[searchResultInfo.leaderPvpRatingInfo.tier].tier
             env.pvptiername     = PVPUtil.GetTierName(searchResultInfo.leaderPvpRatingInfo.tier)
         end
         env.horde = searchResultInfo.leaderFactionGroup == 0
@@ -608,8 +608,9 @@ function PGF.OnLFGListApplicationStatusUpdated(id, newStatus)
     end
 end
 
-function PGF.OnLFGListSearchEntryUpdate(self)
-    local searchResultInfo = C_LFGList.GetSearchResultInfo(self.resultID)
+function PGF.ColorGroupTexts(self, searchResultInfo)
+    if not PremadeGroupsFilterSettings.coloredGroupTexts then return end
+
     -- try once again to update the leaderName (this information is not immediately available)
     if searchResultInfo.leaderName then PGF.currentSearchLeaders[searchResultInfo.leaderName] = true end
     -- self.ActivityName:SetText("[" .. searchResultInfo.activityID .. "/" .. self.resultID .. "] " .. self.ActivityName:GetText()) -- DEBUG
@@ -641,41 +642,12 @@ function PGF.OnLFGListSearchEntryUpdate(self)
     end
 end
 
-function PGF.OnLFGListUtilSetSearchEntryTooltip(tooltip, resultID, autoAcceptOption)
-    local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID)
-    local activityInfo = C_LFGList.GetActivityInfoTable(searchResultInfo.activityID)
-
-    -- do not show members where Blizzard already does that
-    if activityInfo.displayType == LE_LFG_LIST_DISPLAY_TYPE_CLASS_ENUMERATE then return end
-    if searchResultInfo.isDelisted or not tooltip:IsShown() then return end
-    tooltip:AddLine(" ")
-    tooltip:AddLine(CLASS_ROLES)
-
-    local roles = {}
-    local classInfo = {}
-    for i = 1, searchResultInfo.numMembers do
-        local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(resultID, i)
-        classInfo[class] = {
-            name = classLocalized,
-            color = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
-        }
-        if not roles[role] then roles[role] = {} end
-        if not roles[role][class] then roles[role][class] = 0 end
-        roles[role][class] = roles[role][class] + 1
-    end
-
-    for role, classes in pairs(roles) do
-        tooltip:AddLine(_G[role]..": ")
-        for class, count in pairs(classes) do
-            local text = "   "
-            if count > 1 then text = text .. count .. " " else text = text .. "   " end
-            text = text .. "|c" .. classInfo[class].color.colorStr ..  classInfo[class].name .. "|r "
-            tooltip:AddLine(text)
-        end
-    end
-    tooltip:Show()
+function PGF.OnLFGListSearchEntryUpdate(self)
+    local searchResultInfo = C_LFGList.GetSearchResultInfo(self.resultID)
+    PGF.ColorGroupTexts(self, searchResultInfo)
+    PGF.AddRoleIndicators(self, searchResultInfo)
+    PGF.AddRatingInfo(self, searchResultInfo)
 end
 
 hooksecurefunc("LFGListSearchEntry_Update", PGF.OnLFGListSearchEntryUpdate)
-hooksecurefunc("LFGListUtil_SetSearchEntryTooltip", PGF.OnLFGListUtilSetSearchEntryTooltip)
 hooksecurefunc("LFGListUtil_SortSearchResults", PGF.DoFilterSearchResults)
