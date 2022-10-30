@@ -76,6 +76,9 @@ function Bar:UpdateActionSize(name)
 			else
 				button:SetPoint("LEFT", frame.buttons[i-1], "RIGHT", margin, 0)
 			end
+			if name == "BarPet" then
+				button.SetPoint = B.Dummy
+			end
 			button:SetAttribute("statehidden", false)
 			button:Show()
 			Bar:UpdateFontSize(button, fontSize)
@@ -166,8 +169,6 @@ function Bar:OnLogin()
 	Bar.buttons = {}
 	Bar:MicroMenu()
 
-	if not DB.isDeveloper then C.db["Actionbar"]["Enable"] = false end
-
 	if C.db["Actionbar"]["Enable"] then
 		Bar.movers = {}
 		Bar:CreateBar1()
@@ -182,15 +183,12 @@ function Bar:OnLogin()
 		Bar:CreatePetbar()
 		Bar:CreateStancebar()
 		Bar:HideBlizz()
+		Bar:ReskinBars()
 
 		local function delaySize(event)
 			Bar:UpdateAllScale()
 			B:UnregisterEvent(event, delaySize)
 		end
 		B:RegisterEvent("PLAYER_ENTERING_WORLD", delaySize)
-	end
-
-	if C.db["Actionbar"]["Skins"] then
-		Bar:ReskinBars()
 	end
 end
