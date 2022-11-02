@@ -58,7 +58,6 @@ function M:OnLogin()
 	M:UpdateScreenShot()
 	M:UpdateFasterLoot()
 	M:TradeTargetInfo()
-	M:MoveQuestTracker()
 	M:BlockStrangerInvite()
 	M:ToggleBossBanner()
 	M:ToggleBossEmote()
@@ -71,7 +70,6 @@ function M:OnLogin()
 	M:EnhancedPicker()
 	M:UpdateMaxZoomLevel()
 	M:MoveBlizzFrames()
-	M:SpellBookFix()
 
 	-- Unregister talent event
 	if PlayerTalentFrame then
@@ -265,30 +263,6 @@ function M:MoveTicketStatusFrame()
 		if relF == "TOPRIGHT" then
 			self:ClearAllPoints()
 			self:SetPoint("TOP", UIParent, "TOP", -400, -20)
-		end
-	end)
-end
-
--- Reanchor ObjectiveTracker
-function M:MoveQuestTracker()
-	if DB.isNewPatch then return end
-
-	local frame = CreateFrame("Frame", "NDuiQuestMover", UIParent)
-	frame:SetSize(240, 50)
-	B.Mover(frame, L["QuestTracker"], "QuestTracker", {"TOPRIGHT", Minimap, "BOTTOMRIGHT", -70, -55})
-
-	local tracker = ObjectiveTrackerFrame
-	tracker:ClearAllPoints()
-	tracker:SetPoint("TOPRIGHT", frame)
-	tracker:SetHeight(GetScreenHeight()*.65)
-	tracker:SetClampedToScreen(false)
-	tracker:SetMovable(true)
-	if tracker:IsMovable() then tracker:SetUserPlaced(true) end
-
-	hooksecurefunc(tracker, "SetPoint", function(self, _, parent)
-		if parent ~= frame then
-			self:ClearAllPoints()
-			self:SetPoint("TOPRIGHT", frame)
 		end
 	end)
 end
@@ -908,44 +882,4 @@ end
 -- Move and save blizz frames
 function M:MoveBlizzFrames()
 	--B:BlizzFrameMover(CharacterFrame)
-end
-
--- SpellBook fix in 46157
-function M:SpellBookFix()
-	if not DB.isBeta then return end
-
-	local function replaceOnEnter(self)
-		local slot = SpellBook_GetSpellBookSlot(self)
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	
-		if InClickBindingMode() and not self.canClickBind then
-			GameTooltip:AddLine(CLICK_BINDING_NOT_AVAILABLE, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
-			GameTooltip:Show()
-			return
-		end
-	
-		GameTooltip:SetSpellBookItem(slot, SpellBookFrame.bookType)
-		self.UpdateTooltip = nil
-	
-		if self.SpellHighlightTexture and self.SpellHighlightTexture:IsShown() then
-			GameTooltip:AddLine(SPELLBOOK_SPELL_NOT_ON_ACTION_BAR, LIGHTBLUE_FONT_COLOR.r, LIGHTBLUE_FONT_COLOR.g, LIGHTBLUE_FONT_COLOR.b)
-		end
-		GameTooltip:Show()
-	end
-
-	local function handleSpellButton(button)
-		button.OnEnter = replaceOnEnter
-		button:SetScript("OnEnter", replaceOnEnter)
-	end
-
-	for i = 1, SPELLS_PER_PAGE do
-		handleSpellButton(_G["SpellButton"..i])
-	end
-
-	local professions = {"PrimaryProfession1", "PrimaryProfession2", "SecondaryProfession1", "SecondaryProfession2", "SecondaryProfession3"}
-	for _, button in pairs(professions) do
-		local bu = _G[button]
-		handleSpellButton(bu.SpellButton1)
-		handleSpellButton(bu.SpellButton2)
-	end
 end

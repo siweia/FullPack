@@ -30,6 +30,7 @@ function Bar:UpdateStanceBar()
 			else
 				button:SetPoint("LEFT", frame.buttons[i-1], "RIGHT", margin, 0)
 			end
+			button.SetPoint = B.Dummy
 		end
 		Bar:UpdateFontSize(button, fontSize)
 	end
