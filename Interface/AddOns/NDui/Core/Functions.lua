@@ -253,8 +253,57 @@ do
 		end
 	end
 
+	local slotData = {gems={},gemsColor={}}
 	function B.GetItemLevel(link, arg1, arg2, fullScan)
 		if fullScan then
+			if DB.isBeta then
+
+			local data = C_TooltipInfo.GetInventoryItem(arg1, arg2)
+			if data then
+				wipe(slotData.gems)
+				wipe(slotData.gemsColor)
+				slotData.iLvl = nil
+				slotData.enchantText = nil
+
+				local isHoA = data.args and data.args[2] and data.args[2].intVal == 158075
+				local num = 0
+				for i = 2, #data.lines do
+					local lineData = data.lines[i]
+					local argVal = lineData and lineData.args
+					if argVal then
+						if not slotData.iLvl then
+							local text = argVal[2] and argVal[2].stringVal
+							local found = text and strfind(text, itemLevelString)
+							if found then
+								local level = strmatch(text, "(%d+)%)?$")
+								slotData.iLvl = tonumber(level) or 0
+							end
+						elseif isHoA then
+							if argVal[6] and argVal[6].field == "essenceIcon" then
+								num = num + 1
+								slotData.gems[num] = argVal[6].intVal
+								slotData.gemsColor[num] = argVal[3] and argVal[3].colorVal
+							end
+						else
+							local lineInfo = argVal[4] and argVal[4].field
+							if lineInfo == "enchantID" then
+								local enchant = argVal[2] and argVal[2].stringVal
+								slotData.enchantText = strmatch(enchant, enchantString)
+							elseif lineInfo == "gemIcon" then
+								num = num + 1
+								slotData.gems[num] = argVal[4].intVal
+							elseif lineInfo == "socketType" then
+								num = num + 1
+								slotData.gems[num] = format("Interface\\ItemSocketingFrame\\UI-EmptySocket-%s", argVal[4].stringVal)
+							end
+						end
+					end
+				end
+				return slotData
+
+				end
+			else
+
 			tip:SetOwner(UIParent, "ANCHOR_NONE")
 			tip:SetInventoryItem(arg1, arg2)
 
@@ -279,8 +328,39 @@ do
 			end
 
 			return slotInfo
+
+			end
 		else
 			if iLvlDB[link] then return iLvlDB[link] end
+
+			if DB.isBeta then
+
+			local data
+			if arg1 and type(arg1) == "string" then
+				data = C_TooltipInfo.GetInventoryItem(arg1, arg2)
+			elseif arg1 and type(arg1) == "number" then
+				data = C_TooltipInfo.GetBagItem(arg1, arg2)
+			else
+				data = C_TooltipInfo.GetHyperlink(link, nil, nil, true)
+			end
+			if data then
+				for i = 2, 5 do
+					local lineData = data.lines[i]
+					if not lineData then break end
+					local argVal = lineData.args
+					if argVal then
+						local text = argVal[2] and argVal[2].stringVal
+						local found = text and strfind(text, itemLevelString)
+						if found then
+							local level = strmatch(text, "(%d+)%)?$")
+							iLvlDB[link] = tonumber(level)
+							break
+						end
+					end
+				end
+			end
+
+			else
 
 			tip:SetOwner(UIParent, "ANCHOR_NONE")
 			if arg1 and type(arg1) == "string" then
@@ -307,6 +387,8 @@ do
 					iLvlDB[link] = tonumber(level)
 					break
 				end
+			end
+
 			end
 
 			return iLvlDB[link]
@@ -348,6 +430,28 @@ do
 	function B.GetNPCName(npcID, callback)
 		local name = nameCache[npcID]
 		if not name then
+			if DB.isBeta then
+
+			name = loadingStr
+			local data = C_TooltipInfo.GetHyperlink(format("unit:Creature-0-0-0-0-%d", npcID))
+			local lineData = data and data.lines
+			if lineData then
+				local argVal = lineData[1] and lineData[1].args
+				if argVal then
+					name = argVal[2] and argVal[2].stringVal
+				end
+			end
+			if name == loadingStr then
+				if not pendingNPCs[npcID] then
+					pendingNPCs[npcID] = 1
+					pendingFrame:Show()
+				end
+			else
+				nameCache[npcID] = name
+			end
+
+			else
+
 			tip:SetOwner(UIParent, "ANCHOR_NONE")
 			tip:SetHyperlink(format("unit:Creature-0-0-0-0-%d", npcID))
 			name = _G.NDui_ScanTooltipTextLeft1:GetText() or loadingStr
@@ -358,6 +462,8 @@ do
 				end
 			else
 				nameCache[npcID] = name
+			end
+
 			end
 		end
 		if callback then

@@ -1,4 +1,4 @@
-﻿local _, ns = ...
+local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local M = B:GetModule("Misc")
 local TT = B:GetModule("Tooltip")
@@ -155,10 +155,15 @@ function M:ItemLevel_UpdateInfo(slotFrame, info, quality)
 			local texture = slotFrame["textureIcon"..i]
 			local bg = texture.bg
 			local gem = info.gems and info.gems[gemStep]
+			local color = info.gemsColor and info.gemsColor[gemStep]
 			local essence = not gem and (info.essences and info.essences[essenceStep])
 			if gem then
 				texture:SetTexture(gem)
-				bg:SetBackdropBorderColor(0, 0, 0)
+				if color then
+					bg:SetBackdropBorderColor(color.r, color.g, color.b)
+				else
+					bg:SetBackdropBorderColor(0, 0, 0)
+				end
 				bg:Show()
 
 				gemStep = gemStep + 1
@@ -364,6 +369,27 @@ function M:ItemLevel_ReplaceGuildNews()
 	end
 end
 
+function M:ItemLevel_UpdateLoot()
+	for i = 1, self.ScrollTarget:GetNumChildren() do
+		local button = select(i, self.ScrollTarget:GetChildren())
+		if button and button.Item and button.GetElementData then
+			if not button.iLvl then
+				button.iLvl = B.CreateFS(button.Item, DB.Font[2]+1, "", false, "BOTTOMLEFT", 1, 1)
+			end
+			local slotIndex = button:GetSlotIndex()
+			local quality = select(5, GetLootSlotInfo(slotIndex))
+			if quality and quality > 1 then
+				local level = B.GetItemLevel(GetLootSlotLink(slotIndex))
+				local color = DB.QualityColors[quality]
+				button.iLvl:SetText(level)
+				button.iLvl:SetTextColor(color.r, color.g, color.b)
+			else
+				button.iLvl:SetText("")
+			end
+		end
+	end
+end
+
 function M:ShowItemLevel()
 	if not C.db["Misc"]["ItemLevel"] then return end
 
@@ -395,5 +421,8 @@ function M:ShowItemLevel()
 
 	-- iLvl on GuildNews
 	hooksecurefunc("GuildNewsButton_SetText", M.ItemLevel_ReplaceGuildNews)
+
+	-- iLvl on LootFrame
+	hooksecurefunc(LootFrame.ScrollBox, "Update", M.ItemLevel_UpdateLoot)
 end
 M:RegisterMisc("GearInfo", M.ShowItemLevel)
