@@ -18,20 +18,15 @@
 -- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -------------------------------------------------------------------------------
 
-local PGF = select(2, ...)
-local L = PGF.L
-local C = PGF.C
-
-function PGF.LFGListSearchEntry_OnClick(self, button)
-    if not PremadeGroupsFilterSettings.oneClickSignUp then return end
-
-    local panel = LFGListFrame.SearchPanel
-    if button ~= "RightButton" and LFGListSearchPanelUtil_CanSelectResult(self.resultID) then
-        if panel.selectedResult ~= self.resultID then
-            LFGListSearchPanel_SelectResult(panel, self.resultID)
+if LFGListApplicationDialogDescription and LFGListApplicationDialogDescription.EditBox then
+    LFGListApplicationDialogDescription.EditBox:HookScript("OnShow", function()
+        if PremadeGroupsFilterSettings.signupOnEnter then
+            LFGListApplicationDialogDescription.EditBox:SetFocus()
         end
-        LFGListSearchPanel_SignUp(panel)
-    end
+    end)
+    LFGListApplicationDialogDescription.EditBox:HookScript("OnEnterPressed", function()
+        if PremadeGroupsFilterSettings.signupOnEnter then
+            LFGListApplicationDialog.SignUpButton:Click()
+        end
+    end)
 end
-
-hooksecurefunc("LFGListSearchEntry_OnClick", PGF.LFGListSearchEntry_OnClick)

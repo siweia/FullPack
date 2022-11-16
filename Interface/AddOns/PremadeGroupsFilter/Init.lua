@@ -125,6 +125,8 @@ C.SETTINGS_DEFAULT = {
     classBar = false,
     leaderCrown = false,
     oneClickSignUp = true,
+    persistSignUpNote = true,
+    signupOnEnter = false,
 }
 
 C.STATE_DEFAULT = {
@@ -246,6 +248,7 @@ end
 
 function PGF.OnPlayerLogin()
     PGF.FixGetPlaystyleStringIfPlayerAuthenticated()
+    PGF.PersistSignUpNote()
 end
 
 function PGF.OnEvent(self, event, ...)
