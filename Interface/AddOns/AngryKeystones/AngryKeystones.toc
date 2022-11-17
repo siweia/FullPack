@@ -1,11 +1,11 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Angry Keystones
 ## Notes: Displays additional information for Mythic Keystone dungeons
 ## Author: Ermad
 ## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
 ## X-Packaged-Version: NDuiMOD
-## Version: 20221027
+## Version: 20221117
 
 embeds.xml
 

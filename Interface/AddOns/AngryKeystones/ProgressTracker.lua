@@ -294,6 +294,8 @@ local function CheckTime(...)
 end
 
 local function OnTooltipSetUnit(tooltip)
+	if tooltip:IsForbidden() or tooltip ~= GameTooltip then return end
+
 	local scenarioType = select(10, C_Scenario.GetInfo())
 	if scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE and Addon.Config.progressTooltip then
 		local name, unit = tooltip:GetUnit()
@@ -511,7 +513,7 @@ function Mod:Startup()
 	self:RegisterEvent("CHALLENGE_MODE_RESET")
 	self:RegisterAddOnLoaded("Blizzard_ObjectiveTracker")
 	CheckTime(GetWorldElapsedTimers())
-	GameTooltip:HookScript("OnTooltipSetUnit", OnTooltipSetUnit)
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, OnTooltipSetUnit)
 
 	Addon.Config:RegisterCallback('progressFormat', function()
 		local usedBars = SCENARIO_TRACKER_MODULE.usedProgressBars[ScenarioObjectiveBlock] or {}
