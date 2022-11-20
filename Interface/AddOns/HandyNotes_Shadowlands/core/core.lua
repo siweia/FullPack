@@ -55,6 +55,7 @@ local function InitializeDropdownMenu(level, mapID, coord)
                     local x, y = HandyNotes:getXY(coord)
                     TomTom:AddWaypoint(mapID, x, y, {
                         title = ns.RenderLinks(node.label, true),
+                        from = ns.plugin_name,
                         persistent = nil,
                         minimap = true,
                         world = true
@@ -160,7 +161,7 @@ function Addon:OnInitialize()
 
     -- Add quick-toggle menu button to top-right corner of world map
     local template = ADDON_NAME .. 'WorldMapOptionsButtonTemplate'
-    ns.world_map_button = LibStub('Krowi_WorldMapButtons-1.3'):Add(template,
+    ns.world_map_button = LibStub('Krowi_WorldMapButtons-1.4'):Add(template,
         'DROPDOWNTOGGLEBUTTON')
 
     -- Query localized expansion title

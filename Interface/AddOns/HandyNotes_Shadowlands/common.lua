@@ -8,6 +8,8 @@ local L = ns.locale
 
 local Map = ns.Map
 
+local Collectible = ns.node.Collectible
+
 local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Reward = ns.reward.Reward
@@ -132,26 +134,20 @@ local VIGNETTES = {
     [4577] = SILVER_STRONGBOX
 }
 
-local vignetteHandled = false
-
-hooksecurefunc(GameTooltip, 'Show', function(self)
-    if vignetteHandled then return end
-    local owner = self:GetOwner()
-    if owner and owner.vignetteID then
-        local rewards = VIGNETTES[owner.vignetteID]
-        if rewards and #rewards > 0 then
-            self:AddLine(' ') -- add blank line before rewards
-            for i, reward in ipairs(rewards) do
-                if reward:IsEnabled() then reward:Render(self) end
+hooksecurefunc(VignettePinMixin, 'OnMouseEnter', function(self)
+    if self and self.vignetteInfo and self.vignetteInfo.vignetteID then
+        local vignetteID = self.vignetteInfo.vignetteID
+        if VIGNETTES[vignetteID] then
+            GameTooltip:AddLine(' ')
+            for i, reward in ipairs(VIGNETTES[vignetteID]) do
+                if reward:IsEnabled() then
+                    reward:Render(GameTooltip)
+                end
             end
-            vignetteHandled = true
-            self:Show()
+            GameTooltip:Show()
         end
     end
 end)
-
-hooksecurefunc(GameTooltip, 'ClearLines',
-    function(self) vignetteHandled = false end)
 
 -------------------------------------------------------------------------------
 ---------------------------------- COVENANTS ----------------------------------
@@ -211,6 +207,12 @@ ns.groups.CODE_CREATURE = Group('code_creature', 348545,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.CONCORDANCES = Group('concordances', 4238797,
     {defaults = ns.GROUP_HIDDEN})
+ns.groups.COVENANT_ASSAULTS = Group('covenant_assaults', 236352,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.CRYPT_COUTURE = Group('crypt_couture', 237274,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.CRYPT_KICKER = Group('crypt_kicker', 236399,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.DREDBATS = Group('dredbats', 'flight_point_g',
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.ECHOED_JIROS = Group('echoed_jiros', 'peg_gn',
@@ -252,17 +254,22 @@ ns.groups.RIFT_PORTAL = Group('rift_portal', 'portal_gy')
 ns.groups.RIFTBOUND_CACHE = Group('riftbound_cache', 'chest_bk',
     {defaults = ns.GROUP_ALPHA75})
 ns.groups.RIFTSTONE = Group('riftstone', 'portal_bl')
+ns.groups.SHROUDED_CYPHER = Group('shrouded_cyphers', 'chest_pp',
+    {defaults = ns.GROUP_HIDDEN75})
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o',
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults = ns.GROUP_HIDDEN})
-ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn',
-    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
 ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv',
     {defaults = ns.GROUP_HIDDEN75})
-ns.groups.VESPERS = Group('vespers', 3536181, {defaults = ns.GROUP_HIDDEN})
-ns.groups.ZERETH_CACHE = Group('zereth_caches', 3950362,
+ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn',
     {defaults = ns.GROUP_HIDDEN75})
-ns.groups.SHROUDED_CYPHER = Group('shrouded_cyphers', 'chest_pp',
+ns.groups.VESPERS = Group('vespers', 3536181, {defaults = ns.GROUP_HIDDEN})
+ns.groups.WILD_HUNTING = Group('wild_hunting', 1604164,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.WILDSEED_SPIRITS = Group('wildseed_spirits', 895888,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.ZERETH_CACHE = Group('zereth_caches', 3950362,
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.ZOVAAL_VAULT = Group('zovault', 'star_chest_g',
     {defaults = ns.GROUP_ALPHA75})
@@ -313,6 +320,34 @@ ns.groups.CORELESS_AUTOMA = Group('coreless_automa', 4327618, {
         return Group.IsEnabled(self)
     end
 })
+
+-------------------------------------------------------------------------------
+--------------------------------- SOULSHAPES ----------------------------------
+-------------------------------------------------------------------------------
+
+local Soulshape = Class('Soulshape', Collectible, {
+    covenant = ns.covenants.FAE,
+    IsEnabled = function(self)
+        if C_Covenants.GetActiveCovenantID() ~= ns.covenants.FAE.id then
+            return false
+        end
+        return Collectible.IsEnabled(self)
+    end
+})
+
+ns.node.Soulshape = Soulshape
+
+-------------------------------------------------------------------------------
+------------------ TO ALL THE SQUIRRELS I'VE LOVED AND LOST -------------------
+-------------------------------------------------------------------------------
+
+local Squirrel = Class('Squirrel', Collectible, {
+    group = ns.groups.SQUIRRELS,
+    icon = 237182,
+    note = L['squirrels_note']
+})
+
+ns.node.Squirrel = Squirrel
 
 -------------------------------------------------------------------------------
 ------------------------------------ MAPS -------------------------------------
