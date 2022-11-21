@@ -15,6 +15,7 @@ local HelpTip = HelpTip
 
 local repairCostString = gsub(REPAIR_COST, HEADER_COLON, ":")
 local lowDurabilityCap = .25
+local needToRepair
 
 local localSlots = {
 	[1] = {1, INVTYPE_HEAD, 1000},
@@ -106,8 +107,10 @@ info.onEvent = function(self, event)
 
 	if isLowDurability() then
 		HelpTip:Show(info, lowDurabilityInfo)
+		needToRepair = true
 	else
 		HelpTip:Hide(info, L["Low Durability"])
+		needToRepair = false
 	end
 end
 
@@ -143,23 +146,12 @@ info.onEnter = function(self)
 			local slotIcon = localSlots[i][4]
 			GameTooltip:AddDoubleLine(slotIcon..localSlots[i][2], cur.."%", 1,1,1, getDurabilityColor(cur, 100))
 
-			if DB.isBeta then
-
 			local data = C_TooltipInfo.GetInventoryItem("player", slot)
 			if data then
 				local argVal = data.args and data.args[7]
 				if argVal and argVal.field == "repairCost" then
 					totalCost = totalCost + argVal.intVal
 				end
-			end
-
-			else
-
-			B.ScanTip:SetOwner(UIParent, "ANCHOR_NONE")
-			local repairCost = select(3, B.ScanTip:SetInventoryItem("player", slot))
-			repairCost = repairCost or 0
-			totalCost = totalCost + repairCost
-
 			end
 		end
 	end
@@ -245,3 +237,20 @@ local function merchantShow()
 	B:RegisterEvent("MERCHANT_CLOSED", merchantClose)
 end
 B:RegisterEvent("MERCHANT_SHOW", merchantShow)
+
+local repairGossipIDs = {
+	[37005] = true, -- 基维斯
+	[44982] = true, -- 里弗斯
+}
+B:RegisterEvent("GOSSIP_SHOW", function()
+	if IsShiftKeyDown() then return end
+	if not needToRepair then return end
+
+	local options = C_GossipInfo.GetOptions()
+	for i = 1, #options do
+		local option = options[i]
+		if repairGossipIDs[option.gossipOptionID] then
+			C_GossipInfo.SelectOption(option.gossipOptionID)
+		end
+	end
+end)

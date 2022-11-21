@@ -43,7 +43,7 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local cargBags = ns.cargBags
 
-local GetContainerNumFreeSlots = DB.isBeta and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
+local GetContainerNumFreeSlots = C_Container.GetContainerNumFreeSlots
 
 local tagPool, tagEvents, object = {}, {}
 local function tagger(tag, ...) return object.tags[tag] and object.tags[tag](object, ...) or "" end
@@ -111,6 +111,8 @@ local function GetNumFreeSlots(name)
 		return numFreeSlots
 	elseif name == "Reagent" then
 		return GetContainerNumFreeSlots(-3)
+	elseif name == "BagReagent" then
+		return GetContainerNumFreeSlots(5)
 	end
 end
 
