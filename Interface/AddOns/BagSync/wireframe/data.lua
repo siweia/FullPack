@@ -43,6 +43,7 @@ StaticPopupDialogs["BAGSYNC_RESETDATABASE"] = {
 ----------------------
 
 function Data:OnEnable()
+	if BSYC.debugTrace then Debug("OnEnable") end
 	
 	local ver = GetAddOnMetadata("BagSync","Version") or 0
 	
@@ -105,6 +106,7 @@ function Data:OnEnable()
 	if BSYC.options.showGuildBankScanAlert == nil then BSYC.options.showGuildBankScanAlert = true end
 	if BSYC.options.focusSearchEditBox == nil then BSYC.options.focusSearchEditBox = false end
 	if BSYC.options.enableAccurateBattlePets == nil then BSYC.options.enableAccurateBattlePets = true end
+	if BSYC.options.alwaysShowAdvSearch == nil then BSYC.options.alwaysShowAdvSearch = false end
 	
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
@@ -142,6 +144,8 @@ function Data:OnEnable()
 end
 
 function Data:ResetColors()
+	if BSYC.debugTrace then Debug("ResetColors") end
+	
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
 	BSYC.options.colors.first = { r = 128/255, g = 1, b = 0 }
 	BSYC.options.colors.second = { r = 1, g = 1, b = 1 }
@@ -154,27 +158,8 @@ function Data:ResetColors()
 end
 
 function Data:CleanDB()
-
-	--delete old DB variables
-	if BagSyncOpt then
-		BagSyncOpt = nil
-	end
-	if BagSyncGUILD_DB then
-		BagSyncGUILD_DB = nil
-	end
-	if BagSyncCURRENCY_DB then
-		BagSyncCURRENCY_DB = nil
-	end
-	if BagSyncPROFESSION_DB then
-		BagSyncPROFESSION_DB = nil
-	end
-	if BagSyncBLACKLIST_DB then
-		BagSyncBLACKLIST_DB = nil
-	end
-	if BagSync_REALMKEY then
-		BagSync_REALMKEY = nil
-	end
-
+	if BSYC.debugTrace then Debug("CleanDB") end
+	
 	--check for empty table table to prevent loops
 	if next(BagSyncDB) == nil then
 		BagSyncDB["forceDBReset§"] = forceDBReset
@@ -188,7 +173,8 @@ function Data:CleanDB()
 end
 
 function Data:FixDB()
-
+	if BSYC.debugTrace then Debug("FixDB") end
+	
     local storeUsers = {}
     local storeGuilds = {}
 	
@@ -237,6 +223,8 @@ function Data:FixDB()
 end
 
 function Data:LoadSlashCommand()
+	if BSYC.debugTrace then Debug("LoadSlashCommand") end
+	
 	--load the keybinding locale information
 	BINDING_HEADER_BAGSYNC = "BagSync"
 	BINDING_NAME_BAGSYNCBLACKLIST = L.KeybindBlacklist
@@ -317,7 +305,8 @@ function Data:LoadSlashCommand()
 end
 
 function Data:CheckExpiredAuctions()
-
+	if BSYC.debugTrace then Debug("CheckExpiredAuctions") end
+	
 	for unitObj in self:IterateUnits(true) do
 		if not unitObj.isGuild and unitObj.data.auction and unitObj.data.auction.count then
 			
@@ -340,7 +329,7 @@ function Data:CheckExpiredAuctions()
 					end
 					
 					--if the timeleft is greater than current time than keep it, it's not expired
-					if link and timeleft then
+					if link and timeleft and tonumber(timeleft) then
 						if tonumber(timeleft) > time() then
 							table.insert(slotItems, unitObj.data.auction.bag[x])
 						end
@@ -358,6 +347,8 @@ function Data:CheckExpiredAuctions()
 end
 
 function Data:IterateUnits(dumpAll, filterList)
+	if BSYC.debugTrace then Debug("IterateUnits", dumpAll, filterList) end
+	
 	if filterList then dumpAll = true end
 	
 	local player = Unit:GetUnitInfo()
