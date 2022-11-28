@@ -8,7 +8,7 @@ local Scanner = BSYC:NewModule("Scanner")
 local Unit = BSYC:GetModule("Unit")
 
 local function Debug(level, ...)
-    if BSYC.debugTrace and BSYC.DEBUG then BSYC.DEBUG(level, "Scanner", ...) end
+    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Scanner", ...) end
 end
 
 --https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/AddOns/Blizzard_VoidStorageUI/Blizzard_VoidStorageUI.lua
@@ -33,8 +33,6 @@ scannerTooltip:Hide()
 
 --https://wowpedia.fandom.com/wiki/BagID
 function Scanner:GetBagSlots(bagType)
-	Debug(2, "GetBagSlots", bagType)
-	
 	if bagType == "bag" then
 		if BSYC.IsRetail then
 			return BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS 
@@ -52,35 +50,41 @@ function Scanner:GetBagSlots(bagType)
 end
 
 function Scanner:IsBackpack(bagid)
+	if not bagid then return false end
 	return bagid == BACKPACK_CONTAINER
 end
 
 function Scanner:IsBackpackBag(bagid)
+	if not bagid then return false end
 	local minCnt, maxCnt = self:GetBagSlots("bag")
 	return bagid >= minCnt and bagid <= maxCnt
 end
 
 function Scanner:IsKeyring(bagid)
-	return bagid == KEYRING
+	if not bagid then return false end
+	return bagid == KEYRING_CONTAINER
 end
 
 function Scanner:IsBank(bagid)
+	if not bagid then return false end
 	return bagid == BANK_CONTAINER
 end
 
 function Scanner:IsBankBag(bagid)
+	if not bagid then return false end
 	local minCnt, maxCnt = self:GetBagSlots("bank")
 	return bagid >= minCnt and bagid <= maxCnt
 end
 
 function Scanner:IsReagentBag(bagid)
+	if not bagid then return false end
 	return bagid == REAGENTBANK_CONTAINER
 end
 
 function Scanner:StartupScans()
 	Debug(2, "StartupScans", BSYC.startupScanChk)
 	if BSYC.startupScanChk then return end --only do this once per load.  Does not include /reloadui
-	
+
 	self:SaveEquipment()
 	
 	local minCnt, maxCnt = self:GetBagSlots("bag")
@@ -89,6 +93,8 @@ function Scanner:StartupScans()
 	end
 	
 	self:SaveCurrency()
+	
+	self:CleanupBags()
 	
 	--cleanup the auction DB
 	BSYC:GetModule("Data"):CheckExpiredAuctions()
@@ -105,15 +111,16 @@ function Scanner:SaveBag(bagtype, bagid)
 	if not bagtype or not bagid then return end
 	if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
 
-	local xGetNumSlots = BSYC.IsRetail and C_Container.GetContainerNumSlots or GetContainerNumSlots
-	local xGetContainerInfo = BSYC.IsRetail and C_Container.GetContainerItemInfo or GetContainerItemInfo
-	
+	local xGetNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
+	local xGetContainerInfo = (C_Container and C_Container.GetContainerItemInfo) or GetContainerItemInfo
+
 	if xGetNumSlots(bagid) > 0 then
 		
 		local slotItems = {}
 		
 		for slot = 1, xGetNumSlots(bagid) do
-			if BSYC.IsRetail then
+			--apparently they are pushing C_Container to the older content as well, lets check for this
+			if C_Container and C_Container.GetContainerItemInfo then
 				local containerInfo = xGetContainerInfo(bagid, slot)
 				if containerInfo and containerInfo.hyperlink then
 					table.insert(slotItems,  BSYC:ParseItemLink(containerInfo.hyperlink, containerInfo.stackCount or 1))
@@ -134,7 +141,7 @@ end
 
 function Scanner:SaveEquipment()
 	Debug(2, "SaveEquipment")
-	
+
 	if not BSYC.db.player.equip then BSYC.db.player.equip = {} end
 	
 	local slotItems = {}
@@ -145,6 +152,28 @@ function Scanner:SaveEquipment()
 		if link then
 			table.insert(slotItems,  BSYC:ParseItemLink(link, count))
 		end
+	end
+	
+	--check for ProfessionsFrame Inventory Slots
+	if BSYC.IsRetail and C_TradeSkillUI and C_TradeSkillUI.GetProfessionInventorySlots then
+	
+		--https://github.com/tomrus88/BlizzardInterfaceCode/blob/fe4bab5c1ffc87ae2919478efc59d03b76ef6b19/Interface/AddOns/Blizzard_Tutorials/Blizzard_Tutorials_Professions.lua
+		local profInvSlots = C_TradeSkillUI.GetProfessionInventorySlots()
+
+		for _, i in ipairs(profInvSlots) do
+		
+			--this starts at tabard which is 19, you want to do +1 to start at 20
+			--https://wowpedia.fandom.com/wiki/InventorySlotId
+			local slotNumber = i + 1
+
+			local link = GetInventoryItemLink("player", slotNumber)
+			local count =  GetInventoryItemCount("player", slotNumber)
+			
+			if link and count then
+				table.insert(slotItems,  BSYC:ParseItemLink(link, count))
+			end
+		end
+		
 	end
 	
 	BSYC.db.player.equip = slotItems
@@ -229,12 +258,11 @@ local function findBattlePet(iconTexture, petName, typeSlot, arg1, arg2)
 	if BSYC.options.enableAccurateBattlePets and arg1 then
 		if typeSlot == "guild" then
 			scannerTooltip:SetGuildBankItem(arg1, arg2)
-			scannerTooltip:Hide()
 		else
 			--mailbox
 			scannerTooltip:SetInboxItem(arg1)
-			scannerTooltip:Hide()
 		end
+		scannerTooltip:Hide()
 
 		local tooltipData = scannerTooltip:GetTooltipData()
 		
@@ -515,7 +543,54 @@ function Scanner:SaveCurrency()
 	
 	BSYC.db.player.currency = slotItems
 end
+
+function Scanner:CleanupBags()
 	
+	--this function will cleanup the bags and make sure there are no orphaned bags that shouldn't be there for the player
+	--the purpose of this function is to fix the bag counts that were changed via Dragonflight
+
+	Debug(2, "CleanupBags")
+	
+	local bagtype = ""
+
+	--you want to remove the items from the table AFTER the iteration, otherwise you can open up a can of worms if you set to NIL during the table iteration
+	--this is considered bad practice and should only be done if rehashing a table
+
+	--BAG
+	bagtype = "bag"
+	
+	if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
+	
+	for bagID, bagData in pairs(BSYC.db.player[bagtype]) do
+		if not self:IsBackpack(bagID) and not self:IsBackpackBag(bagID) and not self:IsKeyring(bagID) then
+			BSYC.db.player[bagtype][bagID] = nil
+		end
+	end
+
+	--BANK
+	bagtype = "bank"
+
+	if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
+	
+	for bagID, bagData in pairs(BSYC.db.player[bagtype]) do
+		if not self:IsBank(bagID) and not self:IsBankBag(bagID) then
+			BSYC.db.player[bagtype][bagID] = nil
+		end
+	end
+
+	--REAGENTS
+	bagtype = "reagents"
+
+	if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
+	
+	for bagID, bagData in pairs(BSYC.db.player[bagtype]) do
+		if not self:IsReagentBag(bagID) then
+			BSYC.db.player[bagtype][bagID] = nil
+		end
+	end
+
+end
+
 function Scanner:SaveProfessions()
 	if not BSYC.IsRetail then return end
 	Debug(2, "SaveProfessions")

@@ -10,7 +10,7 @@ local Scanner = BSYC:GetModule("Scanner")
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 
 local function Debug(level, ...)
-    if BSYC.debugTrace and BSYC.DEBUG then BSYC.DEBUG(level, "Events", ...) end
+    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Events", ...) end
 end
 
 Events.canQueryAuctions = false
@@ -46,7 +46,7 @@ local function showEventAlert(text, alertType)
 end
 
 function Events:DoTimer(sName, sFunc, sDelay, sRepeat)
-	Debug(2, "DoTimer", sName, sFunc, sDelay, sRepeat)
+	Debug(3, "DoTimer", sName, sFunc, sDelay, sRepeat)
 	
 	if not self.timers then self.timers = {} end
 	if not sRepeat then
@@ -63,12 +63,12 @@ function Events:DoTimer(sName, sFunc, sDelay, sRepeat)
 end
 
 function Events:StopTimer(sName)
-	Debug(2, "StopTimer", sName)
-	
 	if not self.timers then return end
 	if not sName then return end
+	if not self.timers[sName] then return end
 	self:CancelTimer(self.timers[sName])
 	self.timers[sName] = nil
+	Debug(3, "StopTimer", sName)
 end
 
 function Events:OnEnable()
@@ -185,7 +185,7 @@ function Events:OnEnable()
 			Events.canQueryAuctions = false --reset this
 			self:DoTimer("ScanAuction", function() Scanner:SaveAuctionHouse() end, 0.5)
 		end)
-
+		
 	else
 		--classic auction house
 		self:RegisterEvent("AUCTION_OWNED_LIST_UPDATE", function() Scanner:SaveAuctionHouse() end)
@@ -198,14 +198,14 @@ function Events:OnEnable()
 		end)
 	end
 	
-	self:DoTimer("PreventStartupSpam", function()
-		--UNIT_INVENTORY_CHANGED and BAG_UPDATE fires A LOT when logging in for the first time.  So in order to prevent scanning spam, lets add a delay
-		Debug(2, "Execute-PreventStartupSpam")
-		self:RegisterEvent("UNIT_INVENTORY_CHANGED")
-		self:RegisterEvent("BAG_UPDATE")
-		Scanner:StartupScans() --do the login player scans
-	end, 4)
+	Scanner:StartupScans() --do the login player scans
 	
+	--BAG_UPDATE fires A LOT during login and when in between loading screens.  In general it's a very spammy event.
+	--to combat this we are going to use the DELAYED event which fires after all the BAG_UPDATE are done.  Then go through the spam queue.
+	self:RegisterEvent("BAG_UPDATE")
+	self:RegisterEvent("BAG_UPDATE_DELAYED")
+	
+	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 end
 
 function Events:PLAYER_MONEY()
@@ -220,35 +220,44 @@ function Events:PLAYER_GUILD_UPDATE()
 	BSYC.db.player.guild = Unit:GetUnitInfo().guild
 end
 
-function Events:UNIT_INVENTORY_CHANGED(event, unit)
-	if unit == "player" then
-		Scanner:SaveEquipment()
-	end
+function Events:PLAYER_EQUIPMENT_CHANGED(event)
+	Scanner:SaveEquipment()
 end
 
 function Events:BAG_UPDATE(event, bagid)
+	if not self.SpamBagQueue then self.SpamBagQueue = {} end
+	self.SpamBagQueue[bagid] = true
+end
 
-	local bagname
-
-	if Scanner:IsBackpack(bagid) or Scanner:IsBackpackBag(bagid) or Scanner:IsKeyring(bagid) then
-		bagname = "bag"
-	elseif Scanner:IsBank(bagid) or Scanner:IsBankBag(bagid) or Scanner:IsReagentBag(bagid) then
-		--only do this while we are at a bank
-		if Unit.atBank then
-			if Scanner:IsReagentBag(bagid) then --just in case
-				Scanner:SaveReagents()
-				return
+function Events:BAG_UPDATE_DELAYED(event)
+	if not self.SpamBagQueue then self.SpamBagQueue = {} end
+	--NOTE: BSYC:GetHashTableLen(self.SpamBagQueue) may show more then is actually processed.  Example it has the banks in queue but we aren't at a bank.
+	Debug(2, "SpamBagQueue", BSYC:GetHashTableLen(self.SpamBagQueue))
+	
+	local totalProcessed = 0
+	
+	for bagid in pairs(self.SpamBagQueue) do
+		local bagname
+	
+		if Scanner:IsBackpack(bagid) or Scanner:IsBackpackBag(bagid) or Scanner:IsKeyring(bagid) then
+			bagname = "bag"
+		elseif Scanner:IsBank(bagid) or Scanner:IsBankBag(bagid) then
+			--only do this while we are at a bank
+			if Unit.atBank then
+				bagname = "bank"
 			end
-			bagname = "bank"
-		else
-			return
 		end
-	else
-		--unknown bag, don't save it
-		return
-	end
 
-	Scanner:SaveBag(bagname, bagid)
+		if bagname then
+			Scanner:SaveBag(bagname, bagid)
+			totalProcessed = totalProcessed + 1
+		end
+		
+		--remove it
+		self.SpamBagQueue[bagid] = nil
+	end
+	
+	Debug(2, "SpamBagQueue", "totalProcessed", totalProcessed)
 	
 	--check if they crafted an item outside the bank, if so then do a parse check to update item count.
 	self:DoTimer("SaveCraftedReagents", function() Scanner:SaveCraftedReagents() end, 1)

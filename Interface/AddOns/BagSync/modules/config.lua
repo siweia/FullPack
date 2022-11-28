@@ -9,7 +9,7 @@ local config = LibStub("AceConfig-3.0")
 local configDialog = LibStub("AceConfigDialog-3.0")
 
 local function Debug(level, ...)
-    if BSYC.debugTrace and BSYC.DEBUG then BSYC.DEBUG(level, "Config", ...) end
+    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Config", ...) end
 end
 
 local options = {}
@@ -377,6 +377,16 @@ options.args.display = {
 					arg = "display.showGuildCurrentCharacter",
 					disabled = function() return not BSYC.options["enableGuild"] end,
 					hidden = function() return BSYC.IsClassic end,
+				},
+				sorttooltipbytotals = {
+					order = 8,
+					type = "toggle",
+					name = L.SortTooltipByTotals,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "display.sortTooltipByTotals",
 				},
 			}
 		},

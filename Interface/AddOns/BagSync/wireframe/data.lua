@@ -9,7 +9,7 @@ local Unit = BSYC:GetModule("Unit")
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 
 local function Debug(level, ...)
-    if BSYC.debugTrace and BSYC.DEBUG then BSYC.DEBUG(level, "Data", ...) end
+    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Data", ...) end
 end
 
 --increment forceDBReset to reset the ENTIRE db forcefully
@@ -101,6 +101,7 @@ function Data:OnEnable()
 	if BSYC.options.focusSearchEditBox == nil then BSYC.options.focusSearchEditBox = false end
 	if BSYC.options.enableAccurateBattlePets == nil then BSYC.options.enableAccurateBattlePets = true end
 	if BSYC.options.alwaysShowAdvSearch == nil then BSYC.options.alwaysShowAdvSearch = false end
+	if BSYC.options.sortTooltipByTotals == nil then BSYC.options.sortTooltipByTotals = false end
 	
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
