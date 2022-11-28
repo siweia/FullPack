@@ -1,7 +1,11 @@
+--Mini Dragon <流浪者酒馆-Brilla@金色平原(The Golden Plains-CN)> 20221128
+--Blizzard Entertainment
+
+if GetLocale() ~= "zhCN" then return end
 local L
 
 ---------------------------
---  Eranog --
+--  Eranog -- 艾拉诺格
 ---------------------------
 --L= DBM:GetModLocalization(2480)
 
@@ -18,60 +22,60 @@ local L
 --})
 
 ---------------------------
---  Terros --
+--  Terros -- 泰洛斯
 ---------------------------
 --L= DBM:GetModLocalization(2500)
 
 ---------------------------
---  The Primalist Council --
+--  The Primalist Council -- 原始议会
 ---------------------------
 --L= DBM:GetModLocalization(2486)
 
 ---------------------------
---  Sennarth, The Cold Breath --
+--  Sennarth, The Cold Breath -- 瑟娜尔丝，冰冷之息
 ---------------------------
 --L= DBM:GetModLocalization(2482)
 
 ---------------------------
---  Dathea, Ascended --
+--  Dathea, Ascended -- 晋升者达瑟雅
 ---------------------------
 --L= DBM:GetModLocalization(2502)
 
 ---------------------------
---  Kurog Grimtotem --
+--  Kurog Grimtotem -- 库洛格-恐怖图腾
 ---------------------------
 L= DBM:GetModLocalization(2491)
 
 L:SetTimerLocalization({
-	timerDamageCD = "Damage (%s)",
-	timerAvoidCD = "Avoid (%s)",
-	timerUltimateCD = "Ultimate (%s)"
+	timerDamageCD = "攻击阶段 (%s)",
+	timerAvoidCD = "防御阶段 (%s)",
+	timerUltimateCD = "终极阶段 (%s)"
 })
 
 L:SetOptionLocalization({
-	timerDamageCD = "Show timers for targeted damage attacks: $spell:382563, $spell:373678, $spell:391055, $spell:373487",
-	timerAvoidCD = "Show timers for avoidable attacks: $spell:373329, $spell:391019, $spell:395893, $spell:390920",
-	timerUltimateCD = "Show timers for 100 energy ultimate attacks: $spell:374022, $spell:372456, $spell:374691, $spell:374215"
+	timerDamageCD = "显示攻击阶段的 $spell:382563, $spell:373678, $spell:391055, $spell:373487 的计时器",
+	timerAvoidCD = "显示防御阶段的 $spell:373329, $spell:391019, $spell:395893, $spell:390920 的计时器",
+	timerUltimateCD = "显示终极阶段的 $spell:374022, $spell:372456, $spell:374691, $spell:374215 的计时器"
 })
 
 ---------------------------
---  Broodkeeper Diurna --
+--  Broodkeeper Diurna -- 巢穴守护者迪乌尔娜
 ---------------------------
 L= DBM:GetModLocalization(2493)
 
 L:SetMiscLocalization({
-	staff	= "Staff",
-	eStaff	= "Empowered Staff"
+	staff		= "巨杖",
+	eStaff	= "强化巨杖"
 })
 
 ---------------------------
---  Raszageth the Storm-Eater --
+--  Raszageth the Storm-Eater -- 莱萨杰丝，噬雷之龙
 ---------------------------
 L= DBM:GetModLocalization(2499)
 
 L:SetMiscLocalization({
-	negative = "negative",
-	positive = "positive"
+	negative = "负电荷",
+	positive = "正电荷"
 })
 
 -------------
@@ -80,5 +84,5 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("VaultoftheIncarnatesTrash")
 
 L:SetGeneralLocalization({
-	name =	"VotI Trash"
+	name =	"化身巨龙牢窟小怪"
 })
