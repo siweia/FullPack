@@ -12,6 +12,9 @@ L['gem_cluster_note'] = 'Эти предметы станут доступны �
 L['options_icons_bonus_boss'] = 'Бонусные элитные монстры'
 L['options_icons_bonus_boss_desc'] = 'Отображение местоположения бонусных элитных монстров.'
 
+L['options_icons_profession_treasures'] = nil
+L['options_icons_profession_treasures_desc'] = nil
+
 L['dragon_glyph'] = 'Драконий символ'
 L['options_icons_dragon_glyph'] = 'Драконий символ'
 L['options_icons_dragon_glyph_desc'] = 'Показать расположение всех 48 драконьих символов.'
@@ -32,15 +35,20 @@ L['scout_pack'] = 'Сумка разведчика экспедиции'
 L['options_icons_scout_pack'] = 'Сумка разведчика экспедиции'
 L['options_icons_scout_pack_desc'] = 'Отображение местоположения Сумок разведчиков экспедиции.'
 
+L['dr_best'] = nil
+L['dr_best_dash'] = nil
+L['dr_note'] = nil
+L['dr_note_dash'] = nil
+L['dr_bronze'] = nil
+L['options_icons_dragonrace'] = nil
+L['options_icons_dragonrace_desc'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['blisterhide_note'] = 'Появляется одновременно с {npc:197344}, {npc:197356} и {npc:197354}'
+L['brackenhide_note'] = nil
 L['fisherman_tinnak_note'] = 'Соберите |cFFFFFD00Наконечник гарпуна|r, |cFFFFFD00Деревянный шест|r и |cFFFFFD00Потрепанный побег водоросли|r для призыва редкого монстра.'
-L['gnarls_note'] = 'Появляется одновременно с {npc:197344}, {npc:197353} и {npc:197356}'
-L['high_shaman_rotknuckle_note'] = 'Появляется одновременно с {npc:197344}, {npc:197353} и {npc:197354}'
-L['snarglebone_note'] = 'Появляется одновременно с {npc:197353}, {npc:197356} и {npc:197354}'
 L['spellwrought_snowman_note'] = 'Соберите 10x {npc:193424} и принесите их {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Возьмите |cFFFFFD00Напевающий фрагмент|r и получите {spell:382076} затем используйте |cFFFFFD00Незаряженное сосредоточение|r для того, чтобы призвать редкого монстра.'
 
@@ -49,6 +57,22 @@ L['breezebiter_note'] = 'Летает на небе, чтобы приземли
 L['forgotten_jewel_box_note'] = '{item:199065} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['gnoll_fiend_flail_note'] = '{item:199066} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['pepper_hammer_note'] = 'Возьмите |cFFFFFD00Древесный сок|r и используйте его на |cFFFFFD00палочке|r чтобы приманить {npc:195373}.\n\n|cFFFF0000(БАГ: Чтобы нажать на палку, может потребоваться перезагрузка)|r'
+
+L['pt_alch_experimental_decay_sample_note'] = nil
+L['pt_alch_firewater_powder_sample_note'] = nil
+L['pt_ench_enriched_earthen_shard_note'] = nil
+L['pt_ench_faintly_enchanted_remains_note'] = nil
+L['pt_ench_forgotten_arcane_tome_note'] = nil
+L['pt_jewel_crystalline_overgrowth_note'] = nil
+L['pt_jewel_harmonic_crystal_harmonizer_note'] = nil
+L['pt_leath_decay_infused_tanning_oil_note'] = nil
+L['pt_leath_treated_hides_note'] = nil
+L['pt_leath_well_danced_drum_note'] = nil
+L['pt_script_dusty_darkmoon_card_note'] = nil
+L['pt_script_frosted_parchment_note'] = nil
+L['pt_smith_spelltouched_tongs_note'] = nil
+L['pt_tailor_decaying_brackenhide_blanket_note'] = nil
+L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = nil
 
 L['leyline_note'] = 'Силовые линии Простора.'
 L['options_icons_layline'] = '{achievement:16638}'
@@ -78,9 +102,20 @@ L['slightly_chewed_duck_egg_note'] = 'Найдите и погладьте {npc:
 L['yennus_boat'] = 'Игрушечная лодка клыкарров'
 L['yennus_boat_note'] = 'Возьмите |cFFFFFD00игрушечную лодку клыкарров|r, чтобы получить {item:200876}, который запускает задание {quest:72063}, которое можно сдать у {npc:195252}.'
 
+L['pt_alch_canteen_of_suspicious_water_note'] = nil
+L['pt_ench_stormbound_horn_note'] = nil
+L['pt_jewel_fragmented_key_note'] = nil
+L['pt_jewel_lofty_malygite_note'] = nil
+L['pt_leath_wind_blessed_hide_note'] = nil
+L['pt_script_sign_language_reference_sheet_note'] = nil
+L['pt_smith_ancient_spear_shards_note'] = nil
+L['pt_smith_falconer_gauntlet_drawings_note'] = nil
+L['pt_tailor_noteworthy_scrap_of_carpet_note'] = nil
+L['pt_tailor_silky_surprise_note'] = nil
+
 L['lizi_note'] = 'Завершите сюжетную линию Похождения посвященного, начав с {quest:65901}. Выполняйте ежедневные задания, чтобы вылечить Яшу и получить средство передвижения.\n\nВ дополнение к предметам, требуемым для всех заданий, требуется 150x {currency:2003} за задание, в общей сложности 750x {currency:2003}.'
 L['lizi_note_day1'] = 'Соберите 20x {item:192615} с монстров насекомых на |cFFFFFD00Драконьих Островах|r'
-L['lizi_note_day2'] = 'Соберите 10x {item:192658} с монстров растений на |cFFFFFD00Драконьих Островах|r'
+L['lizi_note_day2'] = 'Соберите 20x {item:192658} с монстров растений на |cFFFFFD00Драконьих Островах|r'
 L['lizi_note_day3'] = 'Соберите 10x {item:194966} ловится из любых водоемов на |cFFFFFD00Драконьих Островах|r. Чаще всего встречается в реках на |cFFFFFD00Равнине Он\'ары|r'
 L['lizi_note_day4'] = 'Соберите 20x {item:192636} с мамонтов и яков на |cFFFFFD00Заставе большекопытов|r'
 L['lizi_note_day5'] = 'Возьмите 1x {item:200598} у {npc:190015} в палатке к югу от |cFFFFFD00Ключей Он\'ир|r'
@@ -97,9 +132,13 @@ L['bakar_hugo_note'] = 'Путешествует с лагерем Айлааг.
 L['options_icons_bakar'] = '{achievement:16424}'
 L['options_icons_bakar_desc'] = 'Отображение местоположения всех собак (бакар) для достижения {achievement:16424}.'
 
+L['ancestor_note'] = nil
+L['options_icons_ancestor'] = '{achievement:16423}'
+L['options_icons_ancestor_desc'] = nil
+
 L['dreamguard_note'] = 'Возьмите в цель Изумрудного Стражника и  ' .. ns.color.Orange('/спать')
-L['options_icons_dreamguards'] = '{achievement:16574}'
-L['options_icons_dreamguards_desc'] = 'Отображать места Изумрудных Стражников для {achievement:16574}'
+L['options_icons_dreamguard'] = '{achievement:16574}'
+L['options_icons_dreamguard_desc'] = 'Отображать места Изумрудных Стражников для {achievement:16574}'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
@@ -111,6 +150,19 @@ L['woofang_note'] = 'Погладьте {npc:193156}, чтобы призват�
 L['acorn_harvester_note'] = 'Подберите |cFFFFFD00желудь|r с земли поблизости, чтобы получить {spell:388485}, а затем взаимодействуйте с {npc:196172}.'
 L['cracked_hourglass_note'] = '{item:199068} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['sandy_wooden_duck_note'] = 'Возьмите {item:199069} и используйте ее.'
+
+L['pt_alch_contraband_concoction_note'] = nil
+L['pt_alch_furry_gloop_note'] = nil
+L['pt_ench_fractured_titanic_sphere_note'] = nil
+L['pt_jewel_alexstraszite_cluster_note'] = nil
+L['pt_jewel_painters_pretty_jewel_note'] = nil
+L['pt_leath_decayed_scales_note'] = nil
+L['pt_script_counterfeit_darkmoon_deck_note'] = nil
+L['pt_script_forgetful_apprentices_tome_note'] = nil
+L['pt_script_how_to_train_your_whelpling_note'] = nil
+L['pt_smith_draconic_flux_note'] = nil
+L['pt_tailor_ancient_dragonweave_bolt_note'] = nil
+L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -129,3 +181,23 @@ L['onyx_gem_cluster_note'] = 'На 21-м уровне известности у 
 L['fullsails_supply_chest'] = 'Сундук с припасами Коры'
 L['hidden_hornswog_hoard'] = 'Скрытый заложник рогоплава'
 L['hidden_hornswog_hoard_note'] = 'Соберите {item:200064}, {item:200065} и {item:200066}, объедините их рядом с |cFFFFFD00"Загадки для внимательных: практический справочник"|r и киньте полученный предмет в лягушку.'
+
+L['pt_alch_frostforged_potion_note'] = nil
+L['pt_alch_well_insulated_mug_note'] = nil
+L['pt_ench_enchanted_debris_note'] = nil
+L['pt_ench_flashfrozen_scroll_note'] = nil
+L['pt_ench_lava_infused_seed_note'] = nil
+L['pt_engi_boomthyr_rocket_note'] = nil
+L['pt_engi_intact_coil_capacitor_note'] = nil
+L['pt_jewel_closely_guarded_shiny_note'] = nil
+L['pt_jewel_igneous_gem_note'] = nil
+L['pt_leath_poachers_pack_note'] = nil
+L['pt_leath_spare_djaradin_tools_note'] = nil
+L['pt_script_pulsing_earth_rune_note'] = nil
+L['pt_smith_ancient_monument_note'] = nil
+L['pt_smith_curious_ingots_note'] = nil
+L['pt_smith_glimmer_of_blacksmithing_wisdom_note'] = nil
+L['pt_smith_molten_ingot_note'] = nil
+L['pt_smith_qalashi_weapon_diagram_note'] = nil
+L['pt_tailor_itinerant_singed_fabric_note'] = nil
+L['pt_tailor_mysterious_banner_note'] = nil
