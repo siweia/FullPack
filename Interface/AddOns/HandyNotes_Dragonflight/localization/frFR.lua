@@ -47,7 +47,7 @@ L['options_icons_dragonrace_desc'] = 'Afficher les emplacements des Courses du V
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_note'] = 'L\'apparition de ce rare sera annoncée dans le chat si vous vous trouvez dans la zone du |cFFFFFD00Creux des Fougerobes|r.'
+L['brackenhide_rare_note'] = 'L\'apparition de ce rare sera annoncée dans le chat si vous vous trouvez dans la zone du |cFFFFFD00Creux des Fougerobes|r.'
 L['fisherman_tinnak_note'] = 'Récupérez la |cFFFFFD00Canne à pêche cassée|r, le |cFFFFFD00Filet de pêche déchiré|r et le |cFFFFFD00Vieux harpon|r pour faire apparaître le rare.'
 L['spellwrought_snowman_note'] = 'Récupérez 10x {npc:193424} et amenez-les au {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Récupérez un |cFFFFFD00Fragment chantant|r pour obtenir {spell:382076} et utilisez le |cFFFFFD00Focalisateur déchargé|r pour faire apparaître le rare.'
@@ -57,6 +57,7 @@ L['breezebiter_note'] = 'Vole dans le ciel, pour le faire descendre, volez près
 L['forgotten_jewel_box_note'] = 'Récupérez la {item:199065} dans un Coffre clanique au Refuge d\'Ondecrête (49.4 67.3) dans les Plaines d\'Ohn\'ahra et utilisez-la.'
 L['gnoll_fiend_flail_note'] = '{item:199066} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 L['pepper_hammer_note'] = 'Récupérez la |cFFFFFD00Sève|r et utilisez le |cFFFFFD00Bâton|r pour attirer le {npc:195373}.\n\n|cFFFF0000(BUG : Pour cliquer sur le bâton, un rechargement peut être nécessaire)|r'
+L['snow_covered_scroll'] = 'Parchemin couvert de neige'
 
 L['pt_alch_experimental_decay_sample_note'] = 'A l\'intérieur d\'un grand chaudron vert.'
 L['pt_alch_firewater_powder_sample_note'] = 'À l\'extérieur d\'une maison en rondins, près d\'un vase.'
@@ -77,6 +78,9 @@ L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = 'Suivez les escaliers à gau
 L['leyline_note'] = 'Réalignez la ligne tellurique.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Afficher les emplacements de toutes les lignes telluriques pour le haut-fait {achievement:16638}.'
+
+L['seeing_blue_note'] = 'Volez du sommet des archives d’Azur jusqu’à l’assemblée de Cobalt sans atterrir.'
+L['snowman_note'] = 'Il y a trois {npc:197599s} dans la zone (elles ont pu être déplacées par d\'autres joueurs), faites-les rouler vers les deux enfants {npc:197838} et {npc:197839}.\nVous obtenez le haut-fait lorsque les boules de neige ont la bonne taille.'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -134,7 +138,7 @@ L['options_icons_bakar_desc'] = 'Afficher l\'emplacement de tous les chiens (bak
 
 L['ancestor_note'] = 'Obtenez le buff {spell:369277} (1 heure) dans une tente à l\'|cFFFFFD00Avant-poste de Pas-de-bois|r grâce à une |cFFFFFD00Essence de l’éveil|r pour voir l\'ancêtre et lui offrir l\'objet requis.'
 L['options_icons_ancestor'] = '{achievement:16423}'
-L['options_icons_ancestor_desc'] = 'Afficher les emplacements des ancêtres pour {achievement:16574}.'
+L['options_icons_ancestor_desc'] = 'Afficher les emplacements des ancêtres pour {achievement:16423}.'
 
 L['dreamguard_note'] = 'Ciblez le Garde-rêve et ' .. ns.color.Orange('/dormir')
 L['options_icons_dreamguard'] = '{achievement:16574}'
@@ -151,6 +155,8 @@ L['acorn_harvester_note'] = 'Ramassez un |cFFFFFD00Gland|r sur le sol à proximi
 L['cracked_hourglass_note'] = '{item:199068} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 L['sandy_wooden_duck_note'] = 'Récupérez {item:199069} et utilisez-la.'
 
+L['tasty_hatchling_treat_note'] = 'Dans un tonneau derrière l\'étagère.'
+
 L['pt_alch_contraband_concoction_note'] = 'Caché dans les buissons. ' .. ns.color.Orange('Difficile à voir.')
 L['pt_alch_furry_gloop_note'] = 'Jetez un {npc:194855} proche dans chaque chaudron puis tuez le monstre qui apparaît.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'Au sud du |cFFFFFD00Bastion de Tyr|r.'
@@ -161,7 +167,7 @@ L['pt_script_counterfeit_darkmoon_deck_note'] = 'Parlez à {npc:194856} et propo
 L['pt_script_forgetful_apprentices_tome_note'] = 'Sur une table près d\'un grand télescope.'
 L['pt_script_how_to_train_your_whelpling_note'] = 'Un petit livre marron posé dans le bac à sable.'
 L['pt_smith_draconic_flux_note'] = 'A l\'intérieur d\'un bâtiment.'
-L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Cliquez sur le Rouet tisse-dragon ancien pour effectuer un mini-jeu où vous devez relier les bobines de fil à la gemme centrale.'
+L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Cliquez sur le |cFFFFFD00Rouet tisse-dragon ancien|r pour effectuer un mini-jeu où vous devez relier les bobines de fil à la gemme centrale.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Une petite bannière dans un tas de sable.'
 
 -------------------------------------------------------------------------------
@@ -169,18 +175,30 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Une petite bannière
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'La Troupe Qalashi voyage sur leur {npc:192737} jusqu\'à cette tour.'
-L['shasith_note'] = 'À l\'intérieur du |cFFFFFD00Trône d\'obsidienne|r. \n\nVous et d\'autres joueurs devez rapporter un total de 20x {item:191264}. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la Citadelle d\'obsidienne.'
+L['lepidoralia_note'] = 'Situé dans la |cFFFFFD00Caverne Bruissante|r. Aidez le {npc:193342} à attraper des {npc:193274s} jusqu\'à ce que le rare apparaisse.'
+L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la Citadelle d\'obsidienne.' -- pls review
+L['shadeslash_note'] = 'Cliquez sur le |cFFFFFD00Focalisateur volé|r pour invoquer le rare.'
+L['shasith_note'] = 'À l\'intérieur du |cFFFFFD00Trône d\'obsidienne|r.'
+L['slurpo_snail_note'] = 'Récupérez un {item:201033} dans une grotte de |cFFFFFD00La Travée d\'Azur|r (11, 41) et utilisez-le dans cette grotte pour l\'invoquer.'
 L['worldcarver_atir_note'] = 'Récupérez 3x {item:191211} sur les {npc:187366} à proximité et placez-les sur les {npc:197395} pour faire apparaître le rare.'
 
 L['bubble_drifter_note'] = '{item:199061} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 L['dead_mans_chestplate_note'] = 'A l\'intérieur de la tour, au niveau intermédiaire.'
+L['fullsails_supply_chest_note'] = 'La clé est récupérable sur les {npc:187971s} et {npc:187320s} au sud de l\'|cFFFFFD00Ambassade de Trêve-Ailée|r.'
 L['golden_dragon_goblet_note'] = 'Récupérez un {item:202081} sur les {npc:190056} sur la |cFFFFFD00Côte Sauvage|r et terminez la petite suite de quêtes.'
 L['misty_treasure_chest_note'] = 'Montez sur la {npc:185485} qui dépasse de la cascade pour entrer dans la grotte.'
 L['onyx_gem_cluster_note'] = 'Au Renom 21 avec l\'Expédition du Dracaret, vous pouvez compléter la quête {quest:70833} pour obtenir {item:200738} comme récompense (une fois par compte) ou alors acheter la carte à {npc:189065} pour 3 {item:192863} et 500 {currency:2003} et l\'utiliser.'
+L['torn_riding_pack_note'] = 'Situé au sommet de la cascade.'
+L['yennus_kite_note'] = 'Coincé dans une branche au sommet de l\'arbre.'
 
 L['fullsails_supply_chest'] = 'Clé de coffre de fournitures des Gréements'
-L['hidden_hornswog_hoard'] = 'Horde de bufflaciens cachée'
-L['hidden_hornswog_hoard_note'] = 'Collectez {item:200064}, {item:200065} et {item:200066}, combinez-les à |cFFFFFD00"l\'Énigmes sagaces : un guide de poche"|r près du trésor puis nourrissez la grenouille.'
+L['hidden_hornswog_hoard_note'] = [[
+Récupérez trois items différents et combinez-les à |cFFFFFD00"l\'Énigmes sagaces : un guide de poche"|r près du bufflacien pour obtenir une {item:200063} et le nourrir. Elle s'écartera alors du chemin pour que vous puissiez récupérer son trésor.
+
+{item:200064}
+{item:200065}
+{item:200066}
+]]
 
 L['pt_alch_frostforged_potion_note'] = 'Au milieu du cratère gelé.'
 L['pt_alch_well_insulated_mug_note'] = 'Dans le |cFFFFFD00Donjon du Fléau-des-Dragons|r entre un groupe de monstres élites.'
@@ -201,3 +219,10 @@ L['pt_smith_molten_ingot_note'] = 'Envoyez 3 lingots dans la lave pour faire app
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Au sommet d\'une enclume.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Un morceau de tissu accroché à un arbre juste à l\'extérieur de la grotte où le boss final apparaît.' .. ns.color.Orange('Nécessite de la précision avec le Vol à dos de Dragon ou bien un portail de démoniste.')
 L['pt_tailor_mysterious_banner_note'] = 'Flottant sur le toit des bâtiments.'
+
+L['quack_week_1'] = 'Semaine 1'
+L['quack_week_2'] = 'Semaine 2'
+L['quack_week_3'] = 'Semaine 3'
+L['quack_week_4'] = 'Semaine 4'
+L['quack_week_5'] = 'Semaine 5'
+L['lets_get_quacking'] = 'Vous ne pouvez sauver qu\'un seul {npc:187863} par semaine.'

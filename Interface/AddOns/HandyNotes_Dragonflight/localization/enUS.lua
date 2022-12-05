@@ -6,7 +6,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
-L['gem_cluster_note'] = 'The required item can be found at Renown 21 with the Dragonscale Expedition in in Expedition Scout\'s Packs and Disturbed Dirts.'
+L['gem_cluster_note'] = 'The required item can be found at Renown 21 with the Dragonscale Expedition in Expedition Scout\'s Packs and Disturbed Dirts.'
 
 L['options_icons_bonus_boss'] = 'Bonus Elites'
 L['options_icons_bonus_boss_desc'] = 'Display locations of bonus elites.'
@@ -46,7 +46,7 @@ L['options_icons_dragonrace_desc'] = 'Display the location of Dragonriding Race.
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_note'] = 'The spawn of this rare will be announced in the chat if you are in the |cFFFFFD00Brackenhide Hollow|r area.'
+L['brackenhide_rare_note'] = 'The spawn of this rare will be announced in the chat if you are in the |cFFFFFD00Brackenhide Hollow|r area.'
 L['fisherman_tinnak_note'] = 'Collect |cFFFFFD00Broken Fishing Pole|r, |cFFFFFD00Torn Fishing Net|r and |cFFFFFD00Old Harpoon|r to spawn the rare.'
 L['spellwrought_snowman_note'] = 'Collect 10x {npc:193424} and bring them to {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Collect a |cFFFFFD00Singing Fragment|r to get {spell:382076} and use the |cFFFFFD00Uncharded Focus|r to spawn the rare.'
@@ -56,6 +56,7 @@ L['breezebiter_note'] = 'Flies in the sky to pull him down, fly close to him.'
 L['forgotten_jewel_box_note'] = 'Loot {item:199065} from a Clan Chest in Ridgewater Retreat (49.4 67.3) on the Ohn\'ahran Plains and use it.'
 L['gnoll_fiend_flail_note'] = '{item:199066} can be found in Expedition Scout\'s Packs and Disturbed Dirts.'
 L['pepper_hammer_note'] = 'Collect |cFFFFFD00Tree Sap|r and then use the |cFFFFFD00Stick|r to lure the {npc:195373}.\n\n|cFFFF0000(BUG: To click on the stick a reload might be necessary)|r'
+L['snow_covered_scroll'] = 'Snow Covered Scroll'
 
 L['pt_alch_experimental_decay_sample_note'] = 'Inside a large green cauldron.'
 L['pt_alch_firewater_powder_sample_note'] = 'Outside log house next to vase.'
@@ -76,6 +77,9 @@ L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = 'Follow the stairs to the le
 L['leyline_note'] = 'Realign the ley line.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Display the location of all ley line for the achievement {achievement:16638}.'
+
+L['seeing_blue_note'] = 'Fly from the top of the Azure Archives to the Cobalt Assembly without landing.'
+L['snowman_note'] = 'There are three {npc:197599s} laying in the area (might have been moved by other players), roll them to the two kids {npc:197838} and {npc:197839}.\nYou get the Achievement when the snowballs have the right sizes.'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -150,6 +154,8 @@ L['acorn_harvester_note'] = 'Collect an |cFFFFFD00Acorn|r from the ground nearby
 L['cracked_hourglass_note'] = '{item:199068} can be found in Expedition Scout\'s Packs and Disturbed Dirts.'
 L['sandy_wooden_duck_note'] = 'Collect {item:199069} and use it.'
 
+L['tasty_hatchling_treat_note'] = 'In a barrel behind the bookshelf.'
+
 L['pt_alch_contraband_concoction_note'] = 'Hidden in bushes. ' .. ns.color.Orange('Difficult to see.')
 L['pt_alch_furry_gloop_note'] = 'Drop a nearby {npc:194855} into each cauldron then kill the monster that spawns.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'South of |cFFFFFD00Tyrhold|r.'
@@ -168,18 +174,30 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Small banner inside 
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'The Qalashi War Party travels on there {npc:192737} to this tower.'
-L['shasith_note'] = 'Inside the |cFFFFFD00Obsidian Throne|r. \n\nYou and other Players have to return a total of 20x {item:191264}. To craft a key you need to combine 30x {item:191251} and 3x {item:193201}, you can get these items from Obsidian Citadel Mobs.'
+L['lepidoralia_note'] = 'Located in the |cFFFFFD00Fluttering Cavern|r. Help {npc:193342} catch {npc:193274s} until the rare spawns.'
+L['obsidian_citadel_rare_note'] = 'You and other Players have to return a total of %dx {item:191264} to %s. To craft a key you need to combine 30x {item:191251} and 3x {item:193201}, you can get these items from Obsidian Citadel Mobs.'
+L['shadeslash_note'] = 'Click the |cFFFFFD00Pilfered Focus|r to summon the rare.'
+L['shasith_note'] = 'Inside the |cFFFFFD00Obsidian Throne|r.'
+L['slurpo_snail_note'] = 'Loot a {item:201033} from a cave in |cFFFFFD00The Azure Span|r (11, 41) and use it in this cave to summon him.'
 L['worldcarver_atir_note'] = 'Collect 3x {item:191211} from {npc:187366} nearby and place them at {npc:197395} to spawn the rare.'
 
 L['bubble_drifter_note'] = '{item:199061} can be found in Expedition Scout\'s Packs and Disturbed Dirts.'
 L['dead_mans_chestplate_note'] = 'Inside the tower on the middle floor.'
+L['fullsails_supply_chest_note'] = 'The key drops from {npc:187971s} and {npc:187320s} south of |cFFFFFD0Wingrest Embassy|r.'
 L['golden_dragon_goblet_note'] = 'Loot {item:202081} from {npc:190056} on the |cFFFFFD00Wild Coast|r and complete the small quest line.'
 L['misty_treasure_chest_note'] = 'Stand on the {npc:185485} that sticks out of the waterfall to enter the cave.'
 L['onyx_gem_cluster_note'] = 'At Renown 21 with the Dragonscale Expedition you can complete the quest {quest:70833} to get {item:200738} as a reward (one time per account) or buy the map from {npc:189065} for 3 {item:192863} and 500 {currency:2003} and use it.'
+L['torn_riding_pack_note'] = 'Located at the top of the waterfall.'
+L['yennus_kite_note'] = 'Stuck in a branch at the top of the tree.'
 
 L['fullsails_supply_chest'] = 'Fullsails Supply Chest'
-L['hidden_hornswog_hoard'] = 'Hidden Hornswog Hoard'
-L['hidden_hornswog_hoard_note'] = 'Collect {item:200064}, {item:200065} and {item:200066}, combine them at the |cFFFFFD00"Observant Riddles: A Field Guide"|r near the treasure then feed the frog.'
+L['hidden_hornswog_hoard_note'] = [[
+Collect three different items and combine them at the |cFFFFFD00"Observant Riddles: A Field Guide"|r near the hornswog to get {item:200063} and feed it. He will then move out of the way so you can loot his treasure.
+
+{item:200064}
+{item:200065}
+{item:200066}
+]]
 
 L['pt_alch_frostforged_potion_note'] = 'In the middle of the icy crater.'
 L['pt_alch_well_insulated_mug_note'] = 'In |cFFFFFD00Dragonbane Keep|r between a number of elite mobs.'
@@ -200,3 +218,10 @@ L['pt_smith_molten_ingot_note'] = 'Kick 3 ingots into the lava to spawn a mob. L
 L['pt_smith_qalashi_weapon_diagram_note'] = 'On top of an anvil.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'A piece of fabric hanging on a trees just outside the cave where the end boss spawns. ' .. ns.color.Orange('Requires precision Dragonriding or a warlock portal.')
 L['pt_tailor_mysterious_banner_note'] = 'Fluttering on top of the buildings.'
+
+L['quack_week_1'] = 'Week 1'
+L['quack_week_2'] = 'Week 2'
+L['quack_week_3'] = 'Week 3'
+L['quack_week_4'] = 'Week 4'
+L['quack_week_5'] = 'Week 5'
+L['lets_get_quacking'] = 'You can only rescue a single {npc:187863} per week.'

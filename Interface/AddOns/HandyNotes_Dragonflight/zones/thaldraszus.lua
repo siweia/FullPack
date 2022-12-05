@@ -2,12 +2,9 @@
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
 local ADDON_NAME, ns = ...
--- local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
-local BonusBoss = ns.node.BonusBoss
--- local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
@@ -19,7 +16,6 @@ local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
--- local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Transmog = ns.reward.Transmog
 
@@ -29,6 +25,7 @@ local POI = ns.poi.POI
 -------------------------------------------------------------------------------
 
 local map = Map({id = 2025, settings = true})
+local val = Map({id = 2112, settings = false})
 
 -------------------------------------------------------------------------------
 ------------------------------------ RARES ------------------------------------
@@ -211,6 +208,27 @@ map.nodes[47884976] = Rare({
 }) -- Woolfang
 
 -------------------------------------------------------------------------------
+
+-- These rares/elites are not part of the adventurer achievement for the zone
+
+map.nodes[55647727] = Rare({
+    id = 193229,
+    quest = 72814, -- 69873
+    rewards = {
+        Item({item = 200880, note = L['trinket']}) -- Wind-Sealed Mana Capsule
+    }
+}) -- Henlare
+
+map.nodes[36757287] = Rare({
+    id = 193273,
+    quest = 72842,
+    rewards = {
+        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
+        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
+    }
+}) -- Liskron the Dazzling
+
+-------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
 -------------------------------------------------------------------------------
 
@@ -278,6 +296,16 @@ map.nodes[52458361] = Treasure({
     }
 }) -- Strange Bear Cub
 
+val.nodes[09535629] = Treasure({
+    quest = 70731,
+    label = '{item:197769}',
+    note = L['tasty_hatchling_treat_note'],
+    parent = map.id,
+    rewards = {
+        Item({item = 198106}) -- Recipe: Tasty Hatchling's Treat
+    }
+}) -- Tasty Hatchling's Treat
+
 -------------------------------------------------------------------------------
 --------------------------------- BATTLE PETS ---------------------------------
 -------------------------------------------------------------------------------
@@ -317,27 +345,6 @@ map.nodes[56274924] = PetBattle({
         Achievement({id = 16511, criteria = 6, oneline = true}) -- Undead
     }
 }) -- Setimothes
-
--------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[55647727] = BonusBoss({
-    id = 193229,
-    quest = 72814, -- 69873
-    rewards = {
-        Item({item = 200880, note = L['trinket']}) -- Wind-Sealed Mana Capsule
-    }
-}) -- Henlare
-
-map.nodes[36757287] = BonusBoss({
-    id = 193273,
-    quest = 72842,
-    rewards = {
-        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
-        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
-    }
-}) -- Liskron the Dazzling
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
@@ -409,10 +416,10 @@ map.nodes[60407970] = PT.Tailoring({
     note = L['pt_tailor_miniature_bronze_dragonflight_banner_note']
 }) -- Miniature Bronze Dragonflight Banner
 
-local valdrakken = Map({id = 2112, settings = false})
-valdrakken.nodes[13206368] = PT.Inscription({
+val.nodes[13206368] = PT.Inscription({
     id = 198669,
     quest = nil,
+    parent = map.id,
     note = L['pt_script_how_to_train_your_whelpling_note']
 }) -- How to Train Your Whelpling
 
@@ -430,8 +437,8 @@ map.nodes[46107410] = Dragonglyph({rewards = {Achievement({id = 16099})}}) -- Dr
 map.nodes[66108230] = Dragonglyph({rewards = {Achievement({id = 16098})}}) -- Dragon Glyphs: Temporal Conflux
 map.nodes[72906921] = Dragonglyph({rewards = {Achievement({id = 16107})}}) -- Dragon Glyphs: Thaldrazsus Apex
 map.nodes[61615661] = Dragonglyph({rewards = {Achievement({id = 16103})}}) -- Dragon Glyphs: Tyrhold
-map.nodes[41285813] = Dragonglyph({
-    parent = 2112,
+val.nodes[59293792] = Dragonglyph({
+    parent = map.id,
     rewards = {Achievement({id = 16101})}
 }) -- Dragon Glyphs: Valdrakken
 map.nodes[72125131] = Dragonglyph({rewards = {Achievement({id = 16106})}}) -- Dragon Glyphs: Vault of the Incarnates

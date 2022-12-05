@@ -46,7 +46,7 @@ L['options_icons_dragonrace_desc'] = 'Zeigt die Positionen der Drachenrennen an.
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_note'] = 'Das erscheinen dieses seltenen Gegners wird im Chat angekündigt, wenn du dich im Gebiet |cFFFFFD00Brackenfellhöhle|r aufhältst.'
+L['brackenhide_rare_note'] = 'Das erscheinen dieses seltenen Gegners wird im Chat angekündigt, wenn du dich im Gebiet |cFFFFFD00Brackenfellhöhle|r aufhältst.'
 L['fisherman_tinnak_note'] = 'Sammel |cFFFFFD00Zerbrochene Angelrute|r, |cFFFFFD00Zerrissenes Fischernetz|r und |cFFFFFD00Alte Harpune|r, um ihn zu beschwören.'
 L['spellwrought_snowman_note'] = 'Sammel 10x {npc:193424} und bringe diese zu {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Sammel ein |cFFFFFD00Singendes Bruchstück|r, um den Schwächungszauber {spell:382076} zu erhalten und benutze dann |cFFFFFD00Ungeladener Fokus|r.'
@@ -56,6 +56,7 @@ L['breezebiter_note'] = 'Fliegt durch die Luft, um ihn herunterzuziehen, fliege 
 L['forgotten_jewel_box_note'] = 'Plündere {item:199065} aus einer Klankiste in Gratwasserzuflucht (49.4 67.3) in den Ebenen von Ohn\'ahra und benutze es.'
 L['gnoll_fiend_flail_note'] = '{item:199066} kann in Expeditionsspäherpacks und in Bewegte Erde enthalten sein.'
 L['pepper_hammer_note'] = 'Sammel |cFFFFFD00Baumharz|r und benutze dann den |cFFFFFD00Stock|r, um {npc:195373} anzulocken.\n\n|cFFFF0000(BUG: Um den Stock anzuklicken könnte ein reload nötig sein)|r'
+L['snow_covered_scroll'] = nil
 
 L['pt_alch_experimental_decay_sample_note'] = 'In einem großen grünen Kessel.'
 L['pt_alch_firewater_powder_sample_note'] = 'Außerhalb des Holzhauses neben der Vase.'
@@ -63,7 +64,7 @@ L['pt_ench_enriched_earthen_shard_note'] = 'Auf einem Steinhaufen.'
 L['pt_ench_faintly_enchanted_remains_note'] = 'Klicke die |cFFFFFD00Manaentzogene Kristallformation|r an, um einen Gegner erscheinen zu lassen und besiege diesen. Dann plündere den Kristall, der erscheint.'
 L['pt_ench_forgotten_arcane_tome_note'] = 'Liegt auf dem Boden, rechts neben dem Eingang des Gebäudes.'
 L['pt_jewel_crystalline_overgrowth_note'] = 'Neben einem kleinen Teich.'
-L['pt_jewel_harmonic_crystal_harmonizer_note'] = nil -- Minigame
+L['pt_jewel_harmonic_crystal_harmonizer_note'] = 'Klicke auf die Kiste, um einen Stärkungszauber zu erhalten und dann auf die 3 Kristalle.'
 L['pt_leath_decay_infused_tanning_oil_note'] = 'In einem Fass.'
 L['pt_leath_treated_hides_note'] = 'Beim |cFFFFFD00Schneebalglager|r.'
 L['pt_leath_well_danced_drum_note'] = 'In einem unterirdischen Gebäude mit {npc:186446} und {npc:186448}. Repariere die Trommel neben der {npc:194862}. Sobald er darauf tanzt, kannst du den Gegenstand plündern.'
@@ -76,6 +77,9 @@ L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = 'Folge den Treppen nach link
 L['leyline_note'] = 'Richte die Laylinie neu aus.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Zeigt die Positionen aller Leylinien für den Erfolg {achievement:16638} an.'
+
+L['seeing_blue_note'] = 'Fliegt ohne Zwischenlandung von der Spitze der Azurarchive zum Kobaltkonvent.'
+L['snowman_note'] = 'Es liegen 3 Schneebälle in der nähe (möglicherweise wurden sie von anderen Spielern weggerollt), rolle sie zu den Kindern {npc:197838} und {npc:197839}.\nDu erhälst den erfolg sobald die Schneebälle die richtigen gößen erreicht haben.'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -133,7 +137,7 @@ L['options_icons_bakar_desc'] = 'Zeigt die Position aller Bakar (Hunde) für den
 
 L['ancestor_note'] = 'Hol dir in einem Zelt am |cFFFFFD00Baumschrittaußenposten|r von der |cFFFFFD00Essenz des Erwachens|r den Stärkungszauber {spell:369277} (1 Stunde), um den Vorfahren zu sehen und biete ihm den benötigten Gegenstand an.'
 L['options_icons_ancestor'] = '{achievement:16423}'
-L['options_icons_ancestor_desc'] = 'Zeigt die Position der Vorfahren für den Erfolg {achievement:16574} an.'
+L['options_icons_ancestor_desc'] = 'Zeigt die Positionen der Vorfahren für den Erfolg {achievement:16423} an.'
 
 L['dreamguard_note'] = 'Visiere die Traumwächterin an und benutze den Chatbefehl ' .. ns.color.Orange('/schlafen') .. '.'
 L['options_icons_dreamguard'] = '{achievement:16574}'
@@ -150,6 +154,7 @@ L['acorn_harvester_note'] = 'Sammel in der Nähe eine |cFFFFFD00Eichel|r vom Bod
 L['cracked_hourglass_note'] = '{item:199068} kann in Expeditionsspäherpacks und in Bewegte Erde enthalten sein.'
 L['sandy_wooden_duck_note'] = 'Sammel {item:199069} und benutze diese.'
 
+L['tasty_hatchling_treat_note'] = nil
 L['pt_alch_contraband_concoction_note'] = 'In Büschen versteckt. ' .. ns.color.Orange('Schwer zu sehen.')
 L['pt_alch_furry_gloop_note'] = 'Wirf ein {npc:194855} in der Nähe in jeden Kessel und töte dann den Gegner, der erscheint.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'Südlich von |cFFFFFD00Tyrhold|r.'
@@ -158,9 +163,9 @@ L['pt_jewel_painters_pretty_jewel_note'] = 'In einer Laterne.'
 L['pt_leath_decayed_scales_note'] = 'In einem Korb.'
 L['pt_script_counterfeit_darkmoon_deck_note'] = 'Sprich mit {npc:194856} und biete an, ihr zu helfen, das zu ihren Füßen verstreute |cFFFFFD00Dunkelmondkartenset|r wieder herzurichten. Klicke die Karten in der richtigen Reihenfolge an (Ass bis 8) und sprich dann mit ihr, um das Deck zu erhalten.'
 L['pt_script_forgetful_apprentices_tome_note'] = 'Auf einem Tisch neben einem großen Teleskop.'
-L['pt_script_how_to_train_your_whelpling_note'] = nil
+L['pt_script_how_to_train_your_whelpling_note'] = 'Das kleine braune Buch liegt im Sandkasten.'
 L['pt_smith_draconic_flux_note'] = 'In einem Gebäude.'
-L['pt_tailor_ancient_dragonweave_bolt_note'] = nil -- Minigame
+L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Click on the Ancient Dragonweave Loom to complete a minigame where you connect the spools of thread to the center gem.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Kleines Banner in einem Sandhaufen.'
 
 -------------------------------------------------------------------------------
@@ -168,17 +173,23 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Kleines Banner in ei
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'Der Kriegstrupp der Qalashi reist auf ihrem {npc:192737} zu diesem Turm.'
-L['shasith_note'] = 'Innerhalb des |cFFFFFD00Obsidianthron|r. \n\nDu und andere Spieler müssen insgesamt 20x {item:191264} abgeben.\nUm einen Schlüssel herzustellen, müssen 30x {item:191251} und 3x {item:193201} kombiniert werden, diese können von Gegnern bei der Obsidianzitadelle geplündert werden.'
+L['lepidoralia_note'] = nil
+L['obsidian_citadel_rare_note'] = 'Du und andere Spieler müssen insgesamt %dx {item:191264} bei %s abgeben.\nUm einen Schlüssel herzustellen, müssen 30x {item:191251} und 3x {item:193201} kombiniert werden, diese können von Gegnern bei der |cFFFFFD00Obsidianzitadelle|r geplündert werden.'
+L['shadeslash_note'] = nil
+L['shasith_note'] = 'Innerhalb des |cFFFFFD00Obsidianthron|r.'
+L['slurpo_snail_note'] = nil
 L['worldcarver_atir_note'] = 'Sammel 3x {item:191211} von {npc:187366} in der Nähe und platziere diese beim {npc:197395}, um den seltenen Gegner erscheinen zu lassen.'
 
 L['bubble_drifter_note'] = '{item:199061} kann in Expeditionsspäherpacks und in Bewegte Erde enthalten sein.'
 L['dead_mans_chestplate_note'] = 'Im Inneren des Turms auf der mittleren Etage.'
+L['fullsails_supply_chest_note'] = nil
 L['golden_dragon_goblet_note'] = 'Plündere {item:202081} von {npc:190056} an der |cFFFFFD00Wilde Küste|r und schließe die kleine Questreihe ab.'
 L['misty_treasure_chest_note'] = 'Stelle dich auf den {npc:185485} der aus dem Wasserfall ragt, um in die Höhle zu gelangen.'
 L['onyx_gem_cluster_note'] = 'Auf Ruhmstufe 21 bei der Drachenschuppenexpedition kannst du die Quest {quest:70833} abschließen und als Belohnung die {item:200738} bekommen (einmal pro Account) oder kaufe die Karte von {npc:189065} für 3 {item:192863} und 500 {currency:2003} und benutze es.'
+L['torn_riding_pack_note'] = nil
+L['yennus_kite_note'] = nil
 
 L['fullsails_supply_chest'] = 'Vorratskiste der Vollsegel'
-L['hidden_hornswog_hoard'] = 'Versteckter Flunkerhort'
 L['hidden_hornswog_hoard_note'] = 'Sammel {item:200064}, {item:200065} und {item:200066}, kombiniere diese beim |cFFFFFD00"Rätsel für Aufmerksame: Ein Naturführer"|r nahe dem Schatz und füttere dann den Frosch damit.'
 
 L['pt_alch_frostforged_potion_note'] = 'In der Mitte des Eiskraters.'
@@ -189,7 +200,7 @@ L['pt_ench_lava_infused_seed_note'] = 'In einer Blume in der |cFFFFFD00Schuppenk
 L['pt_engi_boomthyr_rocket_note'] = 'Sammel die in den |cFFFFFD00Notizen zur Bummthyrrakete|r aufgelisteten Gegenstände:\n\n{item:198815}\n{item:198817}\n{item:198816}\n{item:198814}\n\nWenn du diese gesammelt hast, bring diese zur Rakete zurück, um den Schatz zu erhalten.'
 L['pt_engi_intact_coil_capacitor_note'] = 'Interaktion mit den drei |cFFFFFD00Exposed Wire|r, um die |cFFFFFD00Überladene Teslaspule|r zu reparieren und zu plündern.' -- review
 L['pt_jewel_closely_guarded_shiny_note'] = 'Blauer Edelstein unter einem Baum neben einem Nest.'
-L['pt_jewel_igneous_gem_note'] = nil -- Minigame
+L['pt_jewel_igneous_gem_note'] = 'Klicke schnell auf die drei Kristalle auf kleinen Inseln im Magma.'
 L['pt_leath_poachers_pack_note'] = 'Neben einem toten Vulpera am Flussbett.'
 L['pt_leath_spare_djaradin_tools_note'] = 'Neben einem toten roten Drachen.'
 L['pt_script_pulsing_earth_rune_note'] = 'Hinter einem Tisch im Inneren des verfallenen Gebäudes.' -- review
@@ -200,3 +211,10 @@ L['pt_smith_molten_ingot_note'] = 'Wirf 3 Barren in die Lava, um einen Gegner er
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Auf einem Amboss.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Ein Stück Stoff, das an einem Baum vor der Höhle hängt, in der der |cFFFFFD00Belagerung der Drachenfluchfestung|r Endboss erscheinen wird. ' .. ns.color.Orange('Erfordert präzises Drachenreiten oder ein Hexenmeisterportal.')
 L['pt_tailor_mysterious_banner_note'] = 'Flattert auf dem Dach des Gebäudes.'
+
+L['quack_week_1'] = 'Woche 1'
+L['quack_week_2'] = 'Woche 2'
+L['quack_week_3'] = 'Woche 3'
+L['quack_week_4'] = 'Woche 4'
+L['quack_week_5'] = 'Woche 5'
+L['lets_get_quacking'] = 'Du kannst jede Woche nur ein {npc:187863} retten.'

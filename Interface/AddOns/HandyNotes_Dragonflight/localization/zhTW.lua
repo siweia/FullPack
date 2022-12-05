@@ -46,7 +46,7 @@ L['options_icons_dragonrace_desc'] = '顯示飛龍競速的位置.'
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_note'] = nil
+L['brackenhide_rare_note'] = nil
 L['fisherman_tinnak_note'] = '收集 破損的釣魚竿, 撕裂的釣魚網 和 老舊的魚叉 來召喚稀有.'
 L['spellwrought_snowman_note'] = '收集 10個 {npc:193424} 並且帶他們到 {npc:193242}.'
 L['trilvarus_loreweaver_note'] = '收集一個歌唱碎片來取得 {spell:382076} 後使用 Uncharded Focus 來召喚稀有.'
@@ -56,6 +56,7 @@ L['breezebiter_note'] = '飛上天空來把他拉下來, 飛靠近他一點'
 L['forgotten_jewel_box_note'] = '從雍亞拉平原的嶺水靜地 (49.4 67.3) 上的 氏族寶箱 拾取{item:199065} 並使用它.'
 L['gnoll_fiend_flail_note'] = '{item:199066} 可以在遠征隊斥侯包和挖過的土中找到.'
 L['pepper_hammer_note'] = '收集 |cFFFFFD00樹液|r 然後點選 |cFFFFFD00棍子|r 來引誘 {npc:195373}.\n\n|cFFFF0000(BUG: 要點選棍子可能需要你重載UI)|r'
+L['snow_covered_scroll'] = nil
 
 L['pt_alch_experimental_decay_sample_note'] = '在一個綠色的大釜內'
 L['pt_alch_firewater_powder_sample_note'] = '在木頭房子外面的花瓶附近'
@@ -76,6 +77,9 @@ L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = '沿者階梯的左方'
 L['leyline_note'] = '重新校正地脈'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = '顯示成就 {achievement:16638} 中所有地脈的位置'
+
+L['seeing_blue_note'] = nil
+L['snowman_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -150,6 +154,8 @@ L['acorn_harvester_note'] = '在附近的地上收集一個橡實來取得 {spel
 L['cracked_hourglass_note'] = '{item:199068} 可以在遠征隊斥侯包和挖過的土中找到.'
 L['sandy_wooden_duck_note'] = '收集 {item:199069} 並使用它.'
 
+L['tasty_hatchling_treat_note'] = nil
+
 L['pt_alch_contraband_concoction_note'] = nil
 L['pt_alch_furry_gloop_note'] = nil
 L['pt_ench_fractured_titanic_sphere_note'] = nil
@@ -168,17 +174,23 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = '喀拉希戰爭隊伍坐在他們的 {npc:192737} 旅行到這座塔.'
-L['shasith_note'] = '在黑曜王座內. \n\n你和其他玩家必須要繳交總共20個 {item:191264}. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在黑曜王座的怪物身上取得這些物品'
+L['lepidoralia_note'] = nil
+L['obsidian_citadel_rare_note'] = '你和其他玩家必須要繳交總共%d個 {item:191264} %s. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在黑曜王座的怪物身上取得這些物品' -- pls review
+L['shadeslash_note'] = nil
+L['shasith_note'] = '在黑曜王座內. '
+L['slurpo_snail_note'] = nil
 L['worldcarver_atir_note'] = '從附近的 {npc:187366} 收集3個 {item:191211}, 並且將他們放置在 {npc:197395} 來召喚稀有'
 
 L['bubble_drifter_note'] = '{item:199061} 可以在遠征隊斥侯包和挖過的土中找到.'
 L['dead_mans_chestplate_note'] = '在塔中間的樓層'
+L['fullsails_supply_chest_note'] = nil
 L['golden_dragon_goblet_note'] = '在|cFFFFFD00荒野海岸|r從 {npc:190056} 拾取 {item:202081}並完成小任務線'
 L['misty_treasure_chest_note'] = '站在突出瀑布的 {npc:185485} 來進入洞窟'
 L['onyx_gem_cluster_note'] = '當龍鱗遠征隊的名望到達21時, 你可以完成任務 {quest:70833} 來取得報酬 {item:200738} (每個帳號一次) 或是從 {npc:189065} 處用3個 {item:192863} 和 500{currency:2003} 購買地圖來使用它.' -- review
+L['torn_riding_pack_note'] = nil
+L['yennus_kite_note'] = nil
 
 L['fullsails_supply_chest'] = '滿帆補給箱'
-L['hidden_hornswog_hoard'] = '隱藏的角蛙寶箱'
 L['hidden_hornswog_hoard_note'] = '收集 {item:200064}, {item:200065} 和 {item:200066}, 在寶藏附近的 "觀察謎題: 田野指南" 組合成 {item:200063} 並且餵給 {npc:192362}.'
 
 L['pt_alch_frostforged_potion_note'] = nil
@@ -200,3 +212,10 @@ L['pt_smith_molten_ingot_note'] = nil
 L['pt_smith_qalashi_weapon_diagram_note'] = nil
 L['pt_tailor_itinerant_singed_fabric_note'] = nil
 L['pt_tailor_mysterious_banner_note'] = nil
+
+L['quack_week_1'] = nil
+L['quack_week_2'] = nil
+L['quack_week_3'] = nil
+L['quack_week_4'] = nil
+L['quack_week_5'] = nil
+L['lets_get_quacking'] = nil

@@ -47,7 +47,7 @@ L['options_icons_dragonrace_desc'] = 'Muestra dónde están las Carreras de Drag
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_note'] = 'Cuando aparezca este raro se anunciará por el chat si estás en la zona de la |cFFFFFD00Hondonada Frondacuero|r.'
+L['brackenhide_rare_note'] = 'Cuando aparezca este raro se anunciará por el chat si estás en la zona de la |cFFFFFD00Hondonada Frondacuero|r.'
 L['fisherman_tinnak_note'] = 'Recoge la |cFFFFFD00Caña de Pescar Rota|r, la |cFFFFFD00Red de Pescar Rota|r y el |cFFFFFD00Arpón Viejo|r para hacer aparecer al raro.'
 L['spellwrought_snowman_note'] = 'Consigue 10x {npc:193424} y llévaselas a {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Recoge un |cFFFFFD00Fragmento Cantarín|r para conseguir {spell:382076} y usar el |cFFFFFD00Enfoque Descargado|r para hacer aparecer al raro.'
@@ -57,6 +57,7 @@ L['breezebiter_note'] = 'Vuela por el cielo. Para atraerlo, vuela cerca suyo.'
 L['forgotten_jewel_box_note'] = 'Despoja la {item:199065} de un Cofre del Clan en Retiro Crestagua (49.4 67.3) en las Llanuras de Ohn\'ahran y úsala.'
 L['gnoll_fiend_flail_note'] = 'Las {item:199066} se pueden encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['pepper_hammer_note'] = 'Recoge |cFFFFFD00Savia de Árbol|r y entonces usa el |cFFFFFD00Palo|r para engañar a {npc:195373}.\n\n|cFFFF0000(BUG: Para hacer click en el palo puede ser necesario recargar)|r.'
+L['snow_covered_scroll'] = nil
 
 L['pt_alch_experimental_decay_sample_note'] = 'Dentro de un gran caldero verde.'
 L['pt_alch_firewater_powder_sample_note'] = 'Fuera de la casa de troncos, junto a un jarrón.'
@@ -77,6 +78,9 @@ L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = 'Sigue la escalera de la izq
 L['leyline_note'] = 'Realinea la línea Ley.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Muestra dónde están las líneas Ley para el logro {achievement:16638}.'
+
+L['seeing_blue_note'] = 'Vuela desde lo alto del Archivo Azur a la Galería Cobalto sin aterrizar.'
+L['snowman_note'] = 'Hay tres {npc:197599} reposando en la zona (podrían haber sido movidas por otros jugadores). Hazlas rodar a los dos críos, {npc:197838} y {npc:197839}.\nConseguirás en logro cuando las bolas de nieve tengan los tamaños correctos.'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -151,6 +155,8 @@ L['acorn_harvester_note'] = 'Recoge una |cFFFFFD00Bellota|r del suelo cercano pa
 L['cracked_hourglass_note'] = 'La {item:199068} se puede encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['sandy_wooden_duck_note'] = 'Recoge el {item:199069} y úsalo.'
 
+L['tasty_hatchling_treat_note'] = nil
+
 L['pt_alch_contraband_concoction_note'] = 'Escondido en los arbustos. ' .. ns.color.Orange('Difícil de ver')
 L['pt_alch_furry_gloop_note'] = 'Deja a un {npc:194855} cercano dentro de cada caldera y mata al monstruo que aparecerá.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'Al Sur de |cFFFFFD00Tyrhold|r.'
@@ -169,17 +175,23 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Bandera pequeña den
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'El Destacamento de Guerra Qalashi viaja encima del {npc:192737} a esta torre.'
-L['shasith_note'] = 'Dentro del |cFFFFFD00Trono Obsidiana|r. \n\nTú y otros jugadores teneis que devolver un total de 20x {item:191264}. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la Ciudadela Obsidiana.'
+L['lepidoralia_note'] = nil
+L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la Ciudadela Obsidiana.' -- pls review
+L['shadeslash_note'] = nil
+L['shasith_note'] = 'Dentro del |cFFFFFD00Trono Obsidiana|r.'
+L['slurpo_snail_note'] = nil
 L['worldcarver_atir_note'] = 'Recoge 3x {item:191211} del {npc:187366} cercano y ponlos en los {npc:197395} para hacer aparecer al raro.'
 
 L['bubble_drifter_note'] = 'La {item:199061} se puede encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['dead_mans_chestplate_note'] = 'Dentro de la torre. En el piso central.'
+L['fullsails_supply_chest_note'] = nil
 L['golden_dragon_goblet_note'] = 'Despoja la {item:202081} del {npc:190056} en la |cFFFFFD00Costa Indómita|r y completa la pequeña cadena de misiones.'
 L['misty_treasure_chest_note'] = 'Ponte en {npc:185485} que sobresale de la cascada para entrar en la cueva.'
 L['onyx_gem_cluster_note'] = 'A Renombre 21 con la Expedición Dragontina se puede completar la misión {quest:70833} para conseguir el {item:200738} como recompensa (una vez por cuenta) o comprar el mapa a {npc:189065} por 3 {item:192863} y 500 {currency:2003} y usarlo.'
+L['torn_riding_pack_note'] = nil
+L['yennus_kite_note'] = nil
 
 L['fullsails_supply_chest'] = 'Cofre de Suministros Todavela'
-L['hidden_hornswog_hoard'] = 'Botín Oculto de los Cornisapos'
 L['hidden_hornswog_hoard_note'] = 'Recoge {item:200064}, {item:200065} y {item:200066}, combínalos en |cFFFFFD00"Acertijo de observador: Una Guía de Campo"|r cerca del tesoro y entonces alimenta a la rana.'
 
 L['pt_alch_frostforged_potion_note'] = 'En el centro del cráter helado.'
@@ -201,3 +213,10 @@ L['pt_smith_molten_ingot_note'] = 'Patea 3 lingotes dentro de la lava para hacer
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Encima de un yunque.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Un trozo de tela colgando de unos árboles justo fuera de la cueva donde aparece el boss final. ' .. ns.color.Orange('Requiere precisión montando dragones o un portal de brujo')
 L['pt_tailor_mysterious_banner_note'] = 'Revoloteando por encima de los edificios.'
+
+L['quack_week_1'] = 'Semana 1'
+L['quack_week_2'] = 'Semana 2'
+L['quack_week_3'] = 'Semana 3'
+L['quack_week_4'] = 'Semana 4'
+L['quack_week_5'] = 'Semana 5'
+L['lets_get_quacking'] = 'Sólo puedes rescatar un {npc:187863} a la semana.'

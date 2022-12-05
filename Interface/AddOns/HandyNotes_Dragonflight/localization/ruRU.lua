@@ -47,7 +47,7 @@ L['options_icons_dragonrace_desc'] = nil
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_note'] = nil
+L['brackenhide_rare_note'] = nil
 L['fisherman_tinnak_note'] = 'Соберите |cFFFFFD00Наконечник гарпуна|r, |cFFFFFD00Деревянный шест|r и |cFFFFFD00Потрепанный побег водоросли|r для призыва редкого монстра.'
 L['spellwrought_snowman_note'] = 'Соберите 10x {npc:193424} и принесите их {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Возьмите |cFFFFFD00Напевающий фрагмент|r и получите {spell:382076} затем используйте |cFFFFFD00Незаряженное сосредоточение|r для того, чтобы призвать редкого монстра.'
@@ -57,6 +57,7 @@ L['breezebiter_note'] = 'Летает на небе, чтобы приземли
 L['forgotten_jewel_box_note'] = '{item:199065} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['gnoll_fiend_flail_note'] = '{item:199066} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['pepper_hammer_note'] = 'Возьмите |cFFFFFD00Древесный сок|r и используйте его на |cFFFFFD00палочке|r чтобы приманить {npc:195373}.\n\n|cFFFF0000(БАГ: Чтобы нажать на палку, может потребоваться перезагрузка)|r'
+L['snow_covered_scroll'] = nil
 
 L['pt_alch_experimental_decay_sample_note'] = nil
 L['pt_alch_firewater_powder_sample_note'] = nil
@@ -77,6 +78,9 @@ L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = nil
 L['leyline_note'] = 'Силовые линии Простора.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Показать расположение всех силовых линий для достижения {achievement:16638}.'
+
+L['seeing_blue_note'] = 'Пролетите с вершины Лазурных архивов до Кобальтовой ассамблеи за один полет.'
+L['snowman_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -151,6 +155,8 @@ L['acorn_harvester_note'] = 'Подберите |cFFFFFD00желудь|r с зе
 L['cracked_hourglass_note'] = '{item:199068} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['sandy_wooden_duck_note'] = 'Возьмите {item:199069} и используйте ее.'
 
+L['tasty_hatchling_treat_note'] = nil
+
 L['pt_alch_contraband_concoction_note'] = nil
 L['pt_alch_furry_gloop_note'] = nil
 L['pt_ench_fractured_titanic_sphere_note'] = nil
@@ -169,17 +175,23 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'Боевой отряд куалаши отправляется на {npc:192737} к этой башне.'
-L['shasith_note'] = 'Внутри |cFFFFFD00Обсидиановой цитадели|r. \n\nВы и другие игроки должны вернуть в общей сложности 20x {item:191264}. Для крафта ключа нужно скомбинировать 30x {item:191251} и 3x {item:193201}, вы можете получить эти предметы у монстров вокруг Обсидиановой цитадели.'
+L['lepidoralia_note'] = nil
+L['obsidian_citadel_rare_note'] = 'Вы и другие игроки должны вернуть в общей сложности %dx {item:191264} %s. Для крафта ключа нужно скомбинировать 30x {item:191251} и 3x {item:193201}, вы можете получить эти предметы у монстров вокруг Обсидиановой цитадели.' -- pls review
+L['shadeslash_note'] = nil
+L['shasith_note'] = 'Внутри |cFFFFFD00Обсидиановой цитадели|r.'
+L['slurpo_snail_note'] = nil
 L['worldcarver_atir_note'] = 'Соберите 3x {item:191211} у {npc:187366} поблизости и поместите их в {npc:197395}, чтобы призвать редкого монстра.'
 
 L['bubble_drifter_note'] = '{item:199061} можно найти в сумках разведчика экспедиции и потревоженной почве.'
 L['dead_mans_chestplate_note'] = 'Внутри башни на среднем этаже.'
+L['fullsails_supply_chest_note'] = nil
 L['golden_dragon_goblet_note'] = 'Добудьте {item:202081} у {npc:190056} на |cFFFFFD00Диких берегах|r и завершите небольшую линейку заданий.'
 L['misty_treasure_chest_note'] = 'Встаньте на {npc:185485}, которая торчит из водопада, чтобы войти в пещеру.'
 L['onyx_gem_cluster_note'] = 'На 21-м уровне известности у Драконьей Экспедиции вы можете выполнить задание {quest:70833}, чтобы получить {item:200738} в качестве награды (один раз на аккаунт), или купить карту у {npc:189065} за 3 {item:192863} и 500 {currency:2003} и используйте ее.'
+L['torn_riding_pack_note'] = nil
+L['yennus_kite_note'] = nil
 
 L['fullsails_supply_chest'] = 'Сундук с припасами Коры'
-L['hidden_hornswog_hoard'] = 'Скрытый заложник рогоплава'
 L['hidden_hornswog_hoard_note'] = 'Соберите {item:200064}, {item:200065} и {item:200066}, объедините их рядом с |cFFFFFD00"Загадки для внимательных: практический справочник"|r и киньте полученный предмет в лягушку.'
 
 L['pt_alch_frostforged_potion_note'] = nil
@@ -201,3 +213,10 @@ L['pt_smith_molten_ingot_note'] = nil
 L['pt_smith_qalashi_weapon_diagram_note'] = nil
 L['pt_tailor_itinerant_singed_fabric_note'] = nil
 L['pt_tailor_mysterious_banner_note'] = nil
+
+L['quack_week_1'] = nil
+L['quack_week_2'] = nil
+L['quack_week_3'] = nil
+L['quack_week_4'] = nil
+L['quack_week_5'] = nil
+L['lets_get_quacking'] = nil

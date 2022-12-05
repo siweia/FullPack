@@ -6,7 +6,6 @@ local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
-local BonusBoss = ns.node.BonusBoss
 local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
@@ -19,7 +18,6 @@ local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
--- local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
@@ -44,10 +42,12 @@ map.nodes[63695509] = Rare({ -- required 67030
 
 map.nodes[58634021] = Rare({
     id = 187945,
-    quest = nil,
+    quest = 73865,
     rewards = {
         Achievement({id = 16676, criteria = 56035}),
-        Item({item = 197098, quest = 69299}) -- Highland Drake: Finned Back
+        Transmog({item = 200245, slot = L['2h_mace']}), -- Leviathan Lure
+        Item({item = 197098, quest = 69299}), -- Highland Drake: Finned Back
+        Item({item = 197001, quest = 69201}) -- Cliffside Wylderdrake: Finned Cheek
     }
 }) -- Anhydros the Tidetaker
 
@@ -59,7 +59,7 @@ map.nodes[54517174] = Rare({ -- review -- required 67030
 
 map.nodes[28635882] = Rare({ -- review
     id = 190986,
-    quest = nil,
+    quest = 74040,
     rewards = {Achievement({id = 16676, criteria = 56059})}
 }) -- Battlehorn Pyrhus
 
@@ -69,7 +69,7 @@ map.nodes[52916529] = Rare({
     note = L['brundin_the_dragonbane_note'],
     rewards = {
         Achievement({id = 16676, criteria = 56038}),
-        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
+        Transmog({item = 200133, slot = L['fist']}) -- Volcanic Chakram
     },
     pois = {
         Path({
@@ -83,7 +83,7 @@ map.nodes[52916529] = Rare({
 
 map.nodes[26847642] = Rare({
     id = 193198,
-    quest = 72127,
+    quest = 72127, -- 73075
     rewards = {
         Achievement({id = 16676, criteria = 56050}),
         Transmog({item = 200757, slot = L['plate']}), -- Qalashi War-Helm
@@ -95,8 +95,11 @@ map.nodes[26847642] = Rare({
 
 map.nodes[26285788] = Rare({
     id = 186783,
-    quest = nil,
-    rewards = {Achievement({id = 16676, criteria = 56056})},
+    quest = 74042,
+    rewards = {
+        Achievement({id = 16676, criteria = 56056}),
+        Transmog({item = 200757, slot = L['plate']})
+    },
     pois = {
         Path({
             26285788, 26545827, 25985955, 26315995, 26585932, 27316007,
@@ -105,25 +108,33 @@ map.nodes[26285788] = Rare({
     }
 }) -- Cauldronbearer Blakor
 
-map.nodes[29485272] = Rare({ -- review
+map.nodes[29485272] = Rare({
     id = 190991,
-    quest = nil,
-    rewards = {Achievement({id = 16676, criteria = 56060})}
+    quest = 74043,
+    rewards = {
+        Achievement({id = 16676, criteria = 56060}),
+        Item({item = 196991, quest = 69191}) -- Cliffside Wylderdrake: Black Horns
+    }
 }) -- Char
 
 map.nodes[31785474] = Rare({ -- review -- required 67030
     id = 190985,
-    quest = nil,
+    quest = 73074,
+    note = format(L['obsidian_citadel_rare_note'], 20, '{npc:187447}'),
     rewards = {
         Achievement({id = 16676, criteria = 56053}),
         Achievement({id = 16496, criteria = 55867}) -- Obsidian Champion
-    }
+    },
+    pois = {POI({27735660})} -- Sabellian
 }) -- Death's Shadow
 
 map.nodes[60204535] = Rare({
     id = 193217,
     quest = nil,
-    rewards = {Achievement({id = 16676, criteria = 56039})},
+    rewards = {
+        Achievement({id = 16676, criteria = 56039}),
+        Transmog({item = 200219, slot = L['cloak']}) -- Dangerous Drapery
+    },
     pois = {
         Path({
             47267713, 48927495, 50076925, 50996592, 51946323, 52556211,
@@ -148,7 +159,7 @@ map.nodes[21626478] = Rare({ -- review
 
 map.nodes[33127632] = Rare({
     id = 193154,
-    quest = 72130,
+    quest = 72130, -- 73073
     rewards = {
         Achievement({id = 16676, criteria = 56048}),
         Item({item = 200858, note = L['trinket']}), -- Plume of the Forgotten
@@ -160,18 +171,24 @@ map.nodes[33127632] = Rare({
 map.nodes[52345829] = Rare({ -- review
     id = 196056,
     quest = 70718,
-    rewards = {Achievement({id = 16676, criteria = 56033})}
+    rewards = {
+        Achievement({id = 16676, criteria = 56033}),
+        Transmog({item = 200245, slot = L['2h_mace']}), -- Leviathan Lure
+        Item({item = 197098, quest = 69299}), -- Highland Drake: Finned Back
+        Item({item = 197001, quest = 69201}) -- Cliffside Wylderdrake: Finned Cheek
+    }
 }) -- Gushgut the Beaksinker
 
 map.nodes[43007465] = Rare({ -- review
     id = 193263,
-    quest = nil,
+    quest = 73880,
     rewards = {Achievement({id = 16676, criteria = 56037})}
 }) -- Helmet Missingway
 
-map.nodes[20001800] = Rare({ -- review
+map.nodes[34618275] = Rare({ -- review
     id = 193266,
-    quest = nil,
+    quest = 74065,
+    note = L['lepidoralia_note'],
     rewards = {Achievement({id = 16676, criteria = 56055})}
 }) -- Lepidoralia the Resplendent
 
@@ -187,13 +204,15 @@ map.nodes[22207649] = Rare({ -- review -- required 67030
     rewards = {Achievement({id = 16676, criteria = 56047})}
 }) -- Massive Magmashell
 
-map.nodes[32225193] = Rare({ -- review
+map.nodes[32225193] = Rare({
     id = 187306,
-    quest = nil,
+    quest = 74067,
+    note = format(L['obsidian_citadel_rare_note'], 10, '{npc:187275}'),
     rewards = {
         Achievement({id = 16676, criteria = 56988}),
         Achievement({id = 16496, criteria = 55868}) -- Obsidian Champion
-    }
+    },
+    pois = {POI({32245246})} -- Igys the Believer
 }) -- Morchok
 
 map.nodes[56004592] = Rare({
@@ -201,14 +220,22 @@ map.nodes[56004592] = Rare({
     quest = nil,
     rewards = {
         Achievement({id = 16676, criteria = 56034}),
-        Item({item = 200236, note = L['trinket']}) -- Memory of Nulltheria
+        Item({item = 200236, note = L['trinket']}), -- Memory of Nulltheria
+        Transmog({item = 200310, note = L['cloak']}), -- Stole of the Iron Phantom
+        Item({item = 197403, quest = nil}), -- Renewed Proto-Drake: Club Tail
+        Item({item = 197382, quest = 69583}), -- Renewed Proto-Drake: White Horns
+        Item({item = 196992, quest = nil}), -- Cliffside Wylderdrake: Heavy Horns
+        Item({item = 196985, quest = 69185}) -- Cliffside Wylderdrake: Horned Jaw
     }
 }) -- Nulltheria the Void Gazer
 
 map.nodes[81485082] = Rare({ -- required 67030
     id = 193118,
     quest = 70983,
-    rewards = {Achievement({id = 16676, criteria = 56043})},
+    rewards = {
+        Achievement({id = 16676, criteria = 56043}),
+        Item({item = 197022, quest = nil}) -- Cliffside Wylderdrake: Finned Neck
+    },
     pois = {
         Path({
             79185296, 80015374, 80215387, 80445368, 80445260, 80555229,
@@ -218,28 +245,36 @@ map.nodes[81485082] = Rare({ -- required 67030
     }
 }) -- O'nank Shorescour
 
-map.nodes[64926956] = Rare({
+map.nodes[64676939] = Rare({
     id = 192362,
-    quest = 70864,
-    rewards = {Achievement({id = 16676, criteria = 57852})}
+    quest = 67048, -- 70864 (rare runs away)
+    note = L['hidden_hornswog_hoard_note'],
+    rewards = {
+        Achievement({id = 16676, criteria = 57852}),
+        Pet({item = 199916, id = 3365}) -- Roseate Hopper
+    },
+    pois = {POI({66165529, 39638468, 47728360})}
 }) -- Possessive Hornswog
 
 map.nodes[30226045] = Rare({ -- review
     id = 193232,
-    quest = nil,
-    rewards = {Achievement({id = 16676, criteria = 56061})}
+    quest = 74051,
+    rewards = {
+        Achievement({id = 16676, criteria = 56061}),
+        Item({item = 197005, quest = 69205}) -- Cliffside Wylderdrake: Horned Nose
+    }
 }) -- Rasnar the War Ender
 
 map.nodes[25366070] = Rare({
     id = 187598,
-    quest = nil,
+    quest = 74052,
     rewards = {Achievement({id = 16676, criteria = 56057})}
 }) -- Rohzor Forgesmash
 
 map.nodes[46997332] = Rare({
     id = 193271,
     quest = 70719,
-    note = L['in_small_cave'],
+    note = L['in_small_cave'] .. ' ' .. L['shadeslash_note'],
     rewards = {
         Achievement({id = 16676, criteria = 56989}),
         Item({item = 200689, note = L['ring']}) -- Rimetalon Band
@@ -248,19 +283,31 @@ map.nodes[46997332] = Rare({
 
 map.nodes[23755734] = Rare({ -- review -- required 67030
     id = 189822,
-    quest = nil,
-    note = L['shasith_note'],
+    quest = 74077,
+    note = L['shasith_note'] .. ' ' ..
+        format(L['obsidian_citadel_rare_note'], 20, '{npc:187284}'),
     rewards = {
         Achievement({id = 16676, criteria = 56054}),
-        Achievement({id = 16496, criteria = 55869}) -- Obsidian Champion
+        Achievement({id = 16496, criteria = 55869}), -- Obsidian Champion
+        Transmog({item = 200174, slot = L['leather']}) -- Bonesigil Shoulderguards
     },
-    pois = {POI({27226096})} -- Entrance
+    pois = {
+        POI({
+            27226096, -- Entrance
+            26836257 -- Furorion
+        })
+    }
 }) -- Shas'ith
 
 map.nodes[42892832] = Rare({
     id = 193181,
-    quest = nil,
-    rewards = {Achievement({id = 16676, criteria = 56036})},
+    quest = 73895,
+    rewards = {
+        Achievement({id = 16676, criteria = 56036}),
+        Transmog({item = 200132, slot = L['dagger']}), -- Skewer's Snout
+        Item({item = 197022, quest = nil}), -- Cliffside Wylderdrake: Finned Neck
+        Item({item = 197589, quest = nil}) -- Windborne Velocidrake: Large Head Fin
+    },
     pois = {
         Path({
             47741892, 48481794, 48731762, 48851677, 48681620, 48321588,
@@ -273,16 +320,20 @@ map.nodes[42892832] = Rare({
     }
 }) -- Skewersnout
 
-map.nodes[24001800] = Rare({ -- review
+map.nodes[36009000] = Rare({
     id = 193175,
     quest = nil,
+    note = L['slurpo_snail_note'],
     rewards = {Achievement({id = 16676, criteria = 57003})}
 }) -- Slurpo, the Incredible Snail
 
 map.nodes[69486653] = Rare({ -- review -- required 67030
     id = 193120,
     quest = 69668,
-    rewards = {Achievement({id = 16676, criteria = 56044})}
+    rewards = {
+        Achievement({id = 16676, criteria = 56044}),
+        Transmog({item = 200209, slot = L['mail']}) -- Firebreather's Cowl
+    }
 }) -- Smogswog the Firebreather
 
 map.nodes[78514999] = Rare({ -- required 67030
@@ -303,20 +354,82 @@ map.nodes[45453540] = Rare({
 
 map.nodes[33525576] = Rare({
     id = 187886,
-    quest = nil,
+    quest = 74054,
     note = L['in_small_cave'],
-    rewards = {Achievement({id = 16676, criteria = 56058})}
+    rewards = {
+        Achievement({id = 16676, criteria = 56058}),
+        Item({item = 200563, note = L['trinket']}) -- Primal Ritual Shell
+    }
 }) -- Turboris
 
 map.nodes[30025534] = Rare({
     id = 186859,
-    quest = 70763,
+    quest = 70763, -- 74090
     note = L['worldcarver_atir_note'],
     rewards = {
         Achievement({id = 16676, criteria = 56052}),
-        Transmog({item = 200213, slot = L['plate']}) -- Lava-Splattered Breastplate
+        Transmog({item = 200213, slot = L['plate']}), -- Lava-Splattered Breastplate
+        Item({item = 200563, note = L['trinket']}) -- Primal Ritual Shell
     }
 }) -- Worldcarver A'tir
+
+-------------------------------------------------------------------------------
+
+-- These rares/elites are not part of the adventurer achievement for the zone
+
+map.nodes[77302198] = Rare({
+    id = 187111,
+    quest = 72835, -- 66076
+    note = L['in_small_cave'],
+    rewards = {
+        Item({item = 197111, quest = 69312}) -- Highland Drake: Maned Head
+    },
+    pois = {
+        POI({77902281}) -- Entrance
+    }
+}) -- Ancient Hornswog
+
+map.nodes[64173289] = Rare({
+    id = 191611,
+    quest = 72838, -- 66956
+    rewards = {
+        Transmog({item = 200169, slot = L['1h_mace']}) -- Protector's Molten Cudgel
+    }
+}) -- Dragonhunter Igordan
+
+map.nodes[54728225] = Rare({
+    id = 187209,
+    quest = 72841, -- 66960
+    rewards = {
+        Transmog({item = 200246, slot = L['staff']}), -- Lost Delving Lamp
+        Item({item = 196991, quest = 69191}), -- Cliffside Wylderdrake: Black Horns
+        Item({item = 197023, quest = 69223}), -- Cliffside Wylderdrake: Maned Neck
+        Toy({item = 200198}) -- Primalist Prison
+    }
+}) -- Klozicc the Ascended
+
+map.nodes[81133794] = Rare({
+    id = 184853,
+    quest = 72843, -- 66074
+    note = L['in_small_cave'],
+    rewards = {
+        Item({item = 200445, note = L['neck']}), -- Lucky Hunting Charm
+        Transmog({item = 200195, slot = L['plate']}), -- Thunderscale Legguards
+        Item({item = 196976, quest = 69176}), -- Cliffside Wylderdrake: Head Mane
+        Toy({item = 200249}) -- Mage's Chewed Wand
+    },
+    pois = {
+        POI({81713719}) -- Entrance
+    }
+}) -- Primal Scythid Queen
+
+map.nodes[60598285] = Rare({
+    id = 193171,
+    quest = 72850,
+    rewards = {
+        Transmog({item = 200208, slot = L['cloth']}) -- Cloud Coalescing Handwraps
+    }
+}) -- Terillod the Devout
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -398,11 +511,13 @@ map.nodes[61347079] = Treasure({
 
 map.nodes[48488518] = Treasure({
     quest = 70378,
+    note = L['torn_riding_pack_note'],
     rewards = {Achievement({id = 16297, criteria = 54703})}
 }) -- Torn Riding Pack
 
 map.nodes[46713121] = Treasure({
     quest = 70345,
+    note = L['yennus_kite_note'],
     rewards = {
         Achievement({id = 16297, criteria = 54701}), --
         Toy({item = 202022}) -- Yennu's Kite
@@ -411,20 +526,11 @@ map.nodes[46713121] = Treasure({
 
 -------------------------------------------------------------------------------
 
-map.nodes[64926959] = Treasure({
-    quest = 67048,
-    label = L['hidden_hornswog_hoard'],
-    note = L['hidden_hornswog_hoard_note'],
-    rewards = {
-        Pet({item = 199916, id = 3365}) -- Roseate Hopper
-    },
-    pois = {POI({66165529, 39638468, 47728360})}
-}) -- Hidden Hornswog Hoard
-
 map.nodes[43156737] = Treasure({
     quest = 65965,
     requires = ns.requirement.Item(191122), -- Fullsails Supply Chest Key
-    label = L['fullsails_supply_chest']
+    label = L['fullsails_supply_chest'],
+    note = L['fullsails_supply_chest_note']
 }) -- Fullsails Supply Chest
 
 -------------------------------------------------------------------------------
@@ -466,64 +572,6 @@ map.nodes[26239233] = PetBattle({
         Achievement({id = 16511, criteria = 8, oneline = true}) -- Undead
     }
 }) -- Swog
-
--------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[77302198] = BonusBoss({ -- review (no quest debug at the time)
-    id = 187111,
-    quest = nil,
-    note = L['in_small_cave'],
-    rewards = {
-        Item({item = 197111, quest = 69312}) -- Highland Drake: Maned Head
-    },
-    pois = {
-        POI({77902281}) -- Entrance
-    }
-}) -- Ancient Hornswog
-
-map.nodes[64173289] = BonusBoss({
-    id = 191611,
-    quest = 72838, -- 66956
-    rewards = {
-        Transmog({item = 200169, slot = L['1h_mace']}) -- Protector's Molten Cudgel
-    }
-}) -- Dragonhunter Igordan
-
-map.nodes[54728225] = BonusBoss({
-    id = 187209,
-    quest = 72841, -- 66960
-    rewards = {
-        Transmog({item = 200246, slot = L['staff']}), -- Lost Delving Lamp
-        Item({item = 196991, quest = 69191}), -- Cliffside Wylderdrake: Black Horns
-        Item({item = 197023, quest = 69223}), -- Cliffside Wylderdrake: Maned Neck
-        Toy({item = 200198}) -- Primalist Prison
-    }
-}) -- Klozicc the Ascended
-
-map.nodes[81133794] = BonusBoss({
-    id = 184853,
-    quest = 72843, -- 66074
-    note = L['in_small_cave'],
-    rewards = {
-        Item({item = 200445, note = L['neck']}), -- Lucky Hunting Charm
-        Transmog({item = 200195, slot = L['plate']}), -- Thunderscale Legguards
-        Item({item = 196976, quest = 69176}), -- Cliffside Wylderdrake: Head Mane
-        Toy({item = 200249}) -- Mage's Chewed Wand
-    },
-    pois = {
-        POI({81713719}) -- Entrance
-    }
-}) -- Primal Scythid Queen
-
-map.nodes[60598285] = BonusBoss({
-    id = 193171,
-    quest = 72850,
-    rewards = {
-        Transmog({item = 200208, slot = L['cloth']}) -- Cloud Coalescing Handwraps
-    }
-}) -- Terillod the Devout
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
@@ -889,3 +937,40 @@ map.nodes[42599445] = ns.node.Dragonrace({
         Achievement({id = 15929, criteria = 8, oneline = true}) -- advanced gold
     }
 }) -- Wild Preserve Circuit
+
+-------------------------------------------------------------------------------
+------------------------------ LET'S GET QUACKING -----------------------------
+-------------------------------------------------------------------------------
+
+local Quack = Class('Quack', Collectible, {
+    label = '{npc:196744}',
+    note = L['lets_get_quacking'],
+    icon = 4048818,
+    rewards = {Achievement({id = 16409, criteria = {id = 1, qty = true}})}
+})
+
+map.nodes[80114287] = Quack({quest = 66196, rlabel = L['quack_week_1']}) -- A Quack For Help (Week 1)
+
+map.nodes[80083989] = Quack({
+    quest = 70877,
+    rlabel = L['quack_week_2'],
+    requires = {ns.requirement.Quest(66196)}
+}) -- A Quack in Time (Week 2)
+
+map.nodes[81594546] = Quack({
+    quest = 70917,
+    rlabel = L['quack_week_3'],
+    requires = {ns.requirement.Quest(70877)}
+}) -- A Shoulder to Quack On (Week 3)
+
+map.nodes[79274279] = Quack({
+    quest = 70918,
+    rlabel = L['quack_week_4'],
+    requires = {ns.requirement.Quest(70917)}
+}) -- Quack for Your Life (Week 4)
+
+map.nodes[82884258] = Quack({
+    quest = 70919,
+    rlabel = L['quack_week_5'],
+    requires = {ns.requirement.Quest(70918)}
+}) -- Quacking Out for a Hero (Week 5)
