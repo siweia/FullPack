@@ -42,6 +42,15 @@ L['dr_bronze'] = '\n\n完成賽事來取得 ' .. ns.color.Bronze('銅牌') .. '.
 L['options_icons_dragonrace'] = '飛龍競速'
 L['options_icons_dragonrace_desc'] = '顯示飛龍競速的位置.'
 
+L['squirrels_note'] = '你必須對小動物而不是戰寵使用表情 /love'
+L['options_icons_squirrels'] = '{achievement:16729}'
+L['options_icons_squirrels_desc'] = '顯示 {achievement:16729} 成就中小動物的位置'
+
+L['hnj_sublabel'] = nil
+L['hnj_western_azure_span_hunt'] = nil
+L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
+L['options_icons_hemet_nesingwary_jr_desc'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
@@ -80,6 +89,7 @@ L['options_icons_layline_desc'] = '顯示成就 {achievement:16638} 中所有地
 
 L['seeing_blue_note'] = nil
 L['snowman_note'] = nil
+L['temperamental_skyclaw_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -121,7 +131,7 @@ L['lizi_note_day1'] = '從 |cFFFFFD00巨龍群島|r 的昆蟲怪物收集20個 {
 L['lizi_note_day2'] = '從 |cFFFFFD00巨龍群島|r 的植物怪物收集20個 {item:192658}'
 L['lizi_note_day3'] = '從 |cFFFFFD00巨龍群島|r 的任意水域釣到10個 {item:194966}. 常見於 |cFFFFFD00雍亞拉平原|r 的內陸'
 L['lizi_note_day4'] = '從 |cFFFFFD00雍亞拉平原|r 的猛瑪象收集20個 {item:192636}'
-L['lizi_note_day5'] = '從 |cFFFFFD00雍伊爾溫泉|r 南邊帳篷內的 {npc:190015} 購買1個 {item:200598}'
+L['lizi_note_day5'] = nil -- pls review '從 |cFFFFFD00雍伊爾溫泉|r 南邊帳篷內的 {npc:190015} 購買1個 {item:200598}'
 
 L['ohnahra_note_start'] = '完成從 {quest:65901} 開始的 學徒的休假日 故事線後 {npc:190022} 會出現在 |cFFFFFD00雍伊爾溫泉|r 的風之賢者的帳篷之下.\n\n收集以下的材料:'
 L['ohnahra_note_item1'] = '從|cFFFFFD00諾庫德進攻據點|r地城 (英雄難度)的最後首領 {npc:186151} 收集3個 {item:201929}, 不是100%掉落.'
@@ -168,6 +178,7 @@ L['pt_script_how_to_train_your_whelpling_note'] = nil
 L['pt_smith_draconic_flux_note'] = nil
 L['pt_tailor_ancient_dragonweave_bolt_note'] = nil
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
+L['pt_mining_bridgette_holdug'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -175,9 +186,9 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
 
 L['brundin_the_dragonbane_note'] = '喀拉希戰爭隊伍坐在他們的 {npc:192737} 旅行到這座塔.'
 L['lepidoralia_note'] = nil
-L['obsidian_citadel_rare_note'] = '你和其他玩家必須要繳交總共%d個 {item:191264} %s. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在黑曜王座的怪物身上取得這些物品' -- pls review
+L['obsidian_citadel_rare_note'] = nil -- pls review '你和其他玩家必須要繳交總共%d個 {item:191264} %s. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在黑曜王座的怪物身上取得這些物品'
 L['shadeslash_note'] = nil
-L['shasith_note'] = '在黑曜王座內. '
+L['obsidian_throne_rare_note'] = '在黑曜王座內. '
 L['slurpo_snail_note'] = nil
 L['worldcarver_atir_note'] = '從附近的 {npc:187366} 收集3個 {item:191211}, 並且將他們放置在 {npc:197395} 來召喚稀有'
 
@@ -186,7 +197,7 @@ L['dead_mans_chestplate_note'] = '在塔中間的樓層'
 L['fullsails_supply_chest_note'] = nil
 L['golden_dragon_goblet_note'] = '在|cFFFFFD00荒野海岸|r從 {npc:190056} 拾取 {item:202081}並完成小任務線'
 L['misty_treasure_chest_note'] = '站在突出瀑布的 {npc:185485} 來進入洞窟'
-L['onyx_gem_cluster_note'] = '當龍鱗遠征隊的名望到達21時, 你可以完成任務 {quest:70833} 來取得報酬 {item:200738} (每個帳號一次) 或是從 {npc:189065} 處用3個 {item:192863} 和 500{currency:2003} 購買地圖來使用它.' -- review
+L['onyx_gem_cluster_note'] = nil -- pls review '當龍鱗遠征隊的名望到達21時, 你可以完成任務 {quest:70833} 來取得報酬 {item:200738} (每個帳號一次) 或是從 {npc:189065} 處用3個 {item:192863} 和 500{currency:2003} 購買地圖來使用它.'
 L['torn_riding_pack_note'] = nil
 L['yennus_kite_note'] = nil
 
@@ -212,6 +223,7 @@ L['pt_smith_molten_ingot_note'] = nil
 L['pt_smith_qalashi_weapon_diagram_note'] = nil
 L['pt_tailor_itinerant_singed_fabric_note'] = nil
 L['pt_tailor_mysterious_banner_note'] = nil
+L['pt_smith_grekka_anvilsmash'] = nil
 
 L['quack_week_1'] = nil
 L['quack_week_2'] = nil
@@ -219,3 +231,12 @@ L['quack_week_3'] = nil
 L['quack_week_4'] = nil
 L['quack_week_5'] = nil
 L['lets_get_quacking'] = nil
+
+L['complaint_to_scalepiercer_note'] = nil
+L['grand_flames_journal_note'] = nil
+L['wyrmeaters_recipe_note'] = nil
+
+L['options_icons_ducklings'] = nil
+L['options_icons_ducklings_desc'] = nil
+L['options_icons_chiseled_record'] = nil
+L['options_icons_chiseled_record_desc'] = nil

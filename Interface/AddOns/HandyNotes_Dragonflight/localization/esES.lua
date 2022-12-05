@@ -43,6 +43,15 @@ L['dr_bronze'] = '\n\nAcaba la carrera para conseguir el ' .. ns.color.Bronze('B
 L['options_icons_dragonrace'] = 'Carreras de Dragones'
 L['options_icons_dragonrace_desc'] = 'Muestra dónde están las Carreras de Dragones.'
 
+L['squirrels_note'] = 'Has de usar la emoción /amor en alimañas que no sean mascotas de combate.'
+L['options_icons_squirrels'] = '{achievement:16729}'
+L['options_icons_squirrels_desc'] = 'Muestra dónde están las alimañas para el logro {achievement:16729}.'
+
+L['hnj_sublabel'] = nil
+L['hnj_western_azure_span_hunt'] = 'Encima del árbol muerto.'
+L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
+L['options_icons_hemet_nesingwary_jr_desc'] = 'Muestra dónde está {npc:194590} para el logro {achievement:16542}.'
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
@@ -54,10 +63,10 @@ L['trilvarus_loreweaver_note'] = 'Recoge un |cFFFFFD00Fragmento Cantarín|r para
 
 L['breezebiter_note'] = 'Vuela por el cielo. Para atraerlo, vuela cerca suyo.'
 
-L['forgotten_jewel_box_note'] = 'Despoja la {item:199065} de un Cofre del Clan en Retiro Crestagua (49.4 67.3) en las Llanuras de Ohn\'ahran y úsala.'
+L['forgotten_jewel_box_note'] = 'Despoja la {item:199065} de un Cofre del Clan en |cFFFFFD00Retiro Crestagua|r (49.4 67.3) en las |cFFFFFD00Llanuras de Ohn\'ahran|r y úsala.'
 L['gnoll_fiend_flail_note'] = 'Las {item:199066} se pueden encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['pepper_hammer_note'] = 'Recoge |cFFFFFD00Savia de Árbol|r y entonces usa el |cFFFFFD00Palo|r para engañar a {npc:195373}.\n\n|cFFFF0000(BUG: Para hacer click en el palo puede ser necesario recargar)|r.'
-L['snow_covered_scroll'] = nil
+L['snow_covered_scroll'] = 'Pergamino Cubierto de Nieve'
 
 L['pt_alch_experimental_decay_sample_note'] = 'Dentro de un gran caldero verde.'
 L['pt_alch_firewater_powder_sample_note'] = 'Fuera de la casa de troncos, junto a un jarrón.'
@@ -81,6 +90,15 @@ L['options_icons_layline_desc'] = 'Muestra dónde están las líneas Ley para el
 
 L['seeing_blue_note'] = 'Vuela desde lo alto del Archivo Azur a la Galería Cobalto sin aterrizar.'
 L['snowman_note'] = 'Hay tres {npc:197599} reposando en la zona (podrían haber sido movidas por otros jugadores). Hazlas rodar a los dos críos, {npc:197838} y {npc:197839}.\nConseguirás en logro cuando las bolas de nieve tengan los tamaños correctos.'
+L['temperamental_skyclaw_note'] = [[
+Recoge (o compra en la casa de subastas):
+
+20x {item:201420}
+20x {item:201421}
+20x {item:201422}
+
+Pregunta sobre el Astudraco Ensillado y ofrece a {npc:190892} los "platos" recogidos.
+]]
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -122,7 +140,7 @@ L['lizi_note_day1'] = 'Recoge 20x {item:192615} de los enemigos insecto en las |
 L['lizi_note_day2'] = 'Recoge 20x {item:192658} de los enemigos planta en las |cFFFFFD00Islas Dragón|r.'
 L['lizi_note_day3'] = 'Recoge 10x {item:194966} pescadas en cualquier masa de agua dulce en las |cFFFFFD00Islas Dragón|r. Se encuentran con más frecuencia en los interiores de las |cFFFFFD00Llanuras de Ohn\'ahran|r.'
 L['lizi_note_day4'] = 'Recoge 20x {item:192636} de los mamuts de las |cFFFFFD00Llanuras de Ohn\'ahran|r.'
-L['lizi_note_day5'] = 'Compra 1x {item:200598} a {npc:190015} en la tienda al sur de los |cFFFFFD00Manantiales Ohn\'iri|r.'
+L['lizi_note_day5'] = 'Acepta la misión {quest:71195} de {npc:190014} y consigue 1x {item:200598} de {npc:190015} en la tienda al sur de los |cFFFFFD00Manantiales Ohn\'iri|r.'
 
 L['ohnahra_note_start'] = 'Completa la cadena de misiones Día de Iniciación comenzando con {quest:65901} y entonces aparecerá {npc:190022} en los |cFFFFFD00Manantiales Ohn\'iri|r detrás de la choza del sabio del viento.\n\nReúne los siguientes objetos:'
 L['ohnahra_note_item1'] = 'Recoge 3x {item:201929} de los {npc:186151}, el boss final de la mazmorra |cFFFFFD00Ofensiva Nokhud|r (dificultad Heroica). No tiene un 100% de caer.'
@@ -151,11 +169,11 @@ L['options_icons_dreamguard_desc'] = 'Muestra dónde están los Guardasueños pa
 L['blightpaw_note'] = 'Habla con el {npc:193222} y acepta ayudarle.'
 L['woofang_note'] = 'Acaricia al {npc:193156} para hacer aparecer al raro.'
 
-L['acorn_harvester_note'] = 'Recoge una |cFFFFFD00Bellota|r del suelo cercano para conseguir {spell:388485} y entonces interactúa con {npc:196172}.'
+L['acorn_harvester_note'] = 'Recoge una |cFFFFFD00Bellota|r del suelo cercano para conseguir {spell:388485} y entonces interactúa con {npc:196172}.\n\n|cFFFF0000(BUG: Para poder hacer click en el {npc:196172} puede ser necesario un reload)|r.'
 L['cracked_hourglass_note'] = 'La {item:199068} se puede encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['sandy_wooden_duck_note'] = 'Recoge el {item:199069} y úsalo.'
 
-L['tasty_hatchling_treat_note'] = nil
+L['tasty_hatchling_treat_note'] = 'En un barril detrás de la librería.'
 
 L['pt_alch_contraband_concoction_note'] = 'Escondido en los arbustos. ' .. ns.color.Orange('Difícil de ver')
 L['pt_alch_furry_gloop_note'] = 'Deja a un {npc:194855} cercano dentro de cada caldera y mata al monstruo que aparecerá.'
@@ -169,30 +187,37 @@ L['pt_script_how_to_train_your_whelpling_note'] = 'Pequeño libro marrón tirado
 L['pt_smith_draconic_flux_note'] = 'Dentro de un edificio.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Haz click en el |cFFFFFD00Telar de Tejido de Dragón Ancestral|r para completar un minijuego donde has de conectar los carretes de hilo a la gema central.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Bandera pequeña dentro de una pila de arena.'
+L['pt_mining_bridgette_holdug'] = 'Encima de un pilar de roca cubierto de hierba.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'El Destacamento de Guerra Qalashi viaja encima del {npc:192737} a esta torre.'
-L['lepidoralia_note'] = nil
-L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la Ciudadela Obsidiana.' -- pls review
-L['shadeslash_note'] = nil
-L['shasith_note'] = 'Dentro del |cFFFFFD00Trono Obsidiana|r.'
-L['slurpo_snail_note'] = nil
+L['lepidoralia_note'] = 'Está en la |cFFFFFD00Caverna del Aleteo|r. Ayuda al {npc:193342} a coger {npc:193274} hasta que aparezca el raro.'
+L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} a %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la |cFFFFFD00Ciudadela Obsidiana|r.'
+L['shadeslash_note'] = 'Haz click en el |cFFFFFD00Foco Birlado|r para hacer aparecer al raro.'
+L['obsidian_throne_rare_note'] = 'Dentro del |cFFFFFD00Trono Obsidiana|r.'
+L['slurpo_snail_note'] = 'Despoja un {item:201033} de una cueva en |cFFFFFD00Las Tierras Azures|r (11, 41) y úsalo en esta cueva para invocar al raro.'
 L['worldcarver_atir_note'] = 'Recoge 3x {item:191211} del {npc:187366} cercano y ponlos en los {npc:197395} para hacer aparecer al raro.'
 
 L['bubble_drifter_note'] = 'La {item:199061} se puede encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['dead_mans_chestplate_note'] = 'Dentro de la torre. En el piso central.'
-L['fullsails_supply_chest_note'] = nil
+L['fullsails_supply_chest_note'] = 'La llave la sueltan los {npc:187971} y los {npc:187320} al sur de la |cFFFFFD00Embajada Reposo Alado|r.'
 L['golden_dragon_goblet_note'] = 'Despoja la {item:202081} del {npc:190056} en la |cFFFFFD00Costa Indómita|r y completa la pequeña cadena de misiones.'
 L['misty_treasure_chest_note'] = 'Ponte en {npc:185485} que sobresale de la cascada para entrar en la cueva.'
 L['onyx_gem_cluster_note'] = 'A Renombre 21 con la Expedición Dragontina se puede completar la misión {quest:70833} para conseguir el {item:200738} como recompensa (una vez por cuenta) o comprar el mapa a {npc:189065} por 3 {item:192863} y 500 {currency:2003} y usarlo.'
-L['torn_riding_pack_note'] = nil
-L['yennus_kite_note'] = nil
+L['torn_riding_pack_note'] = 'Está encima de la cascada.'
+L['yennus_kite_note'] = 'Bloqueada en una rama en lo alto del árbol.'
 
 L['fullsails_supply_chest'] = 'Cofre de Suministros Todavela'
-L['hidden_hornswog_hoard_note'] = 'Recoge {item:200064}, {item:200065} y {item:200066}, combínalos en |cFFFFFD00"Acertijo de observador: Una Guía de Campo"|r cerca del tesoro y entonces alimenta a la rana.'
+L['hidden_hornswog_hoard_note'] = [[
+Recoge tres objetos distintos y combínalos para crear el |cFFFFFD00"Acertijo de observador: Una Guía de Campo"|r junto al {npc:192362} para conseguir el {item:200063} y alimentarlo. Se moverá fuera del camino y podrás despojar su tesoro.
+
+{item:200064}
+{item:200065}
+{item:200066}
+]]
 
 L['pt_alch_frostforged_potion_note'] = 'En el centro del cráter helado.'
 L['pt_alch_well_insulated_mug_note'] = 'En la |cFFFFFD00Fortaleza de Ruinadragón|r entre varios enemigos élite.'
@@ -213,6 +238,7 @@ L['pt_smith_molten_ingot_note'] = 'Patea 3 lingotes dentro de la lava para hacer
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Encima de un yunque.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Un trozo de tela colgando de unos árboles justo fuera de la cueva donde aparece el boss final. ' .. ns.color.Orange('Requiere precisión montando dragones o un portal de brujo')
 L['pt_tailor_mysterious_banner_note'] = 'Revoloteando por encima de los edificios.'
+L['pt_smith_grekka_anvilsmash'] = 'Reposa en la hierba al lado de la torre en ruinas.\n\n|cFFFF0000(Actualmente bugeado.)|r'
 
 L['quack_week_1'] = 'Semana 1'
 L['quack_week_2'] = 'Semana 2'
@@ -220,3 +246,12 @@ L['quack_week_3'] = 'Semana 3'
 L['quack_week_4'] = 'Semana 4'
 L['quack_week_5'] = 'Semana 5'
 L['lets_get_quacking'] = 'Sólo puedes rescatar un {npc:187863} a la semana.'
+
+L['complaint_to_scalepiercer_note'] = 'Haz click en la |cFFFFFD00Tablilla de Piedra|r que hay dentro de la choza (en el lado izquierdo de la parte de atrás).'
+L['grand_flames_journal_note'] = 'Haz click en la |cFFFFFD00Tablilla de Piedra|r de fuera detrás de la choza.'
+L['wyrmeaters_recipe_note'] = 'Haz click en la |cFFFFFD00Tablilla de Piedra|r que hay dentro de la choza (en el lado izquierdo).'
+
+L['options_icons_ducklings'] = nil
+L['options_icons_ducklings_desc'] = nil
+L['options_icons_chiseled_record'] = nil
+L['options_icons_chiseled_record_desc'] = nil

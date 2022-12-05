@@ -43,6 +43,15 @@ L['dr_bronze'] = '\n\nTerminez la course pour obtenir ' .. ns.color.Bronze('Bron
 L['options_icons_dragonrace'] = 'Courses du Vol à dos de dragon'
 L['options_icons_dragonrace_desc'] = 'Afficher les emplacements des Courses du Vol à dos de dragon.'
 
+L['squirrels_note'] = 'Vous devez utiliser l\'émote /amour sur les bestioles, pas sur les familiers de combat.'
+L['options_icons_squirrels'] = '{achievement:16729}'
+L['options_icons_squirrels_desc'] = 'Afficher les emplacements des bestioles pour {achievement:16729}.'
+
+L['hnj_sublabel'] = nil
+L['hnj_western_azure_span_hunt'] = nil
+L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
+L['options_icons_hemet_nesingwary_jr_desc'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
@@ -54,7 +63,7 @@ L['trilvarus_loreweaver_note'] = 'Récupérez un |cFFFFFD00Fragment chantant|r p
 
 L['breezebiter_note'] = 'Vole dans le ciel, pour le faire descendre, volez près de lui.'
 
-L['forgotten_jewel_box_note'] = 'Récupérez la {item:199065} dans un Coffre clanique au Refuge d\'Ondecrête (49.4 67.3) dans les Plaines d\'Ohn\'ahra et utilisez-la.'
+L['forgotten_jewel_box_note'] = 'Récupérez la {item:199065} dans un Coffre clanique au |cFFFFFD00Refuge d\'Ondecrête|r (49.4 67.3) dans les |cFFFFFD00Plaines d\'Ohn\'ahra|r et utilisez-la.'
 L['gnoll_fiend_flail_note'] = '{item:199066} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 L['pepper_hammer_note'] = 'Récupérez la |cFFFFFD00Sève|r et utilisez le |cFFFFFD00Bâton|r pour attirer le {npc:195373}.\n\n|cFFFF0000(BUG : Pour cliquer sur le bâton, un rechargement peut être nécessaire)|r'
 L['snow_covered_scroll'] = 'Parchemin couvert de neige'
@@ -81,6 +90,15 @@ L['options_icons_layline_desc'] = 'Afficher les emplacements de toutes les ligne
 
 L['seeing_blue_note'] = 'Volez du sommet des archives d’Azur jusqu’à l’assemblée de Cobalt sans atterrir.'
 L['snowman_note'] = 'Il y a trois {npc:197599s} dans la zone (elles ont pu être déplacées par d\'autres joueurs), faites-les rouler vers les deux enfants {npc:197838} et {npc:197839}.\nVous obtenez le haut-fait lorsque les boules de neige ont la bonne taille.'
+L['temperamental_skyclaw_note'] = [[
+Rassemblez (ou achetez à l'hôtel des ventes) :
+
+20x {item:201420}
+20x {item:201421}
+20x {item:201422}
+
+Renseignez-vous sur la rusarde sellée et remettez à {npc:190892} les "plats" recueillis.
+]]
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -118,11 +136,11 @@ L['pt_tailor_noteworthy_scrap_of_carpet_note'] = 'Posé dans une petite hutte.' 
 L['pt_tailor_silky_surprise_note'] = 'Trouvez et ramassez une |cFFFFFD00Feuille d’herbe à chat|r.'
 
 L['lizi_note'] = 'Terminez la suite de quêtes Une sortie d’initié en commençant par {quest:65901}. Accomplissez les quêtes chaque jour pour soigner Lizi et recevoir votre monture.\n\nEn plus des objets requis, toutes les quêtes demandent 150x {currency:2003} pour un total de 750x {currency:2003}.'
-L['lizi_note_day1'] = 'Collectez 20x {item:192615} sur des monstres insectes dans les |cFFFFFD00Îles aux Dragons|r'
-L['lizi_note_day2'] = 'Collectez 20x {item:192658} sur des monstres végétaux dans les |cFFFFFD00Îles aux Dragons|r'
-L['lizi_note_day3'] = 'Collectez 10x {item:194966} pêchés dans n\'importe quelles eaux des |cFFFFFD00Îles aux Dragons|r. Ils sont trouvés le plus souvent à l\'intérieur des terres des |cFFFFFD00Plaines d\'Ohn\'ahra|r'
+L['lizi_note_day1'] = 'Collectez 20x {item:192615} sur des monstres insectes dans les |cFFFFFD00Îles aux Dragons|r.'
+L['lizi_note_day2'] = 'Collectez 20x {item:192658} sur des monstres végétaux dans les |cFFFFFD00Îles aux Dragons|r.'
+L['lizi_note_day3'] = 'Collectez 10x {item:194966} pêchés dans n\'importe quelles eaux des |cFFFFFD00Îles aux Dragons|r. Ils sont trouvés le plus souvent à l\'intérieur des terres des |cFFFFFD00Plaines d\'Ohn\'ahra|r.'
 L['lizi_note_day4'] = 'Collectez 20x {item:192636} sur des mammouths dans les |cFFFFFD00Plaines d\'Ohn\'ahra|r'
-L['lizi_note_day5'] = 'Achetez 1x {item:200598} à {npc:190015} dans une tente au sud de |cFFFFFD00Sources des Ohn\'irs|r'
+L['lizi_note_day5'] = 'Acceptez {quest:71195} de l\'{npc:190014} et obtenez 1x {item:200598} de la part de {npc:190015} dans une tente au sud des |cFFFFFD00Sources des Ohn\'irs|r.'
 
 L['ohnahra_note_start'] = 'Terminez la suite de quêtes Une sortie d’initié commençant par {quest:65901} puis {npc:190022} apparaîtra aux |cFFFFFD00Sources des Ohn\'irs|r derrière une hutte de Sage-du-vent.\n\nRassemblez les matériaux suivants :'
 L['ohnahra_note_item1'] = 'Récupérez 3x {item:201929} sur {npc:186151}, le boss final du donjon |cFFFFFD00L\'offensive nokhud|r. Ce n\'est pas un drop garanti à 100%.'
@@ -151,7 +169,7 @@ L['options_icons_dreamguard_desc'] = 'Afficher les emplacements des Gardes-rêve
 L['blightpaw_note'] = 'Parlez à l\'{npc:193222} à proximité et acceptez de l\'aider.'
 L['woofang_note'] = 'Caressez {npc:193156} pour faire apparaître le rare.'
 
-L['acorn_harvester_note'] = 'Ramassez un |cFFFFFD00Gland|r sur le sol à proximité pour obtenir {spell:388485} et interagissez ensuite avec {npc:196172}.'
+L['acorn_harvester_note'] = 'Ramassez un |cFFFFFD00Gland|r sur le sol à proximité pour obtenir {spell:388485} et interagissez ensuite avec {npc:196172}.\n\n|cFFFF0000(BUG : Pour cliquer sur le {npc:196172}, un rechargement peut être nécessaire)|r.'
 L['cracked_hourglass_note'] = '{item:199068} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 L['sandy_wooden_duck_note'] = 'Récupérez {item:199069} et utilisez-la.'
 
@@ -169,6 +187,7 @@ L['pt_script_how_to_train_your_whelpling_note'] = 'Un petit livre marron posé d
 L['pt_smith_draconic_flux_note'] = 'A l\'intérieur d\'un bâtiment.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Cliquez sur le |cFFFFFD00Rouet tisse-dragon ancien|r pour effectuer un mini-jeu où vous devez relier les bobines de fil à la gemme centrale.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Une petite bannière dans un tas de sable.'
+L['pt_mining_bridgette_holdug'] = 'Au sommet d\'un pilier de roche couvert d\'herbe.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -176,9 +195,9 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Une petite bannière
 
 L['brundin_the_dragonbane_note'] = 'La Troupe Qalashi voyage sur leur {npc:192737} jusqu\'à cette tour.'
 L['lepidoralia_note'] = 'Situé dans la |cFFFFFD00Caverne Bruissante|r. Aidez le {npc:193342} à attraper des {npc:193274s} jusqu\'à ce que le rare apparaisse.'
-L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la Citadelle d\'obsidienne.' -- pls review
+L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} à %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la |cFFFFFD00Citadelle d\'obsidienne|r.'
 L['shadeslash_note'] = 'Cliquez sur le |cFFFFFD00Focalisateur volé|r pour invoquer le rare.'
-L['shasith_note'] = 'À l\'intérieur du |cFFFFFD00Trône d\'obsidienne|r.'
+L['obsidian_throne_rare_note'] = 'À l\'intérieur du |cFFFFFD00Trône d\'obsidienne|r.'
 L['slurpo_snail_note'] = 'Récupérez un {item:201033} dans une grotte de |cFFFFFD00La Travée d\'Azur|r (11, 41) et utilisez-le dans cette grotte pour l\'invoquer.'
 L['worldcarver_atir_note'] = 'Récupérez 3x {item:191211} sur les {npc:187366} à proximité et placez-les sur les {npc:197395} pour faire apparaître le rare.'
 
@@ -193,7 +212,7 @@ L['yennus_kite_note'] = 'Coincé dans une branche au sommet de l\'arbre.'
 
 L['fullsails_supply_chest'] = 'Clé de coffre de fournitures des Gréements'
 L['hidden_hornswog_hoard_note'] = [[
-Récupérez trois items différents et combinez-les à |cFFFFFD00"l\'Énigmes sagaces : un guide de poche"|r près du bufflacien pour obtenir une {item:200063} et le nourrir. Elle s'écartera alors du chemin pour que vous puissiez récupérer son trésor.
+Récupérez trois items différents et combinez-les à |cFFFFFD00"l\'Énigmes sagaces : un guide de poche"|r près du {npc:192362} pour obtenir une {item:200063} et le nourrir. Elle s'écartera alors du chemin pour que vous puissiez récupérer son trésor.
 
 {item:200064}
 {item:200065}
@@ -219,6 +238,7 @@ L['pt_smith_molten_ingot_note'] = 'Envoyez 3 lingots dans la lave pour faire app
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Au sommet d\'une enclume.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Un morceau de tissu accroché à un arbre juste à l\'extérieur de la grotte où le boss final apparaît.' .. ns.color.Orange('Nécessite de la précision avec le Vol à dos de Dragon ou bien un portail de démoniste.')
 L['pt_tailor_mysterious_banner_note'] = 'Flottant sur le toit des bâtiments.'
+L['pt_smith_grekka_anvilsmash'] = 'Elle est assise dans l\'herbe à côté de la tour en ruines.\n\n|cFFFF0000(Actuellement buggé.)|r'
 
 L['quack_week_1'] = 'Semaine 1'
 L['quack_week_2'] = 'Semaine 2'
@@ -226,3 +246,12 @@ L['quack_week_3'] = 'Semaine 3'
 L['quack_week_4'] = 'Semaine 4'
 L['quack_week_5'] = 'Semaine 5'
 L['lets_get_quacking'] = 'Vous ne pouvez sauver qu\'un seul {npc:187863} par semaine.'
+
+L['complaint_to_scalepiercer_note'] = 'Cliquez sur la |cFFFFFD00Tablette en pierre|r à l\'intérieur de la hutte (sur le côté gauche au fond).'
+L['grand_flames_journal_note'] = 'Cliquez sur la |cFFFFFD00Tablette en pierre|r à l\'extérieur, derrière la hutte.'
+L['wyrmeaters_recipe_note'] = 'Cliquez sur la |cFFFFFD00Tablette en pierre|r à l\'intérieur de la hutte (sur le côté gauche).'
+
+L['options_icons_ducklings'] = nil
+L['options_icons_ducklings_desc'] = nil
+L['options_icons_chiseled_record'] = nil
+L['options_icons_chiseled_record_desc'] = nil

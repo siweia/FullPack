@@ -43,6 +43,15 @@ L['dr_bronze'] = nil
 L['options_icons_dragonrace'] = nil
 L['options_icons_dragonrace_desc'] = nil
 
+L['squirrels_note'] = 'Вы должны использовать эмоцию /любовь на зверьках, а не на боевых питомцах.'
+L['options_icons_squirrels'] = '{achievement:16729}'
+L['options_icons_squirrels_desc'] = 'Места появления зверьков для {achievement:16729}'
+
+L['hnj_sublabel'] = nil
+L['hnj_western_azure_span_hunt'] = nil
+L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
+L['options_icons_hemet_nesingwary_jr_desc'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
@@ -81,6 +90,7 @@ L['options_icons_layline_desc'] = 'Показать расположение в�
 
 L['seeing_blue_note'] = 'Пролетите с вершины Лазурных архивов до Кобальтовой ассамблеи за один полет.'
 L['snowman_note'] = nil
+L['temperamental_skyclaw_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -122,7 +132,7 @@ L['lizi_note_day1'] = 'Соберите 20x {item:192615} с монстров н
 L['lizi_note_day2'] = 'Соберите 20x {item:192658} с монстров растений на |cFFFFFD00Драконьих Островах|r'
 L['lizi_note_day3'] = 'Соберите 10x {item:194966} ловится из любых водоемов на |cFFFFFD00Драконьих Островах|r. Чаще всего встречается в реках на |cFFFFFD00Равнине Он\'ары|r'
 L['lizi_note_day4'] = 'Соберите 20x {item:192636} с мамонтов и яков на |cFFFFFD00Заставе большекопытов|r'
-L['lizi_note_day5'] = 'Возьмите 1x {item:200598} у {npc:190015} в палатке к югу от |cFFFFFD00Ключей Он\'ир|r'
+L['lizi_note_day5'] = nil -- pls review 'Возьмите 1x {item:200598} у {npc:190015} в палатке к югу от |cFFFFFD00Ключей Он\'ир|r'
 
 L['ohnahra_note_start'] = 'Завершите сюжетную линию Похождения посвященного, начав с {quest:65901} у {npc:190022} который появиться в |cFFFFFD00ключах Он\'ир|r за хижиной жреца ветра.\n\nСоберите следующие материалы:'
 L['ohnahra_note_item1'] = 'Заберите 3x {item:201929} у {npc:186151}, финальный босс подземелья |cFFFFFD00Наступление клана Нокхуд|r (героический режим). Шанс не 100%.'
@@ -169,6 +179,7 @@ L['pt_script_how_to_train_your_whelpling_note'] = nil
 L['pt_smith_draconic_flux_note'] = nil
 L['pt_tailor_ancient_dragonweave_bolt_note'] = nil
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
+L['pt_mining_bridgette_holdug'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -176,9 +187,9 @@ L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = nil
 
 L['brundin_the_dragonbane_note'] = 'Боевой отряд куалаши отправляется на {npc:192737} к этой башне.'
 L['lepidoralia_note'] = nil
-L['obsidian_citadel_rare_note'] = 'Вы и другие игроки должны вернуть в общей сложности %dx {item:191264} %s. Для крафта ключа нужно скомбинировать 30x {item:191251} и 3x {item:193201}, вы можете получить эти предметы у монстров вокруг Обсидиановой цитадели.' -- pls review
+L['obsidian_citadel_rare_note'] = nil -- pls review 'Вы и другие игроки должны вернуть в общей сложности %dx {item:191264} %s. Для крафта ключа нужно скомбинировать 30x {item:191251} и 3x {item:193201}, вы можете получить эти предметы у монстров вокруг Обсидиановой цитадели.'
 L['shadeslash_note'] = nil
-L['shasith_note'] = 'Внутри |cFFFFFD00Обсидиановой цитадели|r.'
+L['obsidian_throne_rare_note'] = 'Внутри |cFFFFFD00Обсидиановой цитадели|r.'
 L['slurpo_snail_note'] = nil
 L['worldcarver_atir_note'] = 'Соберите 3x {item:191211} у {npc:187366} поблизости и поместите их в {npc:197395}, чтобы призвать редкого монстра.'
 
@@ -213,6 +224,7 @@ L['pt_smith_molten_ingot_note'] = nil
 L['pt_smith_qalashi_weapon_diagram_note'] = nil
 L['pt_tailor_itinerant_singed_fabric_note'] = nil
 L['pt_tailor_mysterious_banner_note'] = nil
+L['pt_smith_grekka_anvilsmash'] = nil
 
 L['quack_week_1'] = nil
 L['quack_week_2'] = nil
@@ -220,3 +232,12 @@ L['quack_week_3'] = nil
 L['quack_week_4'] = nil
 L['quack_week_5'] = nil
 L['lets_get_quacking'] = nil
+
+L['complaint_to_scalepiercer_note'] = nil
+L['grand_flames_journal_note'] = nil
+L['wyrmeaters_recipe_note'] = nil
+
+L['options_icons_ducklings'] = nil
+L['options_icons_ducklings_desc'] = nil
+L['options_icons_chiseled_record'] = nil
+L['options_icons_chiseled_record_desc'] = nil

@@ -42,6 +42,15 @@ L['dr_bronze'] = '\n\nBeende das Rennen um ' .. ns.color.Bronze('Bronze') .. ' z
 L['options_icons_dragonrace'] = 'Drachenrennen'
 L['options_icons_dragonrace_desc'] = 'Zeigt die Positionen der Drachenrennen an.'
 
+L['squirrels_note'] = 'Du musst das Emote /liebe auf Kleintiere anwenden (KEINE Kampfhaustiere).'
+L['options_icons_squirrels'] = '{achievement:16729}'
+L['options_icons_squirrels_desc'] = 'Zeigt die Positionen der Kleintiere für den Erfolg {achievement:16729} an.'
+
+L['hnj_sublabel'] = nil
+L['hnj_western_azure_span_hunt'] = nil
+L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
+L['options_icons_hemet_nesingwary_jr_desc'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
@@ -56,7 +65,7 @@ L['breezebiter_note'] = 'Fliegt durch die Luft, um ihn herunterzuziehen, fliege 
 L['forgotten_jewel_box_note'] = 'Plündere {item:199065} aus einer Klankiste in Gratwasserzuflucht (49.4 67.3) in den Ebenen von Ohn\'ahra und benutze es.'
 L['gnoll_fiend_flail_note'] = '{item:199066} kann in Expeditionsspäherpacks und in Bewegte Erde enthalten sein.'
 L['pepper_hammer_note'] = 'Sammel |cFFFFFD00Baumharz|r und benutze dann den |cFFFFFD00Stock|r, um {npc:195373} anzulocken.\n\n|cFFFF0000(BUG: Um den Stock anzuklicken könnte ein reload nötig sein)|r'
-L['snow_covered_scroll'] = nil
+L['snow_covered_scroll'] = 'Schneebedeckte Schriftrolle'
 
 L['pt_alch_experimental_decay_sample_note'] = 'In einem großen grünen Kessel.'
 L['pt_alch_firewater_powder_sample_note'] = 'Außerhalb des Holzhauses neben der Vase.'
@@ -79,7 +88,16 @@ L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Zeigt die Positionen aller Leylinien für den Erfolg {achievement:16638} an.'
 
 L['seeing_blue_note'] = 'Fliegt ohne Zwischenlandung von der Spitze der Azurarchive zum Kobaltkonvent.'
-L['snowman_note'] = 'Es liegen 3 Schneebälle in der nähe (möglicherweise wurden sie von anderen Spielern weggerollt), rolle sie zu den Kindern {npc:197838} und {npc:197839}.\nDu erhälst den erfolg sobald die Schneebälle die richtigen gößen erreicht haben.'
+L['snowman_note'] = 'Es liegen 3 Schneebälle in der Nähe (möglicherweise wurden sie von anderen Spielern weggerollt), rolle sie zu den Kindern {npc:197838} und {npc:197839}.\nDu erhältst den Erfolg sobald die Schneebälle die richtigen Größen erreicht haben.'
+L['temperamental_skyclaw_note'] = [[
+Sammel (oder kaufe im Auktionshaus):
+
+20x {item:201420}
+20x {item:201421}
+20x {item:201422}
+
+Fragt nach der gesattelten Slyvern und präsentiert {npc:190892} die gesammelten "Gerichte".
+]]
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -117,11 +135,11 @@ L['pt_tailor_noteworthy_scrap_of_carpet_note'] = 'Liegt in einer kleinen Hütte.
 L['pt_tailor_silky_surprise_note'] = 'Finde und plündere das |cFFFFFD00Katzenminzenwedel|r.'
 
 L['lizi_note'] = 'Schließe den Initiandenausflug Geschichtsstrang, gestartet mit der Quest {quest:65901} ab. Schließe täglich die Quests ab, um Lizi zu heilen und dein Reittier zu erhalten.\n\nZusätzlich zu den benötigten Gegenständen erfordern alle Quests 150x {currency:2003} für insgesamt 750x {currency:2003}.'
-L['lizi_note_day1'] = 'Sammel 20x {item:192615} von Insekten-Gegnern auf den |cFFFFFD00Dracheninseln|r'
-L['lizi_note_day2'] = 'Sammel 20x {item:192658} von Pflanzen-Gegnern auf den |cFFFFFD00Dracheninseln|r'
-L['lizi_note_day3'] = 'Sammel 10x {item:194966} gefischt aus allen Gewässern der |cFFFFFD00Dracheninseln|r. Am häufigsten im Binnenland |cFFFFFD00Ebenen von Ohn\'ahra|r zu finden'
-L['lizi_note_day4'] = 'Sammel 20x {item:192636} von Mammuts in den |cFFFFFD00Ebenen von Ohn\'ahra|r'
-L['lizi_note_day5'] = 'Kaufe 1x {item:200598} von {npc:190015} in einem Zelt südlich der |cFFFFFD00Quellen von Ohn\'iri|r'
+L['lizi_note_day1'] = 'Sammel 20x {item:192615} von Insekten-Gegnern auf den |cFFFFFD00Dracheninseln|r.'
+L['lizi_note_day2'] = 'Sammel 20x {item:192658} von Pflanzen-Gegnern auf den |cFFFFFD00Dracheninseln|r.'
+L['lizi_note_day3'] = 'Sammel 10x {item:194966} gefischt aus allen Gewässern der |cFFFFFD00Dracheninseln|r. Am häufigsten im Binnenland |cFFFFFD00Ebenen von Ohn\'ahra|r zu finden.'
+L['lizi_note_day4'] = 'Sammel 20x {item:192636} von Mammuts in den |cFFFFFD00Ebenen von Ohn\'ahra|r.'
+L['lizi_note_day5'] = 'Nimm die Quest {quest:71195} von {npc:190014} an und hole 1x {item:200598} von {npc:190015} in einem Zelt südlich der |cFFFFFD00Quellen von Ohn\'iri|r.'
 
 L['ohnahra_note_start'] = 'Schließe den Initiandenausflug Geschichtsstrang, gestartet mit der Quest {quest:65901} ab, dann wird {npc:190022} bei den |cFFFFFD00Quellen von Ohn\'iri|r hinter einer Hütte erscheinen.\n\nSammel die folgenden Materialien:'
 L['ohnahra_note_item1'] = 'Sammel 3x {item:201929} von {npc:186151}, dem Endboss im Dungeon |cFFFFFD00Der Angriff der Nokhud|r (Heroischer Schwierigkeitsgrad). Kein 100% Drop.'
@@ -150,11 +168,12 @@ L['options_icons_dreamguard_desc'] = 'Zeigt die Positionen der Traumwächterinne
 L['blightpaw_note'] = 'Sprich mit {npc:193222} in der Nähe und stimme zu, ihm zu helfen.'
 L['woofang_note'] = 'Streichel {npc:193156}, um den seltenen Gegner erscheinen zu lassen.'
 
-L['acorn_harvester_note'] = 'Sammel in der Nähe eine |cFFFFFD00Eichel|r vom Boden auf, um {spell:388485} zu erhalten und interagiere dann mit {npc:196172}.'
+L['acorn_harvester_note'] = 'Sammel in der Nähe eine |cFFFFFD00Eichel|r vom Boden auf, um {spell:388485} zu erhalten und interagiere dann mit {npc:196172}.\n\n|cFFFF0000(BUG: Um den {npc196172} anzuklicken könnte ein reload nötig sein)|r.'
 L['cracked_hourglass_note'] = '{item:199068} kann in Expeditionsspäherpacks und in Bewegte Erde enthalten sein.'
 L['sandy_wooden_duck_note'] = 'Sammel {item:199069} und benutze diese.'
 
-L['tasty_hatchling_treat_note'] = nil
+L['tasty_hatchling_treat_note'] = 'In einem Fass hinter dem Bücherregal.'
+
 L['pt_alch_contraband_concoction_note'] = 'In Büschen versteckt. ' .. ns.color.Orange('Schwer zu sehen.')
 L['pt_alch_furry_gloop_note'] = 'Wirf ein {npc:194855} in der Nähe in jeden Kessel und töte dann den Gegner, der erscheint.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'Südlich von |cFFFFFD00Tyrhold|r.'
@@ -167,27 +186,28 @@ L['pt_script_how_to_train_your_whelpling_note'] = 'Das kleine braune Buch liegt 
 L['pt_smith_draconic_flux_note'] = 'In einem Gebäude.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Click on the Ancient Dragonweave Loom to complete a minigame where you connect the spools of thread to the center gem.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Kleines Banner in einem Sandhaufen.'
+L['pt_mining_bridgette_holdug'] = 'Auf einem grasbewachsenen Felspfeiler.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'Der Kriegstrupp der Qalashi reist auf ihrem {npc:192737} zu diesem Turm.'
-L['lepidoralia_note'] = nil
+L['lepidoralia_note'] = 'Hilf {npc:193342} in der |cFFFFFD00Flatterkaverne|r Höhle dabei {npc:193274} zu fangen, bis der seltene Gegner erscheint.'
 L['obsidian_citadel_rare_note'] = 'Du und andere Spieler müssen insgesamt %dx {item:191264} bei %s abgeben.\nUm einen Schlüssel herzustellen, müssen 30x {item:191251} und 3x {item:193201} kombiniert werden, diese können von Gegnern bei der |cFFFFFD00Obsidianzitadelle|r geplündert werden.'
-L['shadeslash_note'] = nil
-L['shasith_note'] = 'Innerhalb des |cFFFFFD00Obsidianthron|r.'
-L['slurpo_snail_note'] = nil
+L['shadeslash_note'] = 'Klicke auf den |cFFFFFD00Gestohlener Fokus|r, um den seltenen Gegner erscheinen zu lassen.'
+L['obsidian_throne_rare_note'] = 'Innerhalb des |cFFFFFD00Obsidianthron|r.'
+L['slurpo_snail_note'] = 'Plündere in einer Höhle im |cFFFFFD00Azurblauen Gebirge|r (11.0, 41.4) aus einem |cFFFFFD00Salzkristall|r ein {item:201033} und benutze ihn in dieser Höhle, um den seltenen Gegner erscheinen zu lassen.'
 L['worldcarver_atir_note'] = 'Sammel 3x {item:191211} von {npc:187366} in der Nähe und platziere diese beim {npc:197395}, um den seltenen Gegner erscheinen zu lassen.'
 
 L['bubble_drifter_note'] = '{item:199061} kann in Expeditionsspäherpacks und in Bewegte Erde enthalten sein.'
 L['dead_mans_chestplate_note'] = 'Im Inneren des Turms auf der mittleren Etage.'
-L['fullsails_supply_chest_note'] = nil
+L['fullsails_supply_chest_note'] = 'Der Schlüssel kann südlich der |cFFFFFD00Botschaft von Schwingenrast|r von {npc:187971} und {npc:187320} fallen gelassen werden.'
 L['golden_dragon_goblet_note'] = 'Plündere {item:202081} von {npc:190056} an der |cFFFFFD00Wilde Küste|r und schließe die kleine Questreihe ab.'
 L['misty_treasure_chest_note'] = 'Stelle dich auf den {npc:185485} der aus dem Wasserfall ragt, um in die Höhle zu gelangen.'
 L['onyx_gem_cluster_note'] = 'Auf Ruhmstufe 21 bei der Drachenschuppenexpedition kannst du die Quest {quest:70833} abschließen und als Belohnung die {item:200738} bekommen (einmal pro Account) oder kaufe die Karte von {npc:189065} für 3 {item:192863} und 500 {currency:2003} und benutze es.'
-L['torn_riding_pack_note'] = nil
-L['yennus_kite_note'] = nil
+L['torn_riding_pack_note'] = 'Liegt am oberen Ende des Wasserfalls.'
+L['yennus_kite_note'] = 'Steckt an einem Ast in der Baumkrone fest.'
 
 L['fullsails_supply_chest'] = 'Vorratskiste der Vollsegel'
 L['hidden_hornswog_hoard_note'] = 'Sammel {item:200064}, {item:200065} und {item:200066}, kombiniere diese beim |cFFFFFD00"Rätsel für Aufmerksame: Ein Naturführer"|r nahe dem Schatz und füttere dann den Frosch damit.'
@@ -206,11 +226,12 @@ L['pt_leath_spare_djaradin_tools_note'] = 'Neben einem toten roten Drachen.'
 L['pt_script_pulsing_earth_rune_note'] = 'Hinter einem Tisch im Inneren des verfallenen Gebäudes.' -- review
 L['pt_smith_ancient_monument_note'] = 'Besiege die 4 {npc:188648} um ein Schwert auf einem Sockel herum.' -- review
 L['pt_smith_curious_ingots_note'] = 'Kleiner Barren auf dem Boden in der |cFFFFFD00Schuppenknackerfeste|r.'
-L['pt_smith_glimmer_of_blacksmithing_wisdom_note'] = 'Stelle eine {item:189541} in der Nähe der |cFFFFFD00Dunkle Schmiede|r her, damit du den Gegenstand in der |cFFFFFD00Slack Tub|r plündern kannst.' -- review
+L['pt_smith_glimmer_of_blacksmithing_wisdom_note'] = 'Stelle eine {item:189541} in der Nähe der |cFFFFFD00Dunkle Schmiede|r her, damit du den Gegenstand im |cFFFFFD00Härtebecken|r plündern kannst.' -- review
 L['pt_smith_molten_ingot_note'] = 'Wirf 3 Barren in die Lava, um einen Gegner erscheinen zu lassen. Plündere die Truhe, nachdem der Gegner besiegt ist.'
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Auf einem Amboss.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Ein Stück Stoff, das an einem Baum vor der Höhle hängt, in der der |cFFFFFD00Belagerung der Drachenfluchfestung|r Endboss erscheinen wird. ' .. ns.color.Orange('Erfordert präzises Drachenreiten oder ein Hexenmeisterportal.')
 L['pt_tailor_mysterious_banner_note'] = 'Flattert auf dem Dach des Gebäudes.'
+L['pt_smith_grekka_anvilsmash'] = 'Sitzt im Gras neben der Turmruine.\n\n|cFFFF0000(Zurzeit verbuggt.)|r'
 
 L['quack_week_1'] = 'Woche 1'
 L['quack_week_2'] = 'Woche 2'
@@ -218,3 +239,12 @@ L['quack_week_3'] = 'Woche 3'
 L['quack_week_4'] = 'Woche 4'
 L['quack_week_5'] = 'Woche 5'
 L['lets_get_quacking'] = 'Du kannst jede Woche nur ein {npc:187863} retten.'
+
+L['complaint_to_scalepiercer_note'] = 'Klicke die |cFFFFFD00Steintafel|r im Inneren der Hütte an (auf der linken Seite hinten).'
+L['grand_flames_journal_note'] = 'Klicke die |cFFFFFD00Steintafel|r draußen hinter der Hütte an.'
+L['wyrmeaters_recipe_note'] = 'Klicke die |cFFFFFD00Steintafel|r im Inneren der Hütte an (auf der linken Seite).'
+
+L['options_icons_ducklings'] = nil
+L['options_icons_ducklings_desc'] = nil
+L['options_icons_chiseled_record'] = nil
+L['options_icons_chiseled_record_desc'] = nil

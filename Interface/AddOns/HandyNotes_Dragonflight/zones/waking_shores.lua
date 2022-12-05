@@ -130,7 +130,7 @@ map.nodes[31785474] = Rare({ -- review -- required 67030
 
 map.nodes[60204535] = Rare({
     id = 193217,
-    quest = nil,
+    quest = 73874,
     rewards = {
         Achievement({id = 16676, criteria = 56039}),
         Transmog({item = 200219, slot = L['cloak']}) -- Dangerous Drapery
@@ -185,11 +185,14 @@ map.nodes[43007465] = Rare({ -- review
     rewards = {Achievement({id = 16676, criteria = 56037})}
 }) -- Helmet Missingway
 
-map.nodes[34618275] = Rare({ -- review
+map.nodes[34618275] = Rare({
     id = 193266,
     quest = 74065,
     note = L['lepidoralia_note'],
-    rewards = {Achievement({id = 16676, criteria = 56055})}
+    rewards = {
+        Achievement({id = 16676, criteria = 56055}),
+        Transmog({item = 200232, slot = L['warglaive']}) -- Raptor Talonglaive
+    }
 }) -- Lepidoralia the Resplendent
 
 map.nodes[39596353] = Rare({ -- review -- required 67030
@@ -204,13 +207,14 @@ map.nodes[22207649] = Rare({ -- review -- required 67030
     rewards = {Achievement({id = 16676, criteria = 56047})}
 }) -- Massive Magmashell
 
-map.nodes[32225193] = Rare({
+map.nodes[32805248] = Rare({
     id = 187306,
     quest = 74067,
     note = format(L['obsidian_citadel_rare_note'], 10, '{npc:187275}'),
     rewards = {
         Achievement({id = 16676, criteria = 56988}),
-        Achievement({id = 16496, criteria = 55868}) -- Obsidian Champion
+        Achievement({id = 16496, criteria = 55868}), -- Obsidian Champion
+        Item({item = 200207, note = L['neck']}) -- Petrified Fungal Spores
     },
     pois = {POI({32245246})} -- Igys the Believer
 }) -- Morchok
@@ -222,9 +226,9 @@ map.nodes[56004592] = Rare({
         Achievement({id = 16676, criteria = 56034}),
         Item({item = 200236, note = L['trinket']}), -- Memory of Nulltheria
         Transmog({item = 200310, note = L['cloak']}), -- Stole of the Iron Phantom
-        Item({item = 197403, quest = nil}), -- Renewed Proto-Drake: Club Tail
+        Item({item = 197403, quest = 69604}), -- Renewed Proto-Drake: Club Tail
         Item({item = 197382, quest = 69583}), -- Renewed Proto-Drake: White Horns
-        Item({item = 196992, quest = nil}), -- Cliffside Wylderdrake: Heavy Horns
+        Item({item = 196992, quest = 69192}), -- Cliffside Wylderdrake: Heavy Horns
         Item({item = 196985, quest = 69185}) -- Cliffside Wylderdrake: Horned Jaw
     }
 }) -- Nulltheria the Void Gazer
@@ -234,7 +238,7 @@ map.nodes[81485082] = Rare({ -- required 67030
     quest = 70983,
     rewards = {
         Achievement({id = 16676, criteria = 56043}),
-        Item({item = 197022, quest = nil}) -- Cliffside Wylderdrake: Finned Neck
+        Item({item = 197022, quest = 69222}) -- Cliffside Wylderdrake: Finned Neck
     },
     pois = {
         Path({
@@ -259,13 +263,14 @@ map.nodes[64676939] = Rare({
 map.nodes[30226045] = Rare({ -- review
     id = 193232,
     quest = 74051,
+    note = L['obsidian_throne_rare_note'],
     rewards = {
         Achievement({id = 16676, criteria = 56061}),
         Item({item = 197005, quest = 69205}) -- Cliffside Wylderdrake: Horned Nose
     }
 }) -- Rasnar the War Ender
 
-map.nodes[25366070] = Rare({
+map.nodes[30736110] = Rare({
     id = 187598,
     quest = 74052,
     rewards = {Achievement({id = 16676, criteria = 56057})}
@@ -284,7 +289,7 @@ map.nodes[46997332] = Rare({
 map.nodes[23755734] = Rare({ -- review -- required 67030
     id = 189822,
     quest = 74077,
-    note = L['shasith_note'] .. ' ' ..
+    note = L['obsidian_throne_rare_note'] .. ' ' ..
         format(L['obsidian_citadel_rare_note'], 20, '{npc:187284}'),
     rewards = {
         Achievement({id = 16676, criteria = 56054}),
@@ -294,7 +299,7 @@ map.nodes[23755734] = Rare({ -- review -- required 67030
     pois = {
         POI({
             27226096, -- Entrance
-            26836257 -- Furorion
+            26836257 -- Wrathion
         })
     }
 }) -- Shas'ith
@@ -305,8 +310,8 @@ map.nodes[42892832] = Rare({
     rewards = {
         Achievement({id = 16676, criteria = 56036}),
         Transmog({item = 200132, slot = L['dagger']}), -- Skewer's Snout
-        Item({item = 197022, quest = nil}), -- Cliffside Wylderdrake: Finned Neck
-        Item({item = 197589, quest = nil}) -- Windborne Velocidrake: Large Head Fin
+        Item({item = 197022, quest = 69222}), -- Cliffside Wylderdrake: Finned Neck
+        Item({item = 197589, quest = 69793}) -- Windborne Velocidrake: Large Head Fin
     },
     pois = {
         Path({
@@ -320,11 +325,15 @@ map.nodes[42892832] = Rare({
     }
 }) -- Skewersnout
 
-map.nodes[36009000] = Rare({
+map.nodes[34578950] = Rare({
     id = 193175,
-    quest = nil,
+    quest = 72126, -- 74079
     note = L['slurpo_snail_note'],
-    rewards = {Achievement({id = 16676, criteria = 57003})}
+    rewards = {
+        Achievement({id = 16676, criteria = 57003}),
+        Transmog({item = 200189, slot = L['plate']}) -- Hydroforged Shell Helm
+    },
+    pois = {POI({36028984})} -- Entrance
 }) -- Slurpo, the Incredible Snail
 
 map.nodes[69486653] = Rare({ -- review -- required 67030
@@ -358,7 +367,9 @@ map.nodes[33525576] = Rare({
     note = L['in_small_cave'],
     rewards = {
         Achievement({id = 16676, criteria = 56058}),
-        Item({item = 200563, note = L['trinket']}) -- Primal Ritual Shell
+        Transmog({item = 200683, slot = L['plate']}), -- Legguards of the Deep Strata
+        Item({item = 200563, note = L['trinket']}), -- Primal Ritual Shell
+        Item({item = 197624, quest = 69828}) -- Windborne Velocidrake: Club Tail
     }
 }) -- Turboris
 
@@ -589,9 +600,9 @@ map.nodes[24906970] = PT.Tailoring({
     note = L['pt_tailor_itinerant_singed_fabric_note']
 }) -- Itinerant Singed Fabric
 
-map.nodes[25107330] = PT.Alchemy({
+map.nodes[25107411] = PT.Alchemy({
     id = 198685,
-    quest = nil,
+    quest = 70289,
     note = L['pt_alch_well_insulated_mug_note']
 }) -- Well-Insulated Mug
 
@@ -633,7 +644,7 @@ map.nodes[50404510] = PT.Jewelcrafting({
 
 map.nodes[55008100] = PT.Alchemy({
     id = 198663,
-    quest = nil,
+    quest = 70274,
     note = L['pt_alch_frostforged_potion_note']
 }) -- Frostforged Potion
 
@@ -691,6 +702,12 @@ map.nodes[74703790] = PT.Tailoring({
     quest = 70302,
     note = L['pt_tailor_mysterious_banner_note']
 }) -- Mysterious Banner
+
+-- map.nodes[43276663] = PT.Mining({
+--     id = 194836,
+--     quest = nil,
+--     note = L['pt_smith_grekka_anvilsmash']
+-- }) -- Grekka Anvilsmash -- currently bugged
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -939,6 +956,25 @@ map.nodes[42599445] = ns.node.Dragonrace({
 }) -- Wild Preserve Circuit
 
 -------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+map.nodes[76554827] = ns.node.Squirrel({
+    id = 189737,
+    rewards = {Achievement({id = 16729, criteria = 1})}
+}) -- Kelp Nibbler
+
+map.nodes[65142863] = ns.node.Squirrel({
+    id = 192135,
+    rewards = {Achievement({id = 16729, criteria = 2})}
+}) -- Phoenix Hatchling
+
+map.nodes[58387252] = ns.node.Squirrel({
+    id = 193756,
+    rewards = {Achievement({id = 16729, criteria = 3})}
+}) -- Docile Kit
+
+-------------------------------------------------------------------------------
 ------------------------------ LET'S GET QUACKING -----------------------------
 -------------------------------------------------------------------------------
 
@@ -946,6 +982,7 @@ local Quack = Class('Quack', Collectible, {
     label = '{npc:196744}',
     note = L['lets_get_quacking'],
     icon = 4048818,
+    group = ns.groups.DUCKLINGS,
     rewards = {Achievement({id = 16409, criteria = {id = 1, qty = true}})}
 })
 
@@ -974,3 +1011,51 @@ map.nodes[82884258] = Quack({
     rlabel = L['quack_week_5'],
     requires = {ns.requirement.Quest(70918)}
 }) -- Quacking Out for a Hero (Week 5)
+
+-------------------------------------------------------------------------------
+------------------ SIEGE ON DRAGONBANE KEEP: CHISELED RECORD ------------------
+-------------------------------------------------------------------------------
+
+map.nodes[27836835] = Collectible({
+    note = L['complaint_to_scalepiercer_note'],
+    icon = 134455,
+    group = ns.groups.CHISELED_RECORD,
+    rewards = {Achievement({id = 16412, criteria = 55264})}
+}) -- Complaint to Scalepiercer
+
+map.nodes[28827244] = Collectible({
+    note = L['wyrmeaters_recipe_note'],
+    icon = 134455,
+    group = ns.groups.CHISELED_RECORD,
+    rewards = {Achievement({id = 16412, criteria = 55266})}
+}) -- Wyrmeater's Recipe
+
+map.nodes[24056927] = Collectible({
+    note = L['grand_flames_journal_note'],
+    icon = 134455,
+    group = ns.groups.CHISELED_RECORD,
+    rewards = {Achievement({id = 16412, criteria = 55265})}
+}) -- The Grand Flame's Journal
+
+-------------------------------------------------------------------------------
+--------------------------- THE DISGRUNTLED HUNTER ----------------------------
+-------------------------------------------------------------------------------
+
+local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
+    id = 194590,
+    icon = 236444,
+    sublabel = L['hnj_sublabel'],
+    group = ns.groups.HEMET_NESINGWARY_JR
+}) -- Hemet Nesingwary Jr.
+
+map.nodes[42008064] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55697})}
+}) -- Northern Waking Shores Hunt
+
+map.nodes[70746646] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55696})}
+}) -- Eastern Waking Shores Hunt
+
+map.nodes[24538913] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55695})}
+}) -- Southern Waking SHores Hunt

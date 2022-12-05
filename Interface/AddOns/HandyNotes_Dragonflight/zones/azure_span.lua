@@ -36,7 +36,7 @@ local map = Map({id = 2024, settings = true})
 
 map.nodes[53013563] = Rare({
     id = 194270,
-    quest = nil,
+    quest = 73866,
     rewards = {
         Achievement({id = 16678, criteria = 56099})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -345,6 +345,7 @@ map.nodes[55033405] = Rare({
     note = L['spellwrought_snowman_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56124}),
+        Transmog({item = 200187, slot = L['staff']}), -- Rod of Glacial Force
         Transmog({item = 200211, slot = L['cloth']}) -- Snowman's Icy Gaze
     },
     pois = {
@@ -437,7 +438,7 @@ map.nodes[38155901] = Rare({
 
 map.nodes[70143327] = Rare({
     id = 193288,
-    quest = 72848,
+    quest = 72848, -- 69895
     rewards = {
         Item({item = 198048}), -- Titan Training Matrix I
         Item({item = 200868, note = L['trinket']}) -- Intefrated Primal Fire
@@ -452,6 +453,18 @@ map.nodes[17254144] = Rare({
         Item({item = 197001, quest = 69201}) -- Cliffside Wylderdrake: Finned Cheek
     }
 }) -- Vakril
+
+map.nodes[36723247] = Rare({
+    id = 192749,
+    quest = 72846, -- 67173
+    rewards = {
+        Transmog({item = 200283, slot = L['leather']}), -- Gnoll-Gnawed Breeches
+        Transmog({item = 200266, slot = L['crossbow']}), -- Gnollish Chewtoy Launcher
+        Item({item = 197150, quest = 69351}), -- Highland Drake: Spiked Club Tail
+        Item({item = 196982, quest = 69182}), -- Cliffside Wylderdrake: Ears
+        Item({item = 198048}) -- Titan Training Matrix I
+    }
+}) -- Sharpfang
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -588,9 +601,9 @@ map.nodes[16203880] = PT.Tailoring({
     note = L['pt_tailor_decaying_brackenhide_blanket_note']
 }) -- Decaying Brackenhide Blanket
 
-map.nodes[16403850] = PT.Alchemy({
+map.nodes[16303849] = PT.Alchemy({
     id = 198599,
-    quest = nil,
+    quest = 70208,
     note = L['pt_alch_experimental_decay_sample_note']
 }) -- Experimental Decay Sample
 
@@ -664,9 +677,9 @@ map.nodes[57504130] = PT.Leatherworking({
     note = L['pt_leath_treated_hides_note']
 }) -- Treated Hides
 
-map.nodes[67001320] = PT.Alchemy({
+map.nodes[67061316] = PT.Alchemy({
     id = 198712,
-    quest = nil,
+    quest = 70309,
     note = L['pt_alch_firewater_powder_sample_note']
 }) -- Firewater Powder Sample
 
@@ -768,6 +781,7 @@ map.nodes[72154242] = Scoutpack({note = L['in_cave']})
 map.nodes[72604263] = Scoutpack({note = L['in_cave']})
 map.nodes[78953094] = Scoutpack()
 map.nodes[79823175] = Scoutpack()
+map.nodes[58145373] = Scoutpack()
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
@@ -857,6 +871,53 @@ map.nodes[42265676] = ns.node.Dragonrace({
     }
 }) -- Archive Ambit
 
+-------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+map.nodes[58695326] = ns.node.Squirrel({
+    id = 193594,
+    rewards = {Achievement({id = 16729, criteria = 7})}
+}) -- Timbertooth Kit
+
+map.nodes[49975755] = ns.node.Squirrel({
+    id = 186481,
+    rewards = {Achievement({id = 16729, criteria = 8})}
+}) -- Frosty Spiderling
+
+map.nodes[29244368] = ns.node.Squirrel({
+    id = 197718,
+    rewards = {Achievement({id = 16729, criteria = 9})}
+}) -- Crimson Knocker
+
+-------------------------------------------------------------------------------
+--------------------------- THE DISGRUNTLED HUNTER ----------------------------
+-------------------------------------------------------------------------------
+
+local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
+    id = 194590,
+    icon = 236444,
+    sublabel = L['hnj_sublabel'],
+    group = ns.groups.HEMET_NESINGWARY_JR
+}) -- Hemet Nesingwary Jr.
+
+map.nodes[36533481] = HemetNesingwaryJr({
+    note = L['hnj_western_azure_span_hunt'],
+    rewards = {Achievement({id = 16542, criteria = 55698})}
+}) -- Western Azure Span Hunt
+
+map.nodes[68112353] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55699})}
+}) -- Eastern Azure Span Hunt
+
+map.nodes[69204987] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55700})}
+}) -- Southern Azure Span Hunt
+
+-------------------------------------------------------------------------------
+-------------------------------- MISCELLANEOUS --------------------------------
+-------------------------------------------------------------------------------
+
 map.nodes[40116156] = Collectible({
     label = '{achievement:16581}',
     note = L['seeing_blue_note'],
@@ -872,3 +933,17 @@ map.nodes[50935561] = Collectible({
     rewards = {Achievement({id = 16474})},
     pois = {POI({50955481, 50985611})}
 }) -- Do You Wanna Build a Snowman?
+
+-------------------------------------------------------------------------------
+---------------------------- TEMPERAMENTAL SKYCLAW ----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[19042397] = Collectible({
+    label = '{npc:190892}',
+    note = L['temperamental_skyclaw_note'],
+    icon = 4218760,
+    rewards = {
+        Mount({item = 201454, id = 1674}) -- Temperamental Skyclaw
+    },
+    pois = {POI({58234353, 23074372, 32004400})}
+})

@@ -335,11 +335,14 @@ map.nodes[58596822] = Rare({ -- review
 
 map.nodes[31456387] = Rare({
     id = 193209,
-    quest = nil,
+    quest = 73901,
     rewards = {
         Achievement({id = 16677, criteria = 56066}),
+        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200314, slot = L['cloth']}), -- Skyspeaker's Envelope
+        Transmog({item = 200306, slot = L['back']}), -- Tempest Shawl
         Item({item = 197372, quest = 69573}), -- Renewed Proto-Drake: Purple Hair
+        Item({item = 197606, quest = 69810}), -- Windborne Velocidrake: Swept Horns
         Mount({item = 198825, id = 1672}) -- Zenet Hatchling
     }
 }) -- Zenet Avis
@@ -556,9 +559,9 @@ map.nodes[66105290] = PT.Tailoring({
     note = L['pt_tailor_silky_surprise_note']
 }) -- Silky Surprise
 
-map.nodes[79208380] = PT.Alchemy({
+map.nodes[79238374] = PT.Alchemy({
     id = 198710,
-    quest = nil,
+    quest = 70305,
     note = L['pt_alch_canteen_of_suspicious_water_note']
 }) -- Canteen Of Suspicious Water
 
@@ -995,6 +998,48 @@ map.nodes[43746678] = ns.node.Dragonrace({
 }) -- River Rapids Route
 
 -------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+map.nodes[23486179] = ns.node.Squirrel({
+    id = 186306,
+    rewards = {Achievement({id = 16729, criteria = 4})}
+}) -- Frilled Hatchling
+
+map.nodes[51075165] = ns.node.Squirrel({
+    id = 192948,
+    rewards = {Achievement({id = 16729, criteria = 5})}
+}) -- Thicket Glider
+
+map.nodes[50195179] = ns.node.Squirrel({
+    id = 192942,
+    rewards = {Achievement({id = 16729, criteria = 6})}
+}) -- Thunderspine Calf
+
+-------------------------------------------------------------------------------
+--------------------------- THE DISGRUNTLED HUNTER ----------------------------
+-------------------------------------------------------------------------------
+
+local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
+    id = 194590,
+    icon = 236444,
+    sublabel = L['hnj_sublabel'],
+    group = ns.groups.HEMET_NESINGWARY_JR
+}) -- Hemet Nesingwary Jr.
+
+map.nodes[82461392] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55692})}
+}) -- Northern Ohn'ahran Plains Hunt
+
+map.nodes[62005400] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55693})}
+}) -- Western Ohna'ahran Plains Hunt
+
+map.nodes[82874782] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55694})}
+}) -- Eastern Ohna'ahran Plains Hunt
+
+-------------------------------------------------------------------------------
 ------------------------- LIZI, THUNDERSPINE TRAMPLER -------------------------
 -------------------------------------------------------------------------------
 
@@ -1010,7 +1055,14 @@ local Lizi = Class('Lizi', Collectible, {
         ns.requirement.Quest(66676), -- Sneaking In
         ns.requirement.Reputation(2503, 9, true) -- Maruuk Centaur
     },
-    rewards = {Mount({item = 192799, id = 1639})} -- Lizi's Reins
+    rewards = {Mount({item = 192799, id = 1639})}, -- Lizi's Reins
+    pois = {
+        POI({
+            57087764, -- day 3
+            56727631, -- day 4
+            57667231 -- day 5
+        })
+    }
 })
 
 function Lizi.getters:note()
@@ -1031,7 +1083,7 @@ function Lizi.getters:note()
     return note
 end
 
-map.nodes[56207710] = Lizi()
+map.nodes[56207710] = Lizi() -- day 1 and 2
 
 -------------------------------------------------------------------------------
 ---------------------- OHN'AHRA, DIVINE KISS OF OHN'AHRA ----------------------

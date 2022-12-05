@@ -26,19 +26,25 @@ ns.expansion = 10
 
 ns.groups.ANCESTOR = Group('ancestor', 135946, {defaults = ns.GROUP_HIDDEN})
 ns.groups.BAKAR = Group('bakar', 930453, {defaults = ns.GROUP_HIDDEN})
+ns.groups.CHISELED_RECORD = Group('chiseled_record', 134455,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.DRAGONRACE =
     Group('dragonrace', 1100022, {defaults = ns.GROUP_HIDDEN})
 ns.groups.DRAGON_GLYPH = Group('dragon_glyph', 4728198)
 ns.groups.DREAMGUARD = Group('dreamguard', 341763, {defaults = ns.GROUP_HIDDEN})
+ns.groups.DUCKLINGS = Group('ducklings', 4048818, {defaults = ns.GROUP_HIDDEN})
 ns.groups.FLAG = Group('flag', 1723999, {defaults = ns.GROUP_HIDDEN})
+ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.KITE = Group('kite', 133837, {defaults = ns.GROUP_HIDDEN})
 ns.groups.LAYLINE = Group('layline', 1033908, {defaults = ns.GROUP_HIDDEN})
 ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SCOUT_PACK =
     Group('scout_pack', 4562583, {defaults = ns.GROUP_HIDDEN})
+ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
@@ -210,7 +216,6 @@ ns.node.Scoutpack = Scoutpack
 local Dragonrace = Class('DragonRace', Collectible,
     {icon = 1100022, group = ns.groups.DRAGONRACE})
 
--- Time Records are stored in a Hidden Currency (https://www.wowhead.com/currencies/dragon-racing-ui-hidden)
 function Dragonrace.getters:sublabel()
     if self.normal then
         local ntime = C_CurrencyInfo.GetCurrencyInfo(self.normal[1]).quantity
@@ -247,3 +252,15 @@ function Dragonrace.getters:note()
 end
 
 ns.node.Dragonrace = Dragonrace
+
+-------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+local Squirrel = Class('Squirrel', Collectible, {
+    group = ns.groups.SQUIRRELS,
+    icon = 237182,
+    note = L['squirrels_note']
+})
+
+ns.node.Squirrel = Squirrel

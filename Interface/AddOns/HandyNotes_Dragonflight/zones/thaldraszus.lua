@@ -2,9 +2,11 @@
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
 local ADDON_NAME, ns = ...
+local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
+local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
@@ -26,6 +28,10 @@ local POI = ns.poi.POI
 
 local map = Map({id = 2025, settings = true})
 local val = Map({id = 2112, settings = false})
+
+-------------------------------------------------------------------------------
+
+-- war supplies 41974893
 
 -------------------------------------------------------------------------------
 ------------------------------------ RARES ------------------------------------
@@ -83,7 +89,7 @@ map.nodes[47675115] = Rare({ -- required 67030
 
 map.nodes[53374092] = Rare({
     id = 193125,
-    quest = nil,
+    quest = 73878,
     rewards = {
         Achievement({id = 16679, criteria = 56138}),
         Transmog({item = 200436, slot = L['mail']}) -- Gorestained Hauberk
@@ -358,7 +364,7 @@ map.nodes[52208050] = PT.Blacksmithing({
 
 map.nodes[55203050] = PT.Alchemy({
     id = 201003,
-    quest = nil,
+    quest = 70278,
     note = L['pt_alch_furry_gloop_note']
 }) -- Furry Gloop
 
@@ -394,7 +400,7 @@ map.nodes[58604580] = PT.Tailoring({
 
 map.nodes[59503840] = PT.Alchemy({
     id = 198697,
-    quest = nil,
+    quest = 70301,
     note = L['pt_alch_contraband_concoction_note']
 }) -- Contraband Concoction
 
@@ -404,7 +410,7 @@ map.nodes[59806520] = PT.Jewelcrafting({
     note = L['pt_jewel_alexstraszite_cluster_note']
 }) -- Alexstraszite Cluster
 
-map.nodes[59907040] = PT.Enchanting({
+map.nodes[59897033] = PT.Enchanting({
     id = 198800,
     quest = 70342,
     note = L['pt_ench_fractured_titanic_sphere_note']
@@ -422,6 +428,12 @@ val.nodes[13206368] = PT.Inscription({
     parent = map.id,
     note = L['pt_script_how_to_train_your_whelpling_note']
 }) -- How to Train Your Whelpling
+
+-- map.nodes[61437687] = PT.Mining({
+--     id = 194843,
+--     quest = 70258,
+--     note = L['pt_mining_bridgette_holdug']
+-- }) -- Bridgette Holdug
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -566,3 +578,40 @@ map.nodes[58043367] = ns.node.Dragonrace({
         Achievement({id = 15938, criteria = 6, oneline = true}) -- advanced gold
     }
 }) -- Caverns Criss-Cross
+
+-------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+map.nodes[55636757] = ns.node.Squirrel({
+    id = 195869,
+    rewards = {Achievement({id = 16729, criteria = 10})}
+}) -- Diminuitive Boghopper
+
+map.nodes[51695797] = ns.node.Squirrel({
+    id = 196652,
+    rewards = {Achievement({id = 16729, criteria = 11})}
+}) -- Reservoir Filly
+
+map.nodes[51307286] = ns.node.Squirrel({
+    id = 185148,
+    rewards = {Achievement({id = 16729, criteria = 12})}
+}) -- Rocdrop Scarab
+
+-------------------------------------------------------------------------------
+--------------------------- THE DISGRUNTLED HUNTER ----------------------------
+-------------------------------------------------------------------------------
+
+local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
+    id = 194590,
+    icon = 236444,
+    sublabel = L['hnj_sublabel'],
+    group = ns.groups.HEMET_NESINGWARY_JR
+}) -- Hemet Nesingwary Jr.
+
+map.nodes[34676541] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55701})}
+}) -- Southern Thaldraszus Hunt
+map.nodes[50674562] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55702})}
+}) -- Northern Thaldraszus Hunt
