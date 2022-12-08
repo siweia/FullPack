@@ -1,16 +1,22 @@
-lightweight tag 16437b2a6964e6ea35f36b809f649a3b3163e6a7 v5.9.0-v10.0.0
+lightweight tag eff39e3a7f8ebe62ddd4461c1d6047537b7396c2 v5.9.0-v10.0.2
 Author:	Boshi Lian <farmer1992@gmail.com>
-Date:	Thu Oct 27 09:59:58 2022 -0700
+Date:	Mon Dec 5 02:21:21 2022 -0800
 
-commit 16437b2a6964e6ea35f36b809f649a3b3163e6a7
+commit eff39e3a7f8ebe62ddd4461c1d6047537b7396c2
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Thu Oct 27 09:59:58 2022 -0700
+Date:   Mon Dec 5 02:21:21 2022 -0800
 
-    support extra bars for dragon flight
+    bump ver
 
-commit 9cd83361dfe9cfac33c90e94068e7f4ca60d323a
+commit b4160d921662d106bc3dcd24733f7c673f73cdbe
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Thu Oct 27 09:44:31 2022 -0700
+Date:   Mon Oct 31 04:42:12 2022 -0700
 
-    better mount performance
+    add talent in export comments
+
+commit 7954ed633dd2e4c6385bb28ae16a340ea0123e74
+Author: Boshi Lian <farmer1992@gmail.com>
+Date:   Thu Oct 27 16:29:57 2022 -0700
+
+    Create LICENSE
 
