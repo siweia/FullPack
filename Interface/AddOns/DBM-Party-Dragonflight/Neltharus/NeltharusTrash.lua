@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod("NeltharusTrash", "DBM-Party-Dragonflight", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221204214319")
+mod:SetRevision("20221205015333")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 382708 376186 372566 372311 372201 381663 378282",
 	"SPELL_CAST_SUCCESS 378827",
-	"SPELL_AURA_APPLIED 384161 373089 371875"
+	"SPELL_AURA_APPLIED 384161 372543 371875"
 --	"SPELL_AURA_APPLIED_DOSE 339528",
 --	"SPELL_AURA_REMOVED 339525"
 )
@@ -58,7 +58,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 376186 and self:AntiSpam(3, 2) then
 		specWarnEruptiveCrash:Show()
 		specWarnEruptiveCrash:Play("watchstep")
-	elseif spellId == 372311 and self:AntiSpam(3, 2) then
+	elseif spellId == 372311 and self:IsValidWarning(args.sourceGUID) and self:AntiSpam(3, 2) then
 		specWarnMagmaFist:Show()
 		specWarnMagmaFist:Play("shockwave")
 	elseif spellId == 372201 and self:AntiSpam(3, 2) then

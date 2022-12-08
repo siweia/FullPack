@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrackenhideHollowTrash", "DBM-Party-Dragonflight", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221204071935")
+mod:SetRevision("20221205015333")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -32,7 +32,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 382555 and self:AntiSpam(3, 1) then
 		specWarnRagestorm:Show()
 		specWarnRagestorm:Play("justrun")
-	elseif spellId == 374080 then
+	elseif spellId == 367500 then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnHidiousCackle:Show(args.sourceName)
 			specWarnHidiousCackle:Play("kickcast")

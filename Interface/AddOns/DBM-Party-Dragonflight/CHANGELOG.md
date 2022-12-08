@@ -1,63 +1,27 @@
 # <DBM> Dungeons (Dragonflight)
 
-## [r47](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r47) (2022-12-04)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r46...r47) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r48](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r48) (2022-12-06)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r47...r48) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Neltharus  
-     - Fixed bug where wrong spear target was announced on non mythic difficulty on Chargath  
-     - Fixed two bad timers on Magmatusk  
-     - Added Bold Abush  
-     - Added Tempest  
-     - Added Volcanic Guard  
-     - Added Eruptive Crash  
-     - Added MagmaFist  
-     - Added Explosive Concoction  
-     - Added Scorching Breath  
-     - Added Scorching Fusillade  
-     - Fixed Motes of Combustion alerts not working  
-     - Added Bold Ambush  
-     - Added Fired Up  
-     - Added Molten Core  
-    The Azure Vault  
-     - Added Shoulder Slam  
-     - Added Ice Cutter  
-     - Added Scornful Haste  
-     - Added Erratic Growth  
-     - Added Forbidden Knowledge  
-     - Added Null Stomp  
-     - Added Mystic Vapors  
-     - Added Waking Bane  
-- Brackenhide Hollow  
-     - Added Hidious Cackle  
-     - Added Withering Contagion  
-     - Added Ragestorm  
-     - Added Stink Breath  
-- Hall of Infusion  
-     - Added Blasting Gust  
-     - Added Molten Subduction  
-     - Added Gulp Swog Toxin for trash  
-     - Added Ocean, Gusting, and Tectonic Breaths  
-     - Added Flash flood  
-     - Added Dazzle  
-     - Fixed frost shock CD on Khajin the Unyielding  
-- Algethar Academy  
-     - Added Mana Void  
-     - Added Monotonous Lecture  
-     - Added Astral Bomb  
-     - Added Expel Intruders  
-     - Added Deonate Seeds  
-     - Added Deadly Winds  
-     - Added Riftbreath  
+- Fixed several non working timers/warnings in Brackenhide Hollow and updated timers  
+    Smaller timer fixes to Azure Vaults  
+- Alethar Academy  
+     - Alert for Overgrown Ancients Toxic spell will now be throttled  
+    Brackehide Hollow  
+     - Consume alert will now aggregate targets on Treemouth  
+    Neltharus  
+     - Timer fixes on Chargath  
+     - Fixed Blazing Aegis so it now aggregates targets  
     Ruby Life Pools  
-     - Added Burnout (trash version)  
-     - Added Rolling Thunder  
-     - Added Thunder Jaw  
+     - Storm and Flame breath will now have chat yells on targets  
+     - Added alert for Excavating Blast  
+    The Azurevaults  
+     - De-escalated Null Stomp warning since it is cast very often. By default the alert will now be non emphasized  
+     - Added Alert for Crystalline Rupture  
     The Nokhud Offensive  
-     - Added Chant of the dead  
-     - Added Bloodcurdling Shout  
-     - Added War Stomp  
-     - Added Broad Stomp  
-     - Added Rotting Wind  
-     - Added dreadbolt Volley  
-     - Clarified Eruption warning on Granyth that it's a spell that needs to be interrupted  
-     - Clarified Lightning Strike on Raging tempest that it's a spell you spread for, not one you have to dodge.  
+     - Fixed rotting wind so it no longer fires alerts for un-engaged trash  
+- Fixed Kill detection on Kyrakka and Erkhart  
+    Fixed bug where Living bomb trash warning did not function.  
+- Fixed lua error on mod load for halls of infusion trash  
+    Fixed a bug where magma fix would spam in Neltharus trash  
+    Fixed a bug where hidious cackle alerts didn't work in Brackenhide Hollow and instead fired in Halls of infusion during casts of Blasting Gust  
