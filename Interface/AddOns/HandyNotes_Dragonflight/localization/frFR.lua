@@ -24,6 +24,19 @@ L['flags_placed'] = 'drapeaux placés'
 L['options_icons_flag'] = '{achievement:15890}'
 L['options_icons_flag_desc'] = 'Afficher les emplacements des 20 drapeaux pour le haut-fait {achievement:15890}.'
 
+L['broken_banding_note'] = 'Sur la cheville du pied droit de la statue.'
+L['chunk_of_sculpture_note'] = 'Sur le sol, près de la statue du dragon sur la gauche.'
+L['dislodged_dragoneye_note'] = 'Sur un rocher sous le coffre de la statue du dragon.'
+L['finely_carved_wing_note'] = 'Sous le genou droit de la statue du dragon.'
+L['fragment_requirement_note'] = ns.color.Red('Avant de pouvoir collecter les morceaux brisés, vous devez demander à {npc:193915} à l\'|cFFFFFD00Ambassade de Trêve-Ailée|r près de la statue du dragon ce qu\'elle fait ici.')
+L['golden_claw_note'] = 'Au niveau de la griffe arrière droite de la statue du dragon.'
+L['precious_stone_fragment_note'] = 'Sous le pied droit de la statue.'
+L['stone_dragontooth_note'] = 'Sur le sol, à côté du piédestal de la statue du dragon.'
+L['tail_fragment_note'] = 'Sur la queue de la statue du dragon.'
+L['wrapped_gold_band_note'] = 'Sous la griffe arrière gauche de la statue du dragon.'
+L['options_icons_fragment'] = '{achievement:16323}'
+L['options_icons_fragment_desc'] = 'Afficher les emplacements des morceaux brisés pour le haut-fait {achievement:16323}.'
+
 L['options_icons_kite'] = '{achievement:16584}'
 L['options_icons_kite_desc'] = 'Afficher les emplacements des {npc:198118s} pour le haut-fait {achievement:16584}.'
 
@@ -45,12 +58,20 @@ L['options_icons_dragonrace_desc'] = 'Afficher les emplacements des Courses du V
 
 L['squirrels_note'] = 'Vous devez utiliser l\'émote /amour sur les bestioles, pas sur les familiers de combat.'
 L['options_icons_squirrels'] = '{achievement:16729}'
-L['options_icons_squirrels_desc'] = 'Afficher les emplacements des bestioles pour {achievement:16729}.'
+L['options_icons_squirrels_desc'] = 'Afficher les emplacements des bestioles pour le haut-fait {achievement:16729}.'
 
-L['hnj_sublabel'] = nil
-L['hnj_western_azure_span_hunt'] = nil
+L['hnj_sublabel'] = 'Nécessite une Grande chasse Shikaar à proximité'
+L['hnj_western_azure_span_hunt'] = 'Au sommet de l\'arbre mort.'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
-L['options_icons_hemet_nesingwary_jr_desc'] = nil
+L['options_icons_hemet_nesingwary_jr_desc'] = 'Afficher les emplacements d\'{npc:194590} pour le haut-fait {achievement:16542}.'
+
+L['pretty_neat_selfie_note'] = 'Prenez une photo avec l\'appareil P.R.O.F.I.L.'
+L['bugged_selfie'] = '|cFFFF0000(BUG : Le mauvais PNJ ou aucun PNJ ne sera détecté.)|r'
+L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
+L['options_icons_pretty_neat_selfie_desc'] = 'Affichez les emplacements des PNJ pour le haut-fait {achievement:16446}.'
+
+L['large_lunker_sighting'] = nil
+L['large_lunker_sighting_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
@@ -63,11 +84,14 @@ L['trilvarus_loreweaver_note'] = 'Récupérez un |cFFFFFD00Fragment chantant|r p
 
 L['breezebiter_note'] = 'Vole dans le ciel, pour le faire descendre, volez près de lui.'
 
-L['forgotten_jewel_box_note'] = 'Récupérez la {item:199065} dans un Coffre clanique au |cFFFFFD00Refuge d\'Ondecrête|r (49.4 67.3) dans les |cFFFFFD00Plaines d\'Ohn\'ahra|r et utilisez-la.'
-L['gnoll_fiend_flail_note'] = '{item:199066} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
+L['forgotten_jewel_box_note'] = 'La {item:199065} peut être trouvée dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
+L['gnoll_fiend_flail_note'] = 'La {item:199066} peut être trouvée dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 L['pepper_hammer_note'] = 'Récupérez la |cFFFFFD00Sève|r et utilisez le |cFFFFFD00Bâton|r pour attirer le {npc:195373}.\n\n|cFFFF0000(BUG : Pour cliquer sur le bâton, un rechargement peut être nécessaire)|r'
 L['snow_covered_scroll'] = 'Parchemin couvert de neige'
 
+L['pm_engi_frizz_buzzcrank'] = 'Il se tient à côté d\'un sanctuaire.'
+L['pm_jewel_pluutar'] = 'A l\'intérieur du bâtiment.'
+L['pm_script_lydiara_whisperfeather'] = 'Assise sur un banc.'
 L['pt_alch_experimental_decay_sample_note'] = 'A l\'intérieur d\'un grand chaudron vert.'
 L['pt_alch_firewater_powder_sample_note'] = 'À l\'extérieur d\'une maison en rondins, près d\'un vase.'
 L['pt_ench_enriched_earthen_shard_note'] = 'Sur un tas de pierres.'
@@ -116,7 +140,11 @@ L['mysterious_wand_note'] = 'Ramassez la |cFFFFFD00Clé en cristal|r et placez-l
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
 -------------------------------------------------------------------------------
 
+L['hunter_of_the_deep_note'] = 'Cliquez sur le râtelier d\'armes et tirez sur les poissons jusqu\'à ce que le rare apparaisse.'
+L['scaleseeker_mezeri_note'] = 'Offrez un {item:194681} à {npc:193224} et elle révélera le rare.'
 L['shade_of_grief_note'] = 'Cliquez sur la {npc:193166} pour faire apparaître le rare.'
+L['windscale_the_stormborn_note'] = 'Tuez les {npc:192367s} canalisant dans l\'{npc:192357}.'
+L['zarizz_note'] = 'Cliquez et ' .. ns.color.Orange('/siffler') .. ' les quatre {npc:193169s} pour invoquer le rare.'
 
 L['gold_swong_coin_note'] = 'Dans la grotte avec {npc:191608} à sa droite.'
 L['nokhud_warspear_note'] = '{item:194540} peut être trouvé dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
@@ -124,6 +152,9 @@ L['slightly_chewed_duck_egg_note'] = 'Trouvez et caressez {npc:192997} pour obte
 L['yennus_boat'] = 'Bateau jouet rohart'
 L['yennus_boat_note'] = 'Récupérez le |cFFFFFD00Bateau jouet rohart|r pour obtenir {item:200876}, ce qui lance la quête {quest:72063} qui peut être rendue à {npc:195252}.'
 
+L['pm_ench_shalasar_glimmerdusk'] = 'Au deuxième étage de la tour brisée.'
+L['pm_herb_hua_greenpaw'] = 'Agenouillée près d\'un arbre.'
+L['pm_leath_erden'] = 'Debout à côté d\'un {npc:193092} mort, près de la rivière.'
 L['pt_alch_canteen_of_suspicious_water_note'] = 'Au fond d\'une grotte, près d\'un {npc:194887} mort.'
 L['pt_ench_stormbound_horn_note'] = 'A la |cFFFFFD00Cime Chant-du-Vent|r.'
 L['pt_jewel_fragmented_key_note'] = 'Sous les racines d\'un arbre dans un bâtiment en ruine.'
@@ -167,6 +198,7 @@ L['options_icons_dreamguard_desc'] = 'Afficher les emplacements des Gardes-rêve
 -------------------------------------------------------------------------------
 
 L['blightpaw_note'] = 'Parlez à l\'{npc:193222} à proximité et acceptez de l\'aider.'
+L['weeping_vilomah_note'] = 'Parlez à {npc:193206} pour invoquer le rare.'
 L['woofang_note'] = 'Caressez {npc:193156} pour faire apparaître le rare.'
 
 L['acorn_harvester_note'] = 'Ramassez un |cFFFFFD00Gland|r sur le sol à proximité pour obtenir {spell:388485} et interagissez ensuite avec {npc:196172}.\n\n|cFFFF0000(BUG : Pour cliquer sur le {npc:196172}, un rechargement peut être nécessaire)|r.'
@@ -175,6 +207,8 @@ L['sandy_wooden_duck_note'] = 'Récupérez {item:199069} et utilisez-la.'
 
 L['tasty_hatchling_treat_note'] = 'Dans un tonneau derrière l\'étagère.'
 
+L['pm_mining_bridgette_holdug'] = 'Au sommet d\'un pilier de roche couvert d\'herbe.'
+L['pm_tailor_elysa_raywinder'] = 'Sur une corniche à mi-hauteur de la tour.'
 L['pt_alch_contraband_concoction_note'] = 'Caché dans les buissons. ' .. ns.color.Orange('Difficile à voir.')
 L['pt_alch_furry_gloop_note'] = 'Jetez un {npc:194855} proche dans chaque chaudron puis tuez le monstre qui apparaît.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'Au sud du |cFFFFFD00Bastion de Tyr|r.'
@@ -187,7 +221,16 @@ L['pt_script_how_to_train_your_whelpling_note'] = 'Un petit livre marron posé d
 L['pt_smith_draconic_flux_note'] = 'A l\'intérieur d\'un bâtiment.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Cliquez sur le |cFFFFFD00Rouet tisse-dragon ancien|r pour effectuer un mini-jeu où vous devez relier les bobines de fil à la gemme centrale.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Une petite bannière dans un tas de sable.'
-L['pt_mining_bridgette_holdug'] = 'Au sommet d\'un pilier de roche couvert d\'herbe.'
+
+L['picante_pomfruit_cake_note'] = '{item:200904} n\'est pas disponible tous les jours, alors revenez quotidiennement à l\'|cFF00CCFFEnclave de Rubis|r. Pendant que vous y êtes, n\'oubliez pas de goûter les 3 plats disponibles pour obtenir {achievement:16556}.'
+L['icecrown_bleu_note'] = 'Achetez auprès de {npc:196729} ' .. ns.color.NPC('<Fromager>') .. ' au |cFF00CCFFMarché d’artisanat|r.'
+L['dreamwarding_dripbrew_note'] = 'Achetez auprès de {npc:197872} ' .. ns.color.NPC('<Caféinomancien>') .. ' au |cFFFFFD00Laboratoire de nuit|r.'
+L['arcanostabilized_provisions_note'] = 'Achetez auprès de {npc:198831} ' .. ns.color.NPC('<Cuisinière en chef>') .. ' à la |cFF00CCFFConfluence Temporelle|r dans |cFF00CCFFL’avenir des Primalistes|r.'
+L['steamed_scarab_steak_note'] = 'Achetez auprès de {npc:197586} ' .. ns.color.NPC('<Tavernière du spa>') .. ' au |cFFFFFD00Spa « Rêves sereins »|r.'
+L['craft_creche_crowler_note'] = 'Achetez auprès de {npc:187444} ' .. ns.color.NPC('<Vendeur de breuvages draconiques itinérant>') .. ' étant situé dans ces zones aléatoires chaque jour : |cFFFFFD00Sanctuaire de l’Essence rubis|r, |cFFFFFD00Auberge Vertécaille|r, |cFFFFFD00Camp Nulle-Part|r, |cFF00CCFFConfluence Temporelle|r.'
+L['bivigosas_blood_sausages_note'] = 'Achetez auprès de l\'{npc:188895} ' .. ns.color.NPC('<Nourriture et boissons>') .. ' au |cFFFFFD00Poste Gelikyr|r.'
+L['options_icons_specialties'] = '{achievement:16621}'
+L['options_icons_specialties_desc'] = 'Afficher les emplacements des aliments et boissons pour le haut-fait {achievement:16621}.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -198,6 +241,7 @@ L['lepidoralia_note'] = 'Situé dans la |cFFFFFD00Caverne Bruissante|r. Aidez le
 L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} à %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la |cFFFFFD00Citadelle d\'obsidienne|r.'
 L['shadeslash_note'] = 'Cliquez sur le |cFFFFFD00Focalisateur volé|r pour invoquer le rare.'
 L['obsidian_throne_rare_note'] = 'À l\'intérieur du |cFFFFFD00Trône d\'obsidienne|r.'
+L['skald_impaler_note'] = nil
 L['slurpo_snail_note'] = 'Récupérez un {item:201033} dans une grotte de |cFFFFFD00La Travée d\'Azur|r (11, 41) et utilisez-le dans cette grotte pour l\'invoquer.'
 L['worldcarver_atir_note'] = 'Récupérez 3x {item:191211} sur les {npc:187366} à proximité et placez-les sur les {npc:197395} pour faire apparaître le rare.'
 
@@ -219,6 +263,9 @@ Récupérez trois items différents et combinez-les à |cFFFFFD00"l\'Énigmes sa
 {item:200066}
 ]]
 
+L['pm_alch_grigori_vialtry'] = 'Sur une corniche surplombant l\'|cFFFFFD00Assaut de Givréclair|r.'
+L['pm_skin_zenzi'] = 'Assise à côté de la rivière.'
+L['pm_smith_grekka_anvilsmash'] = 'Elle est assise dans l\'herbe à côté de la tour en ruines.\n\n|cFFFF0000(Actuellement buggé.)|r'
 L['pt_alch_frostforged_potion_note'] = 'Au milieu du cratère gelé.'
 L['pt_alch_well_insulated_mug_note'] = 'Dans le |cFFFFFD00Donjon du Fléau-des-Dragons|r entre un groupe de monstres élites.'
 L['pt_ench_enchanted_debris_note'] = 'Utilisez et suivez le {npc:194872} pour récupérer les débris à la fin.'
@@ -231,14 +278,13 @@ L['pt_jewel_igneous_gem_note'] = 'Cliquez rapidement sur les 3 cristaux sur les 
 L['pt_leath_poachers_pack_note'] = 'À côté d\'un Vulpérin mort, près du lit de la rivière.'
 L['pt_leath_spare_djaradin_tools_note'] = 'A côté du dragon rouge mort.'
 L['pt_script_pulsing_earth_rune_note'] = 'Derrière une table à l\'intérieur du bâtiment en ruine.'
-L['pt_smith_ancient_monument_note'] = 'Battez les 4 {npc:188648} entourant une épée sur un piédestal.'
+L['pt_smith_ancient_monument_note'] = 'Battez les 4 {npc:188648} entourant une épée sur un piédestal.\n\n|cFFFF0000(BUG : Actuellement, vous ne pouvez pas obtenir l\'objet après avoir cliqué sur l\'épée, mais il sera envoyé dans votre boîte aux lettres après un certain temps.)|r'
 L['pt_smith_curious_ingots_note'] = 'Un petit lingot sur le sol dans le |cFFFFFD00Donjon Craquécaille|r.'
 L['pt_smith_glimmer_of_blacksmithing_wisdom_note'] = 'Fabriquez un {item:189541} près de la |cFFFFFD00Forge terne|r et l\'item dans le |cFFFFFD00Bac à eau|r deviendra récupérable.'
 L['pt_smith_molten_ingot_note'] = 'Envoyez 3 lingots dans la lave pour faire apparaître un monstre. Récupérez le coffre après que le monstre soit vaincu.'
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Au sommet d\'une enclume.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Un morceau de tissu accroché à un arbre juste à l\'extérieur de la grotte où le boss final apparaît.' .. ns.color.Orange('Nécessite de la précision avec le Vol à dos de Dragon ou bien un portail de démoniste.')
 L['pt_tailor_mysterious_banner_note'] = 'Flottant sur le toit des bâtiments.'
-L['pt_smith_grekka_anvilsmash'] = 'Elle est assise dans l\'herbe à côté de la tour en ruines.\n\n|cFFFF0000(Actuellement buggé.)|r'
 
 L['quack_week_1'] = 'Semaine 1'
 L['quack_week_2'] = 'Semaine 2'
@@ -251,7 +297,11 @@ L['complaint_to_scalepiercer_note'] = 'Cliquez sur la |cFFFFFD00Tablette en pier
 L['grand_flames_journal_note'] = 'Cliquez sur la |cFFFFFD00Tablette en pierre|r à l\'extérieur, derrière la hutte.'
 L['wyrmeaters_recipe_note'] = 'Cliquez sur la |cFFFFFD00Tablette en pierre|r à l\'intérieur de la hutte (sur le côté gauche).'
 
-L['options_icons_ducklings'] = nil
-L['options_icons_ducklings_desc'] = nil
-L['options_icons_chiseled_record'] = nil
-L['options_icons_chiseled_record_desc'] = nil
+L['options_icons_ducklings'] = '{achievement:16409}'
+L['options_icons_ducklings_desc'] = 'Afficher les emplacements des canetons pour le haut-fait {achievement:16409}.'
+L['options_icons_chiseled_record'] = '{achievement:16412}'
+L['options_icons_chiseled_record_desc'] = 'Afficher les emplacements des tablettes pour le haut-fait {achievement:16412}.'
+
+L['grand_theft_mammoth_note'] = 'Chevauchez le {npc:194625} jusqu\'au {npc:198163}.\n\n|cFFFF0000(BUG : Si vous ne pouvez pas interagir avec le {npc:194625}, essayez un /reload.)|r'
+L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
+L['options_icons_grand_theft_mammoth_desc'] = 'Afficher les emplacements des {npc:194625s} pour le haut-fait {achievement:16493}.'

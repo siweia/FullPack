@@ -24,6 +24,19 @@ L['flags_placed'] = 'banderas puestas'
 L['options_icons_flag'] = '{achievement:15890}'
 L['options_icons_flag_desc'] = 'Muestra dónde están las 20 banderas para el logro {achievement:15890}.'
 
+L['broken_banding_note'] = 'En el tobillo del pie derecho de la estatua del dragón.'
+L['chunk_of_sculpture_note'] = 'En el suelo, desde la estatua del dragón a la izquierda.'
+L['dislodged_dragoneye_note'] = 'En una roca debajo del pecho de la estatua del dragón.'
+L['finely_carved_wing_note'] = 'Debajo de la rodilla derecha de la estatua del dragón.'
+L['fragment_requirement_note'] = ns.color.Red('Antes de poder recoger piezas sueltas, necesitas hablar con {npc:193915} en la |cFFFFFD00Embajada Reposo Alado|r en la estatua del dragón. Pregúntale qué está haciendo aquí.')
+L['golden_claw_note'] = 'En la garra trasera derecha de la estatua del dragón.'
+L['precious_stone_fragment_note'] = 'Debajo del pie derecho de la estatua del dragón.'
+L['stone_dragontooth_note'] = 'En el suelo junto al pedestal de la estatua del dragón.'
+L['tail_fragment_note'] = 'En la cola de la estatua del dragón.'
+L['wrapped_gold_band_note'] = 'Debajo de la garra trasera izquierda de la estatua del dragón.'
+L['options_icons_fragment'] = '{achievement:16323}'
+L['options_icons_fragment_desc'] = 'Muestra dónde están las piezas sueltas para el logro {achievement:16323}.'
+
 L['options_icons_kite'] = '{achievement:16584}'
 L['options_icons_kite_desc'] = 'Muestra dónde están las {npc:198118} para el logro {achievement:16584}.'
 
@@ -47,10 +60,18 @@ L['squirrels_note'] = 'Has de usar la emoción /amor en alimañas que no sean ma
 L['options_icons_squirrels'] = '{achievement:16729}'
 L['options_icons_squirrels_desc'] = 'Muestra dónde están las alimañas para el logro {achievement:16729}.'
 
-L['hnj_sublabel'] = nil
+L['hnj_sublabel'] = 'Requiere Gran Cacería Shikaar local'
 L['hnj_western_azure_span_hunt'] = 'Encima del árbol muerto.'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Muestra dónde está {npc:194590} para el logro {achievement:16542}.'
+
+L['pretty_neat_selfie_note'] = 'Haz una foto con la cámara S.E.L.F.I.E..'
+L['bugged_selfie'] = '|cFFFF0000(BUG: Será detectado el NPC equivocado o ninguno.)|r'
+L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
+L['options_icons_pretty_neat_selfie_desc'] = 'Muestra dónde están los NPC para el logro {achievement:16446}.'
+
+L['large_lunker_sighting'] = nil
+L['large_lunker_sighting_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
@@ -63,11 +84,14 @@ L['trilvarus_loreweaver_note'] = 'Recoge un |cFFFFFD00Fragmento Cantarín|r para
 
 L['breezebiter_note'] = 'Vuela por el cielo. Para atraerlo, vuela cerca suyo.'
 
-L['forgotten_jewel_box_note'] = 'Despoja la {item:199065} de un Cofre del Clan en |cFFFFFD00Retiro Crestagua|r (49.4 67.3) en las |cFFFFFD00Llanuras de Ohn\'ahran|r y úsala.'
+L['forgotten_jewel_box_note'] = 'La {item:199065} se puede encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['gnoll_fiend_flail_note'] = 'Las {item:199066} se pueden encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 L['pepper_hammer_note'] = 'Recoge |cFFFFFD00Savia de Árbol|r y entonces usa el |cFFFFFD00Palo|r para engañar a {npc:195373}.\n\n|cFFFF0000(BUG: Para hacer click en el palo puede ser necesario recargar)|r.'
 L['snow_covered_scroll'] = 'Pergamino Cubierto de Nieve'
 
+L['pm_engi_frizz_buzzcrank'] = 'Se encuentra junto a un santuario.'
+L['pm_jewel_pluutar'] = 'Dentro del edificio.'
+L['pm_script_lydiara_whisperfeather'] = 'Está sentada en un banco.'
 L['pt_alch_experimental_decay_sample_note'] = 'Dentro de un gran caldero verde.'
 L['pt_alch_firewater_powder_sample_note'] = 'Fuera de la casa de troncos, junto a un jarrón.'
 L['pt_ench_enriched_earthen_shard_note'] = 'Encima de una pila de rocas.'
@@ -89,7 +113,7 @@ L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Muestra dónde están las líneas Ley para el logro {achievement:16638}.'
 
 L['seeing_blue_note'] = 'Vuela desde lo alto del Archivo Azur a la Galería Cobalto sin aterrizar.'
-L['snowman_note'] = 'Hay tres {npc:197599} reposando en la zona (podrían haber sido movidas por otros jugadores). Hazlas rodar a los dos críos, {npc:197838} y {npc:197839}.\nConseguirás en logro cuando las bolas de nieve tengan los tamaños correctos.'
+L['snowman_note'] = 'Hay tres {npc:197599} reposando en la zona (podrían haber sido movidas por otros jugadores). Hazlas rodar a los dos críos, {npc:197838} y {npc:197839}.\nConseguirás el logro cuando las bolas de nieve tengan los tamaños correctos.'
 L['temperamental_skyclaw_note'] = [[
 Recoge (o compra en la casa de subastas):
 
@@ -116,7 +140,11 @@ L['mysterious_wand_note'] = 'Coge la |cFFFFFD00Llave de Cristal|r y ponla dentro
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
 -------------------------------------------------------------------------------
 
+L['hunter_of_the_deep_note'] = 'Haz click en el armero y dispara a los peces hasta que aparezca el raro and shoot fish until the rare spawns.'
+L['scaleseeker_mezeri_note'] = 'Ofrece {item:194681} a {npc:193224} y te revelará al raro.'
 L['shade_of_grief_note'] = 'Haz click en {npc:193166} para hacer aparecer al raro.'
+L['windscale_the_stormborn_note'] = 'Mata a los {npc:192367} que están canalizando en los {npc:192357}.'
+L['zarizz_note'] = 'Haz click y ' .. ns.color.Orange('haz /hiss') .. ' a las cuatro {npc:193169} para invocar al raro.'
 
 L['gold_swong_coin_note'] = 'Dentro de la cueva con {npc:191608} a su lado derecho.'
 L['nokhud_warspear_note'] = 'Las {item:194540} se pueden encontrar en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
@@ -124,6 +152,9 @@ L['slightly_chewed_duck_egg_note'] = 'Encuentra y acaricia a {npc:192997} para c
 L['yennus_boat'] = 'Barco de Juguete Tuskarr'
 L['yennus_boat_note'] = 'Despoja el |cFFFFFD00Barco de Juguete Tuskarr|r para conseguir el {item:200876}, el cual comienza la misión {quest:72063} para devolvérselo a {npc:195252}.'
 
+L['pm_ench_shalasar_glimmerdusk'] = 'En la segunda planta de la torre rota.'
+L['pm_herb_hua_greenpaw'] = 'Está arrodillada junto a un árbol.'
+L['pm_leath_erden'] = 'Está junto a un {npc:193092} muerto al lado del río.'
 L['pt_alch_canteen_of_suspicious_water_note'] = 'Dentro de las profundidades de una cueva cerca de un {npc:194887} muerto.'
 L['pt_ench_stormbound_horn_note'] = 'En el |cFFFFFD00Alto Son del Viento|r.'
 L['pt_jewel_fragmented_key_note'] = 'Bajo las raíces del árbol en un edificio derrumbado.'
@@ -167,6 +198,7 @@ L['options_icons_dreamguard_desc'] = 'Muestra dónde están los Guardasueños pa
 -------------------------------------------------------------------------------
 
 L['blightpaw_note'] = 'Habla con el {npc:193222} y acepta ayudarle.'
+L['weeping_vilomah_note'] = 'Habla con {npc:193206} para invocar al raro.'
 L['woofang_note'] = 'Acaricia al {npc:193156} para hacer aparecer al raro.'
 
 L['acorn_harvester_note'] = 'Recoge una |cFFFFFD00Bellota|r del suelo cercano para conseguir {spell:388485} y entonces interactúa con {npc:196172}.\n\n|cFFFF0000(BUG: Para poder hacer click en el {npc:196172} puede ser necesario un reload)|r.'
@@ -175,6 +207,8 @@ L['sandy_wooden_duck_note'] = 'Recoge el {item:199069} y úsalo.'
 
 L['tasty_hatchling_treat_note'] = 'En un barril detrás de la librería.'
 
+L['pm_mining_bridgette_holdug'] = 'Encima de un pilar de roca cubierto de hierba.'
+L['pm_tailor_elysa_raywinder'] = 'En una repisa a media altura de la torre.'
 L['pt_alch_contraband_concoction_note'] = 'Escondido en los arbustos. ' .. ns.color.Orange('Difícil de ver')
 L['pt_alch_furry_gloop_note'] = 'Deja a un {npc:194855} cercano dentro de cada caldera y mata al monstruo que aparecerá.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'Al Sur de |cFFFFFD00Tyrhold|r.'
@@ -187,7 +221,16 @@ L['pt_script_how_to_train_your_whelpling_note'] = 'Pequeño libro marrón tirado
 L['pt_smith_draconic_flux_note'] = 'Dentro de un edificio.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Haz click en el |cFFFFFD00Telar de Tejido de Dragón Ancestral|r para completar un minijuego donde has de conectar los carretes de hilo a la gema central.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Bandera pequeña dentro de una pila de arena.'
-L['pt_mining_bridgette_holdug'] = 'Encima de un pilar de roca cubierto de hierba.'
+
+L['picante_pomfruit_cake_note'] = '{item:200904} no está disponible todos los días. Tendrás que comprobarlo cada día en el |cFF00CCFFEnclave Rubí|r. Mientras estás allí, asegúrate de probar los 3 platos disponibles para completar también el logro {achievement:16556}.'
+L['icecrown_bleu_note'] = 'Cómpraselo a {npc:196729} ' .. ns.color.NPC('<Vendedor de quesos>') .. ' en el |cFF00CCFFMercado de los Artesanos|r.'
+L['dreamwarding_dripbrew_note'] = 'Cómpraselo a {npc:197872} ' .. ns.color.NPC('<Cafeinamante>') .. ' en el |cFFFFFD00Laboratorio Nocturno|r.'
+L['arcanostabilized_provisions_note'] = 'Cómpraselo a {npc:198831} ' .. ns.color.NPC('<Chef jefa>') .. ' en la |cFF00CCFFConfluencia Temporal|r en |cFF00CCFFEl Futuro Primalista|r.'
+L['steamed_scarab_steak_note'] = 'Cómpraselo a {npc:197586} ' .. ns.color.NPC('<Camarera de la sauna>') .. ' en la |cFFFFFD00Sauna de Sueños Serenos|r.'
+L['craft_creche_crowler_note'] = 'Cómpraselo a {npc:187444} ' .. ns.color.NPC('<Vendedora ambulante de bebidas dracónicas>') .. ' en un mapa aleatorio cada día: |cFFFFFD00Vitasagrario Rubí|r, |cFFFFFD00Posada de la Escama Verde|r, |cFFFFFD00Campamento Desubicado|r, |cFFFFFD00Confluencia Temporal|r.'
+L['bivigosas_blood_sausages_note'] = 'Cómpraselo a {npc:188895} ' .. ns.color.NPC('<Alimentos y bebidas>') .. ' en el |cFFFFFD00Puesto Gelikyr|r.'
+L['options_icons_specialties'] = '{achievement:16621}'
+L['options_icons_specialties_desc'] = 'Muestra dónde están las comidas y bebidas para el logro {achievement:16621}.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -198,6 +241,7 @@ L['lepidoralia_note'] = 'Está en la |cFFFFFD00Caverna del Aleteo|r. Ayuda al {n
 L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} a %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la |cFFFFFD00Ciudadela Obsidiana|r.'
 L['shadeslash_note'] = 'Haz click en el |cFFFFFD00Foco Birlado|r para hacer aparecer al raro.'
 L['obsidian_throne_rare_note'] = 'Dentro del |cFFFFFD00Trono Obsidiana|r.'
+L['skald_impaler_note'] = nil
 L['slurpo_snail_note'] = 'Despoja un {item:201033} de una cueva en |cFFFFFD00Las Tierras Azures|r (11, 41) y úsalo en esta cueva para invocar al raro.'
 L['worldcarver_atir_note'] = 'Recoge 3x {item:191211} del {npc:187366} cercano y ponlos en los {npc:197395} para hacer aparecer al raro.'
 
@@ -219,6 +263,9 @@ Recoge tres objetos distintos y combínalos para crear el |cFFFFFD00"Acertijo de
 {item:200066}
 ]]
 
+L['pm_alch_grigori_vialtry'] = 'En una repisa con vistas al |cFFFFFD00Asalto Raudoescarcha|r.'
+L['pm_skin_zenzi'] = 'Sentada junto al ro.'
+L['pm_smith_grekka_anvilsmash'] = 'Reposa en la hierba al lado de la torre en ruinas.\n\n|cFFFF0000(Actualmente bugeado.)|r'
 L['pt_alch_frostforged_potion_note'] = 'En el centro del cráter helado.'
 L['pt_alch_well_insulated_mug_note'] = 'En la |cFFFFFD00Fortaleza de Ruinadragón|r entre varios enemigos élite.'
 L['pt_ench_enchanted_debris_note'] = 'Usa y sigue a la {npc:194872} para despojar los escombros al final.'
@@ -231,14 +278,13 @@ L['pt_jewel_igneous_gem_note'] = 'Haz click rápidamente en los 3 cristales de l
 L['pt_leath_poachers_pack_note'] = 'Junto a un Vulpera muerto junto al cauce del río.'
 L['pt_leath_spare_djaradin_tools_note'] = 'Junto a un dragón rojo muerto.'
 L['pt_script_pulsing_earth_rune_note'] = 'Detrás de una mesa que hay dentro del edificio derrumbado.'
-L['pt_smith_ancient_monument_note'] = 'Derrota a los 4 {npc:188648} rodeando una espada en un pedestal.'
+L['pt_smith_ancient_monument_note'] = 'Derrota a los 4 {npc:188648} rodeando una espada en un pedestal.\n\n|cFFFF0000(BUG: Actualmente, tras hacer click en la espada no tendrás el objeto en el inventario. En lugar de eso, se te enviará al buzón de correo tras algo de tiempo.)|r'
 L['pt_smith_curious_ingots_note'] = 'Pequeño lingote en el suelo en el |cFFFFFD00Castillo Quiebrascama|r.'
 L['pt_smith_glimmer_of_blacksmithing_wisdom_note'] = 'Fabrica una {item:189541} cerca de la |cFFFFFD00Forja a Medio Apagar|r. El objeto en la |cFFFFFD00Tina Floja|r se convertirá en despojable.'
 L['pt_smith_molten_ingot_note'] = 'Patea 3 lingotes dentro de la lava para hacer aparecer a un enemigo. Despoja el cofre una vez lo hayas derrotado.'
 L['pt_smith_qalashi_weapon_diagram_note'] = 'Encima de un yunque.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'Un trozo de tela colgando de unos árboles justo fuera de la cueva donde aparece el boss final. ' .. ns.color.Orange('Requiere precisión montando dragones o un portal de brujo')
 L['pt_tailor_mysterious_banner_note'] = 'Revoloteando por encima de los edificios.'
-L['pt_smith_grekka_anvilsmash'] = 'Reposa en la hierba al lado de la torre en ruinas.\n\n|cFFFF0000(Actualmente bugeado.)|r'
 
 L['quack_week_1'] = 'Semana 1'
 L['quack_week_2'] = 'Semana 2'
@@ -251,7 +297,11 @@ L['complaint_to_scalepiercer_note'] = 'Haz click en la |cFFFFFD00Tablilla de Pie
 L['grand_flames_journal_note'] = 'Haz click en la |cFFFFFD00Tablilla de Piedra|r de fuera detrás de la choza.'
 L['wyrmeaters_recipe_note'] = 'Haz click en la |cFFFFFD00Tablilla de Piedra|r que hay dentro de la choza (en el lado izquierdo).'
 
-L['options_icons_ducklings'] = nil
-L['options_icons_ducklings_desc'] = nil
-L['options_icons_chiseled_record'] = nil
-L['options_icons_chiseled_record_desc'] = nil
+L['options_icons_ducklings'] = '{achievement:16409}'
+L['options_icons_ducklings_desc'] = 'Muestra dónde están los patitos para el logro {achievement:16409}.'
+L['options_icons_chiseled_record'] = '{achievement:16412}'
+L['options_icons_chiseled_record_desc'] = 'Muestra dónde están las tablillas para el logro {achievement:16412}.'
+
+L['grand_theft_mammoth_note'] = 'Monta el {npc:194625} hacia el {npc:198163}.\n\n|cFFFF0000(BUG: Si no puedes interactuar con el {npc:194625} haz /reload.)|r'
+L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
+L['options_icons_grand_theft_mammoth_desc'] = 'Muestra dónde están los {npc:194625} para el logro {achievement:16493}.'

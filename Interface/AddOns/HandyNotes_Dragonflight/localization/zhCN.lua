@@ -23,6 +23,19 @@ L['flags_placed'] = '已插旗帜'
 L['options_icons_flag'] = '{achievement:15890}'
 L['options_icons_flag_desc'] = '显示 {achievement:15890} 成就中全部20个旗帜的位置。'
 
+L['broken_banding_note'] = '在雕像的右脚脚踝上。'
+L['chunk_of_sculpture_note'] = '巨龙雕像左侧地面上。'
+L['dislodged_dragoneye_note'] = '在巨龙雕像胸口下的一块岩石上。'
+L['finely_carved_wing_note'] = '巨龙雕像右膝下。'
+L['fragment_requirement_note'] = ns.color.Red('在你收集散落碎片之前，你需要在 |cFFFFFD00翼眠大使馆|r 的巨龙雕像询问 {npc:193915} 她在这里做什么。')
+L['golden_claw_note'] = '在巨龙雕像右后爪上。'
+L['precious_stone_fragment_note'] = '在雕像的右脚下。'
+L['stone_dragontooth_note'] = '巨龙雕像基座旁边的地面上。'
+L['tail_fragment_note'] = '巨龙雕像的尾巴上。'
+L['wrapped_gold_band_note'] = '巨龙雕像左后爪下。'
+L['options_icons_fragment'] = '{achievement:16323}'
+L['options_icons_fragment_desc'] = '显示 {achievement:16323} 成就中散落碎片的位置。'
+
 L['options_icons_kite'] = '{achievement:16584}'
 L['options_icons_kite_desc'] = '显示 {achievement:16584} 成就中 {npc:198118} 的位置。'
 
@@ -42,7 +55,7 @@ L['dr_bronze'] = '\n\n完成竞速获得 ' .. ns.color.Bronze('青铜') .. '。'
 L['options_icons_dragonrace'] = '驭龙竞速'
 L['options_icons_dragonrace_desc'] = '显示驭龙竞速的位置。'
 
-L['squirrels_note'] = '必须使用表情 /love 给非战斗宠物的小动物。'
+L['squirrels_note'] = '必须使用表情 /爱（/love）给非战斗宠物的小动物。'
 L['options_icons_squirrels'] = '{achievement:16729}'
 L['options_icons_squirrels_desc'] = '显示 {achievement:16729} 成就中小动物的位置。'
 
@@ -50,6 +63,14 @@ L['hnj_sublabel'] = '需要本地席卡尔洪荒狩猎'
 L['hnj_western_azure_span_hunt'] = '死树顶上。'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = '显示 {achievement:16542} 成就中 {npc:194590} 的位置。'
+
+L['pretty_neat_selfie_note'] = '用自拍神器照相。'
+L['bugged_selfie'] = '|cFFFF0000（错误：将检测到错误的 NPC 或根本检测不到。）|r'
+L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
+L['options_icons_pretty_neat_selfie_desc'] = '显示 {achievement:16446} 成就中 NPC 的位置。'
+
+L['large_lunker_sighting'] = nil
+L['large_lunker_sighting_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
@@ -62,11 +83,14 @@ L['trilvarus_loreweaver_note'] = '收集 |cFFFFFD00歌声碎片|r 即可获得 {
 
 L['breezebiter_note'] = '飞到天上把他拉下来，飞到他身边。'
 
-L['forgotten_jewel_box_note'] = '从 |cFFFFFD00欧恩哈拉平原|r 的 |cFFFFFD00峦水居所|r 拾取 {item:199065} 氏族宝箱（49.4 67.3）并使用它。'
+L['forgotten_jewel_box_note'] = '{item:199065} 可以从探险队斥候的背包和翻动过的泥土中找到。'
 L['gnoll_fiend_flail_note'] = '{item:199066} 可以从探险队斥候的背包和翻动过的泥土中找到。'
 L['pepper_hammer_note'] = '收集 |cFFFFFD00树液|r 后使用 |cFFFFFD00棍子|r 来引诱 {npc:195373}。\n\n|cFFFF0000（臭虫：点击棍子可能需要重新加载）|r'
 L['snow_covered_scroll'] = '积雪覆盖的卷轴'
 
+L['pm_engi_frizz_buzzcrank'] = '站在神龛旁边。'
+L['pm_jewel_pluutar'] = '建筑物内。'
+L['pm_script_lydiara_whisperfeather'] = '坐在长凳上。'
 L['pt_alch_experimental_decay_sample_note'] = '在一个绿色大锅里面。'
 L['pt_alch_firewater_powder_sample_note'] = '在木屋外面花瓶旁边。'
 L['pt_ench_enriched_earthen_shard_note'] = '在一堆石头上。'
@@ -115,14 +139,21 @@ L['mysterious_wand_note'] = '拾取 |cFFFFFD00水晶钥匙|r 并将其放入 |cF
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
 -------------------------------------------------------------------------------
 
+L['hunter_of_the_deep_note'] = '单击武器架并射击鱼直到稀有出现。'
+L['scaleseeker_mezeri_note'] = '向 {npc:193224} 提供一个 {item:194681}，她会揭示稀有。'
 L['shade_of_grief_note'] = '点击 {npc:193166} 刷新稀有。'
+L['windscale_the_stormborn_note'] = '杀死通向 {npc:192357} 的 {npc:192367}。'
+L['zarizz_note'] = '点击并 ' .. ns.color.Orange('/鄙视、/hiss') .. ' 在四个 {npc:193169} 处召唤稀有。'
 
 L['gold_swong_coin_note'] = '在洞穴内，{npc:191608} 在他的右侧。'
-L['nokhud_warspear_note'] = '{item:194540} 可以在探险队斥候的背包找到。'
+L['nokhud_warspear_note'] = '{item:194540} 可以从探险队斥候的背包找到。'
 L['slightly_chewed_duck_egg_note'] = '找到并拍打 {npc:192997} 获得 {item:195453} 并使用它。{item:199171} 3天后孵化为 {item:199172}。'
 L['yennus_boat'] = '海象人玩具船'
 L['yennus_boat_note'] = '拾取 |cFFFFFD00海象人玩具船|r 后获得 {item:200876}，可以在 {npc:195252} 开始上缴的任务 {quest:72063}。'
 
+L['pm_ench_shalasar_glimmerdusk'] = '破塔二楼。'
+L['pm_herb_hua_greenpaw'] = '跪在树旁。'
+L['pm_leath_erden'] = '站在河边死去的 {npc:193092} 旁边。'
 L['pt_alch_canteen_of_suspicious_water_note'] = '洞穴深处一个死掉的 |cFFFFFD00探险队斥候|r 旁边。'
 L['pt_ench_stormbound_horn_note'] = '在 |cFFFFFD00风歌高地|r。'
 L['pt_jewel_fragmented_key_note'] = '在倒塌建筑的树根下。'
@@ -166,6 +197,7 @@ L['options_icons_dreamguard_desc'] = '显示 {achievement:16574} 成就中梦境
 -------------------------------------------------------------------------------
 
 L['blightpaw_note'] = '与附近的 {npc:193222} 交谈并同意帮助他。'
+L['weeping_vilomah_note'] = '和 {npc:193206} 对话召唤稀有。'
 L['woofang_note'] = '抚摸 {npc:193156} 稀有出现。'
 
 L['acorn_harvester_note'] = '从附近地面收集1个 |cFFFFFD00橡果|r 获得 {spell:388485} 并与 {npc:196172} 互动。\n\n|cFFFF0000（错误：点击 {npc:196172} 可能需要重新加载）|r。'
@@ -174,6 +206,8 @@ L['sandy_wooden_duck_note'] = '收集 {item:199069} 并使用它。'
 
 L['tasty_hatchling_treat_note'] = '在书架后面的一个桶里。'
 
+L['pm_mining_bridgette_holdug'] = '在长满草的石柱上。'
+L['pm_tailor_elysa_raywinder'] = '在塔的中间的一个壁架上。'
 L['pt_alch_contraband_concoction_note'] = '隐藏在灌木丛中。' .. ns.color.Orange('很难发现。')
 L['pt_alch_furry_gloop_note'] = '将附近的 {npc:194855} 放入每个大锅中，然后杀死出现的怪物。'
 L['pt_ench_fractured_titanic_sphere_note'] = '|cFFFFFD00提尔要塞|r 南侧。'
@@ -186,7 +220,16 @@ L['pt_script_how_to_train_your_whelpling_note'] = '躺在沙盒里的棕色小�
 L['pt_smith_draconic_flux_note'] = '建筑物内。'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = '点击 |cFFFFFD00上古龙纹织布机|r 以完成一个小游戏，将线轴连接到中心宝石。'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = '一堆沙子里的小旗帜。'
-L['pt_mining_bridgette_holdug'] = '在长满草的石柱上。'
+
+L['picante_pomfruit_cake_note'] = '{item:200904} 并非每天都可用，因此请每天查看 |cFF00CCFF红玉飞地|r。当在那里时，一定要品尝3种可用的菜肴来完成 {achievement:16556}。'
+L['icecrown_bleu_note'] = '从 |cFF00CCFF匠人集市|r 的 {npc:196729} ' .. ns.color.NPC('<Cheesemonger>') .. ' 购买。'
+L['dreamwarding_dripbrew_note'] = '从 |cFFFFFD00熬夜实验室|r 的 {npc:197872} ' .. ns.color.NPC('<Caffeinomancer>') .. ' 购买。'
+L['arcanostabilized_provisions_note'] = '从 |cFF00CCFF拜荒者的未来|r 内的 |cFF00CCFF时光流汇|r 的 {npc:198831} ' .. ns.color.NPC('<厨师长>') .. ' 购买。'
+L['steamed_scarab_steak_note'] = '从 |cFFFFFD00宁梦温泉|r 的 {npc:197586} ' .. ns.color.NPC('<Spa Bartender>') .. ' 购买。'
+L['craft_creche_crowler_note'] = '从每日随机地图位置的 {npc:187444} ' .. ns.color.NPC('<旅行的巨龙陈酿商人>') .. ' 位于：|cFFFFFD00红玉新生圣地|r、|cFFFFFD00绿鳞旅店|r、|cFFFFFD00僻壤营地|r、|cFFFFFD00时光流汇|r 购买。'
+L['bivigosas_blood_sausages_note'] = '从 |cFFFFFD00格利基尔岗哨|r 的 {npc:188895} ' .. ns.color.NPC('<Food & Drink>') .. ' 购买。'
+L['options_icons_specialties'] = '{achievement:16621}'
+L['options_icons_specialties_desc'] = '显示 {achievement:16621} 成就中食物和饮料的位置。'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -197,6 +240,7 @@ L['lepidoralia_note'] = '位于 |cFFFFFD00翩翼洞窟|r。帮助 {npc:193342} �
 L['obsidian_citadel_rare_note'] = '和其他玩家必须总共上缴%d个 {item:191264} %s。要制作钥匙，需要组合30个 {item:191251} 和3个 {item:193201}，可以从 |cFFFFFD00黑曜堡垒|r 怪物获得这些物品。'
 L['shadeslash_note'] = '点击 |cFFFFFD00失窃的法器|r 召唤稀有。'
 L['obsidian_throne_rare_note'] = '|cFFFFFD00黑曜王座|r 内。'
+L['skald_impaler_note'] = nil
 L['slurpo_snail_note'] = '从 |cFFFFFD00碧蓝林海|r (11, 41) 的一个洞穴中拾取1个 {item:201033} 并在这个洞穴中使用来召唤他。'
 L['worldcarver_atir_note'] = '从附近的 {npc:187366} 收集3个 {item:191211} 并将它们放置在 {npc:197395} 后稀有出现。'
 
@@ -218,6 +262,9 @@ L['hidden_hornswog_hoard_note'] = [[
 {item:200066}
 ]]
 
+L['pm_alch_grigori_vialtry'] = '在俯瞰 |cFFFFFD00闪霜战地|r 的平台上。'
+L['pm_skin_zenzi'] = '站在河边。'
+L['pm_smith_grekka_anvilsmash'] = '在废墟塔旁的草丛中。\n\n|cFFFF0000（目前有问题。）|r'
 L['pt_alch_frostforged_potion_note'] = '在冰坑中间。'
 L['pt_alch_well_insulated_mug_note'] = '在 |cFFFFFD00灭龙要塞|r 一些精英怪物之间。'
 L['pt_ench_enchanted_debris_note'] = '使用并跟随 {npc:194872} 在最后拾取残骸。'
@@ -230,14 +277,13 @@ L['pt_jewel_igneous_gem_note'] = '快速点击岩浆内小岛上的3个水晶。
 L['pt_leath_poachers_pack_note'] = '在河床旁死去的狐人旁边。'
 L['pt_leath_spare_djaradin_tools_note'] = '在死去的红龙旁边。'
 L['pt_script_pulsing_earth_rune_note'] = '在倒塌的建筑物内的一张桌子后面。'
-L['pt_smith_ancient_monument_note'] = '在基座上击败4个围着一把剑的 {npc:188648}。'
+L['pt_smith_ancient_monument_note'] = '在基座上击败4个围着一把剑的 {npc:188648}。\n\n|cFFFF0000（错误：目前点击剑后不会获得物品，而是会在一段时间后发送到你的邮箱。）|r'
 L['pt_smith_curious_ingots_note'] = '|cFFFFFD00碎鳞要塞|r 地面上的锭。'
 L['pt_smith_glimmer_of_blacksmithing_wisdom_note'] = '在 |cFFFFFD00暗淡的熔炉|r 附近制造一个 {item:189541} 后物品将变为可以在 |cFFFFFD00煤渣盆|r 拾取。'
 L['pt_smith_molten_ingot_note'] = '将3个锭踢入熔岩以出现怪物。打败怪物后拾取箱子。'
 L['pt_smith_qalashi_weapon_diagram_note'] = '在铁砧之上。'
 L['pt_tailor_itinerant_singed_fabric_note'] = '一块布料挂在树上，就在最终首领出现的洞穴外。' .. ns.color.Orange('需要精准驭龙或术士传送门。')
 L['pt_tailor_mysterious_banner_note'] = '在建筑物的顶部飘扬。'
-L['pt_smith_grekka_anvilsmash'] = '在废墟塔旁的草丛中。\n\n|cFFFF0000（目前有问题。）|r'
 
 L['quack_week_1'] = '第1周'
 L['quack_week_2'] = '第2周'
@@ -250,7 +296,11 @@ L['complaint_to_scalepiercer_note'] = '点击小屋内的|cFFFFFD00石板|r（�
 L['grand_flames_journal_note'] = '点击小屋后面的 |cFFFFFD00石板|r。'
 L['wyrmeaters_recipe_note'] = '点击小屋内的 |cFFFFFD00石板|r（在左侧）。'
 
-L['options_icons_ducklings'] = nil
-L['options_icons_ducklings_desc'] = nil
-L['options_icons_chiseled_record'] = nil
-L['options_icons_chiseled_record_desc'] = nil
+L['options_icons_ducklings'] = '{achievement:16409}'
+L['options_icons_ducklings_desc'] = '显示 {achievement:16409} 成就中鸭子的位置。'
+L['options_icons_chiseled_record'] = '{achievement:16412}'
+L['options_icons_chiseled_record_desc'] = '显示 {achievement:16412} 成就中石板的位置。'
+
+L['grand_theft_mammoth_note'] = '骑乘 {npc:194625} 到 {npc:198163}。\n\n|cFFFF0000（错误：如果你不能与 {npc:194625} 互动，请使用 /reload。）|r'
+L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
+L['options_icons_grand_theft_mammoth_desc'] = '显示 {achievement:16493} 成就中 {npc:194625} 的位置。'

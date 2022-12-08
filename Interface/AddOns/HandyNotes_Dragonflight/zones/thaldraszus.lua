@@ -10,13 +10,16 @@ local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
+local Fragment = ns.node.Fragment
 local PetBattle = ns.node.PetBattle
+local PM = ns.node.ProfessionMasters
 local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
 local Scoutpack = ns.node.Scoutpack
 local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
+local Currency = ns.reward.Currency
 local Item = ns.reward.Item
 local Pet = ns.reward.Pet
 local Transmog = ns.reward.Transmog
@@ -27,7 +30,8 @@ local POI = ns.poi.POI
 -------------------------------------------------------------------------------
 
 local map = Map({id = 2025, settings = true})
-local val = Map({id = 2112, settings = false})
+local val = Map({id = 2112, settings = false}) -- Valdrakken
+local tpf = Map({id = 2085, settings = false}) -- The Primalist Future
 
 -------------------------------------------------------------------------------
 
@@ -84,7 +88,13 @@ map.nodes[52746732] = CRAGGRAVATEDELEMENTAL
 map.nodes[47675115] = Rare({ -- required 67030
     id = 193234,
     quest = 69875,
-    rewards = {Achievement({id = 16679, criteria = 56147})}
+    rewards = {
+        Achievement({
+            id = 16446,
+            criteria = 6,
+            note = L['pretty_neat_selfie_note']
+        }), Achievement({id = 16679, criteria = 56147})
+    }
 }) -- Eldoren the Reborn
 
 map.nodes[53374092] = Rare({
@@ -186,13 +196,16 @@ map.nodes[38466826] = Rare({
     rewards = {Achievement({id = 16679, criteria = 56155})}
 }) -- The Great Shellkhan
 
--- map.nodes[] = Rare({
---     id = 183984,
---     quest = 65365,
---     rewards = {
---         Achievement({id = 16679, criteria = 56153}),
---     }
--- }) -- The Weeping Vilomah
+map.nodes[46267317] = Rare({
+    id = 183984,
+    quest = 74086,
+    note = L['in_cave'] .. ' ' .. L['weeping_vilomah_note'],
+    rewards = {
+        Achievement({id = 16679, criteria = 56153}),
+        Transmog({item = 200214, slot = L['mail']}) -- Grasp of the Weeping Widow
+    },
+    pois = {POI({47547180})} -- Cave entrance
+}) -- The Weeping Vilomah
 
 map.nodes[35027001] = Rare({ -- reqiured 67030 review
     id = 193146,
@@ -229,7 +242,11 @@ map.nodes[36757287] = Rare({
     id = 193273,
     quest = 72842,
     rewards = {
-        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
+        Achievement({
+            id = 16446,
+            criteria = 13,
+            note = L['pretty_neat_selfie_note']
+        }), Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
     }
 }) -- Liskron the Dazzling
@@ -370,13 +387,13 @@ map.nodes[55203050] = PT.Alchemy({
 
 map.nodes[56104090] = PT.Inscription({
     id = 201015,
-    quest = nil,
+    quest = 70287,
     note = L['pt_script_counterfeit_darkmoon_deck_note']
 }) -- Counterfeit Darkmoon Deck
 
 map.nodes[56304120] = PT.Inscription({
     id = 198659,
-    quest = nil,
+    quest = 70264,
     note = L['pt_script_forgetful_apprentices_tome_note']
 }) -- Forgetful Apprentice's Tome
 
@@ -418,7 +435,7 @@ map.nodes[59897033] = PT.Enchanting({
 
 map.nodes[60407970] = PT.Tailoring({
     id = 198684,
-    quest = nil,
+    quest = 70288,
     note = L['pt_tailor_miniature_bronze_dragonflight_banner_note']
 }) -- Miniature Bronze Dragonflight Banner
 
@@ -429,11 +446,28 @@ val.nodes[13206368] = PT.Inscription({
     note = L['pt_script_how_to_train_your_whelpling_note']
 }) -- How to Train Your Whelpling
 
--- map.nodes[61437687] = PT.Mining({
---     id = 194843,
---     quest = 70258,
---     note = L['pt_mining_bridgette_holdug']
--- }) -- Bridgette Holdug
+-------------------------------------------------------------------------------
+
+map.nodes[61437687] = PM.Mining({
+    id = 194843,
+    quest = 70258,
+    note = L['pm_mining_bridgette_holdug'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2035, note = '10'}) -- Dragon Isles Mining Knowledge
+    }
+}) -- Bridgette Holdug
+
+val.nodes[27894576] = PM.Tailoring({
+    id = 194845,
+    quest = nil,
+    note = L['pm_tailor_elysa_raywinder'],
+    parent = map.id,
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2026, note = '5'}) -- Dragon Isles Tailoring Knowledge
+    }
+}) -- Elysa Raywinder
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -465,6 +499,26 @@ map.nodes[46107397] = Flag({quest = 70024})
 map.nodes[50168163] = Flag({quest = 70039})
 map.nodes[65727498] = Flag({quest = 71223})
 map.nodes[64635672] = Flag({quest = 71224})
+
+-------------------------------------------------------------------------------
+---------------------------- FRAGMENTS OF HISTORY -----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[38904500] = Fragment({
+    sublabel = L['golden_claw_note'],
+    rewards = {
+        Achievement({id = 16323, criteria = 55031}),
+        Item({item = 198540, quest = 70204})
+    }
+}) -- Golden Claw
+
+map.nodes[57126460] = Fragment({
+    sublabel = L['precious_stone_fragment_note'],
+    rewards = {
+        Achievement({id = 16323, criteria = 55032}),
+        Item({item = 199893, quest = 70805})
+    }
+}) -- Precious Stone Fragment
 
 -------------------------------------------------------------------------------
 ------------------------------- DISTURBED DIRT --------------------------------
@@ -612,6 +666,84 @@ local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
 map.nodes[34676541] = HemetNesingwaryJr({
     rewards = {Achievement({id = 16542, criteria = 55701})}
 }) -- Southern Thaldraszus Hunt
+
 map.nodes[50674562] = HemetNesingwaryJr({
     rewards = {Achievement({id = 16542, criteria = 55702})}
 }) -- Northern Thaldraszus Hunt
+
+-------------------------------------------------------------------------------
+-------------------------- ONE OF EVERYTHING, PLEASE --------------------------
+-------------------------------------------------------------------------------
+
+val.nodes[60921096] = Collectible({
+    label = '{item:200904}',
+    icon = 237358,
+    note = L['picante_pomfruit_cake_note'],
+    group = ns.groups.SPECIALTIES,
+    parent = map.id,
+    rewards = {Achievement({id = 16621, criteria = 55733})}
+}) -- Picante Pompfruit Cake
+
+val.nodes[29046503] = Collectible({
+    label = '{item:201045}',
+    icon = 133994,
+    note = L['icecrown_bleu_note'],
+    group = ns.groups.SPECIALTIES,
+    parent = map.id,
+    rewards = {Achievement({id = 16621, criteria = 55931})}
+}) -- Icecrown Bleu
+
+map.nodes[50054267] = Collectible({
+    label = '{item:201046}',
+    icon = 132802,
+    note = L['dreamwarding_dripbrew_note'],
+    group = ns.groups.SPECIALTIES,
+    rewards = {Achievement({id = 16621, criteria = 55933})}
+}) -- Dreamwarding Dripbrew
+
+tpf.nodes[61555322] = Collectible({
+    label = '{item:201047}',
+    icon = 134043,
+    note = L['arcanostabilized_provisions_note'],
+    group = ns.groups.SPECIALTIES,
+    parent = map.id,
+    rewards = {Achievement({id = 16621, criteria = 55934})}
+}) -- Arcanostabilized Provisions
+
+map.nodes[38944629] = Collectible({
+    label = '{item:200871}',
+    icon = 4639581,
+    note = L['steamed_scarab_steak_note'],
+    group = ns.groups.SPECIALTIES,
+    rewards = {Achievement({id = 16621, criteria = 55936})}
+}) -- Steamed Scarab Steak
+
+map.nodes[58138299] = Collectible({
+    label = '{item:201089}',
+    icon = 644375,
+    note = L['craft_creche_crowler_note'],
+    group = ns.groups.SPECIALTIES,
+    rewards = {Achievement({id = 16621, criteria = 55940})}
+}) -- Craft Creche Crowler
+
+map.nodes[52416987] = Collectible({
+    label = '{item:201090}',
+    icon = 134022,
+    note = L['bivigosas_blood_sausages_note'],
+    group = ns.groups.SPECIALTIES,
+    rewards = {Achievement({id = 16621, criteria = 55941})}
+}) -- Bivigosa's Blood Sausages
+
+-------------------------------------------------------------------------------
+----------------------------- THAT'S PRETTY NEAT! -----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[43567208] = ns.node.Selfie({
+    id = 187280,
+    rewards = {Achievement({id = 16446, criteria = 4})}
+}) -- Iridescent Peafowl
+
+map.nodes[54285271] = ns.node.Selfie({
+    id = 192383,
+    rewards = {Achievement({id = 16446, criteria = 12})}
+}) -- Iridescent Peafowl
