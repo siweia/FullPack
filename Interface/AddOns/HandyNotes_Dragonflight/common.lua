@@ -41,6 +41,8 @@ ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.KITE = Group('kite', 133837, {defaults = ns.GROUP_HIDDEN})
 ns.groups.LAYLINE = Group('layline', 1033908, {defaults = ns.GROUP_HIDDEN})
+ns.groups.LEGENDARY_ALBUM = Group('legendary_album', 1109168,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SCOUT_PACK =
@@ -48,7 +50,8 @@ ns.groups.SCOUT_PACK =
 ns.groups.SPECIALTIES = Group('specialties', 651585,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
-ns.groups.PRETTY_NEAT_SELFIE = Group('pretty_neat_selfie', 133707,
+ns.groups.STORIES = Group('stories', 4549126, {defaults = ns.GROUP_HIDDEN})
+ns.groups.PRETTY_NEAT = Group('pretty_neat', 133707,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.GRAND_THEFT_MAMMOTH = Group('grand_theft_mammoth', 4034836,
     {defaults = ns.GROUP_HIDDEN})
@@ -381,32 +384,46 @@ ns.node.Squirrel = Squirrel
 ----------------------------- THAT'S PRETTY NEAT! -----------------------------
 -------------------------------------------------------------------------------
 
-local Selfie = Class('Selfie', Collectible, {
+local PrettyNeat = Class('PrettyNeat', Collectible, {
     icon = 133707,
-    sublabel = L['pretty_neat_selfie_note'],
-    group = ns.groups.PRETTY_NEAT_SELFIE
+    sublabel = L['pretty_neat_note'],
+    group = ns.groups.PRETTY_NEAT
 }) -- That's Pretty Neat!
 
-ns.node.Selfie = Selfie
+ns.node.PrettyNeat = PrettyNeat
 
--- TODO / Checklist
--- Apex Blazewing           Inside Neltharus
--- Blue Terror              Added to Rare - Unknown
--- Drakewing                Added to Rare - Unknown
--- Feasting Buzzard         Added - Working
--- Glade Ohuna              Added - Working
--- Horned Filcher           Added - Bugged
--- Liskron the Dazzling     Added to Rare - Unknown
--- Ohn'ahra                 Added as Separate Node - Unknown (probably bugged?)
--- Pine Flicker             Added - Bugged
--- Territorial Axebeak      Added - Working
--- Avis Gryphonheart        Added - Bugged
--- Chef Fry-Aerie           Added - Working
--- Eldoren the Reborn       Added to Rare - Unknown
--- Forgotten Gryphon        Added to Rare - Unknown
--- Halia Cloudfeather       Added - Bugged (counted as Drakewing)
--- Iridescent Peafowl       Added - Working
--- Nergazurai               Added to Rare - Unknown
--- Palla of the Wing        Added - Bugged (counted as Ohn'ahra)
--- Quackers the Terrible    Unknown Location
--- Zenet Avis               Added to Rare - Unknown
+-------------------------------------------------------------------------------
+-------------------------- FRAMING A NEW PERSPECTIVE! -------------------------
+-------------------------------------------------------------------------------
+
+local NewPerspective = Class('NewPerspective', Collectible, {
+    icon = 1109100,
+    -- sublabel = L['new_perspective_note'],
+    group = ns.groups.NEW_PERSPECTIVE,
+    rewards = function(self)
+        return Achievement({id = 16634, criteria = self.criteria})
+    end
+}) -- That's Pretty Neat!
+
+function NewPerspective:Initialize(criteria) self.criteria = criteria end
+
+function NewPerspective.getters:label()
+    return select(1, GetAchievementCriteriaInfo(16634, self.criteria), nil)
+end
+
+ns.node.NewPerspective = NewPerspective
+
+-------------------------------------------------------------------------------
+------------------------------ A LEGENDARY ALBUM ------------------------------
+-------------------------------------------------------------------------------
+
+local LegendaryCharacter = Class('LegendaryCharacter', Collectible, {
+    icon = 1109168,
+    group = ns.groups.LEGENDARY_ALBUM,
+    requires = {
+        ns.requirement.Reputation(2507, 8, true), -- Dragonscale Expedition
+        ns.requirement.GarrisonTalent(2169) -- Lucky Rock
+    }
+}) -- A Legendary Album
+
+ns.node.LegendaryCharacter = LegendaryCharacter

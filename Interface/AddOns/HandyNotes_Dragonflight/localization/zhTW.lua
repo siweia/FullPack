@@ -32,7 +32,7 @@ L['golden_claw_note'] = '在龍雕像的右後爪'
 L['precious_stone_fragment_note'] = '在雕像的右腳下'
 L['stone_dragontooth_note'] = '在龍雕像台座旁的地上'
 L['tail_fragment_note'] = '在龍雕像尾巴上'
-L['wrapped_gold_band_note'] = '在龍雕像的右後爪下'
+L['wrapped_gold_band_note'] = '在龍雕像的左後爪下'
 L['options_icons_fragment'] = '{achievement:16323}'
 L['options_icons_fragment_desc'] = '顯示成就 {achievement:16323} 所需的碎塊位置'
 
@@ -64,13 +64,16 @@ L['hnj_western_azure_span_hunt'] = '在死掉樹的頂端'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = '顯示成就 {achievement:16542} 所需的 {npc:194590} 位置.'
 
-L['pretty_neat_selfie_note'] = '使用任何自拍相機拍一張照'
-L['bugged_selfie'] = '|cFFFF0000(BUG: 有可能會是錯誤或是沒有NPC被偵測到.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = '顯示成就 {achievement:16446} 所需的 NPC 位置'
+L['pretty_neat_note'] = '使用任何自拍相機拍一張照'
+L['pretty_neat_note_blazewing'] = '可以在地城 ' .. ns.color.Yellow('奈薩魯斯堡') .. ' 中和首領 {npc:189901} 的戰鬥中發現.'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = '顯示成就 {achievement:16446} 所需的 NPC 位置'
 
-L['large_lunker_sighting'] = nil
-L['large_lunker_sighting_note'] = nil
+L['large_lunker_sighting'] = '大傢伙目擊點'
+L['large_lunker_sighting_note'] = '使用5個 {item:194701} 來召喚 {npc:192919} 或是稀有'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
@@ -236,11 +239,12 @@ L['options_icons_specialties_desc'] = '顯示成就 {achievement:16621} 所需�
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = '喀拉希戰爭隊伍坐在他們的 {npc:192737} 往這座塔旅行.'
+L['enkine_note'] = '殺掉沿著熔岩河的 {npc:193137}, {npc:193138} 或 {npc:193139} 取得 {item:201092}, 使用它並在 {npc:191866} 的附近熔岩中釣魚'
 L['lepidoralia_note'] = '在 |cFFFFFD00振翅洞穴|r. 幫助 {npc:193342} 抓住 {npc:193274} 直到稀有刷新'
 L['obsidian_citadel_rare_note'] = '你或其他玩家必須要繳交總共 %d個 {item:191264} 給 %s. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在|cFFFFFD00黑曜王座|r的怪物身上取得這些物品'
 L['shadeslash_note'] = '點選 |cFFFFFD00Pilfered Focus|r 來召喚稀有'
 L['obsidian_throne_rare_note'] = '在|cFFFFFD00黑曜王座|r內. '
-L['skald_impaler_note'] = nil
+L['skald_impaler_note'] = '使用5個 {item:194701} 來召喚稀有'
 L['slurpo_snail_note'] = '在|cFFFFFD00蒼藍高原|r (11, 41) 的山洞拾取一個 item:201033}並在此山洞使用來召喚他'
 L['worldcarver_atir_note'] = '從附近的 {npc:187366} 收集3個 {item:191211}, 並且將他們放置在 {npc:197395} 來召喚稀有'
 
@@ -264,7 +268,7 @@ L['hidden_hornswog_hoard_note'] = [[
 
 L['pm_alch_grigori_vialtry'] = '在一個平台上俯瞰 |cFFFFFD00閃霜進攻地|r.'
 L['pm_skin_zenzi'] = '在河邊坐著'
-L['pm_smith_grekka_anvilsmash'] = '在塔的廢墟旁邊的草地上.\n\n|cFFFF0000(目前有問題.)|r'
+L['pm_smith_grekka_anvilsmash'] = '在塔的廢墟旁邊的草地上.'
 L['pt_alch_frostforged_potion_note'] = '在冰坑中間'
 L['pt_alch_well_insulated_mug_note'] = '在 |cFFFFFD00龍禍要塞|r 內許多菁英怪之間'
 L['pt_ench_enchanted_debris_note'] = '使用並跟著 {npc:194872} 到最後來拾取碎片'
@@ -304,3 +308,10 @@ L['options_icons_chiseled_record_desc'] = '顯示成就 {achievement:16412} 所�
 L['grand_theft_mammoth_note'] = '騎 {npc:194625} 到 {npc:198163}.\n\n|cFFFF0000(BUG: 如果你不能和 {npc:194625} 互動請使用 /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = '顯示成就 {achievement:16493} 所需 {npc:194625} 的位置.'
+
+L['options_icons_stories'] = nil
+L['options_icons_stories_desc'] = nil
+L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
+L['all_sides_of_the_story_tarjin_note'] = nil
+L['all_sides_of_the_story_veritistrasz_note'] = nil

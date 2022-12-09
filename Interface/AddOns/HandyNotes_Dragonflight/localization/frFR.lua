@@ -65,19 +65,22 @@ L['hnj_western_azure_span_hunt'] = 'Au sommet de l\'arbre mort.'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Afficher les emplacements d\'{npc:194590} pour le haut-fait {achievement:16542}.'
 
-L['pretty_neat_selfie_note'] = 'Prenez une photo avec l\'appareil P.R.O.F.I.L.'
-L['bugged_selfie'] = '|cFFFF0000(BUG : Le mauvais PNJ ou aucun PNJ ne sera détecté.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = 'Affichez les emplacements des PNJ pour le haut-fait {achievement:16446}.'
+L['pretty_neat_note'] = 'Prenez une photo avec l\'appareil P.R.O.F.I.L.'
+L['pretty_neat_note_blazewing'] = 'Peut être trouvé pendant le combat de boss contre la {npc:189901} dans le donjon ' .. ns.color.Yellow('Neltharus') .. '.'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = 'Affichez les emplacements des PNJ pour le haut-fait {achievement:16446}.'
 
-L['large_lunker_sighting'] = nil
-L['large_lunker_sighting_note'] = nil
+L['large_lunker_sighting'] = 'Coin de pêche rohart à gros malabar'
+L['large_lunker_sighting_note'] = 'Utilisez 5x {item:194701} pour invoquer soit un {npc:192919} soit un rare.'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = 'Afficher les emplacements des personnalités légendaires pour le haut-fait {achievement:16570}.'
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_rare_note'] = 'L\'apparition de ce rare sera annoncée dans le chat si vous vous trouvez dans la zone du |cFFFFFD00Creux des Fougerobes|r.'
+L['brackenhide_rare_note'] = 'Ces rares apparaissent selon une rotation fixe comme suit : {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} avec un intervalle de 10 minutes entre chacun.'
 L['fisherman_tinnak_note'] = 'Récupérez la |cFFFFFD00Canne à pêche cassée|r, le |cFFFFFD00Filet de pêche déchiré|r et le |cFFFFFD00Vieux harpon|r pour faire apparaître le rare.'
 L['spellwrought_snowman_note'] = 'Récupérez 10x {npc:193424} et amenez-les au {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Récupérez un |cFFFFFD00Fragment chantant|r pour obtenir {spell:382076} et utilisez le |cFFFFFD00Focalisateur déchargé|r pour faire apparaître le rare.'
@@ -237,11 +240,12 @@ L['options_icons_specialties_desc'] = 'Afficher les emplacements des aliments et
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'La Troupe Qalashi voyage sur leur {npc:192737} jusqu\'à cette tour.'
+L['enkine_note'] = 'Tuez des {npc:193137}, {npc:193138} ou {npc:193139} le long de la rivière de lave pour obtenir les {item:201092}, utilisez-les et pêchez près de la {npc:191866} dans la lave.'
 L['lepidoralia_note'] = 'Situé dans la |cFFFFFD00Caverne Bruissante|r. Aidez le {npc:193342} à attraper des {npc:193274s} jusqu\'à ce que le rare apparaisse.'
 L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} à %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la |cFFFFFD00Citadelle d\'obsidienne|r.'
 L['shadeslash_note'] = 'Cliquez sur le |cFFFFFD00Focalisateur volé|r pour invoquer le rare.'
 L['obsidian_throne_rare_note'] = 'À l\'intérieur du |cFFFFFD00Trône d\'obsidienne|r.'
-L['skald_impaler_note'] = nil
+L['skald_impaler_note'] = 'Utilisez 5x {item:194701} pour invoquer le rare.'
 L['slurpo_snail_note'] = 'Récupérez un {item:201033} dans une grotte de |cFFFFFD00La Travée d\'Azur|r (11, 41) et utilisez-le dans cette grotte pour l\'invoquer.'
 L['worldcarver_atir_note'] = 'Récupérez 3x {item:191211} sur les {npc:187366} à proximité et placez-les sur les {npc:197395} pour faire apparaître le rare.'
 
@@ -265,7 +269,7 @@ Récupérez trois items différents et combinez-les à |cFFFFFD00"l\'Énigmes sa
 
 L['pm_alch_grigori_vialtry'] = 'Sur une corniche surplombant l\'|cFFFFFD00Assaut de Givréclair|r.'
 L['pm_skin_zenzi'] = 'Assise à côté de la rivière.'
-L['pm_smith_grekka_anvilsmash'] = 'Elle est assise dans l\'herbe à côté de la tour en ruines.\n\n|cFFFF0000(Actuellement buggé.)|r'
+L['pm_smith_grekka_anvilsmash'] = 'Elle est assise dans l\'herbe à côté de la tour en ruines.'
 L['pt_alch_frostforged_potion_note'] = 'Au milieu du cratère gelé.'
 L['pt_alch_well_insulated_mug_note'] = 'Dans le |cFFFFFD00Donjon du Fléau-des-Dragons|r entre un groupe de monstres élites.'
 L['pt_ench_enchanted_debris_note'] = 'Utilisez et suivez le {npc:194872} pour récupérer les débris à la fin.'
@@ -305,3 +309,10 @@ L['options_icons_chiseled_record_desc'] = 'Afficher les emplacements des tablett
 L['grand_theft_mammoth_note'] = 'Chevauchez le {npc:194625} jusqu\'au {npc:198163}.\n\n|cFFFF0000(BUG : Si vous ne pouvez pas interagir avec le {npc:194625}, essayez un /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Afficher les emplacements des {npc:194625s} pour le haut-fait {achievement:16493}.'
+
+L['options_icons_stories'] = nil
+L['options_icons_stories_desc'] = nil
+L['all_sides_of_the_story_garrick_and_shuja_note'] = 'Commencez la suite de quêtes et écoutez l\'histoire de {npc:184449} et {npc:184451}.'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = 'Dans une petite pièce sous la plate-forme.\n\nCommencez la suite de quêtes et écoutez l\'histoire de {npc:194800} et {npc:194801}. D\'autres quêtes seront débloquées dans les deux semaines suivantes.'
+L['all_sides_of_the_story_tarjin_note'] = 'Commencez la suite de quêtes avec {quest:70779}.\n{npc:196214} vous racontera une autre histoire chaque semaine.'
+L['all_sides_of_the_story_veritistrasz_note'] = 'Commencez la quête {quest:70132} pour écouter toutes les histoires de {npc:194076}.\nEnsuite, vous débloquerez {quest:70134} puis {quest:70268}.\n\nPour la dernière quête, vous aurez besoin du {item:198661} qui se trouve à l\'intérieur du ' .. ns.color.Yellow('Donjon du Fléau-des-Dragons') .. '.'

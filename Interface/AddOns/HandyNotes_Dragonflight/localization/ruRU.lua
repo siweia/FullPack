@@ -65,13 +65,16 @@ L['hnj_western_azure_span_hunt'] = 'На вершине мертвого дер�
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Показать местоположение {npc:194590} для достижения {achievement:16542}.'
 
-L['pretty_neat_selfie_note'] = 'Сделайте снимок с помощью СЕЛФИ камеры.'
-L['bugged_selfie'] = '|cFFFF0000(БАГ: будет обнаружен неправильный НПС или вообще не будет обнаружен.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = 'Отображение местоположения НПС для достижения {achievement:16446}.'
+L['pretty_neat_note'] = 'Сделайте снимок с помощью СЕЛФИ камеры.'
+L['pretty_neat_note_blazewing'] = nil
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = 'Отображение местоположения НПС для достижения {achievement:16446}.'
 
 L['large_lunker_sighting'] = nil
 L['large_lunker_sighting_note'] = nil
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
@@ -237,6 +240,7 @@ L['options_icons_specialties_desc'] = nil
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'Боевой отряд куалаши отправляется на {npc:192737} к этой башне.'
+L['enkine_note'] = nil
 L['lepidoralia_note'] = nil
 L['obsidian_citadel_rare_note'] = 'Вы и другие игроки должны вернуть в общей сложности %dx {item:191264} к %s. Чтобы создать ключ, вам нужно объединить 30x {item:191251} и 3x {item:193201}, вы можете получить эти предметы из монстров в |cFFFFFD00Обсидиановой Цитадели|r.'
 L['shadeslash_note'] = nil
@@ -305,3 +309,10 @@ L['options_icons_chiseled_record_desc'] = 'Показать расположен
 L['grand_theft_mammoth_note'] = 'Прокатитесь на {npc:194625} до {npc:198163}.\n\n|cFFFF0000(БАГ: если вы не можете взаимодействовать с {npc:194625}, используйте /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Показать местоположение {npc:194625} для достижения {achievement:16493}.'
+
+L['options_icons_stories'] = nil
+L['options_icons_stories_desc'] = nil
+L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
+L['all_sides_of_the_story_tarjin_note'] = nil
+L['all_sides_of_the_story_veritistrasz_note'] = nil

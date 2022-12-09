@@ -65,19 +65,22 @@ L['hnj_western_azure_span_hunt'] = 'Encima del árbol muerto.'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Muestra dónde está {npc:194590} para el logro {achievement:16542}.'
 
-L['pretty_neat_selfie_note'] = 'Haz una foto con la cámara S.E.L.F.I.E..'
-L['bugged_selfie'] = '|cFFFF0000(BUG: Será detectado el NPC equivocado o ninguno.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = 'Muestra dónde están los NPC para el logro {achievement:16446}.'
+L['pretty_neat_note'] = 'Haz una foto con la cámara S.E.L.F.I.E..'
+L['pretty_neat_note_blazewing'] = 'Se puede encontrar durante el combate contra la {npc:189901} en la mazmorra ' .. ns.color.Yellow('Neltharus') .. '.'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = 'Muestra dónde están los NPC para el logro {achievement:16446}.'
 
-L['large_lunker_sighting'] = nil
-L['large_lunker_sighting_note'] = nil
+L['large_lunker_sighting'] = 'Avistamiento de Morrocotudo Grande'
+L['large_lunker_sighting_note'] = 'Usa 5x {item:194701} para invocar tanto a un {npc:192919} como a un raro.'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = 'Muestra dónde están los personajes legendarios para el logro {achievement:16570}.'
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_rare_note'] = 'Cuando aparezca este raro se anunciará por el chat si estás en la zona de la |cFFFFFD00Hondonada Frondacuero|r.'
+L['brackenhide_rare_note'] = 'Estos raros aparecen en un rotación fija en el siguiente orden: {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} con una diferencia de 10 minutos.'
 L['fisherman_tinnak_note'] = 'Recoge la |cFFFFFD00Caña de Pescar Rota|r, la |cFFFFFD00Red de Pescar Rota|r y el |cFFFFFD00Arpón Viejo|r para hacer aparecer al raro.'
 L['spellwrought_snowman_note'] = 'Consigue 10x {npc:193424} y llévaselas a {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Recoge un |cFFFFFD00Fragmento Cantarín|r para conseguir {spell:382076} y usar el |cFFFFFD00Enfoque Descargado|r para hacer aparecer al raro.'
@@ -237,11 +240,12 @@ L['options_icons_specialties_desc'] = 'Muestra dónde están las comidas y bebid
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'El Destacamento de Guerra Qalashi viaja encima del {npc:192737} a esta torre.'
+L['enkine_note'] = 'Mata a {npc:193137}, {npc:193138} o {npc:193139} a lo largo del rio de lava para consesguir {item:201092}. Úsalas y pesca cerca de la {npc:191866} en la lava.'
 L['lepidoralia_note'] = 'Está en la |cFFFFFD00Caverna del Aleteo|r. Ayuda al {npc:193342} a coger {npc:193274} hasta que aparezca el raro.'
 L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} a %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la |cFFFFFD00Ciudadela Obsidiana|r.'
 L['shadeslash_note'] = 'Haz click en el |cFFFFFD00Foco Birlado|r para hacer aparecer al raro.'
 L['obsidian_throne_rare_note'] = 'Dentro del |cFFFFFD00Trono Obsidiana|r.'
-L['skald_impaler_note'] = nil
+L['skald_impaler_note'] = 'Usa 5x {item:194701} para invocar al raro.'
 L['slurpo_snail_note'] = 'Despoja un {item:201033} de una cueva en |cFFFFFD00Las Tierras Azures|r (11, 41) y úsalo en esta cueva para invocar al raro.'
 L['worldcarver_atir_note'] = 'Recoge 3x {item:191211} del {npc:187366} cercano y ponlos en los {npc:197395} para hacer aparecer al raro.'
 
@@ -265,7 +269,7 @@ Recoge tres objetos distintos y combínalos para crear el |cFFFFFD00"Acertijo de
 
 L['pm_alch_grigori_vialtry'] = 'En una repisa con vistas al |cFFFFFD00Asalto Raudoescarcha|r.'
 L['pm_skin_zenzi'] = 'Sentada junto al ro.'
-L['pm_smith_grekka_anvilsmash'] = 'Reposa en la hierba al lado de la torre en ruinas.\n\n|cFFFF0000(Actualmente bugeado.)|r'
+L['pm_smith_grekka_anvilsmash'] = 'Reposa en la hierba al lado de la torre en ruinas.'
 L['pt_alch_frostforged_potion_note'] = 'En el centro del cráter helado.'
 L['pt_alch_well_insulated_mug_note'] = 'En la |cFFFFFD00Fortaleza de Ruinadragón|r entre varios enemigos élite.'
 L['pt_ench_enchanted_debris_note'] = 'Usa y sigue a la {npc:194872} para despojar los escombros al final.'
@@ -305,3 +309,10 @@ L['options_icons_chiseled_record_desc'] = 'Muestra dónde están las tablillas p
 L['grand_theft_mammoth_note'] = 'Monta el {npc:194625} hacia el {npc:198163}.\n\n|cFFFF0000(BUG: Si no puedes interactuar con el {npc:194625} haz /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Muestra dónde están los {npc:194625} para el logro {achievement:16493}.'
+
+L['options_icons_stories'] = nil
+L['options_icons_stories_desc'] = nil
+L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
+L['all_sides_of_the_story_tarjin_note'] = nil
+L['all_sides_of_the_story_veritistrasz_note'] = nil

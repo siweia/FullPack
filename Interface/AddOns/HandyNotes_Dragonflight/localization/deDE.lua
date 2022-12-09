@@ -64,19 +64,22 @@ L['hnj_western_azure_span_hunt'] = 'Auf dem toten Baum.'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Zeigt die Positionen von {npc:194590} für den Erfolg {achievement:16542} an.'
 
-L['pretty_neat_selfie_note'] = 'Mache mit der S.E.L.F.I.E.-Kamera ein Foto.'
-L['bugged_selfie'] = '|cFFFF0000(BUG: Es wird kein oder der falsche NPC erkannt.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = 'Zeigt die Positionen der NPCs für den Erfolg {achievement:16446} an.'
+L['pretty_neat_note'] = 'Mache mit der S.E.L.F.I.E.-Kamera ein Foto.'
+L['pretty_neat_note_blazewing'] = 'Kann während der Begegnung mit {npc:189901} im Dungeon ' .. ns.color.Yellow('Neltharus') .. ' gefunden werden.'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = 'Zeigt die Positionen der NPCs für den Erfolg {achievement:16446} an.'
 
-L['large_lunker_sighting'] = nil
-L['large_lunker_sighting_note'] = nil
+L['large_lunker_sighting'] = 'Sichtung eines großen Oschis'
+L['large_lunker_sighting_note'] = 'Benutze 5x {item:194701}, um entweder {npc:192919} oder einen seltenen Gegner zu beschwören.'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_rare_note'] = 'Das erscheinen dieses seltenen Gegners wird im Chat angekündigt, wenn du dich im Gebiet |cFFFFFD00Brackenfellhöhle|r aufhältst.'
+L['brackenhide_rare_note'] = 'Dieser seltene Gegner erscheint nach einer festen Rotation von {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} im Abstand von 10 Minuten.'
 L['fisherman_tinnak_note'] = 'Sammel |cFFFFFD00Zerbrochene Angelrute|r, |cFFFFFD00Zerrissenes Fischernetz|r und |cFFFFFD00Alte Harpune|r, um ihn zu beschwören.'
 L['spellwrought_snowman_note'] = 'Sammel 10x {npc:193424} und bringe diese zu {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Sammel ein |cFFFFFD00Singendes Bruchstück|r, um den Schwächungszauber {spell:382076} zu erhalten und benutze dann |cFFFFFD00Ungeladener Fokus|r.'
@@ -236,11 +239,12 @@ L['options_icons_specialties_desc'] = 'Zeigt die Positionen für die Spezialitä
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'Der Kriegstrupp der Qalashi reist auf ihrem {npc:192737} zu diesem Turm.'
+L['enkine_note'] = 'Töte {npc:193137}, {npc:193138} oder auch {npc:193139} entlang des Lavaflusses, um die {item:201092} zu erhalten, benutze es und fische in der Nähe von {npc:191866} in der Lava, um den seltenen Gegner erscheinen zu lassen.'
 L['lepidoralia_note'] = 'Hilf {npc:193342} in der |cFFFFFD00Flatterkaverne|r Höhle dabei {npc:193274} zu fangen, bis der seltene Gegner erscheint.'
 L['obsidian_citadel_rare_note'] = 'Du und andere Spieler müssen insgesamt %dx {item:191264} bei %s abgeben.\nUm einen Schlüssel herzustellen, müssen 30x {item:191251} und 3x {item:193201} kombiniert werden, diese können von Gegnern bei der |cFFFFFD00Obsidianzitadelle|r geplündert werden.'
 L['shadeslash_note'] = 'Klicke auf den |cFFFFFD00Gestohlener Fokus|r, um den seltenen Gegner erscheinen zu lassen.'
 L['obsidian_throne_rare_note'] = 'Innerhalb des |cFFFFFD00Obsidianthron|r.'
-L['skald_impaler_note'] = nil
+L['skald_impaler_note'] = 'Benutze 5x {item:194701}, um den seltenen Gegner zu beschwören.'
 L['slurpo_snail_note'] = 'Plündere in einer Höhle im |cFFFFFD00Azurblauen Gebirge|r (11.0, 41.4) aus einem |cFFFFFD00Salzkristall|r ein {item:201033} und benutze ihn in dieser Höhle, um den seltenen Gegner erscheinen zu lassen.'
 L['worldcarver_atir_note'] = 'Sammel 3x {item:191211} von {npc:187366} in der Nähe und platziere diese beim {npc:197395}, um den seltenen Gegner erscheinen zu lassen.'
 
@@ -258,7 +262,7 @@ L['hidden_hornswog_hoard_note'] = 'Sammel {item:200064}, {item:200065} und {item
 
 L['pm_alch_grigori_vialtry'] = 'Auf einem Felsvorsprung mit Blick auf den |cFFFFFD00Blitzfrostangriff|r.'
 L['pm_skin_zenzi'] = 'Sitzt direkt am Flussufer.'
-L['pm_smith_grekka_anvilsmash'] = 'Sitzt im Gras neben der Turmruine.\n\n|cFFFF0000(Zurzeit verbuggt.)|r'
+L['pm_smith_grekka_anvilsmash'] = 'Sitzt im Gras neben der Turmruine.'
 L['pt_alch_frostforged_potion_note'] = 'In der Mitte des Eiskraters.'
 L['pt_alch_well_insulated_mug_note'] = 'In der |cFFFFFD00Drachenfluchfestung|r zwischen einigen Elitegegnern.'
 L['pt_ench_enchanted_debris_note'] = 'Benutze und folge dem {npc:194872}, um die Trümmer am Ende zu plündern.'
@@ -298,3 +302,10 @@ L['options_icons_chiseled_record_desc'] = 'Zeigt die Positionen der Steintafeln 
 L['grand_theft_mammoth_note'] = 'Reite das {npc:194625} zu {npc:198163}.\n\n|cFFFF0000(BUG: Wenn du mit dem {npc:194625} nicht interagieren kannst nutze /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Zeigt die Positionen der {npc:194625} für den Erfolg {achievement:16493} an.'
+
+L['options_icons_stories'] = nil
+L['options_icons_stories_desc'] = nil
+L['all_sides_of_the_story_garrick_and_shuja_note'] = 'Beginne die Questreihe und höre dir die Geschichte von {npc:184449} und {npc:184451} an.'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = 'In einem kleinen Raum unter der Platform.\n\nStarte die Questreihe und höre die Geschichte von {npc:194800} und {npc:194801}. Weitere Quests werden in den folgenden 2 Wochen verfügbar sein.'
+L['all_sides_of_the_story_tarjin_note'] = 'Beginne die Questreihe mit {quest:70779}.\n{npc:196214}erzählt jede Woche eine weitere Geschichte.'
+L['all_sides_of_the_story_veritistrasz_note'] = 'Beginne die Quest {quest:70132} und höre dir alle Geschichten von {npc:194076} an.\nDanach schaltest du die Quest {quest:70134} und die Folgequest {quest:70268} frei.\n\nFür die letze Quest benötigst du das {item:198661} welches in der ' .. ns.color.Yellow('Drachenfluchfestung') .. ' zu finden ist.'

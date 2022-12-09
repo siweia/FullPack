@@ -64,19 +64,22 @@ L['hnj_western_azure_span_hunt'] = 'On top of the dead tree.'
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Display the locations of {npc:194590} for the achievement {achievement:16542}.'
 
-L['pretty_neat_selfie_note'] = 'Take a picture with the S.E.L.F.I.E. camera.'
-L['bugged_selfie'] = '|cFFFF0000(BUG: The wrong NPC or none at all will be detected.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = 'Display the location of NPCs for the achievement {achievement:16446}.'
+L['pretty_neat_note'] = 'Take a picture with the S.E.L.F.I.E. camera.'
+L['pretty_neat_note_blazewing'] = 'Can be found during the {npc:189901} boss encounter in the ' .. ns.color.Yellow('Neltharus') .. ' dungeon.'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = 'Display the location of NPCs for the achievement {achievement:16446}.'
 
 L['large_lunker_sighting'] = 'Large Lunker Sighting'
 L['large_lunker_sighting_note'] = 'Use 5x {item:194701} to summon either a {npc:192919} or a rare.'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = 'Display legendary character locations for {achievement:16570}.'
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_rare_note'] = 'The spawn of this rare will be announced in the chat if you are in the |cFFFFFD00Brackenhide Hollow|r area.'
+L['brackenhide_rare_note'] = 'These rares spawn in a set rotation of {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} on a 10 minute timer.'
 L['fisherman_tinnak_note'] = 'Collect |cFFFFFD00Broken Fishing Pole|r, |cFFFFFD00Torn Fishing Net|r and |cFFFFFD00Old Harpoon|r to spawn the rare.'
 L['spellwrought_snowman_note'] = 'Collect 10x {npc:193424} and bring them to {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Collect a |cFFFFFD00Singing Fragment|r to get {spell:382076} and use the |cFFFFFD00Uncharded Focus|r to spawn the rare.'
@@ -236,6 +239,7 @@ L['options_icons_specialties_desc'] = 'Display food and drink locations for {ach
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'The Qalashi War Party travels on there {npc:192737} to this tower.'
+L['enkine_note'] = 'Kill {npc:193137}, {npc:193138} or {npc:193139} along the lava river to get {item:201092}, use it and fish near {npc:191866} in the lava.'
 L['lepidoralia_note'] = 'Located in the |cFFFFFD00Fluttering Cavern|r. Help {npc:193342} catch {npc:193274s} until the rare spawns.'
 L['obsidian_citadel_rare_note'] = 'You and other Players have to return a total of %dx {item:191264} to %s. To craft a key you need to combine 30x {item:191251} and 3x {item:193201}, you can get these items from |cFFFFFD00Obsidian Citadel|r mobs.'
 L['shadeslash_note'] = 'Click the |cFFFFFD00Pilfered Focus|r to summon the rare.'
@@ -264,7 +268,7 @@ Collect three different items and combine them at the |cFFFFFD00"Observant Riddl
 
 L['pm_alch_grigori_vialtry'] = 'On a ledge overlooking |cFFFFFD00Flashfrost Assault|r.'
 L['pm_skin_zenzi'] = 'Sits next to the river.'
-L['pm_smith_grekka_anvilsmash'] = 'Sits in the grass next to the ruined tower.\n\n|cFFFF0000(Currently bugged.)|r'
+L['pm_smith_grekka_anvilsmash'] = 'Sits in the grass next to the ruined tower.'
 L['pt_alch_frostforged_potion_note'] = 'In the middle of the icy crater.'
 L['pt_alch_well_insulated_mug_note'] = 'In |cFFFFFD00Dragonbane Keep|r between a number of elite mobs.'
 L['pt_ench_enchanted_debris_note'] = 'Use and follow the {npc:194872} to loot the debris at the end.'
@@ -304,3 +308,10 @@ L['options_icons_chiseled_record_desc'] = 'Display tablet locations for the {ach
 L['grand_theft_mammoth_note'] = 'Ride the {npc:194625} to {npc:198163}.\n\n|cFFFF0000(BUG: If you cant interact with {npc:194625} use /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Display the location of {npc:194625s} for the achievement {achievement:16493}.'
+
+L['options_icons_stories'] = '{achievement:16406}'
+L['options_icons_stories_desc'] = 'Quest locations for the {achievement:16406} achievement.'
+L['all_sides_of_the_story_garrick_and_shuja_note'] = 'Start the Questline and listen to the story of {npc:184449} and {npc:184451}.'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = 'In a small room underneath the Platform.\n\nStart the Questline and listen to the story of {npc:194800} and {npc:194801}. More quests will be unlocked in the next two weeks.'
+L['all_sides_of_the_story_tarjin_note'] = 'Start the Questline with {quest:70779}.\n{npc:196214} will tell you another story every week.'
+L['all_sides_of_the_story_veritistrasz_note'] = 'Start the quest {quest:70132} to all the stories of {npc:194076}.\nAfter that you will unlock {quest:70134} followed by {quest:70268}.\n\nFor the last qust you will need {item:198661} which is found inside ' .. ns.color.Yellow('Dragonbane Keep') .. '.'
