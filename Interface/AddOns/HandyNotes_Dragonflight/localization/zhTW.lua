@@ -114,6 +114,7 @@ L['leyline_note'] = '重新校正地脈'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = '顯示成就 {achievement:16638} 中所有地脈的位置.'
 
+L['river_rapids_wrangler_note'] = nil
 L['seeing_blue_note'] = '不著陸地從蒼藍文庫上空飛行前往鈷藍集會.'
 L['snowman_note'] = '這裡有3個 {npc:197599} 躺在這個區域 (可能被其他玩家移動位置), 滾動他們到兩個小孩 {npc:197838} 和 {npc:197839}.\n當雪球有正確大小時你會獲得成就.'
 L['temperamental_skyclaw_note'] = [[
@@ -195,10 +196,13 @@ L['dreamguard_note'] = '點選夢境守衛並且使用表情符號 ' .. ns.color
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = '顯示 {achievement:16574} 成就所需的夢境守衛位置'
 
+L['tome_of_polymoph_duck'] = nil
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
 
+L['ancient_protector_note'] = nil
 L['blightpaw_note'] = '和附近的 {npc:193222} 交談並同意幫助他.'
 L['weeping_vilomah_note'] = '和 {npc:193206} 對話來召喚稀有'
 L['woofang_note'] = '撫摸 {npc:193156} 來召喚稀有.'
@@ -233,6 +237,10 @@ L['craft_creche_crowler_note'] = '從在每天地圖下列隨機位置 |cFFFFFD0
 L['bivigosas_blood_sausages_note'] = '從在 |cFFFFFD00蓋利奇爾崗哨|r 的 {npc:188895} ' .. ns.color.NPC('<食物和飲料>') .. ' 處購買.'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = '顯示成就 {achievement:16621} 所需的食物和飲料位置.'
+L['options_icons_new_perspective'] = nil
+L['options_icons_new_perspective_desc'] = nil
+L['new_perspective_note'] = nil
+L['ruby_feast_gourmand'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -315,3 +323,6 @@ L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
 L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
 L['all_sides_of_the_story_tarjin_note'] = nil
 L['all_sides_of_the_story_veritistrasz_note'] = nil
+
+L['slumbering_worldsnail_note1'] = nil
+L['slumbering_worldsnail_note2'] = nil

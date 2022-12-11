@@ -115,6 +115,7 @@ L['leyline_note'] = 'Realinea la línea Ley.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Muestra dónde están las líneas Ley para el logro {achievement:16638}.'
 
+L['river_rapids_wrangler_note'] = 'Habla con {npc:186157} y selecciona "Me gustaría volver a hacer tu Carrera en los Rápidos del Río". Tienes 60 segundos para recoger 40 acumulaciones de {spell:373490}.'
 L['seeing_blue_note'] = 'Vuela desde lo alto del Archivo Azur a la Galería Cobalto sin aterrizar.'
 L['snowman_note'] = 'Hay tres {npc:197599} reposando en la zona (podrían haber sido movidas por otros jugadores). Hazlas rodar a los dos críos, {npc:197838} y {npc:197839}.\nConseguirás el logro cuando las bolas de nieve tengan los tamaños correctos.'
 L['temperamental_skyclaw_note'] = [[
@@ -196,10 +197,13 @@ L['dreamguard_note'] = 'Selecciona al Guardasueños y teclea' .. ns.color.Orange
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = 'Muestra dónde están los Guardasueños para el logro {achievement:16574}.'
 
+L['tome_of_polymoph_duck'] = 'Usa {spell:1953} para entrar en la cueva e interactuar con el libro |cFFFFFD00Tormentas de Maná para Principiantes|r para completar la misión.'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
 
+L['ancient_protector_note'] = 'Mata a una {npc:193244} cercana para conseguir un {item:197708}. Combina 5 {item:197708} para crear un {item:197733}. Úsalo para activar los Reactores de los Titanes cercanos.'
 L['blightpaw_note'] = 'Habla con el {npc:193222} y acepta ayudarle.'
 L['weeping_vilomah_note'] = 'Habla con {npc:193206} para invocar al raro.'
 L['woofang_note'] = 'Acaricia al {npc:193156} para hacer aparecer al raro.'
@@ -234,6 +238,10 @@ L['craft_creche_crowler_note'] = 'Cómpraselo a {npc:187444} ' .. ns.color.NPC('
 L['bivigosas_blood_sausages_note'] = 'Cómpraselo a {npc:188895} ' .. ns.color.NPC('<Alimentos y bebidas>') .. ' en el |cFFFFFD00Puesto Gelikyr|r.'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Muestra dónde están las comidas y bebidas para el logro {achievement:16621}.'
+L['options_icons_new_perspective'] = '{achievement:16634}'
+L['options_icons_new_perspective_desc'] = 'Muestra dónde están los paisajes para el logro {achievement:16634}.'
+L['new_perspective_note'] = 'Haz una foto con la cámara S.E.L.F.I.E. al paisaje. La localización se marcará con un círculo violeta claro tan pronto como estés en el modo de cámara.\n\nSi no se te marca en el logro, cambia tu perspectiva.'
+L['ruby_feast_gourmand'] = 'Cada día, un invitado chef al azar sirve distintos platos y bebidas.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -310,9 +318,22 @@ L['grand_theft_mammoth_note'] = 'Monta el {npc:194625} hacia el {npc:198163}.\n\
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Muestra dónde están los {npc:194625} para el logro {achievement:16493}.'
 
-L['options_icons_stories'] = nil
-L['options_icons_stories_desc'] = nil
-L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
-L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
-L['all_sides_of_the_story_tarjin_note'] = nil
-L['all_sides_of_the_story_veritistrasz_note'] = nil
+L['options_icons_stories'] = '{achievement:16406}'
+L['options_icons_stories_desc'] = 'Muestra dónde están las misiones para el logro {achievement:16406}.'
+L['all_sides_of_the_story_garrick_and_shuja_note'] = 'Comienza la cadena de misiones y escucha la historia de la {npc:184449} y de {npc:184451}.'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = 'En una habitación pequeña debajo de la plataforma.\n\nComienza la cadena de misiones y escucha la historia de {npc:194800} y de {npc:194801}. En las siguientes dos semanas se desbloquearán más misiones.'
+L['all_sides_of_the_story_tarjin_note'] = 'Comienza la cadena de misiones con {quest:70779}.\n{npc:196214} te contará otra historia cada semana.'
+L['all_sides_of_the_story_veritistrasz_note'] = 'Comienza la misión {quest:70132} para escuchar las historias de {npc:194076}.\nDespués, desbloquearás la misión {quest:70134} seguida de {quest:70268}.\n\nPara la última misión necesitarás {item:198661} que podrás encontrar dentro de la ' .. ns.color.Yellow('Fortaleza de Ruinadragón') .. '.'
+
+L['slumbering_worldsnail_note1'] = [[
+1. Despoja 3x {item:193201} y 30x {item:191251} de los enemigos de alrededor de la |cFFFFFD00Ciudadela Obsidiana|r para formar una {item:191264}.
+
+2. Intercambia la {item:191264} por un {item:200069} a {npc:187275}.
+
+3. Hay un 30% de posibilidades de que el alijo contenga un {item:199215}.
+
+4. Usar el título de miembro te otorgará el debuff {spell:386848} que te permitirá farmear {item:202173} alrededor de la |cFFFFFD00Ciudadela Obsidiana|r.
+
+5. Recoge 1000x {item:202173} para comprar el {item:192786}.]]
+
+L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: Si mueres perderás el debuff de membresía. Compre un nuevo título de miembro a {npc:187275} por 30x {item:202173} o dale más llaves para la oportunidad de sacar un título de miembro del alijo.')

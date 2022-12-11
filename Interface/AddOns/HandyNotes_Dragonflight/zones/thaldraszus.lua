@@ -28,6 +28,8 @@ local Transmog = ns.reward.Transmog
 local Path = ns.poi.Path
 local POI = ns.poi.POI
 
+local DC = ns.DRAGON_CUSTOMIZATIONS
+
 -------------------------------------------------------------------------------
 
 local map = Map({id = 2025, settings = true})
@@ -44,8 +46,10 @@ local tpf = Map({id = 2085, settings = false}) -- The Primalist Future
 
 map.nodes[59075874] = Rare({
     id = 193664,
-    quest = 69963,
-    rewards = {Achievement({id = 16679, criteria = 56158})}
+    quest = 74055,
+    note = L['ancient_protector_note'],
+    rewards = {Achievement({id = 16679, criteria = 56158})},
+    pois = {POI({60755543, 60736211, 59225648, 59266104})} -- Titanic Reactors
 }) -- Ancient Protector
 
 map.nodes[31097121] = Rare({ -- requirement ?
@@ -245,6 +249,17 @@ map.nodes[36757287] = Rare({
         Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
     }
 }) -- Liskron the Dazzling
+
+map.nodes[36798556] = Rare({
+    id = 193668,
+    quest = 72813,
+    rewards = {
+        Transmog({item = 200182, slot = L['cloak']}), -- Riveted Drape
+        DC.WindborneVelocidrake.ClusterHorns, DC.RenewedProtoDrake.ImpalerHorns,
+        DC.HighlandDrake.ToothyMouth, DC.RenewedProtoDrake.HeavyHorns,
+        Item({item = 198048}) -- Titan Training Matrix I
+    }
+}) -- Lookout Mordren
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -736,14 +751,12 @@ map.nodes[52416987] = Collectible({
 map.nodes[43567208] = ns.node.PrettyNeat({
     id = 187280,
     rewards = {Achievement({id = 16446, criteria = 4})}
-}) -- Iridescent Peafowl
+}) -- Chef Fry-Aerie
 
 map.nodes[54285271] = ns.node.PrettyNeat({
     id = 192383,
     rewards = {Achievement({id = 16446, criteria = 12})}
 }) -- Iridescent Peafowl
-
-val.nodes[56674327] = NewPerspective(10)
 
 -------------------------------------------------------------------------------
 ------------------------------ A LEGENDARY ALBUM ------------------------------
@@ -758,3 +771,41 @@ map.nodes[38386903] = ns.node.LegendaryCharacter({
     id = 195633,
     rewards = {Achievement({id = 16570, criteria = 55773})}
 }) -- Time-Warped Mysterious Fisher
+
+-------------------------------------------------------------------------------
+-------------------------- FRAMING A NEW PERSPECTIVE --------------------------
+-------------------------------------------------------------------------------
+
+val.nodes[56094447] = NewPerspective({criteria = 55994, parent = map.id}) -- The Seat of the Aspects
+map.nodes[38967040] = NewPerspective({criteria = 55995}) -- The Cascades
+map.nodes[55737324] = NewPerspective({criteria = 55996}) -- Passage of Time -- On the Stone Arch
+map.nodes[68275833] = NewPerspective({criteria = 55997}) -- Vault of the Incarnates
+map.nodes[57175871] = NewPerspective({criteria = 55998}) -- Tyrhold
+map.nodes[50284031] = NewPerspective({criteria = 55999}) -- Algeth'era Court
+map.nodes[63431347] = NewPerspective({criteria = 56000}) -- Veiled Ossuary
+map.nodes[39434692] = NewPerspective({criteria = 56001}) -- Serene Dreams Spa
+map.nodes[48286682] = NewPerspective({criteria = 56002}) -- Shadow Ledge -- Edge of the Waterfall
+val.nodes[56674327] = NewPerspective({criteria = 56003, parent = map.id}) -- Valdrakken's Portal Room
+map.nodes[46955951] = NewPerspective({criteria = 56004}) -- Tyrhold Reservoir
+
+-------------------------------------------------------------------------------
+----------------------- GREAT GOURMAND OF THE RUBY FEAST ----------------------
+-------------------------------------------------------------------------------
+
+val.nodes[61261096] = Collectible({
+    icon = 629060,
+    parent = map.id,
+    label = '{achievement:16556}',
+    note = L['ruby_feast_gourmand'],
+    rewards = {
+        Achievement({
+            id = 16556,
+            criteria = {
+                55714, 55715, 55716, 55717, 55718, 55719, 55720, 55721, 55722,
+                55723, 55724, 55725, 55726, 55728, 55729, 55730, 55731, 55732,
+                55733, 55734
+            }
+        })
+
+    }
+})

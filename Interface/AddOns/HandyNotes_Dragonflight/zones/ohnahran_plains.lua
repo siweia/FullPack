@@ -46,10 +46,11 @@ map.nodes[31607660] = Rare({
 
 map.nodes[30546628] = Rare({
     id = 189652,
-    quest = nil,
+    quest = 73872,
     rewards = {
         Achievement({id = 16677, criteria = 56068}),
-        Transmog({item = 189055, slot = L['wand']}) -- Ghendish's Backup Talisman
+        Transmog({item = 189055, slot = L['wand']}), -- Ghendish's Backup Talisman
+        DC.RenewedProtoDrake.GrayHair
     },
     pois = {
         Path({
@@ -112,10 +113,11 @@ map.nodes[80413867] = Rare({ -- review
 
 map.nodes[87556151] = Rare({
     id = 197009,
-    quest = nil,
+    quest = 73882,
     rewards = {
         Achievement({id = 16677, criteria = 56067}), --
-        Toy({item = 200249}) -- Mage's Chewed Wand
+        Toy({item = 200249}), -- Mage's Chewed Wand
+        DC.RenewedProtoDrake.SharkSnout
     }
 }) -- Liskheszaera
 
@@ -315,12 +317,12 @@ map.nodes[31456387] = Rare({
     rewards = {
         Achievement({id = 16677, criteria = 56066}),
         Achievement({id = 16446, criteria = 20, note = L['pretty_neat_note']}),
+        Mount({item = 198825, id = 1672}), -- Zenet Hatchling
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200314, slot = L['cloth']}), -- Skyspeaker's Envelope
         Transmog({item = 200306, slot = L['cloak']}), -- Tempest Shawl
         DC.RenewedProtoDrake.PurpleHair, --
-        Item({item = 197606, quest = 69810}), -- Windborne Velocidrake: Swept Horns
-        Mount({item = 198825, id = 1672}) -- Zenet Hatchling
+        DC.WindborneVelocidrake.SweptHorns
     }
 }) -- Zenet Avis
 
@@ -375,7 +377,7 @@ map.nodes[22956670] = Rare({
     quest = 72851, -- 66378
     rewards = {
         Transmog({item = 200212, slot = L['mail']}), -- Sand-Encrusted Greaves
-        Item({item = 197111, quest = 69312}) -- Highland Drake: Maned Head
+        DC.HighlandDrake.ManedHead
     }
 }) -- Territorial Coastling
 
@@ -575,7 +577,7 @@ map.nodes[82455067] = PM.Leatherworking({
 
 map.nodes[58375000] = PM.Herbalism({
     id = 194839,
-    quest = nil,
+    quest = 70253,
     note = L['pm_herb_hua_greenpaw'],
     rewards = {
         Item({item = 190456, note = '25'}), -- Artisan's Mettle
@@ -1202,4 +1204,17 @@ end
 
 map.nodes[57473193] = Ohnahra()
 
--- STOP: DO NOT ADD NEW NODES HERE UNLESS THEY BELONG IN MISCELLANEOUS
+-------------------------------------------------------------------------------
+-------------------------------- MISCELLANEOUS --------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[66333211] = Collectible({
+    label = '{item:200205}',
+    icon = 133739,
+    note = L['tome_of_polymoph_duck'],
+    class = 'MAGE',
+    rewards = {
+        Item({item = 200205}) -- Tome of Polymoph: Duck
+    },
+    pois = {POI({66453173})}
+}) -- Tome of Polymorph: Duck

@@ -114,6 +114,7 @@ L['leyline_note'] = 'Realign the ley line.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Display the location of all ley line for the achievement {achievement:16638}.'
 
+L['river_rapids_wrangler_note'] = 'Talk to {npc:186157} and select "I\'d like to take your River Rapids Ride again". You have 60 seconds to collect get 40x stacks of {spell:373490}.'
 L['seeing_blue_note'] = 'Fly from the top of the Azure Archives to the Cobalt Assembly without landing.'
 L['snowman_note'] = 'There are three {npc:197599s} laying in the area (might have been moved by other players), roll them to the two kids {npc:197838} and {npc:197839}.\nYou get the achievement when the snowballs have the right sizes.'
 L['temperamental_skyclaw_note'] = [[
@@ -195,10 +196,13 @@ L['dreamguard_note'] = 'Target the Dreamguard and ' .. ns.color.Orange('/sleep')
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = 'Display  the location of Dreamguards for {achievement:16574}.'
 
+L['tome_of_polymoph_duck'] = 'Use {spell:1953} to enter the cave and interact with the |cFFFFFD00Manastorming For Beginners|r book to complete the quest.'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
 
+L['ancient_protector_note'] = 'Kill nearby {npc:193244} to get {item:197708}. Combine 5 {item:197708} to create a {item:197733} and use it to activate nearby Titanic Reactors.'
 L['blightpaw_note'] = 'Talk to {npc:193222} nearby and agree to help him.'
 L['weeping_vilomah_note'] = 'Talk to {npc:193206} to summon the rare.'
 L['woofang_note'] = 'Pet {npc:193156} to spawn the rare.'
@@ -233,6 +237,10 @@ L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} ' .. ns.color.NPC('
 L['bivigosas_blood_sausages_note'] = 'Purchase from {npc:188895} ' .. ns.color.NPC('<Food & Drink>') .. ' at |cFFFFFD00Gelikyr Post|r.'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Display food and drink locations for {achievement:16621} achievement.'
+L['options_icons_new_perspective'] = '{achievement:16634}'
+L['options_icons_new_perspective_desc'] = 'Vista locations for the {achievement:16634} achievement.'
+L['new_perspective_note'] = 'Take a picture with the S.E.L.F.I.E. camera at the vista. The location will be marked by a purple light circle as soon as you in camera mode.\n\nIf you dont get credit towards the achievement, change your perspective.'
+L['ruby_feast_gourmand'] = 'Every day, a random guest chef serves up different dishes and drinks.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -314,4 +322,17 @@ L['options_icons_stories_desc'] = 'Quest locations for the {achievement:16406} a
 L['all_sides_of_the_story_garrick_and_shuja_note'] = 'Start the Questline and listen to the story of {npc:184449} and {npc:184451}.'
 L['all_sides_of_the_story_duroz_and_kolgar_note'] = 'In a small room underneath the Platform.\n\nStart the Questline and listen to the story of {npc:194800} and {npc:194801}. More quests will be unlocked in the next two weeks.'
 L['all_sides_of_the_story_tarjin_note'] = 'Start the Questline with {quest:70779}.\n{npc:196214} will tell you another story every week.'
-L['all_sides_of_the_story_veritistrasz_note'] = 'Start the quest {quest:70132} to all the stories of {npc:194076}.\nAfter that you will unlock {quest:70134} followed by {quest:70268}.\n\nFor the last qust you will need {item:198661} which is found inside ' .. ns.color.Yellow('Dragonbane Keep') .. '.'
+L['all_sides_of_the_story_veritistrasz_note'] = 'Start the quest {quest:70132} to all the stories of {npc:194076}.\nAfter that you will unlock {quest:70134} followed by {quest:70268}.\n\nFor the last quest you will need {item:198661} which is found inside ' .. ns.color.Yellow('Dragonbane Keep') .. '.'
+
+L['slumbering_worldsnail_note1'] = [[
+1. Loot 3x {item:193201} and 30x {item:191251} from mobs around |cFFFFFD00Obsidian Citadel|r to form a {item:191264}.
+
+2. Exchange the {item:191264} for a {item:200069} from {npc:187275}.
+
+3. There is a 30% chance the chest will contain a {item:199215}.
+
+4. Using the membership will give you the {spell:386848} debuff which allows you to farm {item:202173} around the |cFFFFFD00Obsidian Citadel|r.
+
+5. Collect 1000x {item:202173} to purchase {item:192786}.]]
+
+L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: If you die you will lose your membership debuff. Either purchase a new membership from {npc:187275} for 30x {item:202173} or turn in more keys for a chance at a new membership from the chest.')
