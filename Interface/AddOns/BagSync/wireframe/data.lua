@@ -9,7 +9,7 @@ local Unit = BSYC:GetModule("Unit")
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 
 local function Debug(level, ...)
-    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Data", ...) end
+    if BSYC.DEBUG then BSYC.DEBUG(level, "Data", ...) end
 end
 
 --increment forceDBReset to reset the ENTIRE db forcefully
@@ -44,16 +44,6 @@ function Data:OnEnable()
 	--get player information from Unit
 	local player = Unit:GetUnitInfo()
 	
-	--initiate database
-	BagSyncDB = BagSyncDB or {}
-	
-	--before we do ANYTHING with the databse, lets do a cleanup or upgrade if necessary
-	self:CleanDB()
-	
-	--load the options and blacklist
-	BagSyncDB["options§"] = BagSyncDB["options§"] or {}
-	BagSyncDB["blacklist§"] = BagSyncDB["blacklist§"] or {}
-	
 	--main DB call
 	BSYC.db = BSYC.db or {}
 	
@@ -71,7 +61,6 @@ function Data:OnEnable()
 	BSYC.db.blacklist = BagSyncDB["blacklist§"]
 	
 	--options DB
-	BSYC.options = BagSyncDB["options§"]
 	if BSYC.options.showTotal == nil then BSYC.options.showTotal = true end
 	if BSYC.options.enableGuild == nil then BSYC.options.enableGuild = true end
 	if BSYC.options.enableMailbox == nil then BSYC.options.enableMailbox = true end
@@ -102,7 +91,7 @@ function Data:OnEnable()
 	if BSYC.options.enableAccurateBattlePets == nil then BSYC.options.enableAccurateBattlePets = true end
 	if BSYC.options.alwaysShowAdvSearch == nil then BSYC.options.alwaysShowAdvSearch = false end
 	if BSYC.options.sortTooltipByTotals == nil then BSYC.options.sortTooltipByTotals = false end
-	
+
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
 	if BSYC.options.colors.first == nil then BSYC.options.colors.first = { r = 128/255, g = 1, b = 0 }  end
@@ -135,7 +124,27 @@ function Data:OnEnable()
 	if BSYC.options.enableLoginVersionInfo then
 		BSYC:Print("[v|cFF20ff20"..ver.."|r] /bgs, /bagsync")
 	end
+	if BSYC.options.debug.enable then
+		BSYC:Print(L.DebugWarning)
+		C_Timer.After(6, function() BSYC:Print(L.DebugWarning) end)
+	end
+end
 
+function Data:DebugDumpOptions()
+	Debug(1, "init-DebugDumpOptions")
+	for k, v in pairs(BSYC.options) do
+		if type(v) ~= "table" then
+			Debug(1, k, tostring(v))
+		else
+			for x, y in pairs(v) do
+				if type(y) ~= "table" then
+					Debug(1, k, tostring(x), tostring(y))
+				else
+					Debug(1, k, tostring(x), BSYC:serializeTable(y))
+				end
+			end
+		end
+	end
 end
 
 function Data:ResetColors()
@@ -170,7 +179,6 @@ end
 function Data:FixDB()
 	Debug(2, "FixDB")
 	
-    local storeUsers = {}
     local storeGuilds = {}
 	
 	if not BSYC.options.unitDBVersion then BSYC.options.unitDBVersion = {} end
@@ -178,9 +186,8 @@ function Data:FixDB()
 	for unitObj in self:IterateUnits(true) do
 		--store only user guild names
 		if not unitObj.isGuild then
-			storeUsers[unitObj.name] = true
-			if unitObj.data.guild then
-				storeGuilds[unitObj.data.guild] = true
+			if unitObj.data.guild and unitObj.data.guildrealm then
+				storeGuilds[unitObj.data.guild..unitObj.data.guildrealm] = true
 			end
 		end
 	end
@@ -193,7 +200,7 @@ function Data:FixDB()
 			for k, v in pairs(rd) do
 				local isGuild = (k:find('©*') and true) or false
 				if isGuild then
-					if not storeGuilds[k] then
+					if not storeGuilds[k..realm] then
 						--remove obsolete guild
 						BagSyncDB[realm][k] = nil
 					end
@@ -271,6 +278,9 @@ function Data:LoadSlashCommand()
 				end
 				InterfaceOptionsFrame_OpenToCategory(BSYC.aboutPanel) --force the panel to show
 				return true
+			elseif cmd == L.SlashDebug then
+				BSYC:GetModule("Debug").frame:Show()
+				return true
 			else
 				--do an item search, use the full command to search
 				BSYC:GetModule("Search"):StartSearch(input)
@@ -279,18 +289,19 @@ function Data:LoadSlashCommand()
 
 		end
 		
-		BSYC:Print(L.HelpSearchItemName)
-		BSYC:Print(L.HelpSearchWindow)
-		BSYC:Print(L.HelpGoldTooltip)
-		BSYC:Print(L.HelpProfilesWindow)
+		BSYC:Print("/bgs "..L.SlashItemName.." - "..L.HelpSearchItemName)
+		BSYC:Print("/bgs "..L.SlashSearch.." - "..L.HelpSearchWindow)
+		BSYC:Print("/bgs "..L.SlashGold.." - "..L.HelpGoldTooltip)
+		BSYC:Print("/bgs "..L.SlashProfiles.." - "..L.HelpProfilesWindow)
 		if BSYC.IsRetail then
-			BSYC:Print(L.HelpProfessionsWindow)
-			BSYC:Print(L.HelpCurrencyWindow)
+			BSYC:Print("/bgs "..L.SlashProfessions.." - "..L.HelpProfessionsWindow)
+			BSYC:Print("/bgs "..L.SlashCurrency.." - "..L.HelpCurrencyWindow)
 		end
-		BSYC:Print(L.HelpBlacklistWindow)
-		BSYC:Print(L.HelpFixDB)
-		BSYC:Print(L.HelpResetDB)
-		BSYC:Print(L.HelpConfigWindow)
+		BSYC:Print("/bgs "..L.SlashBlacklist.." - "..L.HelpBlacklistWindow)
+		BSYC:Print("/bgs "..L.SlashFixDB.." - "..L.HelpFixDB)
+		BSYC:Print("/bgs "..L.SlashResetDB.." - "..L.HelpResetDB)
+		BSYC:Print("/bgs "..L.SlashConfig.." - "..L.HelpConfigWindow)
+		BSYC:Print("/bgs "..L.SlashDebug.." - "..L.HelpDebug)
 	end
 	
 	--/bgs and /bagsync
@@ -341,13 +352,24 @@ function Data:CheckExpiredAuctions()
 	
 end
 
+function Data:GetGuild()
+	if not IsInGuild() then return end
+	Debug(2, "GetGuild")
+	
+	local player = Unit:GetUnitInfo()
+	if not player.guild or not player.guildrealm then return end
+
+	if not BagSyncDB[player.guildrealm] then BagSyncDB[player.guildrealm] = {} end
+	if not BagSyncDB[player.guildrealm][player.guild] then BagSyncDB[player.guildrealm][player.guild] = {} end
+	return BagSyncDB[player.guildrealm][player.guild]
+end
+
 function Data:IterateUnits(dumpAll, filterList)
 	Debug(2, "IterateUnits", dumpAll, filterList)
 	
 	if filterList then dumpAll = true end
 	
 	local player = Unit:GetUnitInfo()
-	local previousGuilds = {}
 	local argKey, argValue = next(BagSyncDB)
 	local k, v
 
@@ -356,81 +378,90 @@ function Data:IterateUnits(dumpAll, filterList)
 
 			if argKey and string.match(argKey, '§*') then
 				argKey, argValue = next(BagSyncDB, argKey)
+				
 			elseif argKey then
-				k, v = next(argValue, k)
+				local isConnectedRealm = (Unit:isConnectedRealm(argKey) and true) or false
 
-				if k then
-					if v.faction and (v.faction == BSYC.db.player.faction or BSYC.options.enableFaction) then
+				--check to see if a user joined a guild on a connected realm and doesn't have the XR or BNET options on
+				--if they have guilds enabled, then we should show it anyways, regardless of the XR and BNET options
+				--NOTE: This should ONLY be done if the guild realm is NOT the player realm.  If it's the same realms for both then it would be processed anyways.
+				local isXRGuild = false
+				if BSYC.options.enableGuild and player.guild and not BSYC.options.enableCrossRealmsItems and not BSYC.options.enableBNetAccountItems then
+					isXRGuild = (player.guildrealm and argKey == player.guildrealm and argKey ~= player.realm) or false
+				end
+
+				if dumpAll or (argKey == player.realm) or isXRGuild or (isConnectedRealm and BSYC.options.enableCrossRealmsItems) or (BSYC.options.enableBNetAccountItems) then
+					
+					--pull entries from characters until k is empty, then pull next realm entry
+					k, v = next(argValue, k)
+
+					if k then
+
+						local skipReturn = false
 						local isGuild = (k:find('©*') and true) or false
-						local isConnectedRealm = (Unit:isConnectedRealm(argKey) and true) or false
-						
+
 						--return everything regardless of user settings
 						if dumpAll then
-							local skipReturn = false
+							
+							skipReturn = false
 							
 							if filterList then
-								--check realm, name and realmkey
+								--check realm, name
 								if filterList[argKey] and filterList[argKey][k] then
-								
-									local realmKey = filterList[argKey][k].realmKey
-									
-									if realmKey and v.realmKey and realmKey ~= v.realmKey then
-										--if it has a realmkey it's because it's a guild, lets check if it doesn't match to skip
-										skipReturn = true
-									end
+									skipReturn = false
 								else
 									skipReturn = true
 								end
 							end
 						
 							if not skipReturn then
-								return {realm=argKey, name=k, data=v, isGuild=isGuild, isConnectedRealm=isConnectedRealm}
+								return {realm=argKey, name=k, data=v, isGuild=isGuild, isConnectedRealm=isConnectedRealm, isXRGuild=isXRGuild}
 							end
 							
-						elseif (argKey == player.realm) or (isConnectedRealm and BSYC.options.enableCrossRealmsItems) or (BSYC.options.enableBNetAccountItems) then
+						elseif v.faction and (v.faction == BSYC.db.player.faction or BSYC.options.enableFaction) then
 							
-							local skipChk = false
+							skipReturn = false
 							
-							--check for previous listed guilds just in case, because of connected realms (can have same guild on multiple connected realms)
-							if BSYC.options.enableGuild and isGuild and v.realmKey then
-							
-								--realmKey is a concat of connected realms to determine if one guild exists on multiple realms
-								--it's also used for any XR connection matching.  See GetXRGuild and Unit module in wireframe.
-								if BSYC.options.showGuildCurrentCharacter and player.guild then
-									if v.realmKey == player.realmKey then
-										--same realm, but lets check name
-										if k ~= player.guild then
-											skipChk = true
-										end
-										--otherwise it matches so don't skip it
+							--check for guilds and if we have them merged or not
+							if BSYC.options.enableGuild and isGuild then
+								
+								--check for guilds only on current character if enabled and on their current realm
+								if (isXRGuild or BSYC.options.showGuildCurrentCharacter) and player.guild and player.guildrealm then
+									--if we have the same guild realm and same guild name, then let it pass, otherwise skip it
+									if argKey == player.guildrealm and k == player.guild then
+										skipReturn = false
 									else
-										--not same realm so skip it
-										skipChk = true
+										skipReturn = true
 									end
 								end
-							
-								local XRName = k .. v.realmKey
-								if not previousGuilds[XRName] then
-									previousGuilds[XRName] = true
-								else
-									skipChk = true
-								end
+			
 								--check for the guild blacklist
-								if BSYC.db.blacklist[XRName] then skipChk = true end
+								if BSYC.db.blacklist[k..argKey] then skipReturn = true end
+
 							elseif not BSYC.options.enableGuild and isGuild then
-								skipChk = true
+								skipReturn = true
+							
+							elseif isXRGuild then
+								--if this is enabled, then we only want guilds, skip all users
+								skipReturn = true
 							end
 							
-							if not skipChk then
-								return {realm=argKey, name=k, data=v, isGuild=isGuild, isConnectedRealm=isConnectedRealm}
+							if not skipReturn then
+								return {realm=argKey, name=k, data=v, isGuild=isGuild, isConnectedRealm=isConnectedRealm, isXRGuild=isXRGuild}
 							end
+							
 						end
+						
+					else
+						--we have looped through all the characters and next k entry is empty, pull next entry from realms
+						argKey, argValue = next(BagSyncDB, argKey)
 					end
+					
 				else
+					--realm doesn't match our criteria, pull next entry from realms
 					argKey, argValue = next(BagSyncDB, argKey)
 				end
 				
-			--else if no next key then exit while
 			end
 		end
 	end

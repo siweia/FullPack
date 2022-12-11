@@ -1,3 +1,4 @@
+---@diagnostic disable: need-check-nil
 --[[
 	blacklist.lua
 		A blacklist frame for BagSync items
@@ -9,7 +10,7 @@ local Data = BSYC:GetModule("Data")
 local Unit = BSYC:GetModule("Unit")
 
 local function Debug(level, ...)
-    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Blacklist", ...) end
+    if BSYC.DEBUG then BSYC.DEBUG(level, "Blacklist", ...) end
 end
 
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
@@ -55,7 +56,7 @@ function Blacklist:OnEnable()
 	end)
 	w:AddChild(addbutton)
 	
-	local spacer = AceGUI:Create("Label")
+	local spacer = AceGUI:Create("BagSyncLabel")
     spacer:SetFullWidth(true)
 	spacer:SetText(" ")
 	BlacklistFrame:AddChild(spacer)
@@ -87,7 +88,7 @@ function Blacklist:OnEnable()
 	Blacklist.guildAddButton = guildAddButton
 	Blacklist.guildDDlist = guildDDlist
 
-	local spacer = AceGUI:Create("Label")
+	local spacer = AceGUI:Create("BagSyncLabel")
     spacer:SetFullWidth(true)
 	spacer:SetText(" ")
 	
@@ -133,8 +134,8 @@ function Blacklist:OnEnable()
 		for unitObj in Data:IterateUnits() do
 			if unitObj.isGuild then
 				local guildName = select(2, Unit:GetUnitAddress(unitObj.name))
-				local key = unitObj.name..unitObj.data.realmKey --note key is different then displayed name
-				tmp[key] = guildName.."-"..unitObj.data.realmKey
+				local key = unitObj.name..unitObj.realm --note key is different then displayed name
+				tmp[key] = guildName.."-"..unitObj.realm
 			end
 		end
 		table.sort(tmp, function(a,b) return (a < b) end)
@@ -179,7 +180,7 @@ end
 function Blacklist:AddItemID()
 	local itemid = self.editbox:GetText()
 	
-	if string.len(self.editbox:GetText()) < 1 or not tonumber(itemid) then
+	if not itemid or string.len(self.editbox:GetText()) < 1 or not tonumber(itemid) then
 		BSYC:Print(L.EnterItemID)
 		self.editbox:SetText()
 		return

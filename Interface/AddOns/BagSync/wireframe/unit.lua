@@ -8,7 +8,7 @@ local BSYC = select(2, ...) --grab the addon namespace
 local Unit = BSYC:NewModule("Unit", 'AceEvent-3.0')
 
 local function Debug(level, ...)
-    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Unit", ...) end
+    if BSYC.DEBUG then BSYC.DEBUG(level, "Unit", ...) end
 end
 
 local REALM = GetRealmName()
@@ -111,6 +111,9 @@ function Unit:GetUnitInfo(unit)
 		unit.class = select(2, UnitClass('player'))
 		unit.race = select(2, UnitRace('player'))
 		unit.guild = GetGuildInfo('player')
+		if unit.guild then
+			unit.guildrealm = select(4, GetGuildInfo('player')) or realm
+		end
 		unit.gender = UnitSex('player')
 	end
 
@@ -118,7 +121,7 @@ function Unit:GetUnitInfo(unit)
 	unit.name, unit.realm, unit.isguild = name, realm, isguild
 	unit.realmKey = realmKey
 	
-	Debug(3, "GetUnitInfo", name, realm, isguild, FACTION, unit.class, unit.race, unit.gender, unit.guild, unit.realmKey)
+	Debug(3, "GetUnitInfo", name, realm, isguild, FACTION, unit.class, unit.race, unit.gender, unit.guild, unit.guildrealm, unit.realmKey)
 	return unit
 end
 

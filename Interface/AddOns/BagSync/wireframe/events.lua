@@ -10,7 +10,7 @@ local Scanner = BSYC:GetModule("Scanner")
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 
 local function Debug(level, ...)
-    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Events", ...) end
+    if BSYC.DEBUG then BSYC.DEBUG(level, "Events", ...) end
 end
 
 Events.canQueryAuctions = false
@@ -93,7 +93,7 @@ function Events:OnEnable()
 	end)
 
 	--Force guild roster update, so we can grab guild name.  Note this is nil on login, have to check for Classic and Retail though
-	--https://wow.gamepedia.com/API_GetGuildInfo
+	--https://wowpedia.fandom.com/wiki/API_C_GuildInfo.GuildRoster
 	if C_GuildInfo and C_GuildInfo.GuildRoster then C_GuildInfo.GuildRoster() end  -- Retail
 	if GuildRoster then GuildRoster() end -- Classic
 	
@@ -206,6 +206,12 @@ function Events:OnEnable()
 	self:RegisterEvent("BAG_UPDATE_DELAYED")
 	
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+
+	--if player isn't in a guild, then delete old guild data if found, sometimes this gets left behind for some reason
+	if not IsInGuild() and (BSYC.db.player.guild or BSYC.db.player.guildrealm) then
+		BSYC.db.player.guild = nil
+		BSYC.db.player.guildrealm = nil
+	end
 end
 
 function Events:PLAYER_MONEY()
@@ -214,10 +220,12 @@ end
 
 function Events:GUILD_ROSTER_UPDATE()
 	BSYC.db.player.guild = Unit:GetUnitInfo().guild
+	BSYC.db.player.guildrealm = Unit:GetUnitInfo().guildrealm
 end
 
 function Events:PLAYER_GUILD_UPDATE()
 	BSYC.db.player.guild = Unit:GetUnitInfo().guild
+	BSYC.db.player.guildrealm = Unit:GetUnitInfo().guildrealm
 end
 
 function Events:PLAYER_EQUIPMENT_CHANGED(event)

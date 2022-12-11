@@ -11,7 +11,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 local LibQTip = LibStub('LibQTip-1.0')
 
 local function Debug(level, ...)
-    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Tooltip", ...) end
+    if BSYC.DEBUG then BSYC.DEBUG(level, "Tooltip", ...) end
 end
 
 local function CanAccessObject(obj)
@@ -42,13 +42,17 @@ function Tooltip:GetSortIndex(unitObj)
 	if unitObj then
 		if not unitObj.isGuild and unitObj.realm == Unit:GetUnitInfo().realm then
 			return 1
-		elseif not unitObj.isGuild and unitObj.isConnectedRealm then
+		elseif unitObj.isGuild and unitObj.realm == Unit:GetUnitInfo().realm then
 			return 2
-		elseif not unitObj.isGuild then
+		elseif not unitObj.isGuild and unitObj.isConnectedRealm then
 			return 3
+		elseif unitObj.isGuild and unitObj.isConnectedRealm then
+			return 4
+		elseif not unitObj.isGuild then
+			return 5
 		end
 	end
-	return 4
+	return 6
 end
 
 function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple)
@@ -121,12 +125,6 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple)
 	--If we Bypass or showSimple none of the XR or BNET stuff will be shown
 	----------------
 	if bypass or showSimple then
-		--DEBUGGING: check for showRealm tag before returning, this is mostly used for DEBUGGING purposes.  We don't want to add default tags normally.
-		--for that we want to use the XREALM procedures below for tagging.
-		if showRealm then
-			realmTag = L.TooltipBattleNetTag..delimiter
-			tmpTag = self:HexColor(BSYC.options.colors.bnet, "["..realmTag..realm.."]").." "..tmpTag
-		end
 		--since we Bypass don't show anything else just return what we got
 		return tmpTag
 	end
@@ -169,7 +167,16 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple)
 			tmpTag = self:HexColor(BSYC.options.colors.cross, "["..realmTag..realm.."]").." "..tmpTag
 		end
 	end
-	
+
+	--if it's a connected realm guild the player belongs to, then show the XR tag.  This option only true if the XR and BNET options are off.
+	if unitObj.isXRGuild then
+		realmTag = L.TooltipCrossRealmTag
+		if string.len(realm) > 0 or string.len(realmTag) > 0 then
+			--use an asterisk to denote that we are using a XRGuild Tag
+			tmpTag = self:HexColor(BSYC.options.colors.cross, "[*"..realmTag..realm.."]").." "..tmpTag
+		end
+	end
+
 	Debug(2, "ColorizeUnit", tmpTag)
 	return tmpTag
 end
@@ -421,7 +428,6 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	self.__lastLink = link
 	
 	local grandTotal = 0
-	local previousGuilds = {}
 	local unitList = {}
 	
 	for unitObj in Data:IterateUnits() do
@@ -624,7 +630,7 @@ function Tooltip:HookTooltip(objTooltip)
 	Debug(2, "HookTooltip", objTooltip)
 	
 	--MORE INFO (https://wowpedia.fandom.com/wiki/Category:API_namespaces/C_TooltipInfo)
-	--(https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes#Tooltip_Changes)
+	--https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes#Tooltip_Changes
 	--https://github.com/tomrus88/BlizzardInterfaceCode/blob/e4385aa29a69121b3a53850a8b2fcece9553892e/Interface/SharedXML/Tooltip/TooltipDataHandler.lua
 	--https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes
 	

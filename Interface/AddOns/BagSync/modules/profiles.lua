@@ -10,7 +10,7 @@ local Unit = BSYC:GetModule("Unit")
 local Tooltip = BSYC:GetModule("Tooltip")
 
 local function Debug(level, ...)
-    if BSYC.debugSwitch and BSYC.DEBUG then BSYC.DEBUG(level, "Profiles", ...) end
+    if BSYC.DEBUG then BSYC.DEBUG(level, "Profiles", ...) end
 end
 
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
@@ -31,7 +31,7 @@ function Profiles:OnEnable()
 	ProfilesFrame:SetWidth(380)
 	ProfilesFrame:EnableResize(false)
 	
-	local information = AceGUI:Create("Label")
+	local information = AceGUI:Create("BagSyncLabel")
 	information:SetText(L.DeleteWarning)
 	information:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 	information:SetColor(1, 165/255, 0)
@@ -148,6 +148,7 @@ function Profiles:AddEntry(entry, isHeader)
 					GameTooltip:AddLine(PLAYER..":  "..entry.colorized)
 				else
 					GameTooltip:AddLine(GUILD..":  "..entry.colorized)
+					GameTooltip:AddLine(L.Realm.."  "..entry.unitObj.realm)
 					GameTooltip:AddLine(L.TooltipRealmKey.." "..entry.unitObj.data.realmKey)
 				end
 				GameTooltip:Show()
