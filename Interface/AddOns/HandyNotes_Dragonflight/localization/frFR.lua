@@ -7,6 +7,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
+L['elite_loot_385'] = ns.color.Orange('Ce rare peut donner des objets allant jusqu\'à l\'ilv 385 !')
 L['gem_cluster_note'] = 'L\'objet requis peut être trouvé au Renom 21 avec l\'Expédition du Dracaret dans les Paquetages d\'éclaireurs de l\'expédition et les Poussières dérangées.'
 
 L['options_icons_bonus_boss'] = 'Élites bonus'
@@ -62,6 +63,7 @@ L['options_icons_squirrels_desc'] = 'Afficher les emplacements des bestioles pou
 
 L['hnj_sublabel'] = 'Nécessite une Grande chasse Shikaar à proximité'
 L['hnj_western_azure_span_hunt'] = 'Au sommet de l\'arbre mort.'
+L['hnj_northern_thaldraszus_hunt'] = ns.color.Orange('Note : Lorsque l\'événement de chasse commence, vous devez le rejoindre rapidement. Si vous tardez, il sera tué par des monstres sauvages.')
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Afficher les emplacements d\'{npc:194590} pour le haut-fait {achievement:16542}.'
 
@@ -118,6 +120,14 @@ L['options_icons_layline_desc'] = 'Afficher les emplacements de toutes les ligne
 L['river_rapids_wrangler_note'] = 'Parlez à {npc:186157} et sélectionnez "J\'aimerais refaire une descente des rapides". Vous avez 60 secondes pour récupérer 40x charges de {spell:373490}.'
 L['seeing_blue_note'] = 'Volez du sommet des archives d’Azur jusqu’à l’assemblée de Cobalt sans atterrir.'
 L['snowman_note'] = 'Il y a trois {npc:197599s} dans la zone (elles ont pu être déplacées par d\'autres joueurs), faites-les rouler vers les deux enfants {npc:197838} et {npc:197839}.\nVous obtenez le haut-fait lorsque les boules de neige ont la bonne taille.'
+
+L['snowclaw_cub_note_start'] = 'Vous devez terminer la suite de quêtes {quest:67094} donnée par {npc:192522} à |cFFFFFD00Valdrakken|r pour obtenir le titre de |cFFFFFD00Dryade honoraire|r.\n\nRassemblez les objets suivants :'
+L['snowclaw_cub_note_item1'] = 'Récupérez 3x {item:197744} sur divers {npc:182559} aux |cFFFFFD00Rivages de l’Éveil|r.'
+L['snowclaw_cub_note_item2'] = 'Achetez 1x {item:198356} à la {npc:193310} aux |cFFFFFD00Rivages de l’Éveil|r.'
+L['snowclaw_cub_note_end'] = ns.color.Orange('Tous les objets peuvent être achetés à l\'hôtel des ventes. Ceci est particulièrement utile si vous n\'avez pas facilement accès à un {item:199215} qui est nécessaire pour acheter des objets à la {npc:193310}.') .. '\n\nUne fois le titre équipé, offrez les 4 objets à l\'{npc:196768} pour recevoir votre mascotte.'
+
+L['tome_of_polymoph_duck'] = 'Utilisez {spell:1953} pour entrer dans la grotte et interagir avec le livre |cFFFFFD00La tempête de mana pour les novices|r pour terminer la quête.'
+
 L['temperamental_skyclaw_note'] = [[
 Rassemblez (ou achetez à l'hôtel des ventes) :
 
@@ -145,7 +155,7 @@ L['mysterious_wand_note'] = 'Ramassez la |cFFFFFD00Clé en cristal|r et placez-l
 -------------------------------------------------------------------------------
 
 L['hunter_of_the_deep_note'] = 'Cliquez sur le râtelier d\'armes et tirez sur les poissons jusqu\'à ce que le rare apparaisse.'
-L['scaleseeker_mezeri_note'] = 'Offrez un {item:194681} à {npc:193224} et elle révélera le rare.'
+L['scaleseeker_mezeri_note'] = 'Offrez un {item:194681} à {npc:193224} et suivez-la jusqu\'à ce qu\'elle révèle le rare.'
 L['shade_of_grief_note'] = 'Cliquez sur la {npc:193166} pour faire apparaître le rare.'
 L['windscale_the_stormborn_note'] = 'Tuez les {npc:192367s} canalisant dans l\'{npc:192357}.'
 L['zarizz_note'] = 'Cliquez et ' .. ns.color.Orange('/siffler') .. ' les quatre {npc:193169s} pour invoquer le rare.'
@@ -197,7 +207,8 @@ L['dreamguard_note'] = 'Ciblez le Garde-rêve et ' .. ns.color.Orange('/dormir')
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = 'Afficher les emplacements des Gardes-rêves pour {achievement:16574}'
 
-L['tome_of_polymoph_duck'] = 'Utilisez {spell:1953} pour entrer dans la grotte et interagir avec le livre |cFFFFFD00La tempête de mana pour les novices|r pour terminer la quête.'
+L['khadin_note'] = 'Échangez les {item:191784} contre de la connaissance de métiers.'
+L['the_great_swog_note'] = 'Échangez des {item:199338}, {item:199339} et {item:199340} contre des {item:202102}.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
@@ -205,6 +216,7 @@ L['tome_of_polymoph_duck'] = 'Utilisez {spell:1953} pour entrer dans la grotte e
 
 L['ancient_protector_note'] = 'Tuez des {npc:193244} proches pour obtenir {item:197708}. Combinez 5 {item:197708} pour créer un {item:197733} et utilisez-le pour activer les Réacteurs titanesques à proximité.'
 L['blightpaw_note'] = 'Parlez à l\'{npc:193222} à proximité et acceptez de l\'aider.'
+L['corrupted_proto_dragon_note'] = 'Examinez l\'|cFFFFFD00Oeuf de dragon corrompu|r pour faire apparaître le rare.'
 L['weeping_vilomah_note'] = 'Parlez à {npc:193206} pour invoquer le rare.'
 L['woofang_note'] = 'Caressez {npc:193156} pour faire apparaître le rare.'
 
@@ -248,6 +260,7 @@ L['ruby_feast_gourmand'] = 'Chaque jour, un chef invité au hasard sert des plat
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'La Troupe Qalashi voyage sur leur {npc:192737} jusqu\'à cette tour.'
+L['captain_lancer_note'] = 'Apparaît immédiatement après avoir terminé l\'événement du {spell:388945}.'
 L['enkine_note'] = 'Tuez des {npc:193137}, {npc:193138} ou {npc:193139} le long de la rivière de lave pour obtenir les {item:201092}, utilisez-les et pêchez près de la {npc:191866} dans la lave.'
 L['lepidoralia_note'] = 'Situé dans la |cFFFFFD00Caverne Bruissante|r. Aidez le {npc:193342} à attraper des {npc:193274s} jusqu\'à ce que le rare apparaisse.'
 L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} à %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la |cFFFFFD00Citadelle d\'obsidienne|r.'
@@ -336,4 +349,8 @@ L['slumbering_worldsnail_note1'] = [[
 
 5. Rassemblez 1000x {item:202173} pour acheter la {item:192786}.]]
 
-L['slumbering_worldsnail_note2'] = ns.color.Orange('Note : Si vous mourrez, vous perdrez votre debuff d\'abonnement. Vous pouvez soit acheter un nouvel abonnement auprès de {npc:187275} pour 30x {item:202173}, soit apporter d\'autres clés pour avoir une chance d\'obtenir un nouvel abonnement dans le coffre.')
+L['slumbering_worldsnail_note2'] = ns.color.Orange('Note : Si vous mourrez, vous perdrez votre debuff d\'abonnement. Vous pouvez acheter un nouvel abonnement auprès de {npc:193310} pour 20x {item:202173} avant de mourir ou bien vous devrez apporter d\'autres clés pour avoir une chance d\'obtenir un nouvel abonnement dans le coffre.')
+
+L['options_icons_safari'] = '{achievement:16519}'
+L['options_icons_safari_desc'] = 'Afficher les emplacements des mascottes pour le haut-fait {achievement:16519}.'
+L['shyfly_note'] = 'Vous devez avoir la quête {quest:70853} pour voir les {npc:189102}.'

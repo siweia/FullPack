@@ -9,6 +9,7 @@ local Group = ns.Group
 
 local Collectible = ns.node.Collectible
 local Node = ns.node.Node
+local Rare = ns.node.Rare
 
 local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
@@ -57,6 +58,18 @@ ns.groups.PRETTY_NEAT = Group('pretty_neat', 133707,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.GRAND_THEFT_MAMMOTH = Group('grand_theft_mammoth', 4034836,
     {defaults = ns.GROUP_HIDDEN})
+ns.groups.SAFARI = Group('safari', 4048818, {defaults = ns.GROUP_HIDDEN})
+
+-------------------------------------------------------------------------------
+--------------------------------- ELITE RARES ---------------------------------
+-------------------------------------------------------------------------------
+
+local RareElite = Class('RareElite', Rare, {
+    rlabel = '(' .. ns.color.Gray(L['elite']) .. ')',
+    sublabel = L['elite_loot_385']
+})
+
+ns.node.RareElite = RareElite
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
@@ -213,21 +226,28 @@ ns.DRAGON_CUSTOMIZATIONS = {
     WindborneVelocidrake = {
         ClubTail = Item({item = 197624, quest = 69828}),
         FinnedEars = Item({item = 197595, quest = 69799}),
+        GrayHorns = Item({item = 197608, quest = 69812}),
         LargeHeadFin = Item({item = 197589, quest = 69793}),
         SweptHorns = Item({item = 197606, quest = 69810}),
+        SpikedBack = Item({item = 197586, quest = 69790}),
         ClusterHorns = Item({item = 197602, quest = 69806})
     },
     HighlandDrake = {
+        ClubTail = Item({item = 197149, quest = 69350}),
+        CrestedBrow = Item({item = 197100, quest = 69301}),
         FinnedBack = Item({item = 197098, quest = 69299}),
         ManedHead = Item({item = 197111, quest = 69312}),
         SpikedClubTail = Item({item = 197150, quest = 69351}),
+        StripedPattern = Item({item = 197138, quest = 69339}),
         TanHorns = Item({item = 197121, quest = 69322}),
         ToothyMouth = Item({item = 197135, quest = 69336})
     },
     CliffsideWylderdrake = {
         BlackHorns = Item({item = 196991, quest = 69191}),
         BluntSpikedTail = Item({item = 197019, quest = 69219}),
+        BranchedHorns = Item({item = 196996, quest = 69196}),
         Ears = Item({item = 196982, quest = 69182}),
+        DualHornedChin = Item({item = 196973, quest = 69173}),
         FinnedCheek = Item({item = 197001, quest = 69201}),
         FinnedNeck = Item({item = 197022, quest = 69222}),
         HeadMane = Item({item = 196976, quest = 69176}),
@@ -421,22 +441,6 @@ local PrettyNeat = Class('PrettyNeat', Collectible, {
 ns.node.PrettyNeat = PrettyNeat
 
 -------------------------------------------------------------------------------
--------------------------- FRAMING A NEW PERSPECTIVE --------------------------
--------------------------------------------------------------------------------
-
-local NewPerspective = Class('NewPerspective', Collectible, {
-    icon = 1109100,
-    note = L['new_perspective_note'],
-    group = ns.groups.NEW_PERSPECTIVE
-}) -- Framing a New Perspective
-
-function NewPerspective.getters:rewards()
-    return {Achievement({id = 16634, criteria = self.criteria})}
-end
-
-ns.node.NewPerspective = NewPerspective
-
--------------------------------------------------------------------------------
 ------------------------------ A LEGENDARY ALBUM ------------------------------
 -------------------------------------------------------------------------------
 
@@ -450,3 +454,12 @@ local LegendaryCharacter = Class('LegendaryCharacter', Collectible, {
 }) -- A Legendary Album
 
 ns.node.LegendaryCharacter = LegendaryCharacter
+
+-------------------------------------------------------------------------------
+----------------------------- DRAGON ISLES SAFARI -----------------------------
+-------------------------------------------------------------------------------
+
+local Safari = Class('Safari', Collectible,
+    {icon = 'paw_g', group = ns.groups.SAFARI}) -- Dragon Isles Safari
+
+ns.node.Safari = Safari

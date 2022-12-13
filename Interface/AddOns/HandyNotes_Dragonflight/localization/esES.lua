@@ -7,6 +7,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
+L['elite_loot_385'] = ns.color.Orange('¡Este raro puede soltar botín de hasta nivel 385!')
 L['gem_cluster_note'] = 'El objeto requerido se puede obtener a Renombre 21 con la Expedición Dragontina en las Mochilas de Explorador de Expedición y en las Tierras Perturbadas.'
 
 L['options_icons_bonus_boss'] = 'Élites de Bonificación'
@@ -62,6 +63,7 @@ L['options_icons_squirrels_desc'] = 'Muestra dónde están las alimañas para el
 
 L['hnj_sublabel'] = 'Requiere Gran Cacería Shikaar local'
 L['hnj_western_azure_span_hunt'] = 'Encima del árbol muerto.'
+L['hnj_northern_thaldraszus_hunt'] = ns.color.Orange('Nota: Cuando comience el evento de cacería, tendrás que unirte rápidamente. Si llegas tarde, los monstruos salvajes lo habrán matado.')
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Muestra dónde está {npc:194590} para el logro {achievement:16542}.'
 
@@ -118,6 +120,14 @@ L['options_icons_layline_desc'] = 'Muestra dónde están las líneas Ley para el
 L['river_rapids_wrangler_note'] = 'Habla con {npc:186157} y selecciona "Me gustaría volver a hacer tu Carrera en los Rápidos del Río". Tienes 60 segundos para recoger 40 acumulaciones de {spell:373490}.'
 L['seeing_blue_note'] = 'Vuela desde lo alto del Archivo Azur a la Galería Cobalto sin aterrizar.'
 L['snowman_note'] = 'Hay tres {npc:197599} reposando en la zona (podrían haber sido movidas por otros jugadores). Hazlas rodar a los dos críos, {npc:197838} y {npc:197839}.\nConseguirás el logro cuando las bolas de nieve tengan los tamaños correctos.'
+
+L['snowclaw_cub_note_start'] = 'Tienes que completar la cadena de misiones {quest:67094} que ofrece {npc:192522} en |cFFFFFD00Valdrakken|r para coseguir el título |cFFFFFD00Dríade Honoraria|r.\n\nReune los siguientes objetos:'
+L['snowclaw_cub_note_item1'] = 'Despoja 3x {item:197744} de varios {npc:182559} alrededor de las |cFFFFFD00Orillas del Despertar|r.'
+L['snowclaw_cub_note_item2'] = 'Compra 1x {item:198356} del {npc:193310} en las |cFFFFFD00Orillas del Despertar|r.'
+L['snowclaw_cub_note_end'] = ns.color.Orange('Todos los objetos se pueden comprar en la casa de subastas. Es de especial ayuda si no tienes fácil acceso al {item:199215} el cual es requerido para comprar los objetos al {npc:193310}.') .. '\n\nUna vez tengas equipado el título ofrece los 4 objetos al {npc:196768} para recibir su mascota.' .. ns.color.Red('\n\nBUG: El título puede desaparecer. Pendiente de un fix.')
+
+L['tome_of_polymoph_duck'] = 'Usa {spell:1953} para entrar en la cueva e interactuar con el libro |cFFFFFD00Tormentas de Maná para Principiantes|r para completar la misión.'
+
 L['temperamental_skyclaw_note'] = [[
 Recoge (o compra en la casa de subastas):
 
@@ -145,7 +155,7 @@ L['mysterious_wand_note'] = 'Coge la |cFFFFFD00Llave de Cristal|r y ponla dentro
 -------------------------------------------------------------------------------
 
 L['hunter_of_the_deep_note'] = 'Haz click en el armero y dispara a los peces hasta que aparezca el raro and shoot fish until the rare spawns.'
-L['scaleseeker_mezeri_note'] = 'Ofrece {item:194681} a {npc:193224} y te revelará al raro.'
+L['scaleseeker_mezeri_note'] = 'Ofrece {item:194681} a {npc:193224} y síguela hasta que te enseñe al raro.'
 L['shade_of_grief_note'] = 'Haz click en {npc:193166} para hacer aparecer al raro.'
 L['windscale_the_stormborn_note'] = 'Mata a los {npc:192367} que están canalizando en los {npc:192357}.'
 L['zarizz_note'] = 'Haz click y ' .. ns.color.Orange('haz /hiss') .. ' a las cuatro {npc:193169} para invocar al raro.'
@@ -197,7 +207,8 @@ L['dreamguard_note'] = 'Selecciona al Guardasueños y teclea' .. ns.color.Orange
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = 'Muestra dónde están los Guardasueños para el logro {achievement:16574}.'
 
-L['tome_of_polymoph_duck'] = 'Usa {spell:1953} para entrar en la cueva e interactuar con el libro |cFFFFFD00Tormentas de Maná para Principiantes|r para completar la misión.'
+L['khadin_note'] = 'Intercambia una {item:191784} por conocimiento de la profesión.'
+L['the_great_swog_note'] = 'Intercambia {item:199338}, {item:199339} y {item:199340} por un {item:202102}.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
@@ -205,6 +216,7 @@ L['tome_of_polymoph_duck'] = 'Usa {spell:1953} para entrar en la cueva e interac
 
 L['ancient_protector_note'] = 'Mata a una {npc:193244} cercana para conseguir un {item:197708}. Combina 5 {item:197708} para crear un {item:197733}. Úsalo para activar los Reactores de los Titanes cercanos.'
 L['blightpaw_note'] = 'Habla con el {npc:193222} y acepta ayudarle.'
+L['corrupted_proto_dragon_note'] = 'Inspecciona el |cFFFFFD00Huevo de Dragón Corrupto|r para hacer aparecer al raro.'
 L['weeping_vilomah_note'] = 'Habla con {npc:193206} para invocar al raro.'
 L['woofang_note'] = 'Acaricia al {npc:193156} para hacer aparecer al raro.'
 
@@ -248,6 +260,7 @@ L['ruby_feast_gourmand'] = 'Cada día, un invitado chef al azar sirve distintos 
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'El Destacamento de Guerra Qalashi viaja encima del {npc:192737} a esta torre.'
+L['captain_lancer_note'] = 'Aparece inmediatamente después de completar el evento {spell:388945}.'
 L['enkine_note'] = 'Mata a {npc:193137}, {npc:193138} o {npc:193139} a lo largo del rio de lava para consesguir {item:201092}. Úsalas y pesca cerca de la {npc:191866} en la lava.'
 L['lepidoralia_note'] = 'Está en la |cFFFFFD00Caverna del Aleteo|r. Ayuda al {npc:193342} a coger {npc:193274} hasta que aparezca el raro.'
 L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} a %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la |cFFFFFD00Ciudadela Obsidiana|r.'
@@ -336,4 +349,8 @@ L['slumbering_worldsnail_note1'] = [[
 
 5. Recoge 1000x {item:202173} para comprar el {item:192786}.]]
 
-L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: Si mueres perderás el debuff de membresía. Compre un nuevo título de miembro a {npc:187275} por 30x {item:202173} o dale más llaves para la oportunidad de sacar un título de miembro del alijo.')
+L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: Si mueres perderás el debuff de membresía. Compre un nuevo título de miembro a {npc:193310} por 20x {item:202173} antes de morir o necesitarás entregar más llaves para la oportunidad de sacar un título de miembro del alijo.')
+
+L['options_icons_safari'] = '{achievement:16519}'
+L['options_icons_safari_desc'] = 'Muestra dónde están las mascotas de combate para el logro {achievement:16519}.'
+L['shyfly_note'] = 'Has de estar en la misión {quest:70853} para poder ver las {npc:189102}.'
