@@ -936,7 +936,8 @@ end
 function UF:RefreshPlateType(unit)
 	self.reaction = UnitReaction(unit, "player")
 	self.isFriendly = self.reaction and self.reaction >= 4 and not UnitCanAttack("player", unit)
-	if C.db["Nameplate"]["NameOnlyMode"] and self.isFriendly or self.widgetsOnly then
+	self.isSoftTarget = GetCVarBool("SoftTargetIconGameObject") and UnitIsUnit(unit, "softinteract")
+	if C.db["Nameplate"]["NameOnlyMode"] and self.isFriendly or self.widgetsOnly or self.isSoftTarget then
 		self.plateType = "NameOnly"
 	elseif C.db["Nameplate"]["FriendPlate"] and self.isFriendly then
 		self.plateType = "FriendPlate"
@@ -955,6 +956,21 @@ function UF:OnUnitFactionChanged(unit)
 	local unitFrame = nameplate and nameplate.unitFrame
 	if unitFrame and unitFrame.unitName then
 		UF.RefreshPlateType(unitFrame, unit)
+	end
+end
+
+function UF:OnUnitSoftTargetChanged(previousTarget, currentTarget)
+	if not GetCVarBool("SoftTargetIconGameObject") then return end
+
+	for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
+		local unitFrame = nameplate and nameplate.unitFrame
+		local guid = unitFrame and unitFrame.unitGUID
+		if guid and (guid == previousTarget or guid == currentTarget) then
+			unitFrame.previousType = nil
+			UF.RefreshPlateType(unitFrame, unitFrame.unit)
+			UF.UpdateTargetChange(unitFrame)
+			unitFrame.RaidTargetIndicator:ForceUpdate()
+		end
 	end
 end
 
@@ -996,6 +1012,7 @@ end
 
 function UF:RefreshPlateByEvents()
 	B:RegisterEvent("UNIT_FACTION", UF.OnUnitFactionChanged)
+	B:RegisterEvent("PLAYER_SOFT_INTERACT_CHANGED", UF.OnUnitSoftTargetChanged)
 
 	if C.db["Nameplate"]["UnitTargeted"] then
 		UF:OnUnitTargetChanged()
@@ -1022,10 +1039,18 @@ function UF:PostUpdatePlates(event, unit)
 		self.widgetsOnly = UnitNameplateShowsWidgetsOnly(unit)
 
 		local blizzPlate = self:GetParent().UnitFrame
-		self.widgetContainer = blizzPlate and blizzPlate.WidgetContainer
-		if self.widgetContainer then
-			self.widgetContainer:SetParent(self)
-			self.widgetContainer:SetScale(1/NDuiADB["UIScale"])
+		if blizzPlate then
+			self.widgetContainer = blizzPlate.WidgetContainer
+			if self.widgetContainer then
+				self.widgetContainer:SetParent(self)
+				self.widgetContainer:SetScale(1/NDuiADB["UIScale"])
+			end
+
+			self.softTargetFrame = blizzPlate.SoftTargetFrame
+			if self.softTargetFrame then
+				self.softTargetFrame:SetParent(self)
+				self.softTargetFrame:SetScale(1/NDuiADB["UIScale"])
+			end
 		end
 
 		UF.RefreshPlateType(self, unit)
