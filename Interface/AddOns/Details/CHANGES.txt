@@ -1,34 +1,10 @@
-tag 35b22fa0b236e6a45e3286611bb024885de6bf1b Details.DF.Wrath.10335.148
+tag 8020d523b6e13b2de9200c111fb0f092c3a2f46a Details.DF.Wrath.10336.148
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Mon Dec 12 13:34:05 2022 -0300
+Date:	Mon Dec 12 19:06:58 2022 -0300
 
-commit 3f298dcc7707577656f1e1e37cdca2660717ba3c
+commit 388154a5408f10b5c7ffc0f2fa4b874a700b23e8
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Dec 12 13:33:30 2022 -0300
-
-    Up version counter
-
-commit dc1d27682e688c82f761762c235f170b79effedd
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Dec 11 23:10:45 2022 -0300
-
-    added exclusive function for pet detection
-
-commit 641e5cf0dca2e2c2795505a980f15da8bfc9dcab
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun Dec 11 14:09:44 2022 -0300
-
-    Lib OpenRaid and Details! Framework updates
-
-commit ebade8e159043b34c4c8a76ebf6eb0ea0552173a
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Dec 10 19:05:32 2022 -0300
+Date:   Mon Dec 12 19:06:43 2022 -0300
 
     Lib Update
-
-commit 9c3275e287306ce6b0a8ae639fc5d091beddd0f5
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Dec 10 09:07:46 2022 -0300
-
-    Fixing interrupt and cooldown chat prints class icon
 
