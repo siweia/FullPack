@@ -6,7 +6,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
-L['elite_loot_385'] = ns.color.Orange('這個稀有有機會掉落最高到裝等385的拾取!')
+L['elite_loot_385'] = ns.color.Orange('這個稀有有機會掉落高裝等的拾取!')
 L['gem_cluster_note'] = '需要的物品可以在龍鱗遠征隊名望21後, 在遠征隊斥侯包和挖過的土找到'
 
 L['options_icons_bonus_boss'] = '獎勵精英'
@@ -331,14 +331,25 @@ L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = '顯示成就 {achievement:16493} 所需 {npc:194625} 的位置.'
 
 L['options_icons_stories'] = '{achievement:16406}'
-L['options_icons_stories_desc'] = nil
-L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
-L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
-L['all_sides_of_the_story_tarjin_note'] = nil
-L['all_sides_of_the_story_veritistrasz_note'] = nil
+L['options_icons_stories_desc'] = '成就 {achievement:16406} 所需的任務位置'
+L['all_sides_of_the_story_garrick_and_shuja_note'] = '開始任務線並聆聽 {npc:184449} 和 {npc:184451} 的故事.'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = '在平台下方的小房間.\n\n開始任務線並聆聽 {npc:194800} 和 {npc:194801} 的故事. 更多的任務會在接下來的兩個禮拜內解鎖.'
+L['all_sides_of_the_story_tarjin_note'] = '從 {quest:70779} 開始的任務線.\n\n每個禮拜 {npc:196214} 會告訴你一個另外的故事.'
+L['all_sides_of_the_story_veritistrasz_note'] = '開始任務 {quest:70132} 來了解所有有關 {npc:194076} 的故事.\n之後你會解鎖任務 {quest:70268} 和接著的任務 {quest:70134}.\n\n關於最後一個任務, 你會需要可以在 ' .. ns.color.Yellow('龍禍要塞') .. ' 內找到的 {item:198661}.'
 
-L['slumbering_worldsnail_note1'] = nil
+L['slumbering_worldsnail_note1'] = [[
+    1. 從 |cFFFFFD00黑曜龍堡|r 附近的怪物收集3個 {item:193201} 和30個 {item:191251} 來製造 {item:191264}.
+
+    2. 和 {npc:187275} 用 {item:191264} 交換 {item:200069}.
+
+    3. 箱子有30%的機率會含有 {item:199215}.
+
+    4. 使用會員證會給你 {spell:386848} 減益, 讓你可以在 |cFFFFFD00黑曜龍堡|r 附近農 {item:202173}.
+
+    5. 蒐集1000個 {item:202173} 來購買 {item:192786}.]]
 L['slumbering_worldsnail_note2'] = ns.color.Orange('注意: 如果你死了你會失去你的會員減益. 要嘛是你在死前和 {npc:193310} 使用20個{item:202173}購買新的會員證或是你需要繳交更多的鑰匙來有機率從箱子裡取得新的會員證')
+
+L['magmashell_note'] = '從 |cFFFFFD00黑曜龍堡|r 附近的 {npc:193138} 身上拾取 {item:201883} 並帶給 {npc:199010}.\n\n' .. ns.color.Orange('要取得坐騎需要在熔岩上引導1個20秒的法術, 推薦找個治療者或是帶著 {item:200116}.')
 
 L['options_icons_safari'] = '{achievement:16519}'
 L['options_icons_safari_desc'] = '顯示成就 {achievement:16519} 所需的戰寵位置'
