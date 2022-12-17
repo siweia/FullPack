@@ -13,25 +13,25 @@ local function Debug(level, ...)
 end
 
 --https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/AddOns/Blizzard_VoidStorageUI/Blizzard_VoidStorageUI.lua
-local VOID_DEPOSIT_MAX = 9
-local VOID_WITHDRAW_MAX = 9
 local VOID_STORAGE_MAX = 80
 local VOID_STORAGE_PAGES = 2
+-- local VOID_DEPOSIT_MAX = 9
+-- local VOID_WITHDRAW_MAX = 9
 
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98
-local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
-local NUM_GUILDBANK_ICONS_SHOWN = 0
-local NUM_GUILDBANK_ICONS_PER_ROW = 10
-local NUM_GUILDBANK_ICON_ROWS = 9
-local NUM_GUILDBANK_COLUMNS = 7
-local MAX_TRANSACTIONS_SHOWN = 21
+-- local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
+-- local NUM_GUILDBANK_ICONS_SHOWN = 0
+-- local NUM_GUILDBANK_ICONS_PER_ROW = 10
+-- local NUM_GUILDBANK_ICON_ROWS = 9
+-- local NUM_GUILDBANK_COLUMNS = 7
+-- local MAX_TRANSACTIONS_SHOWN = 21
 
 local FirstEquipped = INVSLOT_FIRST_EQUIPPED
 local LastEquipped = INVSLOT_LAST_EQUIPPED
 
-local scannerTooltip = CreateFrame("GameTooltip", "BagSyncScannerTooltip", UIParent, "GameTooltipTemplate")
-scannerTooltip:SetOwner(UIParent, 'ANCHOR_NONE') --hide the tooltip from being visible to the player
-scannerTooltip:Hide()
+function Scanner:ResetTooltips()
+	if BSYC:GetModule("Tooltip") then BSYC:GetModule("Tooltip"):Reset() end
+end
 
 --https://wowpedia.fandom.com/wiki/BagID
 function Scanner:GetBagSlots(bagType)
@@ -125,12 +125,16 @@ function Scanner:SaveBag(bagtype, bagid)
 			if C_Container and C_Container.GetContainerItemInfo then
 				local containerInfo = xGetContainerInfo(bagid, slot)
 				if containerInfo and containerInfo.hyperlink then
-					table.insert(slotItems,  BSYC:ParseItemLink(containerInfo.hyperlink, containerInfo.stackCount or 1))
+					local tmpItem = BSYC:ParseItemLink(containerInfo.hyperlink, containerInfo.stackCount or 1)
+					Debug(5, "SaveBag", bagtype, bagid, tmpItem)
+					table.insert(slotItems,  tmpItem)
 				end
 			else
 				local _, count, _,_,_,_, link = xGetContainerInfo(bagid, slot)
 				if link then
-					table.insert(slotItems,  BSYC:ParseItemLink(link, count))
+					local tmpItem = BSYC:ParseItemLink(link, count)
+					Debug(5, "SaveBag", bagtype, bagid, tmpItem)
+					table.insert(slotItems, tmpItem)
 				end
 			end
 		end
@@ -139,6 +143,8 @@ function Scanner:SaveBag(bagtype, bagid)
 	else
 		BSYC.db.player[bagtype][bagid] = nil
 	end
+
+	self:ResetTooltips()
 end
 
 function Scanner:SaveEquipment()
@@ -152,7 +158,9 @@ function Scanner:SaveEquipment()
 		local link = GetInventoryItemLink("player", slot)
 		local count =  GetInventoryItemCount("player", slot)
 		if link then
-			table.insert(slotItems,  BSYC:ParseItemLink(link, count))
+			local tmpItem =  BSYC:ParseItemLink(link, count)
+			Debug(5, "SaveEquipment", tmpItem, slot)
+			table.insert(slotItems,  tmpItem)
 		end
 	end
 	
@@ -172,19 +180,23 @@ function Scanner:SaveEquipment()
 			local count =  GetInventoryItemCount("player", slotNumber)
 			
 			if link and count then
-				table.insert(slotItems,  BSYC:ParseItemLink(link, count))
+				local tmpItem =  BSYC:ParseItemLink(link, count)
+				Debug(5, "SaveEquipment", "ProfessionSlot", tmpItem, slotNumber)
+				table.insert(slotItems,  tmpItem)
 			end
 		end
 		
 	end
 	
 	BSYC.db.player.equip = slotItems
+
+	self:ResetTooltips()
 end
 
 function Scanner:SaveBank(rootOnly)
+	Debug(2, "SaveBank", rootOnly, Unit.atBank)
 	if not Unit.atBank then return end
-	Debug(2, "SaveBank", rootOnly)
-	
+
 	--force scan of bank bag -1, since blizzard never sends updates for it
 	self:SaveBag("bank", BANK_CONTAINER)
 	
@@ -197,15 +209,19 @@ function Scanner:SaveBank(rootOnly)
 		--scan the reagents as part of the bank scan
 		self:SaveReagents()
 	end
+
+	self:ResetTooltips()
 end
 
 function Scanner:SaveReagents()
+	Debug(2, "SaveReagents", Unit.atBank)
 	if not Unit.atBank or not BSYC.IsRetail then return end
-	Debug(2, "SaveReagents")
-		
+	
 	if IsReagentBankUnlocked() then 
 		self:SaveBag("reagents", REAGENTBANK_CONTAINER)
 	end
+
+	self:ResetTooltips()
 end
 
 function Scanner:SaveVoidBank()
@@ -225,6 +241,8 @@ function Scanner:SaveVoidBank()
 	end
 	
 	BSYC.db.player.void = slotItems
+
+	self:ResetTooltips()
 end
 
 local function findBattlePet(iconTexture, petName, typeSlot, arg1, arg2)
@@ -238,23 +256,23 @@ local function findBattlePet(iconTexture, petName, typeSlot, arg1, arg2)
 	end
 	
 	if BSYC.options.enableAccurateBattlePets and arg1 then
+		local data
+
+		--https://github.com/tomrus88/BlizzardInterfaceCode/blob/4e7b4f5df63d240038912624218ebb9c0c8a3edf/Interface/SharedXML/Tooltip/TooltipDataRules.lua
 		if typeSlot == "guild" then
-			scannerTooltip:SetGuildBankItem(arg1, arg2)
+			data = C_TooltipInfo.GetGuildBankItem(arg1, arg2)
 		else
-			--mailbox
-			scannerTooltip:SetInboxItem(arg1)
+			data = C_TooltipInfo.GetInboxItem(arg1, arg2)
 		end
-		local tooltipData = scannerTooltip:GetTooltipData()
-		scannerTooltip:Hide()
-		
+
 		--fixes a slight issue where occasionally due to server delay, the BattlePet tooltips are still shown on the screen and overlaps the GameTooltip
 		if BattlePetTooltip then BattlePetTooltip:Hide() end
 		if FloatingBattlePetTooltip then FloatingBattlePetTooltip:Hide() end
 
-		--https://github.com/tomrus88/BlizzardInterfaceCode/blob/4e7b4f5df63d240038912624218ebb9c0c8a3edf/Interface/SharedXML/Tooltip/TooltipDataRules.lua
-
-		if tooltipData and tooltipData.battlePetSpeciesID then
-			return tooltipData.battlePetSpeciesID
+		--args[2] = battlePetSpeciesID
+		--No need to do TooltipUtil.SurfaceArgs we can just go straight to the source without another function to grab the info
+		if data and data.args and data.args[2] and data.args[2].intVal then
+			return data.args[2].intVal
 		end
 	end
 	
@@ -271,10 +289,10 @@ local function findBattlePet(iconTexture, petName, typeSlot, arg1, arg2)
 end
 
 function Scanner:SaveGuildBank()
+	Debug(2, "SaveGuildBank", Unit.atGuildBank)
 	if not Unit.atGuildBank or BSYC.IsClassic then return end
 	if Scanner.isScanningGuild then return end
-	Debug(2, "SaveGuildBank")
-	
+
 	local numTabs = GetNumGuildBankTabs()
 	local slotItems = {}
 	Scanner.isScanningGuild = true
@@ -315,6 +333,7 @@ function Scanner:SaveGuildBank()
 
 	local guildDB = Data:GetGuild()
 	if guildDB then
+		Debug(3, "SaveGuildBank", "FoundGuild")
 		guildDB.bag = slotItems
 		guildDB.money = GetGuildBankMoney()
 		guildDB.faction = Unit:GetUnitInfo().faction
@@ -322,13 +341,15 @@ function Scanner:SaveGuildBank()
 	end
 	
 	Scanner.isScanningGuild = false
+
+	self:ResetTooltips()
 end
 
 function Scanner:SaveMailbox(isShow)
+	Debug(2, "SaveMailbox", isShow, Unit.atMailbox, BSYC.options.enableMailbox, self.isCheckingMail)
 	if not Unit.atMailbox or not BSYC.options.enableMailbox then return end
 	if not BSYC.db.player.mailbox then BSYC.db.player.mailbox = {} end
-	Debug(2, "SaveMailbox", isShow)
-	
+
 	if self.isCheckingMail then return end --prevent overflow from CheckInbox()
 	self.isCheckingMail = true
 
@@ -353,7 +374,7 @@ function Scanner:SaveMailbox(isShow)
 					--check for battle pet cages
 					if BSYC.IsRetail and itemID and itemID == 82800 then
 					
-						local speciesID = findBattlePet(itemTexture, name, "mail", mailIndex)
+						local speciesID = findBattlePet(itemTexture, name, "mail", mailIndex, i)
 
 						if speciesID then
 							link = BSYC:CreateFakeBattlePetID(nil, nil, speciesID)
@@ -365,6 +386,7 @@ function Scanner:SaveMailbox(isShow)
 					end
 					
 					if link then
+						Debug(5, "SaveMailbox", mailIndex, i, link)
 						table.insert(slotItems, link)
 					end
 				end
@@ -375,18 +397,19 @@ function Scanner:SaveMailbox(isShow)
 	BSYC.db.player.mailbox = slotItems
 
 	self.isCheckingMail = false
+	self:ResetTooltips()
 end
 
 function Scanner:SaveAuctionHouse()
+	Debug(2, "SaveAuctionHouse", Unit.atAuction, BSYC.options.enableAuction)
 	if not Unit.atAuction or not BSYC.options.enableAuction then return end
 	if not BSYC.db.player.auction then BSYC.db.player.auction = {} end
-	Debug(2, "SaveAuctionHouse")
-	
+
 	local slotItems = {}
 	
-	if BSYC.IsRetail then
+	if C_AuctionHouse then
 		local numActiveAuctions = C_AuctionHouse.GetNumOwnedAuctions()
-			
+
 		--scan the auction house
 		if (numActiveAuctions > 0) then
 			for ahIndex = 1, numActiveAuctions do
@@ -475,6 +498,8 @@ function Scanner:SaveAuctionHouse()
 	BSYC.db.player.auction.bag = slotItems
 	BSYC.db.player.auction.count = #slotItems or 0
 	BSYC.db.player.auction.lastscan = time()
+
+	self:ResetTooltips()
 end
 
 function Scanner:SaveCurrency()
@@ -527,6 +552,8 @@ function Scanner:SaveCurrency()
 	end
 	
 	BSYC.db.player.currency = slotItems
+
+	self:ResetTooltips()
 end
 
 function Scanner:CleanupBags()
@@ -929,8 +956,5 @@ function Scanner:SaveCraftedReagents()
 
 	--reset our stored reagent count so that it doesn't mess up the regular bank scans
 	Scanner.reagentCount = nil
-	
-	--set the tooltip to be refreshed so that it displays the new values
-	BSYC.refreshTooltip = true
-	
+	self:ResetTooltips()
 end
