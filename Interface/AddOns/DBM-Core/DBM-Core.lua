@@ -70,15 +70,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221216094743"),
+	Revision = parseCurseDate("20221218012425"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.9"
-	DBM.ReleaseRevision = releaseDate(2022, 12, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.10"
+	DBM.ReleaseRevision = releaseDate(2022, 12, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 243, "d58ab26"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.29 alpha"
@@ -4951,11 +4951,11 @@ do
 				self:StartLogging(0)
 			end
 			if self.Options.HideObjectivesFrame and mod.addon.type ~= "SCENARIO" and (not isRetail or GetNumTrackedAchievements() == 0) and difficultyIndex ~= 8 and not InCombatLockdown() then
-				if isRetail then
-					if ObjectiveTrackerFrame:IsVisible() then
-						ObjectiveTracker_Collapse()
-						watchFrameRestore = true
-					end
+				if isRetail then--Do nothing do to taint and breaking
+					--if ObjectiveTrackerFrame:IsVisible() then
+					--	ObjectiveTracker_Collapse()
+					--	watchFrameRestore = true
+					--end
 				else
 					if isWrath then
 						if WatchFrame:IsVisible() then
@@ -5403,7 +5403,7 @@ do
 				if not InCombatLockdown() then
 					if watchFrameRestore then
 						if isRetail then
-							ObjectiveTracker_Expand()
+							--ObjectiveTracker_Expand()
 						elseif isWrath then
 							WatchFrame:Show()
 						else -- Classic Era / BCC
