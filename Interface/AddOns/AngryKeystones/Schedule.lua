@@ -7,19 +7,17 @@ local requestPartyKeystones
 
 -- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
 local affixSchedule = {
-	-- Shadowlands Season 2
-	[1]  = {[1]=10, [2]=11,  [3]=124}, -- 1 Fortified Bursting Storming - march 8,2022
-	[2]  = {[1]=9,  [2]=6,   [3]=3},   -- 2 Tyrannical Raging Volcanic - march 15, 2022
-	[3]  = {[1]=10, [2]=122, [3]=12},  -- 3 Fortified Inspiring Grievous - march 22, 2022
-	[4]  = {[1]=9,  [2]=123, [3]=4},   -- 4 Tyrannical Spiteful Necrotic - march 29, 2022
-	[5]  = {[1]=10, [2]=7,   [3]=14},  -- 5 Fortified Bolstering Quaking - april 5, 2022
-	[6]  = {[1]=9,  [2]=8,   [3]=124}, -- 6 Tyrannical Sanguine Storming - april 12, 2022
-	[7]  = {[1]=10, [2]=6,   [3]=13},  -- 7 Fortified Raging Explosive - april 19, 2022
-	[8]  = {[1]=9,  [2]=11,  [3]=3},   -- 8 Tyrannical Bursting Volcanic - april 26, 2022
-	[9]  = {[1]=10, [2]=123, [3]=4},   -- 9 Fortified Spiteful Necrotic - may 3, 2022
-	[10] = {[1]=9,  [2]=122, [3]=14},  -- 10 Tyrannical Inspiring Quaking - may 10, 2022
-	[11] = {[1]=10, [2]=8,   [3]=12},  -- 11 Fortified Sanguine Grievous - may 17, 2022
-	[12] = {[1]=9,  [2]=7,   [3]=13},  -- 12 Tyrannical Bolstering Explosive - may 24, 2022
+	-- Dragonflight Season 1
+	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
+	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
+	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
+	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
+	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
+	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
+	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
+	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
+	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
+	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanic
 }
 
 local scheduleEnabled = true
@@ -296,9 +294,9 @@ end
 
 function Mod:GetInventoryKeystone()
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		local slots = GetContainerNumSlots(container)
+		local slots = C_Container.GetContainerNumSlots(container)
 		for slot=1, slots do
-			local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
+			local slotLink = C_Container.GetContainerItemLink(container, slot)
 			local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
 			if itemString then
 				return slotLink, itemString
