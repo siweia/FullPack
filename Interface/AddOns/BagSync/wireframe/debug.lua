@@ -10,12 +10,14 @@ local Debug = BSYC:NewModule("Debug")
 local AceGUI = LibStub("AceGUI-3.0")
 
 local xListLen = 400
+local debugWidth = 880
+local debugHeight = 450
 
 local function unescape(str)
     str = gsub(str, "|T.-|t", "") --textures in chat like currency coins and such
 	str = gsub(str, "|H.-|h(.-)|h", "%1") --links, just put the item description and chat color
 	str = gsub(str, "{.-}", "") --remove raid icons from chat
-	
+
     return str
 end
 
@@ -24,17 +26,17 @@ local function SetExportFrameText(pageNum)
 
 	Debug.exportFrame.MLEditBox:SetText("") --clear it first in case there were previous messages
 	Debug.exportFrame.currChatIndex = chatIndex
-	
+
 	--the editbox of the multiline editbox (The parent of the multiline object)
 	local parentEditBox = Debug.exportFrame.MLEditBox.editBox
-	
+
 	--there is a hard limit of text that can be highlighted in an editbox to 500 lines.
 	local MAXLINES = 150 --150 don't use large numbers or it will cause LAG when frame opens.  EditBox was not made for large amounts of text
 	local msgCount = #Debug.scrollframe.children
 	local startPos = 0
 	local endPos = 0
 	local lineText
-	
+
 	--lets create the pages
 	local pages = {}
 	local pageCount = 0 --start at zero
@@ -43,7 +45,7 @@ local function SetExportFrameText(pageNum)
 	  if pageCount <= 0 then pageCount = 1 end --this is the first page, so start at 1
 	  table.insert(pages, pageCount)
 	end
-	
+
 	--load past page if we don't have a pageNum
 	if not pageNum and startPos < 1 then
 		if msgCount > MAXLINES then
@@ -66,10 +68,10 @@ local function SetExportFrameText(pageNum)
 	else
 		return
 	end
-	
+
 	--adjust the endPos if it's greater than the total messages we have
 	if endPos > msgCount then endPos = msgCount end
-	
+
 	for i = startPos, endPos do
 
 		local tmpObj = Debug.scrollframe.children[i]
@@ -89,7 +91,7 @@ local function SetExportFrameText(pageNum)
 
 		parentEditBox:Insert(lineText)
 	end
-	
+
 	if pageNum then
 		Debug.exportFrame.currentPage = pageNum
 	else
@@ -98,7 +100,7 @@ local function SetExportFrameText(pageNum)
 
 	Debug.exportFrame.pages = pages
 	Debug.exportFrame.pageNumText:SetText(L.Page.." "..Debug.exportFrame.currentPage)
-	
+
 	Debug.exportFrame.handleCursorChange = true -- just in case
 	Debug.exportFrame:Show()
 end
@@ -145,13 +147,13 @@ local function CreateExportFrame()
 	exportFrame.handleCursorChange = false --setting this to true will update the scrollbar to the cursor position
 	MLEditBox.scrollFrame:HookScript("OnUpdate", function(self, elapsed)
 		if not MLEditBox.scrollFrame:IsVisible() then return end
-		
+
 		self.OnUpdateCounter = (self.OnUpdateCounter or 0) + elapsed
 		if self.OnUpdateCounter < 0.1 then return end
 		self.OnUpdateCounter = 0
-		
+
 		local pos = math.max(string.len(MLEditBox:GetText()), MLEditBox.editBox:GetNumLetters())
-		
+
 		if ( exportFrame.handleCursorChange ) then
 			MLEditBox:SetFocus()
 			MLEditBox:SetCursorPosition(pos)
@@ -172,7 +174,7 @@ local function CreateExportFrame()
 	close:SetHeight(20)
 	close:SetWidth(100)
 	close:SetText(L.Done)
-	
+
     local buttonBack = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
     buttonBack:SetText("<")
     buttonBack:SetHeight(25)
@@ -187,7 +189,7 @@ local function CreateExportFrame()
 		end
     end)
     exportFrame.buttonBack = buttonBack
-    
+
     local buttonForward = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
     buttonForward:SetText(">")
     buttonForward:SetHeight(25)
@@ -202,13 +204,13 @@ local function CreateExportFrame()
 		end
     end)
     exportFrame.buttonForward = buttonForward
-    
+
 	--this is to place it above the group layer
 	local textFrame = CreateFrame("FRAME", nil, group.frame, BackdropTemplateMixin and "BackdropTemplate")
 	textFrame:SetFrameLevel(textFrame:GetFrameLevel() + 1)
 	textFrame:SetPoint("BOTTOMLEFT", 80, 18)
 	textFrame:Show()
-	
+
     local pageNumText = textFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     pageNumText:SetPoint("LEFT", textFrame)
     pageNumText:SetShadowOffset(1, -1)
@@ -216,9 +218,9 @@ local function CreateExportFrame()
 	textFrame:SetHeight(pageNumText:GetHeight() + 2)
 	textFrame:SetWidth(pageNumText:GetWidth() + 2)
     exportFrame.pageNumText = pageNumText
-	
+
 	exportFrame:Hide()
-	
+
 	--store it for the future
 	Debug.exportFrame = exportFrame
 end
@@ -230,8 +232,8 @@ function Debug:OnEnable()
 	Debug.frame = DebugFrame
 
 	DebugFrame:SetTitle("BagSync - "..L.Debug)
-	DebugFrame:SetHeight(450)
-	DebugFrame:SetWidth(930)
+	DebugFrame:SetHeight(debugHeight)
+	DebugFrame:SetWidth(debugWidth)
 	DebugFrame:EnableResize(false)
 	DebugFrame:SetPoint("CENTER",UIParent,"CENTER",0,120)
 	DebugFrame.frame:SetFrameStrata("BACKGROUND")
@@ -256,7 +258,7 @@ function Debug:OnEnable()
 	}
 
 	Debug.optionsFrame:SetHeight(100)
-	Debug.optionsFrame:SetWidth(930)
+	Debug.optionsFrame:SetWidth(debugWidth)
 	Debug.optionsFrame:SetBackdrop(backdrop)
 	Debug.optionsFrame:SetBackdropColor(0, 0, 0, 0.6)
 	Debug.optionsFrame:SetPoint("TOPLEFT",DebugFrame.frame,"BOTTOMLEFT",0,0)
@@ -272,7 +274,7 @@ function Debug:OnEnable()
 			BSYC.options.debug.enable = checked
 		end
 	end)
-	
+
 	local levels = {
 		"DEBUG",
 		"INFO",
@@ -282,7 +284,7 @@ function Debug:OnEnable()
 		"SUBFINE",
 	}
 
-	local lastPoint 
+	local lastPoint
 
 	Debug.debugLevels = {}
 
@@ -306,7 +308,7 @@ function Debug:OnEnable()
 				BSYC.options.debug[self.level] = checked
 			end
 		end)
-		
+
 		table.insert(Debug.debugLevels, tmpLevel)
 	end
 
@@ -362,7 +364,7 @@ function Debug:OnEnable()
 		-- 		table.insert(lines, tmpObj.label:GetText())
 		-- 	end
 		-- end
-		
+
 		-- local strLines = table.concat(lines, "\r\n")
 
 		SetExportFrameText()
