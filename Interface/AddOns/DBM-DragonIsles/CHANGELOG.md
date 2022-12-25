@@ -1,24 +1,36 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.0.11](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.11) (2022-12-20)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.10...10.0.11) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.0.12](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.12) (2022-12-23)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.11...10.0.12) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Prep another release to get latest fixes out. probably be another tomorrow with LFR updates if it has changes.  
-- Convert thundering yell to repeat yell, eliminating need to run custom weak auras for thundering  
-- Fix stupid  
-- Bugfix magnetnc charge on rasageth which was broken and still using ai timers  
-    Bugfix Volatile current from showing bad timers after known timers completed.  
-- Fix error and move ground shatter back to combat log events  
-- Buf fixess and updates to Kurog  
-- Show notification that no dungeon mods are installed in M+ more aggressively (this check also still makes sure BW isn't installed either and only nags if you're in a M+ with NO MODS for that dungeon). No longer allow pve nag messages to be disabled for missing mods (for current content) as well. It's one thing for pvp or solo content, but don't be a liability to your dungeon groups, especially M+  
-- Update localization.ru.lua (#839)  
-- Push correct D mod, not unfinished brood mod  
-- Fix bug where blowbath didn't work on normal difficulty Dathea  
-- Improve debug to try and figure out why hymdall mod keeps premature ending combat.  
-- I wear i typed 5 there  
-- Ok now that it forced me to push broken code, push actual working code  
-- Git is so stupid at conflict resolution  
-- Fix typo on newCaastAnnounce  
-- Restore partial functionalty to ground shatter. Timer works again and pre cast will announce. No longer possible to get targets after spellid change  
-- Fixed a bug that caused shocking burst icons and alerts not to work correctly on Kurog  
+- Prep new tag  
+- Update commonlocal.ru.lua (#169)  
+- Update koKR (#170)  
+- Update koKR (Retail) (#844)  
+- thanks for finding all the errors on first run luacheck  
+- Fix another error  
+- remove extra bracket  
+- Raszageth Update:  
+     - Several bug fixes to Raszageth, such as the broken P3 detection I broke by accident when i changed it around.  
+     - Try a new breath scan mechanic that doesn't require locals at all but stll detects if breath is on your side or not  
+     - Full support for mythic  
+     - Few non mythic timer tweaks and new timer option for breath baiting (ff by default)  
+- Remove unused variable  
+- Fix bad code  
+- eliminte IEEU from kurog and use presence auras on big adds instead, makes it far easier to use WCL to maintain timers, it's clear summon events will ever be added (and guess don't need to be)  
+    Add new string to raszageth to give localizers time to translate mod when I push it (whenever RWF ends)  
+- Slow axes is normal too not just LFR  
+- Very minor dathea tweaks, but for most part LFR confirmed same as normal  
+- Update primalisst council timers for LFR difficulty  
+- Update koKR (#842)  
+- Fix variable name  
+- Push broodkeeper mythic updates from days ago. :D  
+- Create localization.tw.lua (#840)  
+    Co-authored-by: Adam <MysticalOS@users.noreply.github.com>  
+- Update zhTW (#841)  
+- Raz updates  
+     - Fixed bug where Raz mod gave wrong spell name fro lightning breath alert  
+     - Fixed a bug where tank warning would go off for idiots in front of boss that aren't tanks. Sadly DBM can't fix them, but it can fix alerting you about them.  
+     - Made polarity yell now repeat 3x (applied, 1.5 sec, and 3 sec).  
+- make dathea less spammy to tanks  
 - bump alpha  
