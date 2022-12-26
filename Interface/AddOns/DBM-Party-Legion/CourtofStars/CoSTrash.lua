@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221109022224")
+mod:SetRevision("20221226070201")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 
@@ -115,7 +115,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnGTFO:Show(args.spellName)
 		specWarnGTFO:Play("watchfeet")
 	elseif spellId == 397907 then
-		warnImpendingDoom:CombinedShow(0.5, args.destname)
+		warnImpendingDoom:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
 			specWarnImpendingDoom:Show()
 			specWarnImpendingDoom:Play("scatter")
