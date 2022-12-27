@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2499, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221223223142")
+mod:SetRevision("20221227044745")
 --mod:SetCreatureID(181224)--way too many CIDs to guess right now
 mod:SetEncounterID(2607)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20221220000000)
+mod:SetHotfixNoticeRev(20221260000000)
 mod:SetMinSyncRevision(20221217000000)
 --mod.respawnTime = 29
 
@@ -429,7 +429,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 385065 then
 		self.vb.breathCount = self.vb.breathCount + 1
-		local timer = self.vb.phase == 1.5 and (self:IsMythic() and 9.7 or self:IsHeroic() and 12.1 or 13.3) or (self:IsMythc() and 29 or self:IsHeroic() and 31.5 or 32.7)
+		local timer = self.vb.phase == 1.5 and (self:IsMythic() and 9.7 or self:IsHeroic() and 12.1 or 13.3) or (self:IsMythic() and 29 or self:IsHeroic() and 31.5 or 32.7)
 		if self.Options.SetBreathToBait then
 			timer = timer - 1.5--Sets timer for baiting breath instead of breath activation
 		end
