@@ -141,7 +141,7 @@ L= DBM:GetModLocalization(1489)
 
 L:SetMiscLocalization({
 	tempestModeMessage		= "Not tempest sequence: %s. Rechecking in 8 seconds.",
-	OdynRP					= "There is one final trial that awaits: me. Should you triumph, I will carve your names in these sacred halls myself and grant you a reward worthy of your valor."
+	OdynRP					= "Most impressive! I never thought I would meet anyone who could match the Valarjar's strength... and yet here you stand."
 })
 
 -----------------------
@@ -255,7 +255,7 @@ L:SetGeneralLocalization({
 
 L:SetOptionLocalization({
 	SpyHelper	= "Help identify the spy",
-	SendToChat	= "Also send hints to chat (requires above option enabled)"
+	SendToChat2	= "Also send hints to chat (requires above option enabled)"
 })
 
 L:SetMiscLocalization({
