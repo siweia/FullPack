@@ -86,8 +86,11 @@ L['options_icons_legendary_album_desc'] = 'Afficher les emplacements des personn
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
+L['blightfur_note'] = 'Parlez à {npc:193633} pour invoquer le rare.'
 L['brackenhide_rare_note'] = 'Ces rares apparaissent selon une rotation fixe comme suit : {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} avec un intervalle de 10 minutes entre chacun.'
 L['fisherman_tinnak_note'] = 'Récupérez la |cFFFFFD00Canne à pêche cassée|r, le |cFFFFFD00Filet de pêche déchiré|r et le |cFFFFFD00Vieux harpon|r pour faire apparaître le rare.'
+L['frostpaw_note'] = 'Après avoir pris le |cFFFFFD00Marteau en bois|r, vous avez 20 secondes pour frapper le |cFFFFFD00Jeu du Gnoll|r sur la |cFFFFFD00Souche d\'arbre|r, et faire apparaître le rare.'
+L['sharpfang_note'] = 'Aidez {npc:192747} à vaincre les {npc:192748s} pour faire apparaître le rare.'
 L['spellwrought_snowman_note'] = 'Récupérez 10x {npc:193424} et amenez-les au {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Récupérez un |cFFFFFD00Fragment chantant|r pour obtenir {spell:382076} et utilisez le |cFFFFFD00Focalisateur déchargé|r pour faire apparaître le rare.'
 
@@ -160,7 +163,9 @@ L['mysterious_wand_note'] = 'Ramassez la |cFFFFFD00Clé en cristal|r et placez-l
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
 -------------------------------------------------------------------------------
 
+L['eaglemaster_niraak_note'] = 'Tuez les {npc:186295s} et {npc:186299s} proches pour faire apparaître le rare.'
 L['hunter_of_the_deep_note'] = 'Cliquez sur le râtelier d\'armes et tirez sur les poissons jusqu\'à ce que le rare apparaisse.'
+L['porta_the_overgrown_note'] = 'Vous pouvez trouver des {item:194426} au fond du lac à |cFFFFFD00Miroir céleste|r sur le côté ouest. Répandez la {item:194426} 5x sur les {npc:191953} pour faire apparaître le rare.'
 L['scaleseeker_mezeri_note'] = 'Offrez un {item:194681} à {npc:193224} et suivez-la jusqu\'à ce qu\'elle révèle le rare.'
 L['shade_of_grief_note'] = 'Cliquez sur la {npc:193166} pour faire apparaître le rare.'
 L['windscale_the_stormborn_note'] = 'Tuez les {npc:192367s} canalisant dans l\'{npc:192357}.'
@@ -193,11 +198,11 @@ L['lizi_note_day3'] = 'Collectez 10x {item:194966} pêchés dans n\'importe quel
 L['lizi_note_day4'] = 'Collectez 20x {item:192636} sur des mammouths dans les |cFFFFFD00Plaines d\'Ohn\'ahra|r'
 L['lizi_note_day5'] = 'Acceptez {quest:71195} de l\'{npc:190014} et obtenez 1x {item:200598} de la part de {npc:190015} dans une tente au sud des |cFFFFFD00Sources des Ohn\'irs|r.'
 
-L['ohnahra_note_start'] = 'Terminez la suite de quêtes |cFFFFFD00Une sortie d’initié|r commençant par {quest:65901} puis {npc:190022} apparaîtra aux |cFFFFFD00Sources des Ohn\'irs|r derrière une hutte de Sage-du-vent.\n\nRassemblez les matériaux suivants :'
+L['ohnahra_note_start'] = 'Complétez la suite de quêtes journalière {quest:71196} pour les {item:192799} aux |cFFFFFD00Sources des Ohn\'irs|r. Acceptez la quête {quest:72512} de {npc:190022} derrière une hutte de sage-du-vent aux |cFFFFFD00Sources des Ohn\'irs|r.\n\nRassemblez les matériaux suivants :'
 L['ohnahra_note_item1'] = 'Récupérez 3x {item:201929} sur {npc:186151}, le boss final du donjon |cFFFFFD00L\'offensive nokhud|r. Ce n\'est pas un drop garanti à 100%.'
 L['ohnahra_note_item2'] = 'Achetez 1x {item:201323} à l\'{npc:196707} pour 50x {currency:2003} et 1x {item:194562}.\nLe {item:194562} peut être récupéré sur des monstres perdus dans le temps à |cFFFFFD00Thaldraszus|r.'
 L['ohnahra_note_item3'] = 'Achetez 1x {item:191507} à l\'Hôtel des Ventes. (Les alchimistes peuvent acheter la {item:191588} à l\'{npc:196707} à partir du Renom 22)'
-L['ohnahra_note_end'] = 'Une fois que vous avez tous les matériaux, revenez voir {npc:190022} et acceptez {quest:72512}. Allez voir {npc:194796} pour rendre la quête et recevoir votre monture.'
+L['ohnahra_note_end'] = 'Une fois que vous avez tous les matériaux, rendez la quête à {npc:194796} et recevez votre monture.'
 
 L['bakar_note'] = 'Caressez le chien !'
 L['bakar_ellam_note'] = 'Si suffisamment de joueurs caressent cette chienne, elle vous mènera à son trésor.'
@@ -216,6 +221,11 @@ L['options_icons_dreamguard_desc'] = 'Afficher les emplacements des Gardes-rêve
 L['khadin_note'] = 'Échangez les {item:191784} contre de la connaissance de métiers.'
 L['the_great_swog_note'] = 'Échangez des {item:199338}, {item:199339} et {item:199340} contre des {item:202102}.'
 L['hunt_instructor_basku_note'] = 'Échangez vos {item:200093} pour obtenir de la réputation avec les |cFFFFFD00Centaures maruuks|r.'
+L['elder_yusa_note'] = 'Ciblez l\'{npc:192818} et utilisez l\'emote ' .. ns.color.Orange('/faim') .. ' pour obtenir la recette de cuisine.'
+L['initiate_kittileg_note'] = 'Complétez {quest:66226} pour obtenir le jouet !'
+
+L['quackers_duck_trap_kit'] = 'Pour invoquer {npc:192557}, vous avez d\'abord besoin du {item:194740} que vous pouvez trouver dans un camp voisin.\n\nPour en faire un {item:194712}, vous avez besoin des matériaux suivants :'
+L['quackers_spawn'] = 'Ensuite, vous devez attraper un canard avec le {item:194712}, vous en trouverez près du nid. Maintenant vous pouvez utiliser le {item:194739} au {npc:192581} pour invoquer {npc:192557}.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
@@ -224,6 +234,7 @@ L['hunt_instructor_basku_note'] = 'Échangez vos {item:200093} pour obtenir de l
 L['ancient_protector_note'] = 'Tuez des {npc:193244} proches pour obtenir {item:197708}. Combinez 5 {item:197708} pour créer un {item:197733} et utilisez-le pour activer les Réacteurs titanesques à proximité.'
 L['blightpaw_note'] = 'Parlez à l\'{npc:193222} à proximité et acceptez de l\'aider.'
 L['corrupted_proto_dragon_note'] = 'Examinez l\'|cFFFFFD00Oeuf de dragon corrompu|r pour faire apparaître le rare.'
+L['lord_epochbrgl_note'] = 'Cliquez sur la {npc:193257} pour faire apparaître le rare.'
 L['weeping_vilomah_note'] = 'Parlez à {npc:193206} pour invoquer le rare.'
 L['woofang_note'] = 'Caressez {npc:193156} pour faire apparaître le rare.'
 
@@ -265,6 +276,7 @@ L['options_icons_new_perspective_desc'] = 'Afficher les emplacements des panoram
 L['ruby_feast_gourmand'] = 'Chaque jour, un chef invité au hasard sert des plats et des boissons variés.'
 
 L['sorotis_note'] = 'Échangez vos {item:199906} pour obtenir de la réputation avec le |cFFFFFD00Concordat de Valdrakken|r.'
+L['lillian_brightmoon_note'] = 'Echangez vos {item:201412} pour obtenir de la réputation avec l\'|cFFFFFD00Expédition du Dracaret|r.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
