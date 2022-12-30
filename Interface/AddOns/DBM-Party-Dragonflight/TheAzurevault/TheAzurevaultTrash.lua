@@ -1,16 +1,19 @@
 local mod	= DBM:NewMod("TheAzurevaultTrash", "DBM-Party-Dragonflight", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217223900")
+mod:SetRevision("20221230034832")
 --mod:SetModelID(47785)
+mod:SetZone(2515)
+
 mod.isTrashMod = true
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 391136 370764 386526 387564 377105 370766",
 	"SPELL_CAST_SUCCESS 374885 371358 375652",
-	"SPELL_AURA_APPLIED 371007 395492 375596"
+	"SPELL_AURA_APPLIED 371007 395492 375596",
 --	"SPELL_AURA_APPLIED_DOSE 339528",
---	"SPELL_AURA_REMOVED 339525"
+--	"SPELL_AURA_REMOVED 339525",
+	"GOSSIP_SHOW"
 )
 
 --TODO, I don't think shoulder slam target scan worked, maybe try again though.
@@ -34,6 +37,8 @@ local yellSplinteringShards					= mod:NewYell(371007)
 local yellErraticGrowth						= mod:NewYell(375596)
 local specWarnMysticVapors					= mod:NewSpecialWarningInterrupt(387564, "HasInterrupt", nil, nil, 1, 2)
 local specWarnWakingBane					= mod:NewSpecialWarningInterrupt(386546, "HasInterrupt", nil, nil, 1, 2)
+
+mod:AddBoolOption("AGBook", true)
 
 --local playerName = UnitName("player")
 
@@ -123,3 +128,26 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 --]]
+
+--[[
+56056 Book 1
+56057 book 1 return
+56247 book 2
+56379 book 2 return
+56248 book 3
+56378 book 3 return
+56250 book 4
+107756 book 4 return
+56251 book 5
+? Book 5 return
+--]]
+function mod:GOSSIP_SHOW()
+	local table = C_GossipInfo.GetOptions()
+	if table[1] and table[1].gossipOptionID then
+		local gossipOptionID = table[1].gossipOptionID
+		DBM:Debug("GOSSIP_SHOW triggered with a gossip ID of: "..gossipOptionID)
+		if self.Options.AGBook and (gossipOptionID == 56056 or gossipOptionID == 56057 or gossipOptionID == 56247 or gossipOptionID == 56379 or gossipOptionID == 56248 or gossipOptionID == 56378 or gossipOptionID == 56250 or gossipOptionID == 107756 or gossipOptionID == 56251) then -- Books
+			C_GossipInfo.SelectOption(gossipOptionID)
+		end
+	end
+end
