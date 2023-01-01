@@ -38,13 +38,16 @@ StaticPopupDialogs["BAGSYNC_RESETDATABASE"] = {
 
 function Data:OnEnable()
 	Debug(2, "OnEnable")
-	Debug(1, "RealmKey", Unit:GetRealmKey())
-	Debug(1, "RealmKey_RWS", Unit:GetRealmKey_RWS())
-
 	local ver = GetAddOnMetadata("BagSync","Version") or 0
 
 	--get player information from Unit
 	local player = Unit:GetUnitInfo()
+
+	Debug(1, "UnitInfo-1", player.name, player.realm)
+	Debug(1, "UnitInfo-2", player.class, player.race, player.gender, player.faction)
+	Debug(1, "UnitInfo-3", player.guild, player.guildrealm)
+	Debug(1, "RealmKey", Unit:GetRealmKey())
+	Debug(1, "RealmKey_RWS", Unit:GetRealmKey_RWS())
 
 	--main DB call
 	BSYC.db = BSYC.db or {}
@@ -94,6 +97,7 @@ function Data:OnEnable()
 	if BSYC.options.alwaysShowAdvSearch == nil then BSYC.options.alwaysShowAdvSearch = false end
 	if BSYC.options.sortTooltipByTotals == nil then BSYC.options.sortTooltipByTotals = false end
 	if BSYC.options.sortByCustomOrder == nil then BSYC.options.sortByCustomOrder = false end
+	if BSYC.options.tooltipModifer == nil then BSYC.options.tooltipModifer = "NONE" end
 
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
@@ -121,6 +125,12 @@ function Data:OnEnable()
 	--we cannot store guild as on login the guild name returns nil
 	--https://wow.gamepedia.com/API_GetGuildInfo
 
+	--if player isn't in a guild, then delete old guild data if found, sometimes this gets left behind for some reason
+	if not IsInGuild() and (BSYC.db.player.guild or BSYC.db.player.guildrealm) then
+		BSYC.db.player.guild = nil
+		BSYC.db.player.guildrealm = nil
+	end
+
 	--load the slash commands
 	self:LoadSlashCommand()
 
@@ -143,7 +153,10 @@ function Data:DebugDumpOptions()
 				if type(y) ~= "table" then
 					Debug(1, k, tostring(x), tostring(y))
 				else
-					Debug(1, k, tostring(x), BSYC:serializeTable(y))
+					if k == "colors" then
+						Debug(1, k, tostring(x), y.r * 255, y.g * 255, y.b * 255)
+					end
+					--Debug(1, k, tostring(x), BSYC:serializeTable(y))
 				end
 			end
 		end
@@ -370,8 +383,6 @@ end
 function Data:IterateUnits(dumpAll, filterList)
 	Debug(2, "IterateUnits", dumpAll, filterList)
 
-	if filterList then dumpAll = true end
-
 	local player = Unit:GetUnitInfo()
 	local argKey, argValue = next(BagSyncDB)
 	local k, v
@@ -393,7 +404,16 @@ function Data:IterateUnits(dumpAll, filterList)
 					isXRGuild = (player.guildrealm and argKey == player.guildrealm and argKey ~= player.realm) or false
 				end
 
-				if dumpAll or (argKey == player.realm) or isXRGuild or (isConnectedRealm and BSYC.options.enableCrossRealmsItems) or (BSYC.options.enableBNetAccountItems) then
+				local passChk = false
+				if dumpAll or filterList then
+					if dumpAll or (filterList and filterList[argKey]) then passChk = true end
+				else
+					if argKey == player.realm or isXRGuild then passChk = true end
+					if isConnectedRealm and BSYC.options.enableCrossRealmsItems then passChk = true end
+					if BSYC.options.enableBNetAccountItem then passChk = true end
+				end
+
+				if passChk then
 
 					--pull entries from characters until k is empty, then pull next realm entry
 					k, v = next(argValue, k)
@@ -404,13 +424,12 @@ function Data:IterateUnits(dumpAll, filterList)
 						local isGuild = (k:find('©*') and true) or false
 
 						--return everything regardless of user settings
-						if dumpAll then
+						if dumpAll or filterList then
 
 							skipReturn = false
 
 							if filterList then
-								--check realm, name
-								if filterList[argKey] and filterList[argKey][k] then
+								if filterList[argKey][k] then
 									skipReturn = false
 								else
 									skipReturn = true

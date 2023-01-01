@@ -149,12 +149,28 @@ function Search:OnEnable()
 	advSearchBtn:SetHeight(20)
 	advSearchBtn:SetWidth(150)
 
-	SearchFrame:AddChild(advSearchBtn)
 	advSearchBtn:ClearAllPoints()
+	advSearchBtn.frame:SetParent(SearchFrame.frame)
 	advSearchBtn:SetPoint("CENTER", SearchFrame.frame, "BOTTOM", 105, 25)
+	advSearchBtn.frame:Show()
 
 	SearchFrame.advsearchbtn = advSearchBtn
 
+	local searchResetBtn = AceGUI:Create("Button")
+	searchResetBtn:SetText(L.Reset)
+	searchResetBtn:SetHeight(20)
+	searchResetBtn:SetAutoWidth(true)
+
+	searchResetBtn:ClearAllPoints()
+	searchResetBtn.frame:SetParent(SearchFrame.frame)
+	searchResetBtn:SetPoint("RIGHT", advSearchBtn.frame, "LEFT", 0, 0)
+	searchResetBtn.frame:Show()
+
+	SearchFrame.searchResetBtn = searchResetBtn
+
+	searchResetBtn:SetCallback("OnClick", function()
+		Search:DoReset()
+	end)
 	--------------------
 
 	local AdvancedSearchFrame = AceGUI:Create("Window")
@@ -214,6 +230,20 @@ function Search:OnEnable()
 	pListInfo:SetColor(0, 1, 0)
 	pListInfo:SetFullWidth(true)
 	AdvancedSearchFrame:AddChild(pListInfo)
+
+	local advSelectAllBtn = AceGUI:Create("Button")
+	advSelectAllBtn:SetText(L.SelectAll)
+	advSelectAllBtn:SetHeight(16)
+	advSelectAllBtn:SetAutoWidth(true)
+	advSelectAllBtn:SetCallback("OnClick", function()
+		Search:DisplayAdvSearchSelectAll()
+	end)
+	AdvancedSearchFrame.advSelectAllBtn = advSelectAllBtn
+
+	advSelectAllBtn.frame:SetParent(AdvancedSearchFrame.frame)
+	advSelectAllBtn:ClearAllPoints()
+	advSelectAllBtn:SetPoint("RIGHT", pListInfo.frame, "RIGHT", -20, 5)
+	advSelectAllBtn.frame:Show()
 
 	local playerListScrollFrame = AceGUI:Create("ScrollFrame");
 	playerListScrollFrame:SetFullWidth(true)
@@ -335,8 +365,8 @@ function Search:AddEntry(entry)
 		isBattlePet = true
 	end
 
-	--if we aren't retail then just don't add the item to the list if we have a battle pet
-	if isBattlePet and not BSYC.IsRetail then return end
+	--if its a battlepet and we don't have access to BattlePetTooltip, then don't display it
+	if isBattlePet and not BattlePetTooltip then return end
 	label.highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
 	label.highlight:SetVertexColor(0,1,0,0.3)
 	label:SetColor( r, g, b)
@@ -450,7 +480,7 @@ function Search:AdvancedSearchAddEntry(entry, isHeader, isUnit)
 	end
 end
 
-local function checkData(data, searchStr, searchTable, tempList, countWarning, viewCustomList)
+local function checkData(data, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
 
 	for i=1, #data do
 		if data[i] then
@@ -471,10 +501,15 @@ local function checkData(data, searchStr, searchTable, tempList, countWarning, v
 					testMatch = itemScanner:Matches(dItemLink, searchStr)
 				end
 
+				--for debugging purposes only
+				if dName and (viewCustomList or testMatch) then
+					Debug(6, "FoundItem", searchStr, dName, unitObj.name, unitObj.realm)
+				end
+
+				--we only really want to grab the item once in our list, no need to add it multiple times per character
 				if dName and not tempList[link] then
 					if viewCustomList or testMatch then
 						tempList[link] = dName
-						Debug(6, "FoundItem", searchStr, dName, dItemLink)
 						table.insert(searchTable, { name=dName, link=dItemLink, rarity=dRarity, texture=dTexture } )
 					end
 				elseif not tempList[link] then
@@ -487,10 +522,30 @@ local function checkData(data, searchStr, searchTable, tempList, countWarning, v
 	return countWarning
 end
 
+function Search:DoReset()
+	Search.advUnitList = nil
+	self.advancedsearchframe.advsearchbar:SetText(nil)
+	self.searchbar:SetText(nil)
+	self.totalCountLabel:SetText(L.TooltipTotal.." |cFFFFFFFF0|r")
+	self.scrollframe:ReleaseChildren()
+	self.scrollframe.frame:Hide()
+end
+
+function Search:DisplayAdvSearchSelectAll()
+	for i = 1, #self.advancedsearchframe.playerlistscrollframe.children do
+		local label = self.advancedsearchframe.playerlistscrollframe.children[i] --grab the label
+		if label and not label.userdata.isHeader then
+			label.isSelected = true
+			label:SetImage("Interface\\RaidFrame\\ReadyCheck-Ready")
+		end
+	end
+end
+
 function Search:DoAdvancedSearch()
 	Debug(2, "init:DoAdvancedSearch", searchStr, advUnitList, advAllowList)
 
 	local advUnitList = {}
+	local unitCount = 0
 
 	--units
 	for i = 1, #self.advancedsearchframe.playerlistscrollframe.children do
@@ -502,21 +557,26 @@ function Search:DoAdvancedSearch()
 			--order of operations for filters -> realm -> name -> realmKey
 			if not advUnitList[unitObj.realm] then advUnitList[unitObj.realm] = {} end
 			advUnitList[unitObj.realm][unitObj.name] = {realmKey=unitObj.data.realmKey}
+			unitCount = unitCount + 1
 		end
 	end
+	if unitCount < 1 then advUnitList = nil end
 
 	local advAllowList = {}
-	local count = 0
+	local locCount = 0
 
 	--locations
 	for i = 1, #self.advancedsearchframe.locationlistscrollframe.children do
 		local label = self.advancedsearchframe.locationlistscrollframe.children[i] --grab the label
 		if label.isSelected then
 			advAllowList[label.entry.unitObj.name] = true --get the source name
-			count = count + 1
+			locCount = locCount + 1
 		end
 	end
-	if count < 1 then advAllowList = nil end
+	if locCount < 1 then advAllowList = nil end
+
+	--global for tooltip checks
+	self.advUnitList = advUnitList
 
 	--send it off to the regular search
 	self:DoSearch(nil, advUnitList, advAllowList)
@@ -526,6 +586,7 @@ function Search:DoSearch(searchStr, advUnitList, advAllowList)
 
 	--only do if we aren't doing an advanced search
 	if not advUnitList then
+		Search.advUnitList = nil -- we aren't doing an advanced search so lets reset this
 		if not searchStr then return end
 		if string.len(searchStr) < 1 then return end
 		searchStr = searchStr or self.searchbar:GetText()
@@ -566,7 +627,7 @@ function Search:DoSearch(searchStr, advUnitList, advAllowList)
 
 	Debug(2, "init:DoSearch", searchStr, advUnitList, advAllowList)
 
-	--advUnitList will force dumpAll to be true if necessary for advanced search
+	--advUnitList will force dumpAll to be true if necessary for advanced search, no need to set it to true
 	for unitObj in Data:IterateUnits(false, advUnitList) do
 
 		if not unitObj.isGuild then
@@ -578,7 +639,7 @@ function Search:DoSearch(searchStr, advUnitList, advAllowList)
 					if k == "bag" or k == "bank" or k == "reagents" then
 						for bagID, bagData in pairs(v) do
 							if not viewCustomList or (viewCustomList == k and unitObj.name == player.name and unitObj.realm == player.realm) then
-								countWarning = checkData(bagData, searchStr, searchTable, tempList, countWarning, viewCustomList)
+								countWarning = checkData(bagData, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
 							end
 						end
 					else
@@ -588,7 +649,7 @@ function Search:DoSearch(searchStr, advUnitList, advAllowList)
 
 						if passChk then
 							if not viewCustomList or (viewCustomList == k and unitObj.name == player.name and unitObj.realm == player.realm) then
-								countWarning = checkData(k == "auction" and v.bag or v, searchStr, searchTable, tempList, countWarning, viewCustomList)
+								countWarning = checkData(k == "auction" and v.bag or v, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
 							end
 						end
 					end
@@ -598,10 +659,10 @@ function Search:DoSearch(searchStr, advUnitList, advAllowList)
 			Debug(5, "Search-IterateUnits", "guild", unitObj.name, player.realm, unitObj.data.realmKey)
 			if not advUnitList then
 				if not viewCustomList or (viewCustomList == "guild" and unitObj.name == player.guild and unitObj.realm == player.guildrealm) then
-					countWarning = checkData(unitObj.data.bag, searchStr, searchTable, tempList, countWarning, viewCustomList)
+					countWarning = checkData(unitObj.data.bag, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
 				end
 			else
-				countWarning = checkData(unitObj.data.bag, searchStr, searchTable, tempList, countWarning, viewCustomList)
+				countWarning = checkData(unitObj.data.bag, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
 			end
 		end
 
