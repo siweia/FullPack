@@ -42,6 +42,7 @@ local CURRENCYID_VEILED_ARGUNITE = 1508
 local CURRENCYID_WAKENING_ESSENCE = 1533
 local CURRENCYID_AZERITE = 1553
 local CURRENCYID_WAR_RESOURCES = 1560
+local CURRENCYID_DRAGONISLES_SUPPLIES = 2003
 
 local TitleButton_RarityColorTable = { [Enum.WorldQuestQuality.Common] = 0, [Enum.WorldQuestQuality.Rare] = 3, [Enum.WorldQuestQuality.Epic] = 10 }
 
@@ -123,6 +124,7 @@ local dragonflightMaps = {
     [2023] = true, -- ohn'ahran plains
     [2024] = true, -- azure span
     [2025] = true, -- thaldrazus
+    [2112] = true, -- valdrakken
 }
 local function IsInDragonflight(mapID)
     return dragonflightMaps[mapID]
@@ -162,13 +164,18 @@ local FILTER_LIST_9_0 = {
 	["ANIMA"] = true,
 	["CONDUIT"] = true,
 }
+local FILTER_LIST_10_0 = {
+	["DRAGONISLES_SUPPLIES"] = true,
+}
 local function IsFilterOnRightMap(key, mapID)
 	if FILTER_LIST_7_0[key] then
 		return 7, IsLegionMap(mapID)
 	elseif FILTER_LIST_8_0[key] then
-		return 8, not IsLegionMap(mapID) and not IsInShadowLands(mapID)
+		return 8, not IsLegionMap(mapID) and not IsInShadowLands(mapID) and not IsInDragonflight(mapID)
 	elseif FILTER_LIST_9_0[key] then
 		return 9, IsInShadowLands(mapID)
+	elseif FILTER_LIST_10_0[key] then
+		return 10, IsInDragonflight(mapID)
 	end
 end
 
@@ -1153,6 +1160,8 @@ function Mod:BeforeStartup()
 
 	self:AddCurrencyFilter("AZERITE", CURRENCYID_AZERITE)
 	self:AddCurrencyFilter("WAR_RESOURCES", CURRENCYID_WAR_RESOURCES)
+
+	self:AddCurrencyFilter("DRAGONISLES_SUPPLIES", CURRENCYID_DRAGONISLES_SUPPLIES, true)
 
 	self:AddFilter("GOLD", BONUS_ROLL_REWARD_MONEY, "inv_misc_coin_01")
 	self:AddFilter("ITEMS", ITEMS, "inv_box_01")
