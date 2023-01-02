@@ -15,6 +15,7 @@ local Treasure = ns.node.Treasure
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Dragonrace = ns.node.Dragonrace
+local ElementalStorm = ns.node.ElementalStorm
 local Flag = ns.node.Flag
 local LegendaryCharacter = ns.node.LegendaryCharacter
 local MagicBoundChest = ns.node.MagicBoundChest
@@ -439,6 +440,16 @@ map.nodes[26073412] = Rare({
     pois = {POI({23573442})}
 }) -- Ty'foon the Ascended
 
+map.nodes[43105078] = Rare({
+    id = 191354,
+    quest = 74095,
+    note = L['in_cave'],
+    rewards = {
+        -- Transmog({item = , slot = L['']}) -- Name
+    },
+    pois = {POI({43724823})}
+}) -- Web-Queen Ashkaz
+
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
 -------------------------------------------------------------------------------
@@ -564,7 +575,7 @@ map.nodes[35344012] = PT.Tailoring({
 
 map.nodes[50906650] = PT.Blacksmithing({
     id = 201009,
-    quest = nil,
+    quest = 70353,
     note = L['pt_smith_falconer_gauntlet_drawings_note']
 }) -- Falconer Gauntlet Drawings
 
@@ -607,7 +618,7 @@ map.nodes[85702520] = PT.Inscription({
 
 map.nodes[86405370] = PT.Leatherworking({
     id = 198696,
-    quest = nil,
+    quest = 70300,
     note = L['pt_leath_wind_blessed_hide_note']
 }) -- Wind-Blessed Hide
 
@@ -615,7 +626,7 @@ map.nodes[86405370] = PT.Leatherworking({
 
 map.nodes[82455067] = PM.Leatherworking({
     id = 194842,
-    quest = nil,
+    quest = 70256,
     note = L['pm_leath_erden'],
     rewards = {
         Item({item = 190456, note = '25'}), -- Artisan's Mettle
@@ -1399,6 +1410,24 @@ map.nodes[64003480] = Safari({
         })
     }
 }) -- Woodbiter Piculet
+
+-------------------------------------------------------------------------------
+--------------------- ELEMENTAL STORMS: ONH'AHRAN PLAINS ----------------------
+-------------------------------------------------------------------------------
+
+map.nodes[34153854] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'],
+        L['elemental_storm_nokhudon_hold']),
+    mapID = map.id,
+    areaPOIs = {7221, 7222, 7223, 7224}
+}) -- Elemental Storm: Nokhudon Hold
+
+map.nodes[54367534] = ElementalStorm({
+    label = format('%s: %s', L['elemental_storm'],
+        L['elemental_storm_ohniri_springs']),
+    mapID = map.id,
+    areaPOIs = {7225, 7226, 7227, 7228}
+}) -- Elemental Storm: Ohn'iri Springs
 
 -------------------------------------------------------------------------------
 -------------------------------- MISCELLANEOUS --------------------------------
