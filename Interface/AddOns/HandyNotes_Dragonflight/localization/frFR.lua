@@ -47,7 +47,7 @@ L['options_icons_disturbed_dirt_desc'] = 'Afficher les emplacements possibles de
 
 L['scout_pack'] = 'Paquetage d\'éclaireur de l\'expédition'
 L['options_icons_scout_pack'] = 'Paquetages d\'éclaireurs de l\'expédition'
-L['options_icons_scout_pack_desc'] = 'Affichez les emplacements possibles des {object:Paquetages d\'éclaireurs de l\'expédition}.'
+L['options_icons_scout_pack_desc'] = 'Afficher les emplacements possibles des {object:Paquetages d\'éclaireurs de l\'expédition}.'
 
 L['magicbound_chest'] = 'Coffre lié par magie'
 L['options_icons_magicbound_chest'] = 'Coffre lié par magie'
@@ -59,7 +59,7 @@ L['dr_note'] = 'Temps imparti :\n - Normal : %ss / %ss\n - Avancé : %ss / %ss'
 L['dr_note_dash'] = 'Temps imparti :\n - %ss / %ss'
 L['dr_bronze'] = '\n\nTerminez la course pour obtenir ' .. ns.color.Bronze('Bronze') .. '.'
 L['options_icons_dragonrace'] = 'Courses du Vol à dos de dragon'
-L['options_icons_dragonrace_desc'] = 'Afficher les emplacements des toute les courses dans la zone.'
+L['options_icons_dragonrace_desc'] = 'Afficher les emplacements de toutes les courses dans la zone.'
 
 L['squirrels_note'] = 'Vous devez utiliser l\'émote /amour sur les bestioles, pas sur les familiers de combat.'
 L['options_icons_squirrels'] = '{achievement:16729}'
@@ -74,7 +74,7 @@ L['options_icons_hemet_nesingwary_jr_desc'] = 'Afficher les emplacements d\'{npc
 L['pretty_neat_note'] = 'Prenez une photo avec l\'appareil P.R.O.F.I.L.'
 L['pretty_neat_note_blazewing'] = 'Peut être trouvé pendant le combat de boss contre la {npc:189901} dans le donjon {location:Neltharus}.'
 L['options_icons_pretty_neat'] = '{achievement:16446}'
-L['options_icons_pretty_neat_desc'] = 'Affichez les emplacements des oiseaux pour le haut-fait {achievement:16446}.'
+L['options_icons_pretty_neat_desc'] = 'Afficher les emplacements des oiseaux pour le haut-fait {achievement:16446}.'
 
 L['large_lunker_sighting'] = 'Coin de pêche rohart à gros malabar'
 L['large_lunker_sighting_note'] = 'Utilisez 5x {item:194701} pour invoquer soit un {npc:192919} soit un rare.'
@@ -167,11 +167,11 @@ L['snowclaw_cub_note_start'] = 'Vous devez terminer la suite de quêtes {quest:6
 L['snowclaw_cub_note_item1'] = 'Récupérez 3x {item:197744} sur divers {npc:182559} aux {location:Rivages de l’Éveil}.'
 L['snowclaw_cub_note_item2'] = 'Achetez 1x {item:198356} à la {npc:193310} aux {location:Rivages de l’Éveil}.'
 L['snowclaw_cub_note_end'] = [[
-{note:Tous les objets peuvent être achetés à l\'hôtel des ventes. Ceci est particulièrement utile si vous n\'avez pas facilement accès à un {item:199215} qui est nécessaire pour acheter des objets à la {npc:193310}.}
+{note:Tous les objets peuvent être achetés à l'hôtel des ventes. Ceci est particulièrement utile si vous n'avez pas facilement accès à un {item:199215} qui est nécessaire pour acheter des objets à la {npc:193310}.}
 
-Une fois le titre {title:Dryade honoraire} équipé, offrez les 4 objets à l\'{npc:196768} pour recevoir votre mascotte.
+Une fois le titre {title:Dryade honoraire} équipé, offrez les 4 objets à l'{npc:196768} pour recevoir votre mascotte.
 
-{bug:(BUG : Le titre est susceptible de disparaître, en attente d\'un correctif)}
+{bug:(BUG : Le titre est susceptible de disparaître, en attente d'un correctif)}
 ]]
 
 L['tome_of_polymoph_duck'] = 'Utilisez {spell:1953} pour entrer dans la grotte et interagir avec le livre {object:La tempête de mana pour les novices} pour terminer la quête.'
@@ -207,7 +207,7 @@ L['mysterious_wand_note'] = 'Ramassez la {object:Clé en cristal} et placez-la d
 L['eaglemaster_niraak_note'] = 'Tuez les {npc:186295s} et {npc:186299s} proches pour faire apparaître le rare.'
 L['hunter_of_the_deep_note'] = 'Cliquez sur le râtelier d\'armes et tirez sur les poissons jusqu\'à ce que le rare apparaisse.'
 L['porta_the_overgrown_note'] = 'Trouvez 5x {item:194426} au fond du lac à l\'ouest, puis répandez la terre sur les {npc:191953} pour faire apparaître le rare.'
-L['scaleseeker_mezeri_note'] = 'Offrez un {item:194681} à {npc:193224} et suivez-la jusqu\'à ce qu\'elle révèle le rare.'
+L['scaleseeker_mezeri_note'] = 'Offrez un {item:194681} à {npc:193224} et suivez-la jusqu\'à ce qu\'elle révèle le rare.\n\n{note:{npc:190315} au {location:Guet des Trois-Cascades} à la {location:Travée d\'Azur} est la vendeuse la plus proche.}'
 L['shade_of_grief_note'] = 'Cliquez sur la {npc:193166} pour faire apparaître le rare.'
 L['windscale_the_stormborn_note'] = 'Tuez les {npc:192367s} canalisant dans l\'{npc:192357}.'
 L['zarizz_note'] = 'Cliquez et {emote:/siffler} les quatre {npc:193169s} pour invoquer le rare.'
@@ -268,6 +268,12 @@ L['initiate_kittileg_note'] = 'Complétez {quest:66226} pour obtenir le jouet !'
 L['quackers_duck_trap_kit'] = 'Pour invoquer {npc:192557}, vous avez d\'abord besoin du {item:194740} que vous pouvez trouver dans un camp voisin.\n\nPour faire un {item:194712}, vous avez besoin des matériaux suivants :'
 L['quackers_spawn'] = 'Ensuite, vous devez attraper un canard près du nid avec le {item:194712}. Utilisez le {item:194739} au {npc:192581} pour invoquer {npc:192557}.'
 
+L['knew_you_nokhud_do_it_note'] = '{note:Les 3 objets sont uniques (vous ne pouvez en avoir qu\'un seul dans votre inventaire) et ont une durée de vie de 30 minutes.}\n\nRécupérez {item:200184}, {item:200194}, et {item:200196} sur les {npc:185357}, {npc:185353}, et {npc:185168} situés au {location:Bastion Nokhudon}.\n\nCombinez les 3 objets pour créer une {item:200201}, utilise-la et parlez à la {npc:197884} pour commencer le programme de formation.\n\nUtilisez votre Bouton d\'action supplémentaire pour terminer le cours et obtenir votre haut-fait.\n\n{note:Compléter ce haut-fait en étant dans un groupe de raid pendant une Tempête élémentaire rend l\'obtention des objets beaucoup plus facile.}'
+L['options_icons_nokhud_do_it'] = '{achievement:16583}'
+L['options_icons_nokhud_do_it_desc'] = 'Afficher des informations utiles pour obtenir le haut-fait {achievement:16583}.'
+
+L['chest_of_the_flood'] = 'Coffre du déluge'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
@@ -276,6 +282,7 @@ L['ancient_protector_note'] = 'Tuez des {npc:193244} proches pour obtenir {item:
 L['blightpaw_note'] = 'Parlez à l\'{npc:193222} à proximité et acceptez de l\'aider.'
 L['corrupted_proto_dragon_note'] = 'Examinez l\'{object:Oeuf de dragon corrompu} pour faire apparaître le rare.'
 L['lord_epochbrgl_note'] = 'Cliquez sur la {npc:193257} pour faire apparaître le rare.'
+L['the_great_shellkhan_note'] = 'Récupérez une {item:200949} à l\'{location:Anse-aux-Loupiotes de Kauriq} à la {location:Travée d\'Azur}, retournez voir la {npc:191416} en moins de 3 minutes pour rendre l\'objet afin d\'activer le rare et obtenir le haut-fait. \n\n{note:Assurez-vous que la {npc:191416} et {npc:191305} sont bien là avant de commencer. Un personnage par semaine seulement peut ramasser et rapporter l\'objet pour activer le rare, après quoi la {npc:191416} se contentera de vous remercier.}'
 L['weeping_vilomah_note'] = 'Parlez à {npc:193206} pour invoquer le rare.'
 L['woofang_note'] = 'Caressez {npc:193156} pour faire apparaître le rare.'
 
@@ -307,6 +314,7 @@ L['arcanostabilized_provisions_note'] = 'Achetez auprès de {npc:198831} {title:
 L['steamed_scarab_steak_note'] = 'Achetez auprès de {npc:197586} {title:<Tavernière du spa>} au {location:Spa « Rêves sereins »}.'
 L['craft_creche_crowler_note'] = 'Achetez auprès de {npc:187444} {title:<Vendeur de breuvages draconiques itinérant>} étant situé dans ces zones aléatoires chaque jour : {location:Sanctuaire de l’Essence rubis}, {location:Auberge Vertécaille}, {location:Camp Nulle-Part}, {sanctuary:Confluence Temporelle}.'
 L['bivigosas_blood_sausages_note'] = 'Achetez auprès de l\'{npc:188895} {title:<Nourriture et boissons>} au {location:Poste Gelikyr}.'
+L['rumiastrasza_note'] = '{note:Terminez la suite de quêtes journalières commençant par {quest:71238} à {location:Valdrakken}, sinon le haut-fait ne pourra pas être accompli.}'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Afficher les emplacements des aliments et boissons pour le haut-fait {achievement:16621}.'
 
@@ -319,6 +327,8 @@ L['ruby_feast_gourmand'] = 'Chaque jour, un chef invité au hasard sert des plat
 L['sorotis_note'] = 'Échangez vos {item:199906} pour obtenir de la réputation avec le {faction:2510}.'
 L['lillian_brightmoon_note'] = 'Echangez vos {item:201412} pour obtenir de la réputation avec l\'{faction:2507}.'
 
+L['chest_of_the_elements'] = 'Coffre des éléments'
+
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
@@ -330,7 +340,6 @@ L['lepidoralia_note'] = 'Situé dans la {location:Caverne Bruissante}. Aidez le 
 L['obsidian_citadel_rare_note'] = 'Vous et d\'autres joueurs devez rapporter un total de %dx {item:191264} à %s. Pour fabriquer une clé, vous devez combiner 30x {item:191251} et 3x {item:193201}. Vous pouvez obtenir ces objets sur les monstres de la {location:Citadelle d\'obsidienne}.'
 L['shadeslash_note'] = 'Cliquez sur le {object:Focalisateur volé} pour invoquer le rare.'
 L['obsidian_throne_rare_note'] = 'À l\'intérieur du {location:Trône d\'obsidienne}.'
-L['skald_impaler_note'] = 'Utilisez 5x {item:194701} pour invoquer le rare.'
 L['slurpo_snail_note'] = 'Récupérez un {item:201033} dans une grotte de {location:La Travée d\'Azur} (11, 41) et utilisez-le dans cette grotte pour l\'invoquer.'
 L['worldcarver_atir_note'] = 'Récupérez 3x {item:191211} sur les {npc:187366} à proximité et placez-les sur les {npc:197395} pour faire apparaître le rare.'
 

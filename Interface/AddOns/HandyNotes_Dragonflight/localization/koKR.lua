@@ -262,6 +262,12 @@ L['initiate_kittileg_note'] = nil
 L['quackers_duck_trap_kit'] = nil
 L['quackers_spawn'] = nil
 
+L['knew_you_nokhud_do_it_note'] = nil
+L['options_icons_nokhud_do_it'] = '{achievement:16583}'
+L['options_icons_nokhud_do_it_desc'] = nil
+
+L['chest_of_the_flood'] = nil
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
@@ -270,6 +276,7 @@ L['ancient_protector_note'] = nil
 L['blightpaw_note'] = nil
 L['corrupted_proto_dragon_note'] = nil
 L['lord_epochbrgl_note'] = nil
+L['the_great_shellkhan_note'] = nil
 L['weeping_vilomah_note'] = nil
 L['woofang_note'] = nil
 
@@ -301,6 +308,7 @@ L['arcanostabilized_provisions_note'] = '{location:원시술사 평행세계}의
 L['steamed_scarab_steak_note'] = '{location:평온의 꿈 온천}에 있는 {npc:197586} {title:<온천 바텐더>}가 판매합니다.'
 L['craft_creche_crowler_note'] = '{location:루비 생명의 제단}, {location:초록비늘 여관}, {location:두멧골 야영지}, {location:시간의 합일점} 중 한 곳을 매일 무작위로 방문하는 {npc:187444} {title:<방랑 용음료 상인>}이 판매합니다.'
 L['bivigosas_blood_sausages_note'] = '{location:겔리키르 초소}에 있는 {npc:188895} {title:<음식과 음료>}이 판매합니다.'
+L['rumiastrasza_note'] = nil
 L['options_icons_specialties'] = nil
 L['options_icons_specialties_desc'] = '{achievement:16621} 업적을 위한 음식과 음료의 위치를 표시합니다.'
 
@@ -313,6 +321,8 @@ L['ruby_feast_gourmand'] = '매일 무작위로 선정된 요리사가 서로 �
 L['sorotis_note'] = '{item:199906}을 반납하여 {faction:2510} 평판을 획득합니다.'
 L['lillian_brightmoon_note'] = '{item:201412}을 반납하여 {faction:2507} 평판을 획득합니다.'
 
+L['chest_of_the_elements'] = nil
+
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
@@ -324,7 +334,6 @@ L['lepidoralia_note'] = '{location:요동치는 동굴} 내에 있음. {npc:1933
 L['obsidian_citadel_rare_note'] = '모든 플레이어들은 {item:191264} %d개를 %s에게 반납해야 합니다. 열쇠를 제작하는데 {item:191251} 30개와 {item:193201} 3개가 필요하며, 해당 아이템은 {location:흑요석 성채} 내 몹들에게서 획득할 수 있습니다.'
 L['shadeslash_note'] = nil
 L['obsidian_throne_rare_note'] = '{location:흑요석 왕좌} 내부에 있음.'
-L['skald_impaler_note'] = '레어를 소환하려면 {item:194701} 5개를 모아 사용하세요.'
 L['slurpo_snail_note'] = '{location:하늘빛 평원}의 동굴(11, 41)에서 {item:201033}을 습득하여 이 동굴 내에서 사용하면 소환됩니다.'
 L['worldcarver_atir_note'] = nil
 

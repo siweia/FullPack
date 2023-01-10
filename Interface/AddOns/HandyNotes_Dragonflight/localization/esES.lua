@@ -207,7 +207,7 @@ L['mysterious_wand_note'] = 'Coge la {object:Llave de Cristal} y ponla dentro de
 L['eaglemaster_niraak_note'] = 'Mata a los {npc:186295} cercanos y a los {npc:186299} para hacer aparecer al raro.'
 L['hunter_of_the_deep_note'] = 'Haz click en el armero y dispara a los peces hasta que aparezca el raro.'
 L['porta_the_overgrown_note'] = 'Encuentra 5x {item:194426} en el fondo del lago al oeste. Después espárcelos en el {npc:191953} para hacer aparecer al raro.'
-L['scaleseeker_mezeri_note'] = 'Ofrece {item:194681} a {npc:193224} y síguela hasta que te enseñe al raro.'
+L['scaleseeker_mezeri_note'] = 'Ofrece {item:194681} a {npc:193224} y síguela hasta que te enseñe al raro.\n\n{note:La vendedora más cercana es {npc:190315} de {location:Atalaya de Tres Cascadas} en las {location:Tierras Azures}.}'
 L['shade_of_grief_note'] = 'Haz click en {npc:193166} para hacer aparecer al raro.'
 L['windscale_the_stormborn_note'] = 'Mata a los {npc:192367} que están canalizando en los {npc:192357}.'
 L['zarizz_note'] = 'Selecciona a las {npc:193169} y teclea {emote:/hiss} en ellas para invocar al raro.'
@@ -268,6 +268,12 @@ L['initiate_kittileg_note'] = 'Completa la misión {quest:66226} para conseguir 
 L['quackers_duck_trap_kit'] = 'Para invocar a {npc:192557} primero te hace falta el {item:194740} el cual se puede encontrar en un campamento cercano.\n\nPara convertirlo en una {item:194712} necesitarás los siguientes objetos:'
 L['quackers_spawn'] = 'Ahora necesitas pillar un pato cerca del nido con la {item:194712}. Después usa el {item:194739} en el {npc:192581} para invocar a {npc:192557}.'
 
+L['knew_you_nokhud_do_it_note'] = '{note:Los 3 objetos son únicos y dejan de existir tras 30 minutos.}\n\nConsigue {item:200184}, {item:200194}, y {item:200196} de varios {npc:185357}, {npc:185353}, o {npc:185168} alrededor de {location:Bastión Nokhudon}.\n\nCombínalos para crear el {item:200201} y úsalo para hablar con {npc:197884} para comenzar el circuito de entrenamiento.\n\nUsa tu |cFFFFFD00Botón de Acción Extra|r para completarlo y conseguir el logro.\n\n{note:Completar el logro mientras estás en banda durante una Tormenta Elemental hace más fácil conseguir los objetos.}'
+L['options_icons_nokhud_do_it'] = '{achievement:16583}'
+L['options_icons_nokhud_do_it_desc'] = 'Muestra información de ayuda para completar el logro {achievement:16583}.'
+
+L['chest_of_the_flood'] = 'Cofre de la inundación'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
@@ -276,6 +282,7 @@ L['ancient_protector_note'] = 'Mata a una {npc:193244} cercana para conseguir un
 L['blightpaw_note'] = 'Habla con el {npc:193222} y acepta ayudarle.'
 L['corrupted_proto_dragon_note'] = 'Inspecciona el {object:Huevo de Dragón Corrupto} para hacer aparecer al raro.'
 L['lord_epochbrgl_note'] = 'Haz click en la {npc:193257} para hacer aparecer al raro.'
+L['the_great_shellkhan_note'] = 'Coge una {item:200949} en el {location:Destello Kauriq} de las {location:Tierras Azures} y regresa al {npc:191416} en menos de 3 minutos para devolver el objeto que activa al raro para conseguir el logro.\n\n{note:Asegúrate de que el {npc:191416} y {npc:191305} están realmente antes de empezar. Sólo un personaje puede coger y devolver el objeto una vez a la semana para activar el raro tras. Después, el {npc:191416} sólo te dará las gracias.}'
 L['weeping_vilomah_note'] = 'Habla con {npc:193206} para invocar al raro.'
 L['woofang_note'] = 'Acaricia al {npc:193156} para hacer aparecer al raro.'
 
@@ -307,6 +314,7 @@ L['arcanostabilized_provisions_note'] = 'Cómpraselo a {npc:198831} {title:<Chef
 L['steamed_scarab_steak_note'] = 'Cómpraselo a {npc:197586} {title:<Camarera de la sauna>} en la {location:Sauna de Sueños Serenos}.'
 L['craft_creche_crowler_note'] = 'Cómpraselo a {npc:187444} {title:<Vendedora ambulante de bebidas dracónicas>} en un mapa aleatorio cada día: {location:Vitasagrario Rubí}, {location:Posada de la Escama Verde}, {location:Campamento Desubicado}, {location:Confluencia Temporal}.'
 L['bivigosas_blood_sausages_note'] = 'Cómpraselo a {npc:188895} {title:<Alimentos y bebidas>} en el {location:Puesto Gelikyr}.'
+L['rumiastrasza_note'] = '{note:Completa la cadena de misiones diarias que empiezan con {quest:71238} en {location:Valdrakken} o de lo contrario, no se podrá completar el logro.}'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Muestra dónde están las comidas y bebidas para el logro {achievement:16621}.'
 
@@ -319,6 +327,8 @@ L['ruby_feast_gourmand'] = 'Cada día, un invitado chef al azar sirve distintos 
 L['sorotis_note'] = 'Entrega {item:199906} para conseguir reputación con {faction:2510}.'
 L['lillian_brightmoon_note'] = 'Entrega {item:201412} para conseguir reputación con {faction:2507}.'
 
+L['chest_of_the_elements'] = 'Cofre de los elementos'
+
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
@@ -330,7 +340,6 @@ L['lepidoralia_note'] = 'Está en la {location:Caverna del Aleteo}. Ayuda al {np
 L['obsidian_citadel_rare_note'] = 'Tú y otros jugadores teneis que devolver un total de %dx {item:191264} a %s. Para fabricar una llave necesitarás combinar 30x {item:191251} y 3x {item:193201}. Puedes conseguir estos objetos de los enemigos de la {location:Ciudadela Obsidiana}.'
 L['shadeslash_note'] = 'Haz click en el {object:Foco Birlado} para hacer aparecer al raro.'
 L['obsidian_throne_rare_note'] = 'Dentro del {location:Trono Obsidiana}.'
-L['skald_impaler_note'] = 'Usa 5x {item:194701} para invocar al raro.'
 L['slurpo_snail_note'] = 'Despoja un {item:201033} de una cueva en {location:Las Tierras Azures} (11, 41) y úsalo en esta cueva para invocar al raro.'
 L['worldcarver_atir_note'] = 'Recoge 3x {item:191211} del {npc:187366} cercano y ponlos en los {npc:197395} para hacer aparecer al raro.'
 
