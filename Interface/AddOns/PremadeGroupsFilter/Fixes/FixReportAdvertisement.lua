@@ -18,23 +18,14 @@
 -- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 -------------------------------------------------------------------------------
 
-hooksecurefunc("LFGListSearchEntry_OnClick", function (self, button)
-    if not PremadeGroupsFilterSettings.oneClickSignUp then return end
+local PGF = select(2, ...)
+local L = PGF.L
+local C = PGF.C
 
-    local panel = LFGListFrame.SearchPanel
-    if button ~= "RightButton" and LFGListSearchPanelUtil_CanSelectResult(self.resultID) and panel.SignUpButton:IsEnabled() then
-        if panel.selectedResult ~= self.resultID then
-            LFGListSearchPanel_SelectResult(panel, self.resultID)
-        end
-        LFGListSearchPanel_SignUp(panel)
-    end
-end)
-
--- need to hook the show event directly as we might have overwritten LFGListApplicationDialog_Show
-LFGListApplicationDialog:HookScript("OnShow", function(self)
-    if not PremadeGroupsFilterSettings.skipSignUpDialog then return end
-
-    if self.SignUpButton:IsEnabled() and not IsShiftKeyDown() then
-        self.SignUpButton:Click()
-    end
-end)
+function PGF.FixReportAdvertisement()
+    -- By removing entries from the list of search result IDs, we somehow taint the list
+    -- and also the report advertisement shortcut in the right click menu of a premade group.
+    -- To resolve this issue, we redirect the report advertisement to the standard report dialog.
+    -- Players have to select "Report Advertisement" an "Report Group" to issue the same type of report.
+    LFGList_ReportAdvertisement = LFGList_ReportListing
+end
