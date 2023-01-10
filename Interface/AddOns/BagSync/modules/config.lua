@@ -17,14 +17,37 @@ local options = {}
 local ReadyCheck = [[|TInterface\RaidFrame\ReadyCheck-Ready:0|t]]
 
 local factionString = ""
+local factionSmall = " "
 
 if BSYC.IsRetail then
-		factionString = " ( "..[[|TInterface\Icons\Inv_misc_tournaments_banner_orc:18|t]]
-		factionString = factionString.." "..[[|TInterface\Icons\Inv_misc_tournaments_banner_human:18|t]]
-		factionString = factionString.." "..[[|TInterface\Icons\Achievement_worldevent_brewmaster:18|t]]..")"
+		factionString = [[|TInterface\FriendsFrame\PlusManz-Horde:20:20|t]]
+		factionString = factionString.." "..[[|TInterface\FriendsFrame\PlusManz-Alliance:20:20|t]]
+		factionSmall = factionString
+		factionString = factionString.." "..[[|TInterface\Icons\Achievement_worldevent_brewmaster:20:20|t]]
+
 else
-		factionString = " ( "..[[|TInterface\Icons\inv_bannerpvp_01:18|t]]
-		factionString = factionString.." "..[[|TInterface\Icons\inv_bannerpvp_02:18|t]]..")"
+		factionString = [[|TInterface\FriendsFrame\PlusManz-Horde:20:20|t]]
+		factionString = factionString.." "..[[|TInterface\FriendsFrame\PlusManz-Alliance:20:20|t]]
+		factionSmall = factionString
+end
+
+local allowList = {
+	"bag",
+	"bank",
+	"reagents",
+	"guild",
+	"equip",
+	"mailbox",
+	"void",
+	"auction",
+}
+
+local charLocations = ""
+local iconLocations = ""
+
+for i=1, #allowList do
+	charLocations = charLocations.."|cFF4DD827"..L["TooltipSmall_"..allowList[i]].."|r=|cFFFFD580"..L["Tooltip_"..allowList[i]].."|r, "
+	iconLocations = iconLocations..L["TooltipIcon_"..allowList[i]]:gsub("13:13", "16:16").."=|cFFFFD580"..L["Tooltip_"..allowList[i]].."|r, "
 end
 
 options.type = "group"
@@ -413,7 +436,7 @@ options.args.display = {
 				faction = {
 					order = 6,
 					type = "toggle",
-					name = L.DisplayFaction,
+					name = L.DisplayFaction..factionSmall,
 					width = "full",
 					descStyle = "hide",
 					get = get,
@@ -499,6 +522,40 @@ options.args.display = {
 					get = get,
 					set = set,
 					arg = "display.enableFactionIcons",
+				},
+				singlecharlocs_1 = {
+					order = 2,
+					type = "toggle",
+					name = L.DisplaySingleCharLocs,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "display.singleCharLocations",
+					disabled = function() return BSYC.options["useIconLocations"] end,
+				},
+				singlecharlocs_2 = {
+					order = 3,
+					type = "description",
+					name = "        "..charLocations,
+					width = "full",
+				},
+				useiconlocs_1 = {
+					order = 4,
+					type = "toggle",
+					name = L.DisplayIconLocs,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "display.useIconLocations",
+					disabled = function() return BSYC.options["singleCharLocations"] end,
+				},
+				useiconlocs_2 = {
+					order = 5,
+					type = "description",
+					name = "        "..iconLocations,
+					width = "full",
 				},
 			}
 		},
@@ -720,7 +777,7 @@ options.args.color = {
 			name = L.DefaultColors,
 			func = function()
 				BSYC:GetModule("Data"):ResetColors()
-				InterfaceOptionsFrame:Hide()
+				if InterfaceOptionsFrame then InterfaceOptionsFrame:Hide() end
 			end,
 		},
 	},

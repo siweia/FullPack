@@ -95,18 +95,18 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple, showXRBNET
 				local FactionIcon = ""
 
 				if BSYC.IsRetail then
-					FactionIcon = [[|TInterface\Icons\Achievement_worldevent_brewmaster:18|t]]
+					FactionIcon = [[|TInterface\Icons\Achievement_worldevent_brewmaster:20:20|t]]
 					if unitObj.data.faction == "Alliance" then
-						FactionIcon = [[|TInterface\Icons\Inv_misc_tournaments_banner_human:18|t]]
+						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Alliance:20:20|t]]
 					elseif unitObj.data.faction == "Horde" then
-						FactionIcon = [[|TInterface\Icons\Inv_misc_tournaments_banner_orc:18|t]]
+						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Horde:20:20|t]]
 					end
 				else
 					FactionIcon = [[|TInterface\Icons\ability_seal:18|t]]
 					if unitObj.data.faction == "Alliance" then
-						FactionIcon = [[|TInterface\Icons\inv_bannerpvp_02:18|t]]
+						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Alliance:20:20|t]]
 					elseif unitObj.data.faction == "Horde" then
-						FactionIcon = [[|TInterface\Icons\inv_bannerpvp_01:18|t]]
+						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Horde:20:20|t]]
 					end
 				end
 
@@ -274,30 +274,35 @@ function Tooltip:UnitTotals(unitObj, allowList, unitList, advUnitList)
 
 	--order in which we want stuff displayed
 	local list = {
-		[1] = { source="bag", 		desc=L.TooltipBag },
-		[2] = { source="bank", 		desc=L.TooltipBank },
-		[3] = { source="reagents", 	desc=L.TooltipReagent },
-		[4] = { source="equip", 	desc=L.TooltipEquip },
-		[5] = { source="guild", 	desc=L.TooltipGuild },
-		[6] = { source="mailbox", 	desc=L.TooltipMail },
-		[7] = { source="void", 		desc=L.TooltipVoid },
-		[8] = { source="auction", 	desc=L.TooltipAuction },
+		[1] = { source="bag", 		desc=L.Tooltip_bag },
+		[2] = { source="bank", 		desc=L.Tooltip_bank },
+		[3] = { source="reagents", 	desc=L.Tooltip_reagents },
+		[4] = { source="equip", 	desc=L.Tooltip_equip },
+		[5] = { source="guild", 	desc=L.Tooltip_guild },
+		[6] = { source="mailbox", 	desc=L.Tooltip_mailbox },
+		[7] = { source="void", 		desc=L.Tooltip_void },
+		[8] = { source="auction", 	desc=L.Tooltip_auction },
 	}
 
 	for i = 1, #list do
 		local count, desc = allowList[list[i].source], list[i].desc
+
+		if BSYC.options.singleCharLocations then
+			desc = L["TooltipSmall_"..list[i].source]
+		elseif BSYC.options.useIconLocations then
+			desc = L["TooltipIcon_"..list[i].source]
+		end
 		if count > 0 then
 			grouped = grouped + 1
 			total = total + count
 
-			desc = self:HexColor(BSYC.options.colors.first, desc)
+			desc = self:HexColor(BSYC.options.colors.first, desc)..":"
 			count = self:HexColor(BSYC.options.colors.second, comma_value(count))
 
-			tallyString = tallyString..L.TooltipDelimiter..desc.." "..count
+			tallyString = tallyString..((grouped > 1 and L.TooltipDelimiter) or "")..desc.." "..count
 		end
 	end
 
-	tallyString = strsub(tallyString, string.len(L.TooltipDelimiter) + 1) --remove first delimiter
 	if total < 1 or string.len(tallyString) < 1 then return end
 
 	--if it's groupped up and has more then one item then use a different color and show total
@@ -331,6 +336,7 @@ end
 
 function Tooltip:GetBottomChild(frame, qTip)
 	Debug(3, "GetBottomChild", frame, qTip)
+
 	local cache = {}
 
 	local function getMinLoc(top, bottom)
@@ -378,10 +384,20 @@ function Tooltip:GetBottomChild(frame, qTip)
 		end
 	end
 
+	--check for Sorted Addon
+	if SortedExtendedTooltip then
+		local t = SortedExtendedTooltip
+		if t and t:IsVisible() then
+			local loc, pos = getMinLoc(t:GetTop(), t:GetBottom())
+			table.insert(cache, {name="SortedExtendedTooltip", frame=t, loc=loc, pos=pos})
+		end
+	end
+
 	--find closest to edge (closer to 0)
 	local lastLoc
 	local lastPos
 	local lastAnchor
+	local lastName
 
 	for i=1, #cache do
 		local data = cache[i]
@@ -389,23 +405,29 @@ function Tooltip:GetBottomChild(frame, qTip)
 			if not lastPos then lastPos = data.pos end
 			if not lastLoc then lastLoc = data.loc end
 			if not lastAnchor then lastAnchor = data.frame end
+			if not lastName then lastName = data.name end
 
 			if data.pos <  lastPos then
 				lastPos = data.pos
 				lastLoc = data.loc
 				lastAnchor = data.frame
+				lastName = data.name
 			end
 		end
 	end
 
 	if lastAnchor and lastLoc and lastPos then
+		Debug(8, "GetBottomChild", lastAnchor, lastLoc, lastPos, lastName)
 		if lastLoc == "top" then
 			qTip:SetPoint("BOTTOM", lastAnchor, "TOP")
 		else
 			qTip:SetPoint("TOP", lastAnchor, "BOTTOM")
 		end
+		qTip:SetScript("OnUpdate", nil) --empty out the OnUpdate method to prevent spamming
 		return
 	end
+
+	qTip:SetScript("OnUpdate", nil) --empty out the OnUpdate method to prevent spamming
 
 	--failsafe
 	self:SetQTipAnchor(frame, qTip)
@@ -466,9 +488,10 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 			if not objTooltip.qTip or not LibQTip:IsAcquired("BagSyncQTip") then
 				objTooltip.qTip = LibQTip:Acquire("BagSyncQTip", 3, "LEFT", "CENTER", "RIGHT")
 				objTooltip.qTip:SetClampedToScreen(true)
-				Tooltip:GetBottomChild(objTooltip, objTooltip.qTip)
 
-				objTooltip.qTip:SetScript("OnShow", function()
+				--we use OnUpdate as it's triggered when the tooltip is shown, it should auto adjust for other displayed tooltips if found
+				--NOTE: Unlike other addons I do not like OnUpdate spam, so after the qTip is repositioned; I empty the OnUpdate function to prevent spamming.
+				objTooltip.qTip:SetScript("OnUpdate", function()
 					Tooltip:GetBottomChild(objTooltip, objTooltip.qTip)
 				end)
 			end

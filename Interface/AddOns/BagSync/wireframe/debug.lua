@@ -341,11 +341,19 @@ function Debug:OnEnable()
 	iterateUnits:SetHeight(30)
 	iterateUnits:SetAutoWidth(true)
 	iterateUnits:SetCallback("OnClick", function()
+		local player = BSYC:GetModule("Unit"):GetUnitInfo()
+
+		self:AddMessage(1, "IterateUnits", "UnitInfo-1", player.name, player.realm)
+		self:AddMessage(1, "IterateUnits", "UnitInfo-2", player.class, player.race, player.gender, player.faction)
+		self:AddMessage(1, "IterateUnits", "UnitInfo-3", player.guild, player.guildrealm)
+		self:AddMessage(1, "IterateUnits", "RealmKey", player.realmKey)
+		self:AddMessage(1, "IterateUnits", "RealmKey_RWS", player.rwsKey)
+
 		for unitObj in BSYC:GetModule("Data"):IterateUnits() do
 			if not unitObj.isGuild then
-				self:AddMessage(1, "Debug-IterateUnits", "player", unitObj.name, unitObj.realm, unitObj.isConnectedRealm, unitObj.data.guild, unitObj.data.guildrealm)
+				self:AddMessage(1, "IterateUnits", "player", unitObj.name, unitObj.realm, unitObj.isConnectedRealm, unitObj.data.guild, unitObj.data.guildrealm, unitObj.data.realmKey, unitObj.data.rwsKey)
 			else
-				self:AddMessage(1, "Debug-IterateUnits", "guild", unitObj.name, unitObj.realm, unitObj.isConnectedRealm, unitObj.isXRGuild, unitObj.data.realmKey)
+				self:AddMessage(1, "IterateUnits", "guild", unitObj.name, unitObj.realm, unitObj.isConnectedRealm, unitObj.isXRGuild, unitObj.data.realmKey, unitObj.data.rwsKey)
 			end
 		end
 	end)
@@ -426,17 +434,32 @@ function Debug:OnEnable()
 			end
 		end
 
-		self:AddMessage(1, "Debug-DBTotals", "totalUnits", totalUnits)
-		self:AddMessage(1, "Debug-DBTotals", "totalGuilds", totalGuilds)
-		self:AddMessage(1, "Debug-DBTotals", "totalRealms", totalRealms)
-		self:AddMessage(1, "Debug-DBTotals", "biggestRealmName", biggestRealmName)
-		self:AddMessage(1, "Debug-DBTotals", "biggestRealmCount", biggestRealmCount)
-		self:AddMessage(1, "Debug-DBTotals", "toatlItems", toatlItems)
+		self:AddMessage(1, "DBTotals", "totalUnits", totalUnits)
+		self:AddMessage(1, "DBTotals", "totalGuilds", totalGuilds)
+		self:AddMessage(1, "DBTotals", "totalRealms", totalRealms)
+		self:AddMessage(1, "DBTotals", "biggestRealmName", biggestRealmName)
+		self:AddMessage(1, "DBTotals", "biggestRealmCount", biggestRealmCount)
+		self:AddMessage(1, "DBTotals", "toatlItems", toatlItems)
 
 	end)
 	dumpTotals.frame:SetParent(Debug.optionsFrame)
 	dumpTotals.frame:SetPoint("LEFT",iterateUnits.frame,"RIGHT",10,-0)
 	dumpTotals.frame:Show()
+
+	local addonList = AceGUI:Create("Button")
+	addonList.frame:SetParent(Debug.optionsFrame)
+	addonList:SetText(L.DebugAddonList)
+	addonList:SetHeight(30)
+	addonList:SetAutoWidth(true)
+	addonList:SetCallback("OnClick", function()
+		for i=1, GetNumAddOns() do
+			local name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo(i)
+			self:AddMessage(1, "AddonList", title)
+		end
+	end)
+	addonList.frame:SetParent(Debug.optionsFrame)
+	addonList.frame:SetPoint("LEFT",dumpTotals.frame,"RIGHT",10,-0)
+	addonList.frame:Show()
 
 	local exportBtn = AceGUI:Create("Button")
 	exportBtn.frame:SetParent(Debug.optionsFrame)
