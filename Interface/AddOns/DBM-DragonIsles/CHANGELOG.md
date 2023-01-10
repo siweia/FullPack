@@ -1,20 +1,14 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.0.15](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.15) (2023-01-01)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.14...10.0.15) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.0.16](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.16) (2023-01-04)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.15...10.0.16) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Prep new tag  
-- Update commonlocal.tw.lua (#172)  
-- slow down aggregation for meteor axes, seeing the icons and messsages get split  
-- cleanup magnetic charge, its only 1 person so no need for elaborate icon stuff in says and anounces.  
-- BroodKeeper Fixes:  
-     - Fix adds timer and alerts having broken on broodkeeper since encounter spawn was disabled for applied events.  
-     - Fix egg counter to not assume egg total and only give egg remaining since total can vary across difficulties  
-- lowered blizzard stack warning from 8 to 7  
-- Update localization.ru.lua (#848)  
-- And of course, the one boss I didn't get to pull had bugs in it too.  
-     - Terros:  
-       - Fixed a bug where tank stack warning used wrong spellId so description and alert text was wrong.  
-       - Fixed a bug where non tanks getting hit by tank cone got alerted. I need to pay more attention to tank abilities that are cones and not direct casts on tanks.  
-- Revert bad change. Moving this check into code that only runs if you have mods installed, made check worthless.  
+- Prep new tag for retail  
+- Fix expression for LFR, which verifies kurog timers are same as normal.  
+    Also fixed stage timer to be aligned with primal attunement when it's after 2nd intermission instead of starting a timer for 2nd intermission again.  
+- wrong fix, this is right one  
+- fix last  
+- Sennarth timer review that fixes a few timers in all difficulties, but especially LFR.  
+- Add future timeline to world boss zone checks so lisk is functional  
+- Add range 100 to retail and range 100 and range 80 to wrath  
 - Bump alpha  
