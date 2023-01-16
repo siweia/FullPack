@@ -1,9 +1,9 @@
 # BagSync
 
-## [v18.9](https://github.com/Xruptor/BagSync/tree/v18.9) (2023-01-08)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v18.8...v18.9) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v18.10](https://github.com/Xruptor/BagSync/tree/v18.10) (2023-01-14)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v18.9...v18.10) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
 -   
-    * Fixed a typo that was preventing BNET characters and cross realm character data from being displayed properly.  (Fixes #240)  
-    * Cleaned up the BagSync Debug and added more markers to help in debugging for the future.  
-    * Cleaned up the "Enable Factions" config option and added colors and icons to make it clearer.  
+    * Updated the Equipment icon to be a bit clearer and moved it to the silver/blue spectrum.  
+    * Fixed an issue in the Advanced Search where the location names were not being displayed properly.  
+    * Moved the Dragonflight cleanbag function for BagSync to the FixDB command.  
