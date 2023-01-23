@@ -1,11 +1,7 @@
 # BagSync
 
-## [v18.11](https://github.com/Xruptor/BagSync/tree/v18.11) (2023-01-18)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v18.10...v18.11) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v18.14](https://github.com/Xruptor/BagSync/tree/v18.14) (2023-01-22)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v18.13...v18.14) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
 -   
-    * Added a new option to color the item totals by character class color.  
-    * Added a new option to display character race icons.  
-    * Fixed a typo in the separator option.  
-    * Moved the tooltip faction color option to the Color category of BagSync config.  
-    * Moved the new item totals by class color option to the Color category of BagSync config.  
+    * Minor update, changed the timer for the temp fix for BAG\_UPDATE\_DELAYED bug until blizzard fixes it.  It's now set to 1 second delay for the WOTLK servers.    
