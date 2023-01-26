@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("HandyNotes_Valdrakken", "zhCN", fa
 if not L then return end
 -- Simplified Chinese localization by nbyang ( https://www.curseforge.com/members/nbyang )
 --  zhCN client: (NGA-男爵凯恩)
---  Last update: 2022/11/17
+--  Last update: 2022/11/29
 if L then
 ----------------------------------------------------------------------------------------------------
 -----------------------------------------------CONFIG-----------------------------------------------
