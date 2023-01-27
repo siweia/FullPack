@@ -5,6 +5,8 @@
 ## RequiredDeps: Details
 ## OptionalDeps: Ace3
 
+## X-Wago-ID: ZQ6abgKW
+
 #@no-lib-strip@
 embeds.xml
 #@end-no-lib-strip@
