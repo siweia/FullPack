@@ -102,6 +102,7 @@ function Data:OnEnable()
 	if BSYC.options.useIconLocations == nil then BSYC.options.useIconLocations = true end
 	if BSYC.options.itemTotalsByClassColor == nil then BSYC.options.itemTotalsByClassColor = false end
 	if BSYC.options.showRaceIcons == nil then BSYC.options.showRaceIcons = true end
+	if BSYC.options.showGuildSeparately == nil then BSYC.options.showGuildSeparately = true end
 
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
@@ -250,6 +251,31 @@ function Data:FixDB()
 	BSYC:Print("|cFFFF9900"..L.FixDBComplete.."|r")
 end
 
+function Data:ResetFramePositions()
+	local moduleList = {
+		"Blacklist",
+		"Currency",
+		"Professions",
+		"Profiles",
+		"Search",
+		"SortOrder",
+		"Debug",
+	}
+
+	for i=1, #moduleList do
+		local mName = moduleList[i]
+		if BSYC:GetModule(mName, true) and BSYC:GetModule(mName).frame then
+			BSYC:GetModule(mName).frame:ClearAllPoints()
+			BSYC:GetModule(mName).frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
+		end
+	end
+
+	if _G["BagSyncMoneyTooltip"] then
+		_G["BagSyncMoneyTooltip"]:ClearAllPoints()
+		_G["BagSyncMoneyTooltip"]:SetPoint("CENTER",UIParent,"CENTER",0,0)
+	end
+end
+
 function Data:LoadSlashCommand()
 	Debug(2, "LoadSlashCommand")
 
@@ -290,6 +316,9 @@ function Data:LoadSlashCommand()
 			elseif cmd == L.SlashFixDB then
 				self:FixDB()
 				return true
+			elseif cmd == L.SlashResetPOS then
+				self:ResetFramePositions()
+				return true
 			elseif cmd == L.SlashResetDB then
 				StaticPopup_Show("BAGSYNC_RESETDATABASE")
 				return true
@@ -328,6 +357,7 @@ function Data:LoadSlashCommand()
 		BSYC:Print("/bgs "..L.SlashResetDB.." - "..L.HelpResetDB)
 		BSYC:Print("/bgs "..L.SlashConfig.." - "..L.HelpConfigWindow)
 		BSYC:Print("/bgs "..L.SlashDebug.." - "..L.HelpDebug)
+		BSYC:Print("/bgs "..L.SlashResetPOS.." - "..L.HelpResetPOS)
 	end
 
 	--/bgs and /bagsync
@@ -378,11 +408,11 @@ function Data:CheckExpiredAuctions()
 
 end
 
-function Data:GetGuild()
-	if not IsInGuild() then return end
-	Debug(2, "GetGuild")
+function Data:GetGuild(unitObj)
+	if not unitObj and not IsInGuild() then return end
+	if not unitObj then	Debug(2, "GetGuild", unitObj) end
 
-	local player = Unit:GetUnitInfo()
+	local player = unitObj or Unit:GetUnitInfo()
 	if not player.guild or not player.guildrealm then return end
 
 	if not BagSyncDB[player.guildrealm] then BagSyncDB[player.guildrealm] = {} end
