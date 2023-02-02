@@ -55,8 +55,7 @@ L["Algeth'ar Enforcer"] = "Algeth'ar Enforcer"
 L["Algeth'ar Nurse"] = "Algeth'ar Nurse"
 --[[Translation missing --]]
 L["Algeth'ar Security"] = "Algeth'ar Security"
---[[Translation missing --]]
-L["AlgetharAcademy"] = "Algeth'ar Academy"
+L["AlgetharAcademy"] = "알게타르 대학"
 --[[Translation missing --]]
 L["Alpha Eagle"] = "Alpha Eagle"
 --[[Translation missing --]]
@@ -292,10 +291,9 @@ L["Colossal Tentacle"] = "거대한 촉수"
 L["Commander Shemdah'sohn"] = "사령관 셈다손"
 L["Commander Zo'far"] = "사령관 조파르"
 L["Commerce Enforcer"] = "상업구 집행자"
---[[Translation missing --]]
-L["conflictPrompt"] = [=[MDT has detected that you have certain AddOns installed that are conflicting with MDT.
+L["conflictPrompt"] = [=[MDT와 충돌을 일으키는 애드온이 있습니다.
 
-Please remove the following AddOns:
+다음 애드온들을 삭제해주세요:
 
 ]=]
 L["Congealed Slime"] = "응결된 점액"
@@ -436,10 +434,8 @@ L["Draconic Illusion"] = "Draconic Illusion"
 L["Draconic Image"] = "Draconic Image"
 --[[Translation missing --]]
 L["Drag the bottom right edge to resize MDT."] = "Drag the bottom right edge to resize MDT."
---[[Translation missing --]]
-L["Dragonflight Season 1"] = "Dragonflight Season 1"
---[[Translation missing --]]
-L["Dragonflight Season 2"] = "Dragonflight Season 2"
+L["Dragonflight Season 1"] = "용군단 1시즌"
+L["Dragonflight Season 2"] = "용군단 2시즌"
 L["Dragonkin"] = "용족"
 --[[Translation missing --]]
 L["Drakonid Breaker"] = "Drakonid Breaker"
@@ -734,11 +730,9 @@ L["HallsOfAtonementFloor3"] = "영혼의 성역"
 --[[Translation missing --]]
 L["HallsOfInfusion"] = "Halls of Infusion"
 L["Harbaron"] = "하르바론"
---[[Translation missing --]]
-L["hardResetPrompt"] = [=[Do you really want to reset all settings to default?
-This will reload the UI!]=]
---[[Translation missing --]]
-L["hardResetPromptTitle"] = "Delete ALL settings"
+L["hardResetPrompt"] = [=[정말로 모든 설정을 초기화하시겠습니까?
+초기화 후 UI가 리로드됩니다!]=]
+L["hardResetPromptTitle"] = "모든 설정 삭제"
 L["Harlan Sweete"] = "할란 스위트"
 L["Harugia the Bloodthirsty"] = "피에 굶주린 하루기아"
 L["Hatchling Nest"] = "새끼벌레 둥지"
@@ -994,8 +988,7 @@ L["Mchimba the Embalmer"] = "장의사 음침바"
 L["MDI Mode"] = "MDI 모드"
 L["MDT: Error importing preset"] = "MDT: 길을 가져오기 오류 "
 L["MDT: Spells for %s:"] = "MDT: %s의 마법"
---[[Translation missing --]]
-L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: Use /mdt minimap to show the minimap icon again"
+L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: /mdt minimap 명령어로 미니맵 아이콘을 다시 띄울 수 있습니다."
 L["Mech Jockey"] = "로봇 조종사"
 L["Mechagon"] = "메카곤"
 L["Mechagon - Junkyard"] = "작전명: 메카곤 고철장"
@@ -1143,8 +1136,7 @@ L["Olmyr the Enlightened"] = "깨달은 자 올미르"
 L["Omega Buster"] = "오메가 섬멸로봇"
 L["Oozing Leftovers"] = "진물 찌꺼기"
 L["Open MDI override options"] = "MDI 옵션을 재정의 열기"
---[[Translation missing --]]
-L["openSettingsTooltip"] = "Click to open settings"
+L["openSettingsTooltip"] = "클릭하여 설정 열기"
 L["Opera Hall Balcony"] = "오페라 극장 발코니"
 --[[Translation missing --]]
 L["Opera Hall: Wikket"] = "Opera Hall: Wikket"
@@ -1349,8 +1341,7 @@ L["Rotting Slimeclaw"] = "썩어가는 끈적손톱"
 L["Rowdy Reveler"] = "난폭한 구경꾼"
 --[[Translation missing --]]
 L["Ruby Overlook"] = "Ruby Overlook"
---[[Translation missing --]]
-L["RubyLifePools"] = "Ruby Life Pools"
+L["RubyLifePools"] = "루비 생명의 웅덩이"
 L["Ruin's Descent"] = "폐허 하강장치"
 --[[Translation missing --]]
 L["Rune Seal Keeper"] = "Rune Seal Keeper"
@@ -1445,8 +1436,7 @@ L["Shadowmoon Enslaver"] = "Shadowmoon Enslaver"
 L["Shadowmoon Exhumer"] = "Shadowmoon Exhumer"
 --[[Translation missing --]]
 L["Shadowmoon Loyalist"] = "Shadowmoon Loyalist"
---[[Translation missing --]]
-L["ShadowmoonBurialGrounds"] = "Shadowmoon Burial Grounds"
+L["ShadowmoonBurialGrounds"] = "어둠달 골짜기"
 L["Shady Dealer"] = "암거래상"
 L["Shalebiter"] = "혈암깨물이"
 L["Shambling Arbalest"] = "휘청이는 석궁병"
@@ -1657,8 +1647,7 @@ L["Temple of Sethraliss Sublevel"] = "세스랄리스 사원"
 L["templeEyeNote"] = "세스랄리스의 눈%s세스랄리스의 눈들을 세스탈리스의 해골에서 가져가시면 됩니다%s각각의 눈이 12 적 병력을 줄 겁니다"
 L["templeGraveyardNote1"] = "메레크타를 패배시킬 후에 얻습니다"
 L["templeGraveyardNote2"] = "세스랄리스의 해골 이벤트를 완료한 후에 얻습니다 "
---[[Translation missing --]]
-L["TempleOfTheJadeSerpent"] = "Temple of the Jade Serpent"
+L["TempleOfTheJadeSerpent"] = "옥룡사"
 L["Territorial Bladebeak"] = "텃세하는 칼날부리"
 --[[Translation missing --]]
 L["Territorial Eagle"] = "Territorial Eagle"
@@ -1723,8 +1712,7 @@ L["TheaterOfPainFloor2"] = "정복의 방"
 L["TheaterOfPainFloor3"] = "고통의 제단"
 L["TheaterOfPainFloor4"] = "대학살의 무덤 상층"
 L["TheaterOfPainFloor5"] = "대학살의 무덤 하층"
---[[Translation missing --]]
-L["TheAzureVault"] = "The Azure Vault"
+L["TheAzureVault"] = "하늘빛 보관소"
 --[[Translation missing --]]
 L["TheBurningCauldron"] = "The Burning Cauldron"
 --[[Translation missing --]]
@@ -1732,8 +1720,7 @@ L["TheHeadteachersEnclave"] = "The Headteacher's Enclave"
 L["TheNecroticWakeFloor1"] = "죽음의 상흔"
 L["TheNecroticWakeFloor2"] = "바느질터"
 L["TheNecroticWakeFloor3"] = "조르라무스"
---[[Translation missing --]]
-L["TheNokhudOffensive"] = "The Nokhud Offensive"
+L["TheNokhudOffensive"] = "노쿠드 공격대"
 --[[Translation missing --]]
 L["ThePitch"] = "The Pitch"
 --[[Translation missing --]]
