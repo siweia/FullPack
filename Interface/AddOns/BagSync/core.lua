@@ -49,13 +49,6 @@ local function Debug(level, ...)
 	BSYC.DEBUG(level, "CORE", ...)
 end
 
---According to https://github.com/Xruptor/BagSync/issues/196 this partciular OnEvent causes a significant delay on startup for users.
---Perhaps the event is being fired WAY too much for folks?
-if LibStub("LibItemSearch-1.2") and LibStub("LibItemSearch-1.2").Scanner and LibStub("LibItemSearch-1.2").Scanner:GetScript("OnEvent") then
-	LibStub("LibItemSearch-1.2").Scanner:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
-	LibStub("LibItemSearch-1.2").Scanner:SetScript("OnEvent", nil)
-end
-
 --use /framestack to debug windows and show tooltip information
 --if you press SHIFT while doing the above command it gives you a bit more information
 
@@ -69,33 +62,71 @@ function BSYC:GetHashTableLen(tbl)
 	return count
 end
 
-function BSYC:serializeTable(val, name, skipnewlines, depth)
-    skipnewlines = skipnewlines or false
-    depth = depth or 0
+function BSYC:DecodeOpts(tblString, mergeOpts)
+	--Example = "battlepet=245|auction=124567|foo=bar|tickle=elmo|gtab=3|test=12:3:4|forthe=horde"
+	local t = mergeOpts or {}
 
-    local tmp = string.rep(" ", depth)
+	--([^=]+) everything except '='
+	-- followed by '='
+	-- ([^|]+) = then everything except '|'
+	-- followed by an optional '|'
 
-    if name then tmp = tmp .. name .. " = " end
+	if tblString and string.len(tblString) > 0 then
+		for k, v in string.gmatch(tblString, "([^=]+)=([^|]+)|*") do
+			--only overwrite if we don't have an existing value, the reason for this is because we don't want to overwrite any mergeOpts values that are newer
+			if not t[k] then
+				t[k] = v
+			end
+		end
+	end
 
-    if type(val) == "table" then
-        tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
+	return t
+end
 
-        for k, v in pairs(val) do
-            tmp =  tmp .. self:serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
-        end
+function BSYC:EncodeOpts(tbl, link)
+	if not tbl then return nil end
+	local tmpStr = ""
 
-        tmp = tmp .. string.rep(" ", depth) .. "}"
-    elseif type(val) == "number" then
-        tmp = tmp .. tostring(val)
-    elseif type(val) == "string" then
-        tmp = tmp .. string.format("%q", val)
-    elseif type(val) == "boolean" then
-        tmp = tmp .. (val and "true" or "false")
-    else
-        tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
-    end
+	if link then
+		--when doing the split, make sure to merge our table
+		local xLink, xCount, xOpts = self:Split(link, false, tbl)
 
-    return tmp
+		if xLink then
+			if not xCount then xCount = 1 end
+
+			for k, v in pairs(xOpts) do
+				tmpStr = tmpStr.."|"..k.."="..v
+			end
+			tmpStr = string.sub(tmpStr, 2)  -- remove first pipe
+
+			if tmpStr ~= "" then
+				return xLink..";"..xCount..";"..tmpStr
+			end
+		end
+
+		--this is an invalid ParseItemLink, return empty string
+		return nil
+	end
+
+	for k, v in pairs(tbl) do
+		tmpStr = tmpStr.."|"..k.."="..v
+	end
+
+	tmpStr = string.sub(tmpStr, 2)  -- remove first pipe
+	if tmpStr ~= "" then
+		return tmpStr
+	end
+
+	return nil
+end
+
+function BSYC:Split(dataStr, skipOpts, mergeOpts)
+	local qLink, qCount, qOpts = strsplit(";", dataStr)
+	--only do Opts functions if we need too, otherwise just return the link and count
+	if not skipOpts or mergeOpts then
+		return qLink, qCount, self:DecodeOpts(qOpts, mergeOpts)
+	end
+	return qLink, qCount
 end
 
 function BagSync_ShowWindow(windowName)
@@ -120,7 +151,7 @@ function BSYC:ParseItemLink(link, count)
 		if type(link) == "number" then link = tostring(link) end
 
 		--if we are parsing a database entry just return it, chances are it's a battlepet anyways
-		local qLink, qCount, qIdentifier = strsplit(";", link)
+		local qLink, qCount = BSYC:Split(link, true)
 		if qLink and qCount then
 			return link
 		end
@@ -226,8 +257,11 @@ function BSYC:CreateFakeBattlePetID(link, count, speciesID)
 
 		if fakePetID then
 			if not count then count = 1 end
-			--put a 2 at the end as an identifier to mark it as a battlepet
-			return fakePetID..';'..count..';2;'..speciesID
+
+			local encodeStr = self:EncodeOpts({battlepet=speciesID})
+			if encodeStr then
+				return fakePetID..";"..count..";"..encodeStr
+			end
 		end
 	end
 end

@@ -243,6 +243,42 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple, showXRBNET
 	return tmpTag
 end
 
+function Tooltip:DoSort(tblData)
+
+	--sort the list by our sortIndex then by realm and finally by name
+	if BSYC.options.sortTooltipByTotals then
+		table.sort(tblData, function(a, b)
+			return a.count > b.count;
+		end)
+	elseif BSYC.options.sortByCustomOrder then
+		table.sort(tblData, function(a, b)
+			if a.unitObj.data.SortIndex and b.unitObj.data.SortIndex  then
+				return  a.unitObj.data.SortIndex < b.unitObj.data.SortIndex;
+			else
+				if a.sortIndex  == b.sortIndex then
+					if a.unitObj.realm == b.unitObj.realm then
+						return a.unitObj.name < b.unitObj.name;
+					end
+					return a.unitObj.realm < b.unitObj.realm;
+				end
+				return a.sortIndex < b.sortIndex;
+			end
+		end)
+	else
+		table.sort(tblData, function(a, b)
+			if a.sortIndex  == b.sortIndex then
+				if a.unitObj.realm == b.unitObj.realm then
+					return a.unitObj.name < b.unitObj.name;
+				end
+				return a.unitObj.realm < b.unitObj.realm;
+			end
+			return a.sortIndex < b.sortIndex;
+		end)
+	end
+
+	return tblData
+end
+
 function Tooltip:MoneyTooltip()
 	local tooltip = _G["BagSyncMoneyTooltip"] or nil
 	Debug(2, "MoneyTooltip")
@@ -292,36 +328,8 @@ function Tooltip:MoneyTooltip()
 		end
 	end
 
-	--sort the list by our sortIndex then by realm and finally by name
-	if BSYC.options.sortTooltipByTotals then
-		table.sort(usrData, function(a, b)
-			return a.count > b.count;
-		end)
-	elseif BSYC.options.sortByCustomOrder then
-		table.sort(usrData, function(a, b)
-			if a.unitObj.data.SortIndex and b.unitObj.data.SortIndex  then
-				return  a.unitObj.data.SortIndex < b.unitObj.data.SortIndex;
-			else
-				if a.sortIndex  == b.sortIndex then
-					if a.unitObj.realm == b.unitObj.realm then
-						return a.unitObj.name < b.unitObj.name;
-					end
-					return a.unitObj.realm < b.unitObj.realm;
-				end
-				return a.sortIndex < b.sortIndex;
-			end
-		end)
-	else
-		table.sort(usrData, function(a, b)
-			if a.sortIndex  == b.sortIndex then
-				if a.unitObj.realm == b.unitObj.realm then
-					return a.unitObj.name < b.unitObj.name;
-				end
-				return a.unitObj.realm < b.unitObj.realm;
-			end
-			return a.sortIndex < b.sortIndex;
-		end)
-	end
+	--sort
+	usrData = self:DoSort(usrData)
 
 	for i=1, #usrData do
 		--use GetMoneyString and true to seperate it by thousands
@@ -342,6 +350,7 @@ function Tooltip:UnitTotals(unitObj, allowList, unitList, advUnitList)
 	local tallyString = ""
 	local total = 0
 	local grouped = 0
+	local gTabStr = ""
 
 	--order in which we want stuff displayed
 	local list = {
@@ -354,6 +363,16 @@ function Tooltip:UnitTotals(unitObj, allowList, unitList, advUnitList)
 		[7] = { source="void", 		desc=L.Tooltip_void },
 		[8] = { source="auction", 	desc=L.Tooltip_auction },
 	}
+
+	--check for guild tabs first only on servers that even have guild banks enabled
+	if BSYC.options.showGuildTabs and CanGuildBankRepair and BSYC:GetHashTableLen(allowList["gtab"]) > 0 then
+		for tab=1, MAX_GUILDBANK_TABS do
+			if allowList["gtab"][tab] then
+				gTabStr = gTabStr..","..tostring(allowList["gtab"][tab])
+			end
+		end
+		gTabStr = string.sub(gTabStr, 2)  -- remove comma
+	end
 
 	for i = 1, #list do
 		local count, desc = allowList[list[i].source], list[i].desc
@@ -370,7 +389,12 @@ function Tooltip:UnitTotals(unitObj, allowList, unitList, advUnitList)
 			desc = self:HexColor(self:GetClassColor(unitObj, 2), desc)..":"
 			count = self:HexColor(BSYC.options.colors.second, comma_value(count))
 
-			tallyString = tallyString..((grouped > 1 and L.TooltipDelimiter) or "")..desc.." "..count
+			--check for guild tab
+			if string.len(gTabStr) > 0 then
+				gTabStr = self:HexColor(BSYC.options.colors.guildtabs, " ["..L.TooltipGuildTabs.." "..gTabStr.."]")
+			end
+
+			tallyString = tallyString..((grouped > 1 and L.TooltipDelimiter) or "")..desc.." "..count..gTabStr
 		end
 	end
 
@@ -391,11 +415,22 @@ function Tooltip:ItemCount(data, itemID, allowList, source, total, skipTotal)
 	if #data < 1 then return total end
 	for i=1, #data do
 		if data[i] then
-			local link, count, identifier = strsplit(";", data[i])
+			--we only really want the qOpts for guild banks to get the guild tab tally during the ItemCount process, otherwise it's extra processing time
+			local skipOpts = true
+			if source == "guild" and BSYC.options.showGuildTabs then
+				skipOpts = false
+			end
+
+			local link, count, qOpts = BSYC:Split(data[i], skipOpts)
+
 			if link then
 				if BSYC.options.enableShowUniqueItemsTotals then link = BSYC:GetShortItemID(link) end
 				if link == itemID then
 					allowList[source] = allowList[source] + (count or 1)
+					--check for any guild bank tabs and store the locations found
+					if qOpts and qOpts.gtab then
+						allowList["gtab"][tonumber(qOpts.gtab)] = tonumber(qOpts.gtab)
+					end
 					if not skipTotal then
 						total = total + (count or 1)
 					end
@@ -607,7 +642,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 	local origLink = link --store the original unparsed link
 	--remember when no count is provided to ParseItemLink, only the itemID is returned.  Integer or a string if it has bonusID
-	local link = BSYC:ParseItemLink(link)
+	link = BSYC:ParseItemLink(link)
 
 	--make sure we have something to work with
 	--since we aren't using a count, it will return only the itemid
@@ -616,7 +651,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		return
 	end
 
-	link = strsplit(";", link) --if we are parsing a database entry, return only the itemID portion
+	link = BSYC:Split(link, true) --if we are parsing a database entry, return only the itemID portion
 	local shortID = BSYC:GetShortItemID(link)
 
 	local permIgnore ={
@@ -641,6 +676,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	local grandTotal = 0
 	local unitList = {}
 	local tmpGuildList = {}
+	local player = Unit:GetUnitInfo()
 
 	--the true is to set it to silent and not return an error if not found
 	--only display advanced search results in the BagSync search window
@@ -658,15 +694,27 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 			["void"] = 0,
 			["auction"] = 0,
 			["guild"] = 0,
+			["gtab"] = {}, --guild bank tab
 		}
 
 		if not unitObj.isGuild then
+			--Due to crafting items being used in reagents bank, or turning in quests with items in the bank, etc..
+			--The cached item info for the current player would obviously be out of date until they returned to the bank to scan again.
+			--In order to combat this, lets just get the realtime count for the currently logged in player every single time.
+			--This is why we check for player name and realm below, the only one we really want to check is the equip status to get a accurate count.
+			--The only exception to this would be for battlepets, so every item except battlepets in realmtime.
+
+			local isCurrentPlayer = ((unitObj.name == player.name and unitObj.realm == player.realm) and true) or false
+
 			for k, v in pairs(unitObj.data) do
 				if allowList[k] and type(v) == "table" then
 					--bags, bank, reagents are stored in individual bags
 					if k == "bag" or k == "bank" or k == "reagents" then
-						for bagID, bagData in pairs(v) do
-							grandTotal = self:ItemCount(bagData, link, allowList, k, grandTotal)
+						--don't check for current player unless its a battlepet
+						if not isCurrentPlayer or isBattlePet then
+							for bagID, bagData in pairs(v) do
+								grandTotal = self:ItemCount(bagData, link, allowList, k, grandTotal)
+							end
 						end
 					else
 						--with the exception of auction, everything else is stored in a numeric list
@@ -682,6 +730,35 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 					end
 				end
 			end
+
+			--grab the realtime amount of the current player only if it's not a battlepet, read explanation above as to why
+			if isCurrentPlayer and not isBattlePet then
+				local equipCount = allowList["equip"] or 0
+				local carryCount, bagCount, bankCount, regCount = 0, 0, 0, 0
+
+				carryCount = GetItemCount(origLink) or 0 --get the total amount the player is currently carrying (bags + equip)
+				bagCount = carryCount - equipCount -- subtract the equipment count from the carry amount to get bag count
+
+				if IsReagentBankUnlocked and IsReagentBankUnlocked() then
+					--GetItemCount returns the bag count + reagent regardless of parameters.  So we have to subtract bag and reagents.  This does not include bank totals
+					regCount = GetItemCount(origLink, false, false, true) or 0
+					regCount = regCount - carryCount
+					if regCount < 0 then regCount = 0 end
+				end
+
+				--bankCount = GetItemCount returns the bag + bank count + reagent regardless of parameters.  So we have to subtract the carry and reagent totals
+				--it will always add the reagents totals regardless of whatever parameters are passed.  So we have to do some math to adjust for this
+				bankCount = GetItemCount(origLink, true, false, false) or 0
+				bankCount = (bankCount - regCount) - carryCount
+				if bankCount < 0 then bankCount = 0 end
+
+				--now assign the values
+				allowList["bag"] = bagCount
+				allowList["bank"] = bankCount
+				allowList["reagents"] = regCount
+				grandTotal = grandTotal + (bagCount + bankCount + regCount)
+			end
+
 			if not BSYC.options.showGuildSeparately and BSYC.options.enableGuild then
 				local guildObj = Data:GetGuild(unitObj.data)
 				if guildObj and guildObj.bag then
@@ -706,35 +783,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 	--only sort items if we have something to work with
 	if #unitList > 0 then
-		if BSYC.options.sortTooltipByTotals then
-			table.sort(unitList, function(a, b)
-				return a.count > b.count;
-			end)
-		elseif BSYC.options.sortByCustomOrder then
-			table.sort(unitList, function(a, b)
-				if a.unitObj.data.SortIndex and b.unitObj.data.SortIndex  then
-					return  a.unitObj.data.SortIndex < b.unitObj.data.SortIndex;
-				else
-					if a.sortIndex  == b.sortIndex then
-						if a.unitObj.realm == b.unitObj.realm then
-							return a.unitObj.name < b.unitObj.name;
-						end
-						return a.unitObj.realm < b.unitObj.realm;
-					end
-					return a.sortIndex < b.sortIndex;
-				end
-			end)
-		else
-			table.sort(unitList, function(a, b)
-				if a.sortIndex  == b.sortIndex then
-					if a.unitObj.realm == b.unitObj.realm then
-						return a.unitObj.name < b.unitObj.name;
-					end
-					return a.unitObj.realm < b.unitObj.realm;
-				end
-				return a.sortIndex < b.sortIndex;
-			end)
-		end
+		unitList = self:DoSort(unitList)
 	end
 
 	local desc, value = '', ''
@@ -819,36 +868,8 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 		end
 	end
 
-	--sort the list by our sortIndex then by realm and finally by name
-	if BSYC.options.sortTooltipByTotals then
-		table.sort(usrData, function(a, b)
-			return a.count > b.count;
-		end)
-	elseif BSYC.options.sortByCustomOrder then
-		table.sort(usrData, function(a, b)
-			if a.unitObj.data.SortIndex and b.unitObj.data.SortIndex  then
-				return  a.unitObj.data.SortIndex < b.unitObj.data.SortIndex;
-			else
-				if a.sortIndex  == b.sortIndex then
-					if a.unitObj.realm == b.unitObj.realm then
-						return a.unitObj.name < b.unitObj.name;
-					end
-					return a.unitObj.realm < b.unitObj.realm;
-				end
-				return a.sortIndex < b.sortIndex;
-			end
-		end)
-	else
-		table.sort(usrData, function(a, b)
-			if a.sortIndex  == b.sortIndex then
-				if a.unitObj.realm == b.unitObj.realm then
-					return a.unitObj.name < b.unitObj.name;
-				end
-				return a.unitObj.realm < b.unitObj.realm;
-			end
-			return a.sortIndex < b.sortIndex;
-		end)
-	end
+	--sort
+	usrData = self:DoSort(usrData)
 
 	if currencyName then
 		objTooltip:AddLine(currencyName, 64/255, 224/255, 208/255)

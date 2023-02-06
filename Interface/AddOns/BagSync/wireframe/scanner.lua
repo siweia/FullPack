@@ -323,8 +323,12 @@ function Scanner:SaveGuildBank()
 					end
 
 					if link then
-						table.insert(slotItems, link)
+						local encodeStr = BSYC:EncodeOpts({gtab=tab}, link)
+						if encodeStr then
+							table.insert(slotItems, encodeStr)
+						end
 					end
+
 				end
 			end
 		end
@@ -432,21 +436,10 @@ function Scanner:SaveAuctionHouse()
 						parseLink = BSYC:ParseItemLink(itemObj.itemKey.itemID, itemCount)
 					end
 
-					--we are going to make the third field an identifier field, so we can know what it is for future reference
-					--for now auction house will be 1, with 4th field being expTime, unless we already have another identifier in which case it would be 5th
-
-					--before we do that though, lets check for an exsisting identifier
-					local xLink, xCount, xIdentifier = strsplit(";", parseLink)
-					xIdentifier = tonumber(xIdentifier)
-
-					if not xIdentifier then
-						parseLink = parseLink..";1;"..expTime
-					else
-						--it's a battlepet or something else, so just add it to the end
-						parseLink = parseLink..";"..expTime
+					local encodeStr = BSYC:EncodeOpts({auction=expTime}, parseLink)
+					if encodeStr then
+						table.insert(slotItems, encodeStr)
 					end
-
-					table.insert(slotItems, parseLink)
 				end
 			end
 		end
@@ -475,21 +468,10 @@ function Scanner:SaveAuctionHouse()
 						local expireTime = time() + timestampChk[timeLeft]
 						local parseLink = BSYC:ParseItemLink(link, count)
 
-						--we are going to make the third field an identifier field, so we can know what it is for future reference
-						--for now auction house will be 1, with 4th field being expTime, unless we already have another identifier in which case it would be 5th
-
-						--before we do that though, lets check for an exsisting identifier
-						local xLink, xCount, xIdentifier = strsplit(";", parseLink)
-						xIdentifier = tonumber(xIdentifier)
-
-						if not xIdentifier then
-							parseLink = parseLink..";1;"..expireTime
-						else
-							--it's a battlepet or something else, so just add it to the end
-							parseLink = parseLink..";"..expireTime
+						local encodeStr = BSYC:EncodeOpts({auction=expTime}, parseLink)
+						if encodeStr then
+							table.insert(slotItems, encodeStr)
 						end
-
-						table.insert(slotItems, parseLink)
 					end
 				end
 			end
@@ -803,169 +785,3 @@ function Scanner:CleanupProfessions()
 	end
 end
 
-function Scanner:ParseCraftedInfo(unitTarget, castGUID, spellID)
-	if not BSYC.IsRetail then return end
-	--only do this when they are not at a bank
-	if Unit.atBank then return end
-	if unitTarget ~= "player" then return end --only do the player crafted stuff
-	if not Scanner.recipeIDs or not Scanner.invertedRecipeIDs then return end
-	Debug(2, "ParseCraftedInfo", unitTarget, castGUID, spellID)
-
-	--reset
-	Scanner.reagentCount = {}
-
-	--use the inverted since the spellID is the key
-    if Scanner.invertedRecipeIDs[spellID] then
-
-		local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(spellID, false)
-
-		if recipeSchematic then
-			for slotIndex, reagentSlotSchematic in ipairs(recipeSchematic.reagentSlotSchematics) do
-				if reagentSlotSchematic.reagents then
-					for reagentIndex, reagentInfo in ipairs(reagentSlotSchematic.reagents) do
-						if reagentInfo.itemID then
-							Scanner.reagentCount[reagentInfo.itemID] = reagentSlotSchematic.quantityRequired or 1
-						end
-					end
-				elseif reagentSlotSchematic.itemID then
-					Scanner.reagentCount[reagentSlotSchematic.itemID] = 1
-				end
-			end
-		end
-
-    end
-
-	if BSYC:GetHashTableLen(Scanner.reagentCount) < 1 then Scanner.reagentCount = nil end
-end
-
-function Scanner:SaveCraftedReagents()
-	if not BSYC.IsRetail then return end
-	--only do this when they are not at a bank
-	if Unit.atBank then return end
-	--don't do anything if we have nothing to work with
-	if not Scanner.reagentCount or BSYC:GetHashTableLen(Scanner.reagentCount) < 1 then return end
-	Debug(2, "SaveCraftedReagents")
-
-	---------------------------------------------------
-	--First lets remove the stored count in Bags, Bank and Reagents
-	---------------------------------------------------
-	local bagtype = ""
-	local rootItems = {}
-	local slotItems = {}
-
-	--BANK
-	bagtype = "bank"
-
-	if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
-
-	for bagID, bagData in pairs(BSYC.db.player[bagtype]) do
-
-		slotItems = {}
-
-		--search individual bank bags
-		for i=1, #bagData do
-			--do we even have something to work with?
-			if bagData[i] then
-				local itemID, count, identifier = strsplit(";", bagData[i])
-				itemID = tonumber(itemID)
-
-				--only save if it's not one of the reagents that was used
-				if itemID and not Scanner.reagentCount[itemID] then
-					table.insert(slotItems, bagData[i])
-				end
-			end
-		end
-		BSYC.db.player[bagtype][bagID] = slotItems
-	end
-
-	--REAGENTS
-	bagtype = "reagents"
-
-	if IsReagentBankUnlocked() then
-
-		if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
-
-		for bagID, bagData in pairs(BSYC.db.player[bagtype]) do
-
-			slotItems = {}
-
-			--search individual reagents bags
-			for i=1, #bagData do
-				--do we even have something to work with?
-				if bagData[i] then
-					local itemID, count, identifier = strsplit(";", bagData[i])
-					itemID = tonumber(itemID)
-
-					--only save if it's not one of the reagents that was used
-					if itemID and not Scanner.reagentCount[itemID] then
-						table.insert(slotItems, bagData[i])
-					end
-				end
-			end
-			BSYC.db.player[bagtype][bagID] = slotItems
-		end
-	end
-
-	---------------------------------------------------
-	--NOW lets add them back in with new counts at the root of each BagType
-	---------------------------------------------------
-
-	for k, v in pairs(Scanner.reagentCount) do
-		--GetItemCount is a bit tricky as it accumulates totals which include bags, bank and reagents.  We have to do some math to get the accurate amounts
-
-		local bagCount = GetItemCount(k) or 0 --get the bag count
-
-		--regCount = GetItemCount returns the bag count + reagent regardless of parameters.  So we have to subtract bag and reagents.  This does not include bank totals
-		local regCount = 0
-
-		if IsReagentBankUnlocked() then
-			regCount = GetItemCount(k, false, false, true) or 0
-			regCount = regCount - bagCount
-			if regCount < 0 then regCount = 0 end
-		end
-
-		--bankCount = GetItemCount returns the bag + bank count + reagent regardless of parameters.  So we have to subtract the bag and reagent totals
-		--it will always add the reagents totals regardless of whatever parameters are passed.  So we have to do some math to adjust for this
-		local bankCount = GetItemCount(k, true, false, false) or 0
-		bankCount = (bankCount - regCount) - bagCount
-		if bankCount < 0 then bankCount = 0 end
-
-		--NEXT: now lets add the totals back into BagSync DB for the player
-
-		--BANK
-		--------------------------------------
-		bagtype = "bank"
-
-		--now lets add them manually to the root bank location (BANK_CONTAINER), create it if it's not found
-		rootItems = BSYC.db.player[bagtype][BANK_CONTAINER] or {}
-
-		if bankCount and bankCount > 0 then
-			table.insert(rootItems,  BSYC:ParseItemLink(k, bankCount))
-		end
-
-		--now save it back to the bank root
-		BSYC.db.player[bagtype][BANK_CONTAINER] = rootItems
-
-		--REAGENTS
-		--------------------------------------
-		bagtype = "reagents"
-
-		if IsReagentBankUnlocked() then
-
-			--now lets add them manually to the root bank location (REAGENTBANK_CONTAINER), create it if it's not found
-			rootItems = BSYC.db.player[bagtype][REAGENTBANK_CONTAINER] or {}
-
-			if regCount and regCount > 0 then
-				table.insert(rootItems,  BSYC:ParseItemLink(k, regCount))
-			end
-
-			--now save it back to the bank root
-			BSYC.db.player[bagtype][REAGENTBANK_CONTAINER] = rootItems
-		end
-
-	end
-
-	--reset our stored reagent count so that it doesn't mess up the regular bank scans
-	Scanner.reagentCount = nil
-	self:ResetTooltips()
-end

@@ -103,6 +103,7 @@ function Data:OnEnable()
 	if BSYC.options.itemTotalsByClassColor == nil then BSYC.options.itemTotalsByClassColor = false end
 	if BSYC.options.showRaceIcons == nil then BSYC.options.showRaceIcons = true end
 	if BSYC.options.showGuildSeparately == nil then BSYC.options.showGuildSeparately = true end
+	if BSYC.options.showGuildTabs == nil then BSYC.options.showGuildTabs = false end
 
 	--setup the default colors
 	if BSYC.options.colors == nil then BSYC.options.colors = {} end
@@ -114,6 +115,7 @@ function Data:OnEnable()
 	if BSYC.options.colors.cross == nil then BSYC.options.colors.cross = { r = 1, g = 125/255, b = 10/255 }  end
 	if BSYC.options.colors.bnet == nil then BSYC.options.colors.bnet = { r = 53/255, g = 136/255, b = 1 }  end
 	if BSYC.options.colors.itemid == nil then BSYC.options.colors.itemid = { r = 82/255, g = 211/255, b = 134/255 }  end
+	if BSYC.options.colors.guildtabs == nil then BSYC.options.colors.guildtabs = { r = 9/255, g = 219/255, b = 224/255 }  end
 
 	--do DB cleanup check by version number
 	if not BSYC.options.addonversion or BSYC.options.addonversion ~= ver then
@@ -164,7 +166,6 @@ function Data:DebugDumpOptions()
 					if k == "colors" then
 						BSYC.DEBUG(1, "DumpOptions", k, tostring(x), y.r * 255, y.g * 255, y.b * 255)
 					end
-					--Debug(1, k, tostring(x), BSYC:serializeTable(y))
 				end
 			end
 		end
@@ -183,6 +184,7 @@ function Data:ResetColors()
 	BSYC.options.colors.cross = { r = 1, g = 125/255, b = 10/255 }
 	BSYC.options.colors.bnet = { r = 53/255, g = 136/255, b = 1 }
 	BSYC.options.colors.itemid = { r = 82/255, g = 211/255, b = 134/255 }
+	BSYC.options.colors.itemid = { r = 9/255, g = 219/255, b = 224/255 }
 end
 
 function Data:CleanDB()
@@ -378,17 +380,9 @@ function Data:CheckExpiredAuctions()
 				if unitObj.data.auction.bag[x] then
 
 					local timeleft
-					local link, count, identifier, optOne, optTwo = strsplit(";", unitObj.data.auction.bag[x])
+					local link, count, qOpts = BSYC:Split(unitObj.data.auction.bag[x])
 
-					identifier = tonumber(identifier)
-
-					if identifier and identifier == 1 then
-						--it's a regular auction item
-						timeleft = optOne
-					else
-						--it's a battlepet with identifier of 2
-						timeleft = optTwo
-					end
+					timeleft = (qOpts and qOpts.auction) or nil
 
 					--if the timeleft is greater than current time than keep it, it's not expired
 					if link and timeleft and tonumber(timeleft) then
@@ -466,14 +460,8 @@ function Data:IterateUnits(dumpAll, filterList)
 						--return everything regardless of user settings
 						if dumpAll or filterList then
 
-							skipReturn = false
-
-							if filterList then
-								if filterList[argKey][k] then
-									skipReturn = false
-								else
-									skipReturn = true
-								end
+							if filterList and not filterList[argKey][k] then
+								skipReturn = true
 							end
 
 							if not skipReturn then
@@ -481,8 +469,6 @@ function Data:IterateUnits(dumpAll, filterList)
 							end
 
 						elseif v.faction and (v.faction == BSYC.db.player.faction or BSYC.options.enableFaction) then
-
-							skipReturn = false
 
 							--check for guilds and if we have them merged or not
 							if BSYC.options.enableGuild and isGuild then

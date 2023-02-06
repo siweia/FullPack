@@ -15,8 +15,8 @@ end
 
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 local AceGUI = LibStub("AceGUI-3.0")
-local itemScanner = LibStub('LibItemSearch-1.2')
-local customSearch = LibStub('CustomSearch-1.0')
+local itemScanner = LibStub("ItemSearch-1.3")
+local customSearch = LibStub("CustomSearch-1.0")
 
 function Search:OnEnable()
 
@@ -54,7 +54,8 @@ function Search:OnEnable()
 	refreshbutton:SetHeight(20)
 	refreshbutton:SetCallback("OnClick", function()
 		searchbar:ClearFocus()
-		self:DoSearch(searchbar:GetText())
+		local sbText = searchbar:GetText() or ''
+		self:DoSearch((string.len(sbText) > 0 and sbText) or Search.searchStr)
 	end)
 	Search.refreshbutton = refreshbutton
 	w:AddChild(refreshbutton)
@@ -339,7 +340,6 @@ function Search:OnEnable()
 end
 
 function Search:StartSearch(searchStr)
-
 	self.frame:Show()
 
 	if not BSYC.options.alwaysShowAdvSearch then
@@ -348,7 +348,6 @@ function Search:StartSearch(searchStr)
 	else
 		self.advancedsearchframe.advsearchbar:SetText(searchStr)
 	end
-
 end
 
 function Search:AddEntry(entry)
@@ -360,10 +359,8 @@ function Search:AddEntry(entry)
 	local r, g, b, hex = GetItemQualityColor(rarity)
 	local isBattlePet = false
 
-	local _, _, identifier, optOne = strsplit(";", link)
-	if identifier and tonumber(identifier) == 2 and optOne then
-		isBattlePet = true
-	end
+	local _, _, qOpts = BSYC:Split(link)
+	if qOpts and qOpts.battlepet then isBattlePet = true end
 
 	--if its a battlepet and we don't have access to BattlePetTooltip, then don't display it
 	if isBattlePet and not BattlePetTooltip then return end
@@ -383,7 +380,7 @@ function Search:AddEntry(entry)
 			if not isBattlePet then
 				ChatEdit_InsertLink(link)
 			else
-				FloatingBattlePet_Toggle(tonumber(optOne), 0, 0, 0, 0, 0, nil, nil)
+				FloatingBattlePet_Toggle(tonumber(qOpts.battlepet), 0, 0, 0, 0, 0, nil, nil)
 			end
 		end)
 	label:SetCallback(
@@ -396,7 +393,7 @@ function Search:AddEntry(entry)
 				GameTooltip:Show()
 			else
 				GameTooltip:SetOwner(label.frame, "ANCHOR_BOTTOMRIGHT")
-				BattlePetToolTip_Show(tonumber(optOne), 0, 0, 0, 0, 0, nil)
+				BattlePetToolTip_Show(tonumber(qOpts.battlepet), 0, 0, 0, 0, 0, nil)
 			end
 		end)
 	label:SetCallback(
@@ -484,21 +481,30 @@ local function checkData(data, searchStr, searchTable, tempList, countWarning, v
 
 	for i=1, #data do
 		if data[i] then
-			local link, count, identifier, optOne = strsplit(";", data[i])
+			local link, count, qOpts = BSYC:Split(data[i])
 
 			if link then
 				local dName, dItemLink, dRarity, dTexture
 				local testMatch = false
 
-				--if identifier is 2 then it's a battlepet, optOne would be speciesID
-				if identifier and tonumber(identifier) == 2 and optOne then
-					dName, dTexture = C_PetJournal.GetPetInfoBySpeciesID(optOne)
+				--qOpts.battlepet would be speciesID
+				if qOpts and qOpts.battlepet then
+					dName, dTexture = C_PetJournal.GetPetInfoBySpeciesID(qOpts.battlepet)
 					dRarity = 1
 					dItemLink = data[i]
 					testMatch = customSearch:Find(searchStr or '', dName) --searchStr cannot be nil
 				else
 					dName, dItemLink, dRarity, _, _, _, _, _, _, dTexture = GetItemInfo("item:"..link)
-					testMatch = itemScanner:Matches(dItemLink, searchStr)
+					if dItemLink then
+						--if the user isn't using any filters i.e (name:, tip:, class:) then lets default to name:
+						if searchStr:find(':') then
+							--they are using filters so sent it to itemsearch
+							testMatch = itemScanner:Matches(dItemLink, searchStr)
+						else
+							--no filters are being used, default to name search only
+							testMatch = customSearch:Find(searchStr or '', dName) --searchStr cannot be nil
+						end
+					end
 				end
 
 				--for debugging purposes only
@@ -523,6 +529,7 @@ local function checkData(data, searchStr, searchTable, tempList, countWarning, v
 end
 
 function Search:DoReset()
+	Search.searchStr = nil
 	Search.advUnitList = nil
 	self.advancedsearchframe.advsearchbar:SetText(nil)
 	self.searchbar:SetText(nil)
@@ -584,19 +591,23 @@ end
 
 function Search:DoSearch(searchStr, advUnitList, advAllowList)
 
+	local sbText = self.searchbar:GetText() or ''
+	local advsbText = self.advancedsearchframe.advsearchbar:GetText() or ''
+
 	--only do if we aren't doing an advanced search
 	if not advUnitList then
 		Search.advUnitList = nil -- we aren't doing an advanced search so lets reset this
+		searchStr = (string.len(sbText) > 0 and sbText) or Search.searchStr
 		if not searchStr then return end
 		if string.len(searchStr) < 1 then return end
-		searchStr = searchStr or self.searchbar:GetText()
 	else
-		searchStr = searchStr or self.advancedsearchframe.advsearchbar:GetText()
+		searchStr = (string.len(advsbText) > 0 and advsbText) or Search.searchStr
 		self.advancedsearchframe.advsearchbar:SetText(nil) --reset always, we only want to use searchStr
 	end
 
 	self.searchbar:SetText(nil) --reset always, we only want to use searchStr
 	searchStr = searchStr:lower() --always make sure everything is lowercase when doing searches
+	Search.searchStr = searchStr --store globally for the refresh
 	self.scrollframe:ReleaseChildren() --clear out the scrollframe
 
 	local searchTable = {}
@@ -704,7 +715,6 @@ function Search:DisplayAdvSearchLists()
 	self.advancedsearchframe.locationlistscrollframe:ReleaseChildren() --clear out the scrollframe
 
 	local playerListTable = {}
-	local tempList = {}
 
 	--show simple for ColorizeUnit
 	for unitObj in Data:IterateUnits(true) do
