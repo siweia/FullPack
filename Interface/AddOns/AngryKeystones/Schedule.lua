@@ -48,6 +48,16 @@ local function UpdatePartyKeystones()
 
 	local playerRealm = GetRealmName()
 
+	local buggyName
+	do
+		for name in pairs(unitKeystones) do
+			if not strmatch(name, "%-") then
+				buggyName = true
+				break
+			end
+		end
+	end
+
 	local e = 1
 	for i = 1, 4 do
 		local entry = Mod.PartyFrame.Entries[e]
@@ -60,6 +70,8 @@ local function UpdatePartyKeystones()
 			else
 				fullName = name.."-"..realm
 			end
+
+			if buggyName then fullName = name end
 
 			if unitKeystones[fullName] ~= nil then
 				local keystoneName
