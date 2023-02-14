@@ -57,9 +57,9 @@ L['tuskarr_tacklebox'] = 'Boîte d\'appâts de pêche roharts'
 L['options_icons_tuskarr_tacklebox'] = 'Boîtes d\'appâts de pêche roharts'
 L['options_icons_tuskarr_tacklebox_desc'] = 'Afficher les emplacements possibles des {object:Boîtes d\'appâts de pêche roharts}.'
 
-L['dr_best'] = 'Votre meilleur temps :\n - Normal : %.3fs\n - Avancé : %.3fs'
+L['dr_best'] = 'Votre meilleur temps :\n - Normal : %.3fs\n - Avancé : %.3fs\n - Inversé : %.3fs'
 L['dr_best_dash'] = 'Votre meilleur temps :\n - %.3fs'
-L['dr_note'] = 'Temps imparti :\n - Normal : %ss / %ss\n - Avancé : %ss / %ss'
+L['dr_note'] = 'Temps imparti :\n - Normal : %ss / %ss\n - Avancé : %ss / %ss\n - Inversé : %ss / %ss'
 L['dr_note_dash'] = 'Temps imparti :\n - %ss / %ss'
 L['dr_bronze'] = '\n\nTerminez la course pour obtenir ' .. ns.color.Bronze('Bronze') .. '.'
 L['options_icons_dragonrace'] = 'Courses du Vol à dos de dragon'
@@ -192,6 +192,13 @@ L['artists_easel_note_step3'] = '{quest:70170}\n{npc:194425} vous demandera de c
 L['artists_easel_note_step4'] = 'Apportez les tableaux finaux à {npc:194323} et vous recevrez votre jouet!\n\n{note:Les tableaux ne sont pas récupérables dans les donjons en difficulté Mythique ou Mythique+.}'
 
 L['somewhat_stabilized_arcana_note'] = 'Situé au sommet de la tour.\n\nComplétez la courte suite de quêtes débutée par {npc:197100} pour obtenir le jouet.'
+
+L['stranded_soul_note'] = [[
+Après avoir tué l'{npc:196900}, il explose en 4 {npc:196901s}.
+Vous devez les activer pour faire fondre le mur de glace (deux joueurs sont recommandés).
+
+Tuez l'{npc:197183} à l'intérieur et vous recevrez le {item:200528}.
+]]
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -336,7 +343,7 @@ L['icecrown_bleu_note'] = 'Achetez auprès de {npc:196729} {title:<Fromager>} au
 L['dreamwarding_dripbrew_note'] = 'Achetez auprès de {npc:197872} {title:<Caféinomancien>} au {location:Laboratoire de nuit}.'
 L['arcanostabilized_provisions_note'] = 'Achetez auprès de {npc:198831} {title:<Cuisinière en chef>} à la {location:Confluence Temporelle} dans {location:L’avenir des Primalistes}.'
 L['steamed_scarab_steak_note'] = 'Achetez auprès de {npc:197586} {title:<Tavernière du spa>} au {location:Spa « Rêves sereins »}.'
-L['craft_creche_crowler_note'] = 'Achetez auprès de {npc:187444} {title:<Vendeur de breuvages draconiques itinérant>} étant situé dans ces zones aléatoires chaque jour : {location:Sanctuaire de l’Essence rubis}, {location:Auberge Vertécaille}, {location:Camp Nulle-Part}, {sanctuary:Confluence Temporelle}.'
+L['craft_creche_crowler_note'] = 'Achetez auprès de {npc:187444} {title:<Vendeur de breuvages draconiques itinérant>} étant situé dans ces zones aléatoires chaque jour : {location:Sanctuaire de l’Essence rubis}, {location:Auberge Vertécaille}, {location:Camp Nulle-Part}, {sanctuary:Confluence Temporelle}, {location:Auberge de la Charnière égarée}, {location:Poste Gelikyr} et {location:Camp de base du Dracaret}.'
 L['bivigosas_blood_sausages_note'] = 'Achetez auprès de l\'{npc:188895} {title:<Nourriture et boissons>} au {location:Poste Gelikyr}.'
 L['rumiastrasza_note'] = '{note:Terminez la suite de quêtes journalières commençant par {quest:71238} à {location:Valdrakken}, sinon le haut-fait ne pourra pas être accompli.}'
 L['options_icons_specialties'] = '{achievement:16621}'
@@ -355,6 +362,10 @@ L['chest_of_the_elements'] = 'Coffre des éléments'
 
 L['hoard_of_draconic_delicacies_note_start'] = 'Terminez les 7 quêtes suivantes données par {npc:189479} :'
 L['hoard_of_draconic_delicacies_note_end'] = 'Une fois toutes les quêtes terminées, {npc:189479} proposera {quest:67071} pour recevoir votre recette.\n\n{note:Les quêtes sont basées sur le chef invité actuel à l\'{location:Enclave de Rubis} et peuvent ne pas correspondre à l\'ordre indiqué ci-dessus.}'
+
+L['brendormi_note_start'] = 'Échangez vos {item:202039} et {currency:2118} contre de l\'équipement, une mascotte, un jouet et une monture.'
+L['brendormi_note_item'] = 'Vous avez actuellement %s {item:202039}.'
+L['brendormi_note_currency'] = 'Vous avez actuellement %s {currency:2118}.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -387,9 +398,9 @@ L['fullsails_supply_chest'] = 'Clé de coffre de fournitures des Gréements'
 L['hidden_hornswog_hoard_note'] = [[
 Récupérez trois items différents et combinez-les à {object:"l\'Énigmes sagaces : un guide de poche"} près du {npc:192362} pour obtenir une {item:200063} et le nourrir. Elle s'écartera alors du chemin pour que vous puissiez récupérer son trésor.
 
-{item:200064}
-{item:200065}
-{item:200066}
+{item:200064}{dot:Yellow}
+{item:200065}{dot:Blue}
+{item:200066}{dot:White}
 ]]
 
 L['pm_alch_grigori_vialtry'] = 'Sur une corniche surplombant l\'{location:Assaut de Givréclair}.'
@@ -484,3 +495,7 @@ L['loyal_magmammoth_wrathion_quatermaster_note'] = 'Achetez les {item:201840} ' 
 L['loyal_magmammoth_sabellian_quatermaster_note'] = 'Achetez les {item:201839} ' .. ns.color.Gold('(800 po)') .. ' à {npc:199036} ou {npc:188623}.'
 L['loyal_magmammoth_harness_note'] = 'Achetez le {item:201837} à {npc:191135}.'
 L['loyal_magmammoth_taming_note'] = 'Utilisez le {item:201837} tout en chevauchant un {npc:198150} pour obtenir votre monture !\n\n{note:Il a été signalé qu\'il ne serait apparemment possible d\'harnacher qu\'un seul {npc:198150}, trouvé dans l\'{location:Éminence Ardente}.}'
+
+L['djaradin_cache'] = 'Cache djaradine'
+L['options_icons_djaradin_cache'] = 'Cache djaradine'
+L['options_icons_djaradin_cache_desc'] = 'Afficher les emplacements possibles des {object:Caches djaradines}.'

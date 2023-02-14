@@ -56,9 +56,9 @@ L['tuskarr_tacklebox'] = 'Tuskarr Tacklebox'
 L['options_icons_tuskarr_tacklebox'] = 'Tuskarr Tacklebox'
 L['options_icons_tuskarr_tacklebox_desc'] = 'Display possible locations of {object:Tuskarr Tacklebox}.'
 
-L['dr_best'] = 'Your best time:\n - Normal: %.3fs\n - Advanced: %.3fs'
+L['dr_best'] = 'Your best time:\n - Normal: %.3fs\n - Advanced: %.3fs\n - Reverse: %.3fs'
 L['dr_best_dash'] = 'Your best time:\n - %.3fs'
-L['dr_note'] = 'Target time:\n - Normal: %ss / %ss\n - Advanced: %ss / %ss'
+L['dr_note'] = 'Target time:\n - Normal: %ss / %ss\n - Advanced: %ss / %ss\n - Reverse: %ss / %ss'
 L['dr_note_dash'] = 'Target time:\n - %ss / %ss'
 L['dr_bronze'] = '\n\nFinish the race to get ' .. ns.color.Bronze('Bronze') .. '.'
 L['options_icons_dragonrace'] = 'Dragonriding Races'
@@ -192,6 +192,13 @@ L['artists_easel_note_step4'] = 'Deliver the final paintings to {npc:194323} and
 
 L['somewhat_stabilized_arcana_note'] = 'Located at the top of the tower.\n\nComplete the small questline starting at {npc:197100} to obtain the toy.'
 
+L['stranded_soul_note'] = [[
+After killing {npc:196900} he explodes into 4 {npc:196901s}.
+You need to activate them to melt the ice wall (two players are recommended).
+
+Kill {npc:197183} inside and you will recieve {item:200528}.
+]]
+
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
 -------------------------------------------------------------------------------
@@ -217,9 +224,9 @@ L['windscale_the_stormborn_note'] = 'Kill the {npc:192367s} channeling into the 
 L['windseeker_avash_note'] = 'Kill nearby {npc:195742s} and {npc:187916s} to spawn the rare.'
 L['zarizz_note'] = 'Click and {emote:/hiss} at the four {npc:193169s} to summon the rare.'
 
-L['aylaag_outpost_note'] = '{note:This rare only spawn {faction:Clan Aylaag} Camp in {location:Aylaag Outpost}.}'
-L['eaglewatch_outpost_note'] = '{note:This rare only spawn {faction:Clan Aylaag} Camp in {location:Eaglewatch Outpost}.}'
-L['river_camp_note'] = '{note:This rare only spawn {faction:Clan Aylaag} Camp in {location:River Camp}.}'
+L['aylaag_outpost_note'] = '{note:This rare only spawns when {faction:Clan Aylaag} Camp in {location:Aylaag Outpost}.}'
+L['eaglewatch_outpost_note'] = '{note:This rare only spawns when {faction:Clan Aylaag} Camp in {location:Eaglewatch Outpost}.}'
+L['river_camp_note'] = '{note:This rare only spawns when {faction:Clan Aylaag} Camp in {location:River Camp}.}'
 
 L['defend_clan_aylaag'] = 'Defend Clan Aylaag'
 L['defend_clan_aylaag_note'] = '{note:Only spawns when defending the {faction:Clan Aylaag} Camp moving events, not loot.}'
@@ -335,13 +342,13 @@ L['icecrown_bleu_note'] = 'Purchase from {npc:196729} {title:<Cheesemonger>} in 
 L['dreamwarding_dripbrew_note'] = 'Purchase from {npc:197872} {title:<Caffeinomancer>} at {location:The Late Night Lab}.'
 L['arcanostabilized_provisions_note'] = 'Purchase from {npc:198831} {title:<Head Chef>} at the {location:Temporal Conflux} in the {location:Primalist Future}.'
 L['steamed_scarab_steak_note'] = 'Purchase from {npc:197586} {title:<Spa Bartender>} at {location:Serene Dreams Spa}.'
-L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} {title:<Traveling Dragonbrew Vendor>} at random map place per day: {location:Ruby Lifeshrine}, {location:Greenscale Inn}, {location:Camp Nowhere}, {location:Temporal Conflux}.'
+L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} {title:<Traveling Dragonbrew Vendor>} at random map place per day: {location:Ruby Lifeshrine}, {location:Dragonscale Basecamp}, {location:Camp Nowhere}, {location:Missing Hinge Inn}, {location:Temporal Conflux}, {location:Gelikyr Post} and {location:Greenscale Inn}.'
 L['bivigosas_blood_sausages_note'] = 'Purchase from {npc:188895} {title:<Food & Drink>} at {location:Gelikyr Post}.'
 L['rumiastrasza_note'] = '{note:Complete the daily questline starting at {quest:71238} from {location:Valdrakken}, otherwise the achievement cannot be completed.}'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Display food and drink locations for the {achievement:16621} achievement.'
 
-L['new_perspective_note'] = 'Take a picture with the S.E.L.F.I.E. camera at the vista. The location will be marked by a purple light circle as soon as you in camera mode.\n\nIf you dont get credit towards the achievement, change your angle.'
+L['new_perspective_note'] = 'Take a picture with the S.E.L.F.I.E. camera at the vista. The location will be marked by a purple light circle as soon as you are in camera mode.\n\nIf you dont get credit towards the achievement, change your angle.'
 L['options_icons_new_perspective'] = '{achievement:16634}'
 L['options_icons_new_perspective_desc'] = 'Display vista locations for the {achievement:16634} achievement.'
 
@@ -354,6 +361,10 @@ L['chest_of_the_elements'] = 'Chest of the Elements'
 
 L['hoard_of_draconic_delicacies_note_start'] = 'Complete the following 7 quests provided by {npc:189479}:'
 L['hoard_of_draconic_delicacies_note_end'] = 'After all quests have been completed {npc:189479} will provide {quest:67071} to receive your recipe.\n\n{note:Quests are based on the active guest chef at {location:The Ruby Enclave} and may not match the order listed above.}'
+
+L['brendormi_note_start'] = 'Exchange {item:202039} and {currency:2118} for gear, a pet, a toy, and a mount.'
+L['brendormi_note_item'] = 'You currently have %s {item:202039}.'
+L['brendormi_note_currency'] = 'You currently have %s {currency:2118}.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -386,9 +397,9 @@ L['fullsails_supply_chest'] = 'Fullsails Supply Chest'
 L['hidden_hornswog_hoard_note'] = [[
 Collect three different items and combine them at the {object:"Observant Riddles: A Field Guide"} near the {npc:192362} to get {item:200063} and feed it. He will then move out of the way so you can loot his treasure.
 
-{item:200064}
-{item:200065}
-{item:200066}
+{item:200064}{dot:Yellow}
+{item:200065}{dot:Blue}
+{item:200066}{dot:White}
 ]]
 
 L['pm_alch_grigori_vialtry'] = 'On a ledge overlooking {location:Flashfrost Assault}.'
@@ -483,3 +494,7 @@ L['loyal_magmammoth_wrathion_quatermaster_note'] = 'Purchase {item:201840} ' .. 
 L['loyal_magmammoth_sabellian_quatermaster_note'] = 'Purchase {item:201839} ' .. ns.color.Gold('(800 gold)') .. ' from either {npc:199036} or {npc:188623}.'
 L['loyal_magmammoth_harness_note'] = 'Purchase {item:201837} from {npc:191135}.'
 L['loyal_magmammoth_taming_note'] = 'Use the {item:201837} while riding a {npc:198150} to obtain your mount!\n\n{note:Reports indicate you may only be able to harness the {npc:198150} found in the {location:Burning Ascent}.}'
+
+L['djaradin_cache'] = 'Djaradin Cache'
+L['options_icons_djaradin_cache'] = 'Djaradin Cache'
+L['options_icons_djaradin_cache_desc'] = 'Display possible locations of {object:Djaradin Cache}.'

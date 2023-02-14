@@ -42,23 +42,23 @@ L['options_icons_kite_desc'] = 'Zeigt die Positionen der {npc:198118} für den E
 
 L['disturbed_dirt'] = 'Bewegte Erde'
 L['options_icons_disturbed_dirt'] = 'Bewegte Erde'
-L['options_icons_disturbed_dirt_desc'] = 'Zeigt die möglichen Positionen für Bewegte Erde an.'
+L['options_icons_disturbed_dirt_desc'] = 'Zeigt die möglichen Positionen für {object:Bewegte Erde} an.'
 
 L['scout_pack'] = 'Expeditionsspäherpack'
 L['options_icons_scout_pack'] = 'Expeditionsspäherpacks'
-L['options_icons_scout_pack_desc'] = 'Zeigt die möglichen Positionen für Expeditionsspäherpacks an.'
+L['options_icons_scout_pack_desc'] = 'Zeigt die möglichen Positionen für {object:Expeditionsspäherpacks} an.'
 
 L['magicbound_chest'] = 'Magiegebundene Truhe'
 L['options_icons_magicbound_chest'] = 'Magiegebundene Truhen'
-L['options_icons_magicbound_chest_desc'] = 'Zeigt die möglichen Positionen der Magiegebundenen Truhen an.'
+L['options_icons_magicbound_chest_desc'] = 'Zeigt die möglichen Positionen für {object:Magiegebundene Truhe} an.'
 
 L['tuskarr_tacklebox'] = 'Angelzubehör der Tuskarr'
 L['options_icons_tuskarr_tacklebox'] = 'Angelzubehör der Tuskarr'
-L['options_icons_tuskarr_tacklebox_desc'] = 'Zeigt mögliche Positionen des {object:Angelzubehörs der Tuskarr} an.'
+L['options_icons_tuskarr_tacklebox_desc'] = 'Zeigt die möglichen Positionen für {object:Angelzubehör der Tuskarr} an.'
 
-L['dr_best'] = 'Deine beste Zeit:\n - Normal: %.3fs\n - Fortgeschritten: %.3fs'
+L['dr_best'] = 'Deine beste Zeit:\n - Normal: %.3fs\n - Fortgeschritten: %.3fs\n - Rückwärts: %.3fs'
 L['dr_best_dash'] = 'Deine beste Zeit:\n - %.3fs'
-L['dr_note'] = 'Vorgabezeit:\n - Normal: %ss / %ss\n - Fortgeschritten: %ss / %ss'
+L['dr_note'] = 'Vorgabezeit:\n - Normal: %ss / %ss\n - Fortgeschritten: %ss / %ss\n - Rückwärts: %ss / %ss'
 L['dr_note_dash'] = 'Vorgabezeit:\n - %ss / %ss'
 L['dr_bronze'] = '\n\nBeende das Rennen um ' .. ns.color.Bronze('Bronze') .. ' zu erhalten.'
 L['options_icons_dragonrace'] = 'Drachenrennen'
@@ -185,6 +185,13 @@ L['artists_easel_note_step3'] = '{quest:70170}\n{npc:194425} wird dich bitten, G
 L['artists_easel_note_step4'] = 'Bringe die letzten Gemälde zu {npc:194323}, um das Spielzeug zu erhalten.\n\n{note:Gemälde können nicht aus Dungeons der Schwierigkeitsstufe Mythisch oder Mythisch+ geholt werden.}'
 
 L['somewhat_stabilized_arcana_note'] = 'Oben auf dem Turm.\n\nSchließe die kurze Questreihe von {npc:197100} ab, um das Spielzeug zu erhalten.'
+
+L['stranded_soul_note'] = [[
+Nachdem du {npc:196900} getötet hast, explodiert er in 4 {npc:196901n}.
+Du musst sie aktivieren, um die Eiswand zu schmelzen (Zwei Spieler empfohlen).
+
+Töte dann {npc:197183} in der Höhle, um {item:200528} zu erhalten.
+]]
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -349,6 +356,10 @@ L['chest_of_the_elements'] = 'Truhe der Elemente'
 L['hoard_of_draconic_delicacies_note_start'] = 'Schließe die folgenden 7 Quests von {npc:189479} ab:'
 L['hoard_of_draconic_delicacies_note_end'] = 'Nachdem alle Quests abgeschlossen wurden wird {npc:189479} die Quest {quest:67071} anbieten, um dein Rezept zu erhalten.\n\n{note:Die Quests richten sich nach dem aktiven Gastkoch in {location:Die Rubinenklave} und stimmen möglicherweise nicht mit der oben aufgeführten Reihenfolge überein.}'
 
+L['brendormi_note_start'] = 'Tausche {item:202039} und {currency:2118} gegen Ausrüstung, ein Haustier, ein Spielzeug oder ein Reittier ein.'
+L['brendormi_note_item'] = 'Zurzeit hast du %s {item:202039}.'
+L['brendormi_note_currency'] = 'Zurzeit hast du %s {currency:2118}.'
+
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
@@ -377,7 +388,13 @@ L['torn_riding_pack_note'] = 'Liegt am oberen Ende des Wasserfalls.'
 L['yennus_kite_note'] = 'Steckt an einem Ast in der Baumkrone fest.'
 
 L['fullsails_supply_chest'] = 'Vorratskiste der Vollsegel'
-L['hidden_hornswog_hoard_note'] = 'Sammel {item:200064}, {item:200065} und {item:200066}, kombiniere diese beim {object:"Rätsel für Aufmerksame: Ein Naturführer"} nahe dem Schatz und füttere dann den Frosch damit.'
+L['hidden_hornswog_hoard_note'] = [[
+Sammel die drei Gegenstände und kombiniere diese beim {object:"Rätsel für Aufmerksame: Ein Naturführer"} nahe dem Schatz und füttere dann den Frosch damit.
+
+{item:200064}{dot:Yellow}
+{item:200065}{dot:Blue}
+{item:200066}{dot:White}
+]]
 
 L['pm_alch_grigori_vialtry'] = 'Auf einem Felsvorsprung mit Blick auf den {location:Blitzfrostangriff}.'
 L['pm_skin_zenzi'] = 'Sitzt direkt am Flussufer.'
@@ -470,3 +487,6 @@ L['loyal_magmammoth_sabellian_quatermaster_note'] = 'Kaufe 1x {item:201839} ' ..
 L['loyal_magmammoth_harness_note'] = 'Kaufe 1x {item:201837} von {npc:191135}.'
 L['loyal_magmammoth_taming_note'] = 'Benutze den {item:201837} während du auf einem {npc:198150} aufsitzt, um das Reittier zu erhalten.\n\n{note:Berichten zufolge kann nur das {npc:198150} im {location:Sengender Stieg} gezügelt werden.}'
 
+L['djaradin_cache'] = 'Depot der Djaradin'
+L['options_icons_djaradin_cache'] = 'Depots der Djaradin'
+L['options_icons_djaradin_cache_desc'] = 'Zeigt die möglichen Positionen für {object:Depot der Djaradin} an.'

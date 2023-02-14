@@ -56,13 +56,13 @@ L['tuskarr_tacklebox'] = '海象人工具盒'
 L['options_icons_tuskarr_tacklebox'] = '海象人工具盒'
 L['options_icons_tuskarr_tacklebox_desc'] = '显示 {object:海象人工具盒} 可能的位置。'
 
-L['dr_best'] = '最快时间：\n - 普通：%.3f秒\n - 进阶：%.3f秒'
+L['dr_best'] = '最快时间：\n - 普通：%.3f秒\n - 进阶：%.3f秒\n - 反向：%.3f秒'
 L['dr_best_dash'] = '最快时间：\n - %.3f秒'
-L['dr_note'] = '目标时间：\n - 普通：%s秒 / %s秒\n - 进阶：%s秒 / %s秒'
+L['dr_note'] = '目标时间：\n - 普通：%s秒 / %s秒\n - 进阶：%s秒 / %s秒\n - 反向：%s秒 / %s秒'
 L['dr_note_dash'] = '目标时间：\n - %s秒 / %s秒'
 L['dr_bronze'] = '\n\n完成竞速获得 ' .. ns.color.Bronze('青铜') .. '。'
 L['options_icons_dragonrace'] = '驭龙竞速'
-L['options_icons_dragonrace_desc'] = '显示区域内驭龙竞速的位置。'
+L['options_icons_dragonrace_desc'] = '显示区域内全部驭龙竞速的位置。'
 
 L['squirrels_note'] = '必须使用表情 {emote:/爱}，{emote:/love} 给非战斗宠物的小动物。'
 L['options_icons_squirrels'] = '{achievement:16729}'
@@ -191,6 +191,13 @@ L['artists_easel_note_step3'] = '{quest:70170}\n{npc:194425} 会要求从 {locat
 L['artists_easel_note_step4'] = '将最后的画作交给 {npc:194323} 并收到玩具！\n\n{note:画作不会从史诗或史诗+地下城中掉落。}'
 
 L['somewhat_stabilized_arcana_note'] = '位于塔顶。\n\n完成从 {npc:197100} 开始的小任务线获得玩具。'
+
+L['stranded_soul_note'] = [[
+击杀 {npc:196900} 后它会爆炸成4个 {npc:196901}。
+需要激活它们来融化冰墙（推荐两个玩家）。
+
+击杀里面的 {npc:197183}，你会得到 {item:200528}。
+]]
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -335,7 +342,7 @@ L['icecrown_bleu_note'] = '从 {location:匠人集市} 的 {npc:196729} {title:<
 L['dreamwarding_dripbrew_note'] = '从 {location:熬夜实验室} 的 {npc:197872} {title:<咖啡因操控师>} 购买。'
 L['arcanostabilized_provisions_note'] = '从 {location:拜荒者的未来} 内的 {location:时光流汇} 的 {npc:198831} {title:<厨师长>} 购买。'
 L['steamed_scarab_steak_note'] = '从 {location:宁梦温泉} 的 {npc:197586} {title:<温泉调酒师>} 购买。'
-L['craft_creche_crowler_note'] = '从每日随机地图位置的 {npc:187444} {title:<旅行的巨龙陈酿商人>} 位于：{location:红玉新生圣地}、{location:绿鳞旅店}、{location:僻壤营地}、{location:时光流汇} 购买。'
+L['craft_creche_crowler_note'] = '从每日随机地图位置的 {npc:187444} {title:<旅行的巨龙陈酿商人>} 位于：{location:红玉新生圣地}、{location:龙鳞先遣营地}、{location:时光流汇}、{location:格利基尔岗哨}、{location:僻壤营地}、{location:掉链旅店} 和 {location:绿鳞旅店} 购买。'
 L['bivigosas_blood_sausages_note'] = '从 {location:格利基尔岗哨} 的 {npc:188895} {title:<食物和饮料>} 购买。'
 L['rumiastrasza_note'] = '{note:完成从 {location:瓦德拉肯} {quest:71238} 开始的日常任务线，否则无法完成成就。}'
 L['options_icons_specialties'] = '{achievement:16621}'
@@ -354,6 +361,10 @@ L['chest_of_the_elements'] = '元素宝箱'
 
 L['hoard_of_draconic_delicacies_note_start'] = '完成 {npc:189479} 提供的7个以下任务：'
 L['hoard_of_draconic_delicacies_note_end'] = '完成所有任务后，{npc:189479} 将提供 {quest:67071} 以接收食谱。\n\n{note:任务基于 {location:红玉飞地} 的活跃客座厨师，可能不匹配上面列出的顺序。}'
+
+L['brendormi_note_start'] = '用 {item:202039} 和 {currency:2118} 换取装备，宠物和坐骑。'
+L['brendormi_note_item'] = '当前有 %s {item:202039}。'
+L['brendormi_note_currency'] = '当前有 %s {currency:2118}。'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -386,9 +397,9 @@ L['fullsails_supply_chest'] = '满帆补给箱'
 L['hidden_hornswog_hoard_note'] = [[
 收集3种不同的物品并在 {npc:192362} 附近的 {object:“观察谜题：实地指南”} 处组合它们以获得 {item:200063} 然后喂它。然后它会离开就可以拾取它的宝藏。
 
-{item:200064}
-{item:200065}
-{item:200066}
+{item:200064}{dot:Yellow}
+{item:200065}{dot:Blue}
+{item:200066}{dot:White}
 ]]
 
 L['pm_alch_grigori_vialtry'] = '在俯瞰 {location:闪霜战地} 的平台上。'
@@ -483,3 +494,7 @@ L['loyal_magmammoth_wrathion_quatermaster_note'] = '从 {npc:199020} 或 {npc:18
 L['loyal_magmammoth_sabellian_quatermaster_note'] = '从 {npc:199036} 或 {npc:188623} 购买 {item:201839} ' .. ns.color.Gold('（800 金币）') .. '。'
 L['loyal_magmammoth_harness_note'] = '从 {npc:191135} 购买 {item:201837}。'
 L['loyal_magmammoth_taming_note'] = '在骑乘 {npc:198150} 时使用 {item:201837} 获得坐骑！\n\n{note:报告表明可能只能驾驭在 {location:燃烧高地} 中找到的 {npc:198150}。}'
+
+L['djaradin_cache'] = '贾拉丁宝箱'
+L['options_icons_djaradin_cache'] = '贾拉丁宝箱'
+L['options_icons_djaradin_cache_desc'] = '显示 {object:贾拉丁宝箱} 可能的位置。'

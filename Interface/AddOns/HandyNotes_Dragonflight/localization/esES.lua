@@ -55,11 +55,11 @@ L['options_icons_magicbound_chest_desc'] = 'Muestra dónde pueden haber {object:
 
 L['tuskarr_tacklebox'] = 'Caja de Pesca Colmillar'
 L['options_icons_tuskarr_tacklebox'] = 'Caja de Pesca Colmillar'
-L['options_icons_tuskarr_tacklebox_desc'] = 'Muestra dónde pueden haber {object:Caja de Pesca Colmillar}.'
+L['options_icons_tuskarr_tacklebox_desc'] = 'Muestra dónde pueden haber {object:Cajas de Pesca Colmillar}.'
 
-L['dr_best'] = 'Tu mejor tiempo:\n - Normal: %.3fs\n - Avanzado: %.3fs'
+L['dr_best'] = 'Tu mejor tiempo:\n - Normal: %.3fs\n - Avanzado: %.3fs\n - Inverso: %.3fs'
 L['dr_best_dash'] = 'Tu mejor tiempo:\n - %.3fs'
-L['dr_note'] = 'Objetivo de tiempo:\n - Normal: %ss / %ss\n - Avanzado: %ss / %ss'
+L['dr_note'] = 'Objetivo de tiempo:\n - Normal: %ss / %ss\n - Avanzado: %ss / %ss\n - Inverso: %ss / %ss'
 L['dr_note_dash'] = 'Objetivo de tiempo:\n - %ss / %ss'
 L['dr_bronze'] = '\n\nAcaba la carrera para conseguir el ' .. ns.color.Bronze('Bronce') .. '..'
 L['options_icons_dragonrace'] = 'Carreras de Dragones'
@@ -193,6 +193,13 @@ L['artists_easel_note_step4'] = 'Entrega los últimos cuadros a {npc:194323} y r
 
 L['somewhat_stabilized_arcana_note'] = 'Está encima de la torre.\n\nCompleta la pequeña cadena de misiones que comienza en {npc:197100} para conseguir el juguete.'
 
+L['stranded_soul_note'] = [[
+Después de matar al {npc:196900} explotará en 4 {npc:196901}.
+Necesitas activarlos para derretir la pared de hielo (se recomienda dos jugadores para que de tiempo).
+
+Mata el {npc:197183} de dentro y recibirás la {item:200528}.
+]]
+
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
 -------------------------------------------------------------------------------
@@ -218,9 +225,9 @@ L['windscale_the_stormborn_note'] = 'Mata a los {npc:192367} que están canaliza
 L['windseeker_avash_note'] = 'Mata a los {npc:195742} cercanos y a los {npc:187916} para hacer aparecer al raro.'
 L['zarizz_note'] = 'Selecciona a las {npc:193169} y teclea {emote:/hiss} en ellas para invocar al raro.'
 
-L['aylaag_outpost_note'] = '{note:Este raro sólo aparece en el Campamento del {faction:Clan Aylaag} en la {location:Avanzada Aylaag}.}'
-L['eaglewatch_outpost_note'] = '{note:Este raro sólo aparece en el Campamento del {faction:Clan Aylaag} en la {location:Avanzada Vigía del Águila}.}'
-L['river_camp_note'] = '{note:Este raro sólo aparece en el Campamento del {faction:Clan Aylaag} en el {location:Campamento del Río}.}'
+L['aylaag_outpost_note'] = '{note:Este raro sólo aparece cuando el campamento del {faction:Clan Aylaag} está en la {location:Avanzada Aylaag}.}'
+L['eaglewatch_outpost_note'] = '{note:Este raro sólo aparece cuando el campamento del {faction:Clan Aylaag} está en la {location:Avanzada Vigía del Águila}.}'
+L['river_camp_note'] = '{note:Este raro sólo aparece cuando el campamento del {faction:Clan Aylaag} está en el {location:Campamento del Río}.}'
 
 L['defend_clan_aylaag'] = 'Defiende al Clan Aylaag'
 L['defend_clan_aylaag_note'] = '{note:Sólo aparece cuando se defienden los eventos de movimiento de campamentos del {faction:Clan Aylaag}. No hay botín.}'
@@ -336,7 +343,7 @@ L['icecrown_bleu_note'] = 'Cómpraselo a {npc:196729} {title:<Vendedor de ques
 L['dreamwarding_dripbrew_note'] = 'Cómpraselo a {npc:197872} {title:<Cafeinamante>} en el {location:Laboratorio Nocturno}.'
 L['arcanostabilized_provisions_note'] = 'Cómpraselo a {npc:198831} {title:<Chef jefa>} en la {location:Confluencia Temporal} en {location:El Futuro Primalista}.'
 L['steamed_scarab_steak_note'] = 'Cómpraselo a {npc:197586} {title:<Camarera de la sauna>} en la {location:Sauna de Sueños Serenos}.'
-L['craft_creche_crowler_note'] = 'Cómpraselo a {npc:187444} {title:<Vendedora ambulante de bebidas dracónicas>} en un mapa aleatorio cada día: {location:Vitasagrario Rubí}, {location:Posada de la Escama Verde}, {location:Campamento Desubicado}, {location:Confluencia Temporal}.'
+L['craft_creche_crowler_note'] = 'Cómpraselo a {npc:187444} {title:<Vendedora ambulante de bebidas dracónicas>} en un mapa aleatorio cada día: {location:Vitasagrario Rubí}, {location:Campamento Base Dragontina}, {location:Campamento Desubicado}, {location:Posada Bisagraperdida}, {location:Confluencia Temporal}, {location:Puesto Gelikyr} y {location:Posada de la Escama Verde}.'
 L['bivigosas_blood_sausages_note'] = 'Cómpraselo a {npc:188895} {title:<Alimentos y bebidas>} en el {location:Puesto Gelikyr}.'
 L['rumiastrasza_note'] = '{note:Completa la cadena de misiones diarias que empiezan con {quest:71238} en {location:Valdrakken} o de lo contrario, no se podrá completar el logro.}'
 L['options_icons_specialties'] = '{achievement:16621}'
@@ -355,6 +362,10 @@ L['chest_of_the_elements'] = 'Cofre de los elementos'
 
 L['hoard_of_draconic_delicacies_note_start'] = 'Completa las siguientes 7 misiones que da {npc:189479}:'
 L['hoard_of_draconic_delicacies_note_end'] = 'Una vez completadas todas las misiones, {npc:189479} te dará la misión {quest:67071} para recibir la receta.\n\n{note:Las misiones se basan en el chef huésped que esté activo en el {location:Enclave Rubí} y pueden no coincidir en el orden listado encima.}'
+
+L['brendormi_note_start'] = 'Intercambia {item:202039} y {currency:2118} a cambio de equipo, una mascota, un juguete, y una montura.'
+L['brendormi_note_item'] = 'Actualmente tienes %s {item:202039}.'
+L['brendormi_note_currency'] = 'Actualmente tienes %s {currency:2118}.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -387,9 +398,9 @@ L['fullsails_supply_chest'] = 'Cofre de Suministros Todavela'
 L['hidden_hornswog_hoard_note'] = [[
 Recoge tres objetos distintos y combínalos para crear el {object:"Acertijo de observador: Una Guía de Campo"} junto al {npc:192362} para conseguir el {item:200063} y alimentarlo. Se moverá fuera del camino y podrás despojar su tesoro.
 
-{item:200064}
-{item:200065}
-{item:200066}
+{item:200064} {dot:Yellow}
+{item:200065} {dot:Blue}
+{item:200066} {dot:White}
 ]]
 
 L['pm_alch_grigori_vialtry'] = 'En una repisa con vistas al {location:Asalto Raudoescarcha}.'
@@ -484,3 +495,7 @@ L['loyal_magmammoth_wrathion_quatermaster_note'] = 'Compra unas {item:201840} ' 
 L['loyal_magmammoth_sabellian_quatermaster_note'] = 'Compra unas {item:201839} ' .. ns.color.Gold('(800 oros)') .. ' a {npc:199036} o a {npc:188623}.'
 L['loyal_magmammoth_harness_note'] = 'Compra el {item:201837} a {npc:191135}.'
 L['loyal_magmammoth_taming_note'] = 'Usa el {item:201837} mientras montas a un {npc:198150} para conseguir su montura.\n\n{note:Los informes indican que es posible que solo se pueda aprovechar el {npc:198150} que está en el {location:Ascenso Ardiente}.}'
+
+L['djaradin_cache'] = 'Alijo Djaradin'
+L['options_icons_djaradin_cache'] = 'Alijo Djaradin'
+L['options_icons_djaradin_cache_desc'] = 'Muestra dónde pueden haber {object:Alijos Djaradin}.'
