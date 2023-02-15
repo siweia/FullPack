@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2500, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230115051456")
+mod:SetRevision("20230205033605")
 mod:SetCreatureID(190496)
 mod:SetEncounterID(2639)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -40,7 +40,7 @@ local specWarnFrenziedDevastation				= mod:NewSpecialWarningSpell(377505, nil, n
 local specWarnInfusedFallout					= mod:NewSpecialWarningYou(391592, nil, nil, nil, 1, 2)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(382458, nil, nil, nil, 1, 8)
 
-local timerInfusedFalloutCD						= mod:NewNextCountTimer(35, 396351, nil, nil, nil, 2, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerInfusedFalloutCD						= mod:NewNextCountTimer(35, 391592, nil, nil, nil, 2, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerRockBlastCD							= mod:NewNextCountTimer(35, 380487, nil, nil, nil, 3)
 local timerResonatingAnnihilationCD				= mod:NewNextCountTimer(96.4, 377166, 307421, nil, nil, 3)
 local timerShatteringImpactCD					= mod:NewNextCountTimer(35, 383073, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
