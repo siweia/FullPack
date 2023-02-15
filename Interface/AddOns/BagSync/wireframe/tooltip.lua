@@ -667,12 +667,15 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		skipTally = true
 	end
 	--check whitelist
-	if BSYC.options.enableWhitelist and not BSYC.db.whitelist[tonumber(link)] then
-		skipTally = true
+	if BSYC.options.enableWhitelist then
+		if not BSYC.db.whitelist[tonumber(link)] then
+			skipTally = true
+		end
+		--always display if we are showing tooltips in the search window of ANY kind when using whitelist
+		if tooltipType and tooltipType == "BagSyncInteractiveLabel" then
+			skipTally = false
+		end
 	end
-
-	--always display if we are showing tooltips in the search window of ANY kind
-	if tooltipType and tooltipType == "BagSyncInteractiveLabel" then skipTally = false end
 
 	--short the shortID and ignore all BonusID's and stats
 	if BSYC.options.enableShowUniqueItemsTotals and shortID then link = shortID end
@@ -862,7 +865,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		end
 	end
 
-	if not skipTally then
+	if not skipTally or #unitList > 0 then
 		local WLChk = (BSYC.options.enableWhitelist and "WL-ON") or "WL-OFF"
 		Debug(2, "TallyUnits", link, shortID, origLink, source, isBattlePet, grandTotal, WLChk)
 	end
@@ -876,6 +879,11 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 
 	--loop through our characters
 	local usrData = {}
+
+	local permIgnore ={
+		[2032] = "Trader's Tender", --shared across all characters
+	}
+	if permIgnore[currencyID] then return end
 
 	for unitObj in Data:IterateUnits() do
 		if not unitObj.isGuild and unitObj.data.currency and unitObj.data.currency[currencyID] then
