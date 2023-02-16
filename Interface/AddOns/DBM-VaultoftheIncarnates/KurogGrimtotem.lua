@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2491, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230206031014")
+mod:SetRevision("20230215072037")
 mod:SetCreatureID(184986)
 mod:SetEncounterID(2605)
 mod:SetUsedIcons(1, 2, 3, 4, 5)
@@ -456,8 +456,8 @@ function mod:SPELL_AURA_APPLIED(args)
 					yellAbsoluteZero:Yell(i, i)
 					yellAbsoluteZeroFades:Countdown(spellId, nil, i)
 				end
-				warnAbsoluteZero:Show(table.concat(zeroIcons, "<, >"))
 			end
+			warnAbsoluteZero:Show(table.concat(zeroIcons, "<, >"))
 		end
 	elseif spellId == 372514 and args:IsPlayer() then
 		timerFrostBite:Start()

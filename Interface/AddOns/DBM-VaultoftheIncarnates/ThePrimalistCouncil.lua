@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2486, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230206031950")
+mod:SetRevision("20230215072037")
 mod:SetCreatureID(187771, 187768, 187772, 187767)
 mod:SetEncounterID(2590)
 mod:SetUsedIcons(1, 2)
@@ -332,8 +332,8 @@ function mod:SPELL_AURA_APPLIED(args)
 					yellMeteorAxe:Yell(i, i)
 					yellMeteorAxeFades:Countdown(spellId, nil, i)
 				end
-				warnMeteorAxe:Show(table.concat(meteorIcons, "<, >"))
 			end
+			warnMeteorAxe:Show(table.concat(meteorIcons, "<, >"))
 		end
 	elseif spellId == 372027 and not args:IsPlayer() then
 		local uId = DBM:GetRaidUnitId(args.destName)
