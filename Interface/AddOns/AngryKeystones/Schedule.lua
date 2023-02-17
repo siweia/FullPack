@@ -26,6 +26,7 @@ local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
 local unitKeystones = {}
+local hookedIconTooltips = false
 
 local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 	local keystoneMapName = keystoneMapID and C_ChallengeMode.GetMapUIInfo(keystoneMapID)
@@ -154,6 +155,19 @@ local function UpdateFrame()
 		Mod.AffixFrame.Label:Show()
 	end
 	UpdatePartyKeystones()
+
+	if not hookedIconTooltips then
+		hookedIconTooltips = true
+		for _, icon in next, ChallengesFrame.DungeonIcons do
+			icon:HookScript("OnEnter", function(self)
+				local _, _, timeLimit = C_ChallengeMode.GetMapUIInfo(self.mapID)
+				GameTooltip_AddBlankLineToTooltip(GameTooltip)
+				GameTooltip:AddLine(GROUP_FINDER_PVE_PLAYSTYLE3)
+				GameTooltip:AddLine(SecondsToClock(timeLimit), 1, 1, 1)
+				GameTooltip:Show()
+			end)
+		end
+	end
 end
 
 local function makeAffix(parent)
