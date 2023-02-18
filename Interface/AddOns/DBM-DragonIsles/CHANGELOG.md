@@ -1,16 +1,15 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.0.26](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.26) (2023-02-17)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.25...10.0.26) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.0.27](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.27) (2023-02-18)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.26...10.0.27) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- redo fix, with proper cancel logic  
+- Tag new release now that M+ fixes verified and to get guild version bugfix out, plus sennarth bugfixes on retail  
+- Fix bad count logic on thundering clear  
+- wipe newest version table on group join, so out of date notice will show again any time you join a new group even if it was already triggered by guild comms So now it'll basically trigger On login if recieve enough guild comms On group join if enough comms from newer versions even if guild alert had previously occured (only new alert) On group leave because it'll trigger guild comms alert again.  
+- cleanup  
+- fix bug in guild version check sync handler that was causing false update notifications by incorrectly parsing version in guild comms  
+- attempt to fix a bogus nil error  
+- not actually using this arg  
+- test another method of fixing affix clearing  
+- Fix regression from 3 weeks ago that broke all phase 1 timers on sennarth. why it took 3 weeks to get reported I don't know. Sorry about this. This can be blamed on artemis.  
 - rebump alphas  
-- roll back alpha revision temp for a new ghost tag  
-- throttle break timer too for same reason  
-- Add one second throttle to pull timer since mods might be sending D4 and D5 at same time for a while and we're now parsing both (ie double pull timer announcements without throttle)  
-- Bump alphas  
-- Further improved new comms with restored backwards compatibility (one way) with older versions of DBM, Bigwigs, and raid lead tools. This allows this version of DBM to accept timers and such from older versions, NOT older versions to accept new comms from this version. Goal is to ensure that people who update get a good experience and those that don't, well at least they aren't punishing the ones that did.  
-- this should allow compat with all old comms again and fix compat with old bigwigs comms cross realm.  
-- Fix bnet whisper syncs with updated protocol  
-- move debug, cause i'm not seeing chat bubbles anymore which means this debug must still be erroring, until I can correct error, i need to at least make it last on execution  
-- Bump alphas  
