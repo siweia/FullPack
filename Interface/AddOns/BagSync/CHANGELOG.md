@@ -1,25 +1,27 @@
 # BagSync
 
-## [v18.20](https://github.com/Xruptor/BagSync/tree/v18.20) (2023-02-15)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v18.19...v18.20) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v18.21](https://github.com/Xruptor/BagSync/tree/v18.21) (2023-02-21)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v18.20...v18.21) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
 -   
-    * Version bump  
--   
-    * Small fix for the tooltip display in the BagSync Search window when using the Whitelist module.  
--   
-    * Small notification to rescan the professions with the recent updates done to the BagSync Scanner module.  
--   
-    * Small order of operations fix for figuring out BattletPets from the Mailbox or Guild Bank.  
-    * Fix for the Professions window storing outdated profession data and incorrectly displaying them in the Professions window.  
-    * Fix for the Recipes List for not showing the categories in order and for displaying outdated information from previous versions of BagSync.  
-    * Updated Fishing so that it could now properly show previous expansion level up ranges.  
-    * WARNING:  These changes require you to manually scan each character's professions again.  Otherwise you will NOT be able to see the recipes or currently level of these professions.  
--   
-    * Added a hardcoded ignore for "Trader's Tenders" on the Currency Tooltip.  This currency is shared amongst all characters and it serves no purpose to display counts for each one.  (Fixes #254)  
-- Merge pull request #253 from nanjuekaien1/patch-34  
+    * Fix for a small typo in Localization.  
+- Merge pull request #260 from nanjuekaien1/patch-38  
     Update zhCN.lua  
 - Update zhCN.lua  
 - Update zhCN.lua  
 -   
-    * Small wording change for the new Whitelist feature.  
+    * Slight wording addition.  
+-   
+    * Added a new option to show Item Types and Sub Type categories in the tooltip.  (i.e Profession info)  
+-   
+    * Small wording change in new Expansion tooltip feature.  
+-   
+    * Small update to the License.  
+-   
+    * Updated the license for BagSync due to some issues that have arisen.  
+-   
+    * Reverted back to an older LibItemSearch that was made by Tuller years ago.  I originally used it and at one point when work was stopped on it, renamed it to LibItemSearchGrid back in v11.0 of BagSync.  I have reverted back to this version and updated it to make things a bit more simplified for me and allow me to manage the code myself.  So I have renamed it to LibItemScout to prevent confusion with LibItemSearch of any future iterations.  
+    * Added a new option to display the source expansion for items in the tooltip.  Note that this only works on Retail servers and not on classic.  Not all items will display their expansion as Blizzard did not update every item to return the expansionID associated with it.  
+- Merge pull request #256 from nanjuekaien1/patch-35  
+    Update zhCN.lua  
+- Update zhCN.lua  
