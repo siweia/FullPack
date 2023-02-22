@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218035515")
+mod:SetRevision("20230219053936")
 --mod:SetModelID(47785)
 mod:SetZone(2516, 2526, 2515, 2521, 1477, 1571, 1176, 960)--All of the S1 DF M+ Dungeons
 
@@ -51,6 +51,32 @@ local function yellRepeater(self, text, total)
 	end
 end
 
+local function checkThunderin(self)
+	local thunderingNTotal, thunderingPTotal = 0, 0
+	for uId in DBM:GetGroupMembers() do
+		if DBM:UnitDebuff(uId, 396364) then
+			thunderingNTotal = thunderingPTotal + 1
+		end
+		if DBM:UnitDebuff(uId, 396369) then
+			thunderingPTotal = thunderingPTotal + 1
+		end
+	end
+	--No possible clears left (ie only 1 or more debuff left of a single type). Force clear them all
+	if (thunderingNTotal == 0 and thunderingPTotal >= 1) or (thunderingNTotal >= 1 and thunderingPTotal == 0) then
+		if playerThundering then--Avoid double message from SAR clear
+			warnThunderingFades:Show()
+			playerThundering = false
+			yellThundering:Yell(DBM_COMMON_L.CLEAR)
+		end
+		timerPositiveCharge:Stop()
+		timerNegativeCharge:Stop()
+		self:Unschedule(yellRepeater)
+		yellThunderingFades:Cancel()
+	else
+		self:Schedule(1, checkThunderin, self)
+	end
+end
+
 function mod:SPELL_CAST_START(args)
 	if not self.Options.Enabled then return end
 	local spellId = args.spellId
@@ -90,9 +116,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 396369 or spellId == 396364 then
 		if self:AntiSpam(20, "affseasonal") then
 			playerThundering = false
-			mod:RegisterShortTermEvents(
-				"UNIT_AURA_UNFILTERED"
-			)
+			self:Unschedule(checkThunderin)
+			self:Schedule(1, checkThunderin, self)
+--			self:RegisterShortTermEvents(
+--				"UNIT_AURA_UNFILTERED"
+--			)
 		end
 		if args:IsPlayer() then
 			playerThundering = true
@@ -148,6 +176,7 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
+--[[
 function mod:UNIT_AURA_UNFILTERED()
 	local thunderingTotal = 0
 	for uId in DBM:GetGroupMembers() do
@@ -168,3 +197,4 @@ function mod:UNIT_AURA_UNFILTERED()
 		yellThunderingFades:Cancel()
 	end
 end
+--]]
