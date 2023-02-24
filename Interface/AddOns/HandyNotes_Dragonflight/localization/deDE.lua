@@ -90,7 +90,8 @@ L['signal_transmitter_note'] = ns.color.Orange('Benötigt 10 Punkte in Mechanisc
 L['options_icons_signal_transmitter'] = 'Wyrmlochgenerator Signaltransmitters'
 L['options_icons_signal_transmitter_desc'] = 'Zeigt die Positionen der {object:Deaktivierten Signaltransmitter} für {item:198156} an.'
 
-L['spawns_periodically'] = '{note:Erscheint möglicherweise alle 30 Minuten, synchronisiert über den Realm. (Beispiel: 9:00, 17:30)}'
+L['rare_14h'] = 'Dieser Gegner befindet sich in einem 14 Stunden Interval mit anderen Gegnern, wobei alle 30 Minuten einer dieser Gegner erscheinen kann.\n\nNächstes mögliches erscheinen: {note:%s} (Server Zeit)'
+L['time_format'] = '%H:%M - %d.%m.%Y'
 L['spawns_at_night'] = '{note:Erscheint nur nachts. (Ab 18:30 Server Zeit)}'
 
 L['elemental_storm'] = 'Elementarsturm'
@@ -120,13 +121,24 @@ L['elemental_storm_mythressa_note_end'] = 'Zurzeit hast du %s {currency:2118}.'
 L['options_icons_elemental_storm'] = 'Elementarstürme'
 L['options_icons_elemental_storm_desc'] = 'Zeigt die möglichen Positionen der Elementarstürme an.'
 
+L['elusive_creature_note'] = 'Benötigt {object:Rang 40/40} in der {object:Köderherstellung}s Spezialisierung, um {item:193906} herstellen zu können, dieser wird benötigt, um die Kreaturen einmal pro Tag anlocken und Kürschnern zu können.'
+L['options_icons_elusive_creature'] = '{item:193906}'
+L['options_icons_elusive_creature_desc'] = 'Zeigt die Positionen der scheuen Kreaturen an, die mit {item:193906} angelockt werden können.'
+
+L['grand_hunts_label'] = 'Große Jagd'
+L['longhunter_suffix'] = 'Jagdschritte abgeschlossen'
+L['the_best_at_what_i_do_suffix'] = 'Bosse getötet'
+
+L['options_icons_grand_hunts'] = 'Große Jagden'
+L['options_icons_grand_hunts_desc'] = 'Zeigt die möglichen Positionen und Belohnungen der {location:Großen Jagd} an.'
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['bisquis_note'] = 'Kocht beim gemeinschaftlichen Festmahl in {location:Iskaara} eine legendäre Suppe und besiegt dann {npc:197557}.'
+L['bisquis_note'] = 'Kocht beim gemeinschaftlichen Festmahl in {location:Iskaara} eine legendäre Suppe und besiegt dann {npc:197557}.\n\nNächstes Festmahl: {note:%s} (Serverzeit)'
 L['blightfur_note'] = 'Sprich mit {npc:193633}, um den seltenen Gegner erscheinen zu lassen.'
-L['brackenhide_rare_note'] = 'Dieser seltene Gegner erscheint nach einer festen Rotation von {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} im Abstand von 10 Minuten.'
+L['brackenhide_rare_note'] = 'Dieser seltene Gegner erscheint nach einer festen Rotation von {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} im Abstand von 10 Minuten.\n\nNächstes mögliches erscheinen: {note:%s} (Server Zeit)'
 L['fisherman_tinnak_note'] = 'Sammel {object:Zerbrochene Angelrute}, {object:Zerrissenes Fischernetz} und {object:Alte Harpune}, um ihn zu beschwören.'
 L['frostpaw_note'] = 'Hebe den {object:Holzhammer} in der Nähe auf und schlage die drei {object:Hau den Gnoll} innerhalb von 20 Sekunden auf dem {object:Baumstumpf} damit, um den seltenen Gegner erscheinen zu lassen.'
 L['sharpfang_note'] = 'Hilf {npc:192747} dabei, drei {npc:192748s} zu besiegen, um den seltenen Gegner erscheinen zu lassen.'
@@ -192,6 +204,24 @@ Du musst sie aktivieren, um die Eiswand zu schmelzen (Zwei Spieler empfohlen).
 
 Töte dann {npc:197183} in der Höhle, um {item:200528} zu erhalten.
 ]]
+
+L['gethdazr_note'] = [[
+Erscheint als Teil eines Events in {location:Imbu} welches durch das blasen des {object:Großen Horns von Imbu} gestartet wird.({dot:Blue})
+Das Horn kann erst angeklicht werden nachdem der {npc:Wütende Luftelementar} besiegt wurde. Dieser hat eine Respawn Zeit von ca. 30-60 Minuten.
+
+{npc:191143}({dot:Green}) und andere NPCs kämpfen sich dann vom nordöstlichen Eingang von {location:Imbu} bis zur Klippe vor, wo {npc:196165} dann spawnen wird.
+Die NPCs können sterben wenn du ihnen nicht hilfst, dadurch wird das Event fehlschlagen.
+
+Das Event kann alleine geschafft werden, 2-3 Spieler sind aber empfohlen.
+]]
+
+L['tuskarr_chest'] = 'Kiste der Tuskarr'
+L['options_icons_tuskarr_chest'] = 'Kisten der Tuskarr'
+L['options_icons_tuskarr_chest_desc'] = 'Zeigt die möglichen Positionen für {object:Kiste der Tuskarr} an.'
+
+L['community_feast_label'] = '{spell:386441}'
+L['options_icons_community_feast'] = '{spell:386441}'
+L['options_icons_community_feast_desc'] = 'Zeigt die Position und Belohnungen des {spell:386441s}'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -298,6 +328,10 @@ L['chest_of_the_flood'] = 'Truhe der Flut'
 
 L['aylaag_camp_note'] = 'Der {faction:Aylaag Klan} zieht alle 3 Tage und 3 Stunden (75 Stunden) weiter in ein anderes Lager, folge ihnen und verteidige sie auf ihren Weg.'
 
+L['clan_chest'] = 'Klankiste'
+L['options_icons_clan_chest'] = 'Klankisten'
+L['options_icons_clan_chest_desc'] = 'Zeigt die möglichen Positionen für {object:Klankisten} an.'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
@@ -319,7 +353,7 @@ L['tasty_hatchling_treat_note'] = 'In einem Fass hinter dem Bücherregal.'
 L['pm_mining_bridgette_holdug'] = 'Auf einem grasbewachsenen Felspfeiler.'
 L['pm_tailor_elysa_raywinder'] = 'Auf einem Vorsprung auf halber Höhe des Turms.'
 L['pt_alch_contraband_concoction_note'] = 'In Büschen versteckt. {note:Schwer zu sehen.}'
-L['pt_alch_furry_gloop_note'] = 'Wirf ein {npc:194855} in der Nähe in jeden Kessel und töte dann den Gegner, der erscheint.'
+L['pt_alch_tasty_candy_note'] = 'Wirf ein {object:Weggeworfenes Spielzeug} in der Nähe in jeden Kessel und töte dann den Gegner, der erscheint.' -- laut wowhead [Discarded Toy]
 L['pt_ench_fractured_titanic_sphere_note'] = 'Südlich von {location:Tyrhold}.'
 L['pt_jewel_alexstraszite_cluster_note'] = 'In {location:Tyrhold}.'
 L['pt_jewel_painters_pretty_jewel_note'] = 'In einer Laterne.'
@@ -490,3 +524,7 @@ L['loyal_magmammoth_taming_note'] = 'Benutze den {item:201837} während du auf e
 L['djaradin_cache'] = 'Depot der Djaradin'
 L['options_icons_djaradin_cache'] = 'Depots der Djaradin'
 L['options_icons_djaradin_cache_desc'] = 'Zeigt die möglichen Positionen für {object:Depot der Djaradin} an.'
+
+L['dragonbane_siege_label'] = '{spell:388945}'
+L['options_icons_dragonbane_siege'] = '{spell:388945}'
+L['options_icons_dragonbane_siege_desc'] = 'Zeigt die Position und Belohnungen der {spell:388945}'

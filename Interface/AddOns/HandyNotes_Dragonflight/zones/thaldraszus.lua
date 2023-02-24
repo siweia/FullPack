@@ -16,13 +16,16 @@ local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Dragonrace = ns.node.Dragonrace
 local ElementalStorm = ns.node.ElementalStorm
+local ElusiveCreature = ns.node.ElusiveCreature
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
+local GrandHunt = ns.node.GrandHunt
 local LegendaryCharacter = ns.node.LegendaryCharacter
 local MagicBoundChest = ns.node.MagicBoundChest
 local PM = ns.node.ProfessionMasters
 local PrettyNeat = ns.node.PrettyNeat
 local PT = ns.node.ProfessionTreasures
+local Rare14h = ns.node.Rare14h
 local RareElite = ns.node.RareElite
 local Safari = ns.node.Safari
 local Scoutpack = ns.node.Scoutpack
@@ -90,10 +93,10 @@ map.nodes[31097121] = Rare({
     }
 }) -- Blightpaw the Depraved
 
-map.nodes[59847057] = Rare({ -- required 67030
+map.nodes[59847057] = Rare14h({
     id = 193220,
     quest = 73987,
-    note = L['spawns_periodically'],
+    rotationID = 25,
     rewards = {
         Achievement({id = 16679, criteria = 56149}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
@@ -146,10 +149,10 @@ local CRAGGRAVATEDELEMENTAL = Rare({
 map.nodes[45458518] = CRAGGRAVATEDELEMENTAL
 map.nodes[52746732] = CRAGGRAVATEDELEMENTAL
 
-map.nodes[47675115] = Rare({ -- required 67030
+map.nodes[47675115] = Rare14h({
     id = 193234,
     quest = 73990,
-    note = L['spawns_periodically'],
+    rotationID = 6,
     rewards = {
         Achievement({id = 16446, criteria = 55398, note = L['pretty_neat_note']}),
         Achievement({id = 16679, criteria = 56147}),
@@ -179,7 +182,7 @@ map.nodes[53374092] = Rare({
     }
 }) -- Goremaul the Gluttonous
 
-map.nodes[59128380] = Rare({ -- review
+map.nodes[59128380] = Rare({
     id = 193126,
     quest = 73881,
     rewards = {
@@ -221,10 +224,10 @@ map.nodes[62298177] = Rare({
     pois = {POI({61708120})} -- Entrance
 }) -- Lord Epochbrgl
 
-map.nodes[52895903] = Rare({
+map.nodes[52895903] = Rare14h({
     id = 193246,
     quest = 74013,
-    note = L['spawns_periodically'],
+    rotationID = 12,
     rewards = {
         Achievement({id = 16679, criteria = 56141}),
         Transmog({item = 200257, slot = L['2h_mace']}), -- Decay Infused Branch
@@ -238,10 +241,10 @@ map.nodes[52895903] = Rare({
     }
 }) -- Matriarch Remalla
 
-map.nodes[59806100] = Rare({ -- reqired 67030
+map.nodes[59806100] = Rare({
     id = 193688,
     quest = 74020,
-    note = L['spawns_periodically'],
+    -- rotationID = 7, -- wait for blizz fix.
     rewards = {
         Achievement({id = 16679, criteria = 56140}),
         Transmog({item = 200146, slot = L['1h_mace']}), -- Phenran's Discordant Smasher
@@ -255,10 +258,10 @@ map.nodes[59806100] = Rare({ -- reqired 67030
     }
 }) -- Phenran
 
-map.nodes[57218420] = Rare({ -- reqired 67030 review
+map.nodes[57218420] = Rare14h({
     id = 193210,
     quest = 74021,
-    note = L['spawns_periodically'],
+    rotationID = 0,
     rewards = {
         Achievement({id = 16679, criteria = 56142}),
         Transmog({item = 200202, slot = L['mail']}), -- Tomorrow's Chains
@@ -309,10 +312,10 @@ map.nodes[50404840] = Rare({
     }
 }) -- Razk'vex the Untamed
 
-map.nodes[40087014] = Rare({ -- reqiured 67030
+map.nodes[40087014] = Rare14h({
     id = 193240,
     quest = 74024,
-    note = L['spawns_periodically'],
+    rotationID = 4,
     rewards = {
         Achievement({id = 16679, criteria = 56148}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
@@ -329,10 +332,10 @@ map.nodes[40087014] = Rare({ -- reqiured 67030
     }
 }) -- Riverwalker Tamopo
 
-map.nodes[50005180] = Rare({ -- reqiured 67030 review
+map.nodes[50005180] = Rare14h({
     id = 193666,
     quest = 74025,
-    note = L['spawns_periodically'],
+    rotationID = 10,
     rewards = {
         Achievement({id = 16679, criteria = 56151}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
@@ -347,10 +350,11 @@ map.nodes[50005180] = Rare({ -- reqiured 67030 review
     }
 }) -- Rokmur
 
-map.nodes[37607780] = Rare({ -- reqiured 67030
+map.nodes[37607780] = Rare14h({
     id = 193176,
     quest = 74029,
-    note = L['spawns_periodically'] .. '\n\n' .. L['in_cave'],
+    rotationID = 18,
+    cave = true,
     rewards = {
         Achievement({id = 16679, criteria = 56150}),
         Transmog({item = 200202, slot = L['mail']}), -- Tomorrow's Chains
@@ -365,10 +369,10 @@ map.nodes[37607780] = Rare({ -- reqiured 67030
     pois = {POI({38507640})} -- Cave entrance
 }) -- Sandana the Tempest
 
-map.nodes[47207895] = Rare({ -- review -- reqiured 67030
+map.nodes[47207895] = Rare14h({
     id = 193258,
     quest = 74035,
-    note = L['spawns_periodically'],
+    rotationID = 21,
     rewards = {
         Achievement({id = 16679, criteria = 56144}),
         Transmog({item = 200139, slot = L['bow']}) -- Tempest Arc
@@ -418,10 +422,11 @@ map.nodes[46267317] = Rare({
     pois = {POI({47547180})} -- Cave entrance
 }) -- The Weeping Vilomah
 
-map.nodes[35027001] = Rare({ -- reqiured 67030 review
+map.nodes[35027001] = Rare14h({
     id = 193146,
     quest = 74036,
-    note = L['spawns_periodically'] .. '\n\n' .. L['in_small_cave'],
+    rotationID = 15,
+    cave = true,
     rewards = {
         Achievement({id = 16679, criteria = 56146}),
         Transmog({item = 200291, slot = L['leather']}), -- Waterlogged Racing Grips
@@ -467,7 +472,7 @@ map.nodes[57366540] = Rare({
 
 map.nodes[55647727] = Rare({
     id = 193229,
-    quest = 72814, -- 69873
+    quest = 72814,
     rewards = {
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200174, slot = L['leather']}), -- Bonesigil Shoulderguards
@@ -529,7 +534,7 @@ tpf.nodes[48421722] = Rare({
     }
 }) -- Shardwing
 
-tpf.nodes[62073370] = Rare({
+tpf.nodes[61813142] = Rare({
     id = 201542,
     quest = 74558,
     rewards = {
@@ -718,10 +723,10 @@ map.nodes[52208050] = PT.Blacksmithing({
 }) -- Draconic Flux
 
 map.nodes[55203050] = PT.Alchemy({
-    id = 201003,
+    id = 203471,
     quest = 70278,
-    note = L['pt_alch_furry_gloop_note']
-}) -- Furry Gloop
+    note = L['pt_alch_tasty_candy_note']
+}) -- Tasty Candy
 
 map.nodes[56104090] = PT.Inscription({
     id = 201015,
@@ -1437,6 +1442,44 @@ function Mythressa.getters:note()
 end
 
 val.nodes[38113773] = Mythressa()
+
+-------------------------------------------------------------------------------
+------------------------------ ELUSIVE CREATURES ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[56007100] = ElusiveCreature({
+    label = '{npc:195518}',
+    rewards = {
+        Item({item = 193224}), -- Lustrous Scaled Hide
+        Item({item = 193215}), -- Adamant Scales
+        Item({item = 193255}) -- Pristine Vorquin Horn
+    }
+}) -- Elusive Cliffdweller Vorquin
+
+map.nodes[48005100] = ElusiveCreature({
+    label = '{npc:195472}',
+    rewards = {
+        Item({item = 193218}), -- Dense Hide
+        Item({item = 193211}), -- Resilient Leather
+        Item({item = 193254}) -- Rockfang Leather
+    }
+}) -- Elusive Ferocious Titanfang
+
+-------------------------------------------------------------------------------
+--------------------------------- GRAND HUNTS ---------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[34576668] = GrandHunt({
+    mapID = map.id,
+    areaPOI = 7097,
+    criteria = 55686
+}) -- Southern Thaldraszus Hunt
+
+map.nodes[50594665] = GrandHunt({
+    mapID = map.id,
+    areaPOI = 7099,
+    criteria = 55687
+}) -- Northern Thaldraszus Hunt
 
 -------------------------------------------------------------------------------
 -------------------------------- MISCELLANEOUS --------------------------------
