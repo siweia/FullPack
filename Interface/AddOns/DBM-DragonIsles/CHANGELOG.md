@@ -1,26 +1,15 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.0.28](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.28) (2023-02-22)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.27...10.0.28) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.0.29](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.29) (2023-02-24)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.28...10.0.29) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new tags for reworked interrupt code and possibly other stuff i already forgot  
-- Update localization.ru.lua (#190)  
-- Update koKR (#191)  
-- missed one  
-- tweaks to interrupt filter  
-- tweak language for consistency  
-- Fix second header  
-- rework interrupt filter code to be more clear and better configurable  
-- push new locals of tonights random feature rework. :D  
-- API docs were wrong. the table element is applications not charges  
-- fixes  
-- Update commonlocal.ru.lua (#189)  
-- Send \"H\" message on old protocol instead of new for now, so we're always querying version from all DBM users  
-- Also fix conditions where more than one debuff are left, but clears still aren't possible (example: two negative debuffs, 0 positive due to deaths)  
-- The last thundering fix mostly works but can still fail if there is even a slight millisecond gap between first thundering going out and 2nd, because then it makes it think only 1 is left and it cancels it immediately. Try a more robust (and CPU friendly work around) by hard coded a 1 second iterator that delays 1 second before starting to make sure all party members actually have it before counting how many are left.  
-- even more errors  
-- fix more errors  
-- no idea what's causing luacheck error but fix another error I see  
-- Made add marking faster on Broodkeeper, in addition, changed used marks to be more compatable with bigwigs.  
-    Also closes https://github.com/DeadlyBossMods/DBM-Retail/issues/860 now that icons don't force reset each set  
+- Push new retail tag for the cross realm fix for Azjol-Nerub, Area 52 and others.. No new classic tag as there is no cross realm there anyways.  
+- Fix bug causing duplicate spells used by diff mobs to not get allowed to exist. Fixes spells like Eye of the storm on halls of valor trash  
+- Update koKR (#193)  
+- make luacheck happy  
+- normalize other realm names too  
+- Fix a bug causing comms to still not work cross realm if cross realm sender was on a realmthat had a space in the name. GetRealmName() returns spaced realm while all other apis strip it.This was causing a mismatch in cross realm comm verification.  
+- Update localization.ru.lua (#192)  
+- Might workb etter if i actualy add to table  
+- Another fix, that obviously wasn't reported by last scan  
 - bump alphas  
