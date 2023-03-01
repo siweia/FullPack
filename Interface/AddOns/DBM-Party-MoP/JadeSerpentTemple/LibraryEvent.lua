@@ -3,14 +3,14 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,challenge,timewalker"
 
-mod:SetRevision("20230226055456")
+mod:SetRevision("20230301011610")
 mod:SetCreatureID(59051, 59726, 58826)--59051 (Strife), 59726 (Anger), 58826 (Zao Sunseeker). This event has a random chance to be Zao (solo) or Anger and Strife (together)
 mod:SetEncounterID(1417)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 113315 113309",
+	"SPELL_AURA_APPLIED 113309",
 	"SPELL_AURA_APPLIED_DOSE 113315",
 	"SPELL_CAST_SUCCESS 122714",
 	"UNIT_DIED"
@@ -39,9 +39,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 113315 then
-		warnIntensity:Show(args.destName, args.amount or 1)
-	elseif args.spellId == 113309 then
+	if args.spellId == 113309 then
 		specWarnUltimatePower:Show(args.destName)
 		specWarnUltimatePower:Play("aesoon")
 		timerUltimatePower:Start(args.destName)
