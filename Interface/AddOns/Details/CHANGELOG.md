@@ -1,13 +1,24 @@
 # Details! Damage Meter
 
-## [Details.DF.Wrath.10562.148](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.DF.Wrath.10562.148) (2023-02-09)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.DF.Wrath.10561.148...Details.DF.Wrath.10562.148) 
+## [Details.DF.Wrath.10.0.5.10661.148](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.DF.Wrath.10.0.5.10661.148) (2023-03-01)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.DF.Wrath.10562.148...Details.DF.Wrath.10.0.5.10661.148) 
 
-- Fixed bugs from latest release  
-- Merge pull request #455 from Flamanis/Wipe-Custom  
-    Don't misspell _detalhes  
-- Don't misspell _detalhes  
-- Merge pull request #452 from Flamanis/Wipe-Custom  
-    Some logoff error checks  
-- Check correct value  
-- Some logoff error checks  
+- Change log and version up  
+- Fix in the event tracker feature  
+- fix this  
+- big update on Event Tracker  
+- framework update  
+- Fixing Plater Options Panel not opening due to the new Language system  
+- Removed a debug print  
+- Added support for mythic+ deaths  
+- Added combatObject:CopyDeathsFrom(combat2, bMythicPlus)  
+- Added Definitions file  
+- Firmware update  
+- Merge pull request #456 from Flamanis/DuplicateProfileCheck  
+    Profile Duplicates imported with new name and message.  
+- Merge branch 'master' of https://github.com/Tercioo/Details-Damage-Meter  
+- Parser code cleanup  
+- Merge pull request #457 from Flamanis/ignoreFodderNpcs  
+    Ignore all Fodder to the Flame npcs again  
+- Default ignore all Fodder to the Flame npcs  
+- Profile Duplicates imported with new name and message.  
