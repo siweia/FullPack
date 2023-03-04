@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,challenge,timewalker"
 
-mod:SetRevision("20230301011610")
+mod:SetRevision("20230303100550")
 mod:SetCreatureID(59051, 59726, 58826)--59051 (Strife), 59726 (Anger), 58826 (Zao Sunseeker). This event has a random chance to be Zao (solo) or Anger and Strife (together)
 mod:SetEncounterID(1417)
 
@@ -54,7 +54,7 @@ end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args.spellId == 113315 then
-		if args.amount >= 7 then--Start point of special warnings subject to adjustment based on live tuning.
+		if args.amount == 7 then--Start point of special warnings subject to adjustment based on live tuning.
 			specWarnIntensity:Show(args.spellName, args.destName, args.amount)
 			specWarnIntensity:Play("targetchange")
 		elseif args.amount % 2 == 0 then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230301013138")
+mod:SetRevision("20230303032121")
 --mod:SetModelID(47785)
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)--All of the S1 DF M+ Dungeons (2516, 2526, 2515, 2521, 1477, 1571, 1176, 960)
 
@@ -29,7 +29,7 @@ local yellThunderingFades					= mod:NewIconFadesYell(396363, nil, nil, nil, "YEL
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(209862, nil, nil, nil, 1, 8)--Volcanic and Sanguine
 
 local timerQuakingCD						= mod:NewNextTimer(20, 240447, nil, nil, nil, 3)
-local timerThunderingCD						= mod:NewNextTimer(66, 396363, 396347, nil, nil, 3, nil, nil, nil, 2, 4)
+local timerThunderingCD						= mod:NewNextTimer(66, 396363, nil, nil, nil, 3, 396347, nil, nil, 2, 4)
 local timerPositiveCharge					= mod:NewBuffFadesTimer(15, 396369, 391990, nil, 2, 5, nil, nil, nil, 1, 5)
 local timerNegativeCharge					= mod:NewBuffFadesTimer(15, 396364, 391991, nil, 2, 5, nil, nil, nil, 1, 5)
 mod:GroupSpells(396363, 396369, 396364)--Thundering with the two charge spells
@@ -98,7 +98,7 @@ local function checkForCombat(self)
 		thunderingCounting = false
 		timerThunderingCD:Pause()
 	end
-	self:Schedule(1, checkForCombat, self)
+	self:Schedule(0.25, checkForCombat, self)
 end
 
 do
@@ -115,7 +115,8 @@ do
 			--	"SPELL_AURA_APPLIED_DOSE",
 				"SPELL_AURA_REMOVED 396369 396364 226510",
 				"SPELL_DAMAGE 209862",
-				"SPELL_MISSED 209862"
+				"SPELL_MISSED 209862",
+				"CHALLENGE_MODE_COMPLETED"
 			)
 		elseif not validZones[currentZone] and eventsRegistered then
 			eventsRegistered = false
@@ -131,6 +132,10 @@ do
 	end
 	mod.OnInitialize = mod.LOADING_SCREEN_DISABLED
 	mod.ZONE_CHANGED_NEW_AREA	= mod.LOADING_SCREEN_DISABLED
+end
+
+function mod:CHALLENGE_MODE_COMPLETED()
+	self:Stop()--Stop M+ timers on completion as well
 end
 
 function mod:SPELL_CAST_START(args)
