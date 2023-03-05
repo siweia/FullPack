@@ -1,25 +1,17 @@
 # <DBM> Dungeons (Dragonflight)
 
-## [r68](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r68) (2023-03-04)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r67...r68) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r69](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r69) (2023-03-05)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r68...r69) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Add shattered Resolve to jade temple trash  
-- Add support for icy bindings and beastial roar to azure vault trash  
-- Update localization.ru.lua (#103)  
-- well, this won't fix it not announcing at 7 but at least it'll announce at 8 and 10 again.  
-- timer tweaks from last nights debug  
-- Forgot to register UNIT\_DIED  
-- Court of Stars Update  
-     - Added alert for Sound Alarm  
-     - Added optional off by default interrupt alert for Fortification  
-     - Added timers for most trash abilities.  
-- Revert treemouth change, I meant to update overgrown Ancient  
-    Overgrown Ancient:  
-     - Made infoframe default on for tank and healer rolls as well (new users only, won't reset setting)  
-     - Added stack announce to lasher stacks for every 8 stacks  
-     - Raised personal "stack high" announce for lashers for tank roles to a minimum of 20. still 12 for non tank roles  
-- Also announce orbs hitting boss on raging tempest  
-    Fix spam on treemouth for disease stack alerts. it'll now warn every 8 stacks, not every 1.  
-- Raging Tempest Update:  
-     - Change electrical storm to a special announce with count instead of general announce. This should help make urgency of spell on high keys more apparant for healer CDs  
-     - Also added GTFO for standing too close to boss so melee/tanks are more aware of taking excess unneeded damage  
+- hate when I do that. I forgot to change to count object  
+- improve/fix language for the icon options  
+- Add count to screech timer and reset count when either goal are activated. Count will be shown in alerts and timers  
+- fix option key of last and default key  
+- Odyn now has a drop down with 4 configurations available for runic Brand. This allows you to choose any of the 4 following options  
+       - "Gives voice alerts give icon based directions (such as using flares)",  
+       - "Gives voice alerts based on cardinal directions as if entrance is south and throne is north",  
+       - "Gives voice alerts based on cardinal directions based on minimap, where throne is south and entrance is north",  
+       - "Gives generic voice alert that just says you're targeted. No direction indication is given"--Default  
+- remove all directions from DBM  
+- Re-fix ragnarok timer, which got broken since the commit it was fixed in was reverted cause other stuff in it was bad.  
+- another tweak but at this point my hands are kind of up in air with inhale timer. i'm convinced it's just math.random  

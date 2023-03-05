@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20230302183052")
+mod:SetRevision("20230304081738")
 mod:SetCreatureID(75452)
 mod:SetEncounterID(1679)
 
@@ -108,7 +108,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerInhaleCD:Stop()
 		local name, guid = UnitName(uId), UnitGUID(uId)
 		timerBodySlamCD:Stop(name, guid)
-		timerInhaleCD:Start(26.8)
+		timerInhaleCD:Start(17.8)
 --		timerSubmergeCD:Start()
 	end
 end
