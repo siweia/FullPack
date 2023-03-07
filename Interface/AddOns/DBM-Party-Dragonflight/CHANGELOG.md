@@ -1,8 +1,12 @@
 # <DBM> Dungeons (Dragonflight)
 
-## [r69](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r69) (2023-03-05)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r68...r69) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r70](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r70) (2023-03-06)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r68...r70) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
+- Update localization.ru.lua (#104)  
+- update luacheck  
+- Full buff helper for court of stars, with complete compatability with littlewigs out of box thanks to Funky for letting me use and revise LW code to use existing platform instead of reinventing wheel  
+- Push localization of in progress mod work  
 - hate when I do that. I forgot to change to count object  
 - improve/fix language for the icon options  
 - Add count to screech timer and reset count when either goal are activated. Count will be shown in alerts and timers  
