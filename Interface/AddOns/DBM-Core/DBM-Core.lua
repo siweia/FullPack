@@ -73,19 +73,19 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20230304025043"),
+	Revision = parseCurseDate("20230309070430"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.31"
-	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.32"
+	DBM.ReleaseRevision = releaseDate(2023, 3, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 265, "5c1ee43"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.36"
+	DBM.DisplayVersion = "1.14.37 alpha"
 	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 47, "ca1da33"
@@ -95,7 +95,7 @@ elseif isBCC then
 	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 47, "ca1da33"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.37"
+	DBM.DisplayVersion = "3.4.38 alpha"
 	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 47, "ca1da33"
@@ -2725,8 +2725,18 @@ end
 
 function DBM:SelectGossip(gossipOptionID, confirm)
 	if gossipOptionID and not self.Options.DontAutoGossip then
-		if C_GossipInfo.SelectOptionByIndex and gossipOptionID < 10 then--Using Index
-			C_GossipInfo.SelectOptionByIndex(gossipOptionID, "", confirm)
+		if gossipOptionID < 10 then--Using Index
+			if C_GossipInfo.SelectOptionByIndex then--10.0.7
+				C_GossipInfo.SelectOptionByIndex(gossipOptionID, "", confirm)
+			else--10.0.5
+				local options = C_GossipInfo.GetOptions()
+				if options and options[1] then
+					local realGossipOptionID = options[gossipOptionID] and options[gossipOptionID].gossipOptionID
+					if realGossipOptionID then
+						C_GossipInfo.SelectOption(realGossipOptionID, "", confirm)
+					end
+				end
+			end
 		else
 			C_GossipInfo.SelectOption(gossipOptionID, "", confirm)
 		end
@@ -3278,6 +3288,10 @@ do
 	local function throttledTalentCheck(self)
 		local lastSpecID = currentSpecID
 		self:SetCurrentSpecInfo()
+		if not InCombatLockdown() then
+			--Refresh entire spec table if not in combat
+			DBMExtraGlobal:rebuildSpecTable()
+		end
 		if currentSpecID ~= lastSpecID then--Don't fire specchanged unless spec actually has changed.
 			self:SpecChanged()
 			if isRetail and IsInGroup() then

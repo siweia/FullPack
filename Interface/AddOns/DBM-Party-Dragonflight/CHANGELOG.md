@@ -1,21 +1,22 @@
 # <DBM> Dungeons (Dragonflight)
 
-## [r70](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r70) (2023-03-06)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r68...r70) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r72](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r72) (2023-03-09)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r71...r72) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Update localization.ru.lua (#104)  
-- update luacheck  
-- Full buff helper for court of stars, with complete compatability with littlewigs out of box thanks to Funky for letting me use and revise LW code to use existing platform instead of reinventing wheel  
-- Push localization of in progress mod work  
-- hate when I do that. I forgot to change to count object  
-- improve/fix language for the icon options  
-- Add count to screech timer and reset count when either goal are activated. Count will be shown in alerts and timers  
-- fix option key of last and default key  
-- Odyn now has a drop down with 4 configurations available for runic Brand. This allows you to choose any of the 4 following options  
-       - "Gives voice alerts give icon based directions (such as using flares)",  
-       - "Gives voice alerts based on cardinal directions as if entrance is south and throne is north",  
-       - "Gives voice alerts based on cardinal directions based on minimap, where throne is south and entrance is north",  
-       - "Gives generic voice alert that just says you're targeted. No direction indication is given"--Default  
-- remove all directions from DBM  
-- Re-fix ragnarok timer, which got broken since the commit it was fixed in was reverted cause other stuff in it was bad.  
-- another tweak but at this point my hands are kind of up in air with inhale timer. i'm convinced it's just math.random  
+- Good catch artemis script  
+- Vortex Pinnacle update  
+     - Update all bosses  with missing timers filled in  
+     - Populated trash module with every notable spell, complete with timers and alerts  
+- Update localization.ru.lua (#110)  
+- fix lua error  
+- I can push this stuff now.  
+- Update localization.ru.lua (#109)  
+- remove confusing/incorrect dodge warning. make it a generic cast warning instead. Closes #108  
+- Create a trash mod for blackrock caverns and add Shadow prison as first trash warning for dungeon. Closes #71  
+- Wish my mind wasn't declining and making stupid mistakes, but it does run in the family.  
+- Hyrja update  
+     - Removed trash warning that didn't belong in hyrja mod now that her phase 1 was split and made trash  
+     - Re-enabled the expel light timer now that it's auto corrective with hyrja's spell queuing  
+     - Improved shield of light timer now by making it auto corrective with hyrja's spell queuing  
+- Fix stupid  
+- Improve halls of valor trash warnings for hyrja mini bosses  
