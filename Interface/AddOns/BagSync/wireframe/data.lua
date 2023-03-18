@@ -15,24 +15,9 @@ local function Debug(level, ...)
     if BSYC.DEBUG then BSYC.DEBUG(level, "Data", ...) end
 end
 
---increment forceDBReset to reset the ENTIRE db forcefully
-local forceDBReset = 2
 --these just reset individual items in the DB
 local unitDBVersion = {
 	auction = 1,
-}
-
-StaticPopupDialogs["BAGSYNC_RESETDATABASE"] = {
-	text = L.ResetDBInfo,
-	button1 = L.Yes,
-	button2 = L.No,
-	OnAccept = function()
-		BagSyncDB = { ["forceDBReset§"] = forceDBReset }
-		ReloadUI()
-	end,
-	timeout = 0,
-	whileDead = true,
-	hideOnEscape = true,
 }
 
 local function HexToRGBPerc(hex)
@@ -43,25 +28,95 @@ local function HexToRGBPerc(hex)
 	return { r = tonumber(rhex, 16)/255, g = tonumber(ghex, 16)/255, b = tonumber(bhex, 16)/255 }
 end
 
+local optionsDefaults = {
+	showTotal = true,
+	enableUnitClass = true,
+	enableMinimap = true,
+	enableFaction = true,
+	tooltipOnlySearch = false,
+	enableTooltips = true,
+	enableExtTooltip = false,
+	enableTooltipSeparator = true,
+	enableCrossRealmsItems = true,
+	enableBNetAccountItems = false,
+	enableTooltipItemID = false,
+	enableTooltipGreenCheck = true,
+	enableRealmIDTags = true,
+	enableRealmAstrickName = false,
+	enableRealmShortName = false,
+	enableLoginVersionInfo = true,
+	enableFactionIcons = false,
+	enableShowUniqueItemsTotals = true,
+	enableXR_BNETRealmNames = true,
+	showGuildInGoldTooltip = true,
+	showGuildCurrentCharacter = false,
+	focusSearchEditBox = false,
+	enableAccurateBattlePets = true,
+	alwaysShowAdvSearch = false,
+	sortTooltipByTotals = false,
+	sortByCustomOrder = false,
+	tooltipModifer = "NONE",
+	singleCharLocations = false,
+	useIconLocations = true,
+	itemTotalsByClassColor = false,
+	showRaceIcons = true,
+	showGuildTabs = false,
+	enableWhitelist = false,
+	enableSourceExpansion = true,
+	enableItemTypes = true,
+	extTT_Font = "Friz Quadrata TT",
+	extTT_FontSize = 12,
+	extTT_FontOutline = "OUTLINE",
+	extTT_FontMonochrome = false,
+}
+
+local colorsDefaults = {
+	first = HexToRGBPerc('FF80FF00'),
+	second = HexToRGBPerc('FFFFFFFF'),
+	total = HexToRGBPerc('FFF4A460'),
+	guild = HexToRGBPerc('FF65B8C0'),
+	debug = HexToRGBPerc('FF4DD827'),
+	cross = HexToRGBPerc('FFFF7D0A'),
+	bnet = HexToRGBPerc('FF3588FF'),
+	itemid = HexToRGBPerc('FF52D386'),
+	guildtabs = HexToRGBPerc('FF09DBE0'),
+	expansion = HexToRGBPerc('FFCF9FFF'),
+	itemtypes = HexToRGBPerc('ffcccf66'),
+}
+
+local trackingDefaults = {
+	bag = true,
+	bank = true,
+	reagents = true,
+	equip = true,
+	mailbox = true,
+	void = true,
+	auction = true,
+	guild = true,
+	professions = true,
+	currency = true,
+}
+
+Data.__cache = {}
+Data.__cache.items = {}
+Data.__cache.tooltip = {}
+
 ----------------------
 --   DB Functions   --
 ----------------------
 
 function Data:OnEnable()
-	Debug(2, "OnEnable")
+	Debug(BSYC_DL.INFO, "OnEnable")
 	local ver = GetAddOnMetadata("BagSync","Version") or 0
 
 	--get player information from Unit
 	local player = Unit:GetUnitInfo()
 
-	Debug(1, "UnitInfo-1", player.name, player.realm)
-	Debug(1, "UnitInfo-2", player.class, player.race, player.gender, player.faction)
-	Debug(1, "UnitInfo-3", player.guild, player.guildrealm)
-	Debug(1, "RealmKey", player.realmKey)
-	Debug(1, "RealmKey_RWS", player.rwsKey)
-
-	--main DB call
-	BSYC.db = BSYC.db or {}
+	Debug(BSYC_DL.DEBUG, "UnitInfo-1", player.name, player.realm)
+	Debug(BSYC_DL.DEBUG, "UnitInfo-2", player.class, player.race, player.gender, player.faction)
+	Debug(BSYC_DL.DEBUG, "UnitInfo-3", player.guild, player.guildrealm)
+	Debug(BSYC_DL.DEBUG, "RealmKey", player.realmKey)
+	Debug(BSYC_DL.DEBUG, "RealmKey_RWS", player.rwsKey)
 
 	--realm DB
 	BagSyncDB[player.realm] = BagSyncDB[player.realm] or {}
@@ -73,66 +128,19 @@ function Data:OnEnable()
 	BSYC.db.player.currency = BSYC.db.player.currency or {}
 	BSYC.db.player.professions = BSYC.db.player.professions or {}
 
-	--blacklist and whitelist DB (created in core.lua)
-	BSYC.db.blacklist = BagSyncDB["blacklist§"]
-	BSYC.db.whitelist = BagSyncDB["whitelist§"]
-
 	--options DB
-	if BSYC.options.showTotal == nil then BSYC.options.showTotal = true end
-	if BSYC.options.enableGuild == nil then BSYC.options.enableGuild = true end
-	if BSYC.options.enableMailbox == nil then BSYC.options.enableMailbox = true end
-	if BSYC.options.enableUnitClass == nil then BSYC.options.enableUnitClass = true end
-	if BSYC.options.enableMinimap == nil then BSYC.options.enableMinimap = true end
-	if BSYC.options.enableFaction == nil then BSYC.options.enableFaction = true end
-	if BSYC.options.enableAuction == nil then BSYC.options.enableAuction = true end
-	if BSYC.options.tooltipOnlySearch == nil then BSYC.options.tooltipOnlySearch = false end
-	if BSYC.options.enableTooltips == nil then BSYC.options.enableTooltips = true end
-	if BSYC.options.enableExtTooltip == nil then BSYC.options.enableExtTooltip = false end
-	if BSYC.options.enableTooltipSeparator == nil then BSYC.options.enableTooltipSeparator = true end
-	if BSYC.options.enableCrossRealmsItems == nil then BSYC.options.enableCrossRealmsItems = true end
-	if BSYC.options.enableBNetAccountItems == nil then BSYC.options.enableBNetAccountItems = false end
-	if BSYC.options.enableTooltipItemID == nil then BSYC.options.enableTooltipItemID = false end
-	if BSYC.options.enableSourceDebugInfo == nil then BSYC.options.enableSourceDebugInfo = false end
-	if BSYC.options.enableTooltipGreenCheck == nil then BSYC.options.enableTooltipGreenCheck = true end
-	if BSYC.options.enableRealmIDTags == nil then BSYC.options.enableRealmIDTags = true end
-	if BSYC.options.enableRealmAstrickName == nil then BSYC.options.enableRealmAstrickName = false end
-	if BSYC.options.enableRealmShortName == nil then BSYC.options.enableRealmShortName = false end
-	if BSYC.options.enableLoginVersionInfo == nil then BSYC.options.enableLoginVersionInfo = true end
-	if BSYC.options.enableFactionIcons == nil then BSYC.options.enableFactionIcons = false end
-	if BSYC.options.enableShowUniqueItemsTotals == nil then BSYC.options.enableShowUniqueItemsTotals = true end
-	if BSYC.options.enableXR_BNETRealmNames == nil then BSYC.options.enableXR_BNETRealmNames = true end
-	if BSYC.options.showGuildInGoldTooltip == nil then BSYC.options.showGuildInGoldTooltip = true end
-	if BSYC.options.showGuildCurrentCharacter == nil then BSYC.options.showGuildCurrentCharacter = false end
-	if BSYC.options.showGuildBankScanAlert == nil then BSYC.options.showGuildBankScanAlert = true end
-	if BSYC.options.focusSearchEditBox == nil then BSYC.options.focusSearchEditBox = false end
-	if BSYC.options.enableAccurateBattlePets == nil then BSYC.options.enableAccurateBattlePets = true end
-	if BSYC.options.alwaysShowAdvSearch == nil then BSYC.options.alwaysShowAdvSearch = false end
-	if BSYC.options.sortTooltipByTotals == nil then BSYC.options.sortTooltipByTotals = false end
-	if BSYC.options.sortByCustomOrder == nil then BSYC.options.sortByCustomOrder = false end
-	if BSYC.options.tooltipModifer == nil then BSYC.options.tooltipModifer = "NONE" end
-	if BSYC.options.singleCharLocations == nil then BSYC.options.singleCharLocations = false end
-	if BSYC.options.useIconLocations == nil then BSYC.options.useIconLocations = true end
-	if BSYC.options.itemTotalsByClassColor == nil then BSYC.options.itemTotalsByClassColor = false end
-	if BSYC.options.showRaceIcons == nil then BSYC.options.showRaceIcons = true end
-	if BSYC.options.showGuildSeparately == nil then BSYC.options.showGuildSeparately = true end
-	if BSYC.options.showGuildTabs == nil then BSYC.options.showGuildTabs = false end
-	if BSYC.options.enableWhitelist == nil then BSYC.options.enableWhitelist = false end
-	if BSYC.options.enableSourceExpansion == nil then BSYC.options.enableSourceExpansion = true end
-	if BSYC.options.enableItemTypes == nil then BSYC.options.enableItemTypes = true end
+	BSYC:SetDefaults(nil, optionsDefaults)
+
+	--set tracking defaults
+	BSYC:SetDefaults("tracking", trackingDefaults)
+	BSYC.tracking = BSYC.options.tracking
 
 	--setup the default colors
-	if BSYC.options.colors == nil then BSYC.options.colors = {} end
-	if BSYC.options.colors.first == nil then BSYC.options.colors.first = HexToRGBPerc('FF80FF00') end
-	if BSYC.options.colors.second == nil then BSYC.options.colors.second = HexToRGBPerc('FFFFFFFF') end
-	if BSYC.options.colors.total == nil then BSYC.options.colors.total = HexToRGBPerc('FFF4A460') end
-	if BSYC.options.colors.guild == nil then BSYC.options.colors.guild = HexToRGBPerc('FF65B8C0') end
-	if BSYC.options.colors.debug == nil then BSYC.options.colors.debug = HexToRGBPerc('FF4DD827') end
-	if BSYC.options.colors.cross == nil then BSYC.options.colors.cross = HexToRGBPerc('FFFF7D0A') end
-	if BSYC.options.colors.bnet == nil then BSYC.options.colors.bnet = HexToRGBPerc('FF3588FF') end
-	if BSYC.options.colors.itemid == nil then BSYC.options.colors.itemid = HexToRGBPerc('FF52D386') end
-	if BSYC.options.colors.guildtabs == nil then BSYC.options.colors.guildtabs = HexToRGBPerc('FF09DBE0') end
-	if BSYC.options.colors.expansion == nil then BSYC.options.colors.expansion = HexToRGBPerc('FFCF9FFF') end
-	if BSYC.options.colors.itemtypes == nil then BSYC.options.colors.itemtypes = HexToRGBPerc('ffcccf66') end
+	BSYC:SetDefaults("colors", colorsDefaults)
+	BSYC.colors = BSYC.options.colors
+
+	--create any bagsync fonts
+	BSYC:CreateFonts()
 
 	--do DB cleanup check by version number
 	if not BSYC.options.addonversion or BSYC.options.addonversion ~= ver then
@@ -171,7 +179,7 @@ function Data:OnEnable()
 end
 
 function Data:DebugDumpOptions()
-	Debug(1, "init-DebugDumpOptions")
+	Debug(BSYC_DL.DEBUG, "init-DebugDumpOptions")
 	for k, v in pairs(BSYC.options) do
 		if type(v) ~= "table" then
 			BSYC.DEBUG(1, "DumpOptions", k, tostring(v))
@@ -190,115 +198,38 @@ function Data:DebugDumpOptions()
 end
 
 function Data:ResetColors()
-	Debug(2, "ResetColors")
-
-	if BSYC.options.colors == nil then BSYC.options.colors = {} end
-	BSYC.options.colors.first = HexToRGBPerc('FF80FF00')
-	BSYC.options.colors.second = HexToRGBPerc('FFFFFFFF')
-	BSYC.options.colors.total = HexToRGBPerc('FFF4A460')
-	BSYC.options.colors.guild = HexToRGBPerc('FF65B8C0')
-	BSYC.options.colors.debug = HexToRGBPerc('FF4DD827')
-	BSYC.options.colors.cross = HexToRGBPerc('FFFF7D0A')
-	BSYC.options.colors.bnet = HexToRGBPerc('FF3588FF')
-	BSYC.options.colors.itemid = HexToRGBPerc('FF52D386')
-	BSYC.options.colors.guildtabs = HexToRGBPerc('FF09DBE0')
-	BSYC.options.colors.expansion = HexToRGBPerc('FFCF9FFF')
-	BSYC.options.colors.itemtypes = HexToRGBPerc('ffcccf66')
-end
-
-function Data:CleanDB()
-	Debug(2, "CleanDB")
-
-	--check for empty table table to prevent loops
-	if next(BagSyncDB) == nil then
-		BagSyncDB["forceDBReset§"] = forceDBReset
-		BSYC:Print("|cFFFF9900"..L.DatabaseReset.."|r")
-		return
-	elseif not BagSyncDB["forceDBReset§"] or BagSyncDB["forceDBReset§"] < forceDBReset then
-		BagSyncDB = { ["forceDBReset§"] = forceDBReset }
-		BSYC:Print("|cFFFF9900"..L.DatabaseReset.."|r")
-		return
-	end
+	Debug(BSYC_DL.INFO, "ResetColors")
+	BSYC.colors = nil
+	BSYC:SetDefaults("colors", colorsDefaults)
 end
 
 function Data:FixDB()
-	Debug(2, "FixDB")
+	Debug(BSYC_DL.INFO, "FixDB")
 
     local storeGuilds = {}
-
 	if not BSYC.options.unitDBVersion then BSYC.options.unitDBVersion = {} end
 
-	local allowList = {
-		["bag"] = true,
-		["bank"] = true,
-		["reagents"] = true,
-		["equip"] = true,
-		["mailbox"] = true,
-		["void"] = true,
-		["auction"] = true,
-		["guild"] = true,
-	}
-
-	--fix old battlepet data
-	local function fixDBEntry(data)
-		if data then
-			for i=1, #data do
-				if data[i] then
-					local link, count, qOpts = BSYC:Split(data[i], skipOpts)
-					if link and tonumber(link) and (tonumber(link) >= BSYC.FakePetCode) then
-						if not qOpts or type(qOpts) ~= "table" or not qOpts.battlepet then
-							link = (link - BSYC.FakePetCode) / 100000
-							link = BSYC:CreateFakeBattlePetID(nil, count, link)
-							data[i] = link
-						end
-					end
-				end
-			end
-		end
-	end
-
+	--first grab all active guilds
 	for unitObj in self:IterateUnits(true) do
 		if not unitObj.isGuild then
 			--store only user guild names
 			if unitObj.data.guild and unitObj.data.guildrealm then
 				storeGuilds[unitObj.data.guild..unitObj.data.guildrealm] = true
 			end
-
-			for k, v in pairs(unitObj.data) do
-				if allowList[k] and type(v) == "table" then
-					--bags, bank, reagents
-					if k == "bag" or k == "bank" or k == "reagents" then
-						for bagID, bagData in pairs(v) do
-							fixDBEntry(bagData)
-						end
-					else
-						fixDBEntry(k == "auction" and v.bag or v)
-					end
-				end
-			end
-		else
-			fixDBEntry(unitObj.data.bag)
 		end
 	end
 
-	--cleanup guilds
-	for realm, rd in pairs(BagSyncDB) do
-		--ignore options
-		if not string.match(realm, '§*') then
-			--iterate through realm data
-			for k, v in pairs(rd) do
-				local isGuild = (k:find('©*') and true) or false
-				if isGuild then
-					if not storeGuilds[k..realm] then
-						--remove obsolete guild
-						BagSyncDB[realm][k] = nil
-					end
-				else
-					--users lets do a individual db cleanup if necessary
-					if BSYC.options.unitDBVersion.auction ~= unitDBVersion.auction and v.auction then
-						v.auction = nil
-					end
-				end
+	--now do the cleanup and remove old obsolete guilds
+	for unitObj in self:IterateUnits(true) do
+		if not unitObj.isGuild then
+			--users lets do a individual db cleanup if necessary
+			if BSYC.options.unitDBVersion.auction ~= unitDBVersion.auction and unitObj.data.auction then
+				unitObj.data.auction = nil
+			end
+		else
+			if not storeGuilds[unitObj.name..unitObj.realm] then
+				--remove obsolete guild
+				BagSyncDB[unitObj.realm][unitObj.name] = nil
 			end
 		end
 	end
@@ -310,40 +241,11 @@ function Data:FixDB()
 	--update db unit version information
 	BSYC.options.unitDBVersion = unitDBVersion
 
-	--cleanup any old bag issues
-	if BSYC:GetModule("Scanner", true) then BSYC:GetModule("Scanner"):CleanupBags() end
-
 	BSYC:Print("|cFFFF9900"..L.FixDBComplete.."|r")
 end
 
-function Data:ResetFramePositions()
-	local moduleList = {
-		"Blacklist",
-		"Whitelist",
-		"Currency",
-		"Professions",
-		"Profiles",
-		"Search",
-		"SortOrder",
-		"Debug",
-	}
-
-	for i=1, #moduleList do
-		local mName = moduleList[i]
-		if BSYC:GetModule(mName, true) and BSYC:GetModule(mName).frame then
-			BSYC:GetModule(mName).frame:ClearAllPoints()
-			BSYC:GetModule(mName).frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
-		end
-	end
-
-	if _G["BagSyncMoneyTooltip"] then
-		_G["BagSyncMoneyTooltip"]:ClearAllPoints()
-		_G["BagSyncMoneyTooltip"]:SetPoint("CENTER",UIParent,"CENTER",0,0)
-	end
-end
-
 function Data:LoadSlashCommand()
-	Debug(2, "LoadSlashCommand")
+	Debug(BSYC_DL.INFO, "LoadSlashCommand")
 
 	--load the keybinding locale information
 	BINDING_HEADER_BAGSYNC = "BagSync"
@@ -363,18 +265,18 @@ function Data:LoadSlashCommand()
 		if string.len(cmd) > 0 then
 
 			if cmd == L.SlashSearch then
-				BSYC:GetModule("Search"):StartSearch()
+				BSYC:GetModule("Search").frame:Show()
 				return true
 			elseif cmd == L.SlashGold or cmd == L.SlashMoney then
-				BSYC:GetModule("Tooltip"):MoneyTooltip()
+				BSYC:GetModule("Gold").frame:Show()
 				return true
-			elseif cmd == L.SlashCurrency and BSYC.IsRetail then
+			elseif cmd == L.SlashCurrency and BSYC:CanDoCurrency() and BSYC.tracking.currency then
 				BSYC:GetModule("Currency").frame:Show()
 				return true
 			elseif cmd == L.SlashProfiles then
 				BSYC:GetModule("Profiles").frame:Show()
 				return true
-			elseif cmd == L.SlashProfessions and BSYC.IsRetail then
+			elseif cmd == L.SlashProfessions and BSYC.IsRetail and BSYC.tracking.professions then
 				BSYC:GetModule("Professions").frame:Show()
 				return true
 			elseif cmd == L.SlashBlacklist then
@@ -383,11 +285,14 @@ function Data:LoadSlashCommand()
 			elseif cmd == L.SlashWhitelist then
 				BSYC:GetModule("Whitelist").frame:Show()
 				return true
+			elseif cmd == L.SlashSortOrder then
+				BSYC:GetModule("SortOrder").frame:Show()
+				return true
 			elseif cmd == L.SlashFixDB then
 				self:FixDB()
 				return true
 			elseif cmd == L.SlashResetPOS then
-				self:ResetFramePositions()
+				BSYC:ResetFramePositions()
 				return true
 			elseif cmd == L.SlashResetDB then
 				StaticPopup_Show("BAGSYNC_RESETDATABASE")
@@ -408,7 +313,10 @@ function Data:LoadSlashCommand()
 				return true
 			else
 				--do an item search, use the full command to search
-				BSYC:GetModule("Search"):StartSearch(input)
+				BSYC:GetModule("Search").frame:Show()
+				BSYC:GetModule("Search").frame.SearchBox:SetText(input)
+				BSYC:GetModule("Search").frame.SearchBox.SearchInfo:Hide()
+				BSYC:GetModule("Search"):DoSearch()
 				return true
 			end
 
@@ -418,12 +326,15 @@ function Data:LoadSlashCommand()
 		BSYC:Print("/bgs "..L.SlashSearch.." - "..L.HelpSearchWindow)
 		BSYC:Print("/bgs "..L.SlashGold.." - "..L.HelpGoldTooltip)
 		BSYC:Print("/bgs "..L.SlashProfiles.." - "..L.HelpProfilesWindow)
-		if BSYC.IsRetail then
+		if BSYC.IsRetail and BSYC.tracking.professions then
 			BSYC:Print("/bgs "..L.SlashProfessions.." - "..L.HelpProfessionsWindow)
+		end
+		if BSYC:CanDoCurrency() and BSYC.tracking.currency then
 			BSYC:Print("/bgs "..L.SlashCurrency.." - "..L.HelpCurrencyWindow)
 		end
 		BSYC:Print("/bgs "..L.SlashBlacklist.." - "..L.HelpBlacklistWindow)
 		BSYC:Print("/bgs "..L.SlashWhitelist.." - "..L.HelpWhitelistWindow)
+		BSYC:Print("/bgs "..L.SlashSortOrder.." - "..L.HelpSortOrder)
 		BSYC:Print("/bgs "..L.SlashFixDB.." - "..L.HelpFixDB)
 		BSYC:Print("/bgs "..L.SlashResetDB.." - "..L.HelpResetDB)
 		BSYC:Print("/bgs "..L.SlashConfig.." - "..L.HelpConfigWindow)
@@ -437,8 +348,172 @@ function Data:LoadSlashCommand()
 
 end
 
+function Data:RemoveTooltipCacheLink(link)
+	if Data.__cache.tooltip[link] then
+		Data.__cache.tooltip[link] = nil
+	end
+end
+
+function Data:CacheLink(parseLink)
+	--we want to store and aquire the cached data for the itemID by it's actual number and not a complex string
+	if not parseLink then return nil end
+	local origLink = parseLink
+
+	local shortID = tonumber(BSYC:GetShortItemID(parseLink))
+	if not shortID then return nil end
+
+	local itemObj = {}
+	local speciesID = BSYC:FakeIDToSpeciesID(shortID)
+
+	if not Data.__cache.items[shortID] then
+		if speciesID then
+			itemObj.itemQuality = 1
+			itemObj.itemLink = shortID --store the FakeID
+			itemObj.speciesID = speciesID
+			itemObj.parseLink = origLink
+
+			--https://wowpedia.fandom.com/wiki/API_C_PetJournal.GetPetInfoBySpeciesID
+			itemObj.speciesName,
+			itemObj.speciesIcon,
+			itemObj.petType,
+			itemObj.companionID,
+			itemObj.tooltipSource,
+			itemObj.tooltipDescription,
+			itemObj.isWild,
+			itemObj.canBattle,
+			itemObj.isTradeable,
+			itemObj.isUnique,
+			itemObj.obtainable,
+			itemObj.creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+		else
+			if C_Item.IsItemDataCachedByID(shortID) then
+				itemObj.parseLink = origLink
+
+				--https://wowpedia.fandom.com/wiki/API_GetItemInfo
+				itemObj.itemName,
+				itemObj.itemLink,
+				itemObj.itemQuality,
+				itemObj.itemLevel,
+				itemObj.itemMinLevel,
+				itemObj.itemType,
+				itemObj.itemSubType,
+				itemObj.itemStackCount,
+				itemObj.itemEquipLoc,
+				itemObj.itemTexture,
+				itemObj.sellPrice,
+				itemObj.classID,
+				itemObj.subclassID,
+				itemObj.bindType,
+				itemObj.expacID,
+				itemObj.setID,
+				itemObj.isCraftingReagent = GetItemInfo(shortID)
+			else
+				C_Item.RequestLoadItemDataByID(shortID)
+			end
+		end
+		--add to Cache if we have something to work with
+		if itemObj.speciesName or (itemObj.itemName and itemObj.itemLink) then
+			Data.__cache.items[shortID] = itemObj
+			return itemObj
+		end
+	else
+		return Data.__cache.items[shortID]
+	end
+	return nil
+end
+
+function Data:PopulateItemCache(errorList, errorCount)
+	if errorList and errorCount then
+		Debug(BSYC_DL.INFO, "PopulateItemCache", #errorList, errorCount)
+	end
+	local allowList = {
+		bag = true,
+		bank = true,
+		reagents = true,
+		equip = true,
+		mailbox = true,
+		void = true,
+		auction = true,
+	}
+	local tmpList = {}
+	local tmpError = {}
+
+	local function doItem(data)
+		for i=1, #data do
+			if data[i] then
+				local link = BSYC:Split(data[i], true)
+				if link and not tmpList[link] then
+					local cacheObj = Data:CacheLink(link)
+					if cacheObj then
+						tmpList[link] = cacheObj
+					else
+						table.insert(tmpError, link)
+					end
+				end
+			end
+		end
+	end
+
+	local function CacheCheck(unitObj, target)
+		if unitObj.data[target] then
+			if target == "bag" or target == "bank" or target == "reagents" then
+				for bagID, bagData in pairs(unitObj.data[target] or {}) do
+					doItem(bagData)
+				end
+			elseif target == "auction" then
+				doItem(unitObj.data[target].bag or {})
+
+			elseif target == "equip" or target == "void" or target == "mailbox" then
+				doItem(unitObj.data[target] or {})
+			end
+		end
+		if target == "guild" then
+			for tabID, tabData in pairs(unitObj.data.tabs or {}) do
+				doItem(tabData)
+			end
+		end
+	end
+
+	--do initial grab before we do a timed loop
+	if not errorList then
+		for unitObj in Data:IterateUnits(true) do
+			if not unitObj.isGuild then
+				for k, v in pairs(allowList) do
+					CacheCheck(unitObj, k)
+				end
+			else
+				CacheCheck(unitObj, "guild")
+			end
+		end
+		--only loop again if we have anything to work with
+		if #tmpError > 0 then
+			BSYC:StartTimer("DataDumpCache", 0.3, Data, "PopulateItemCache", tmpError, 0)
+		end
+		return
+	end
+
+	if #errorList > 0 and errorCount < 20 then
+		errorCount = errorCount + 1
+
+		--iterate backwards since we are using table.remove
+		for i=#errorList, 1, -1 do
+			local errObj = Data:CacheLink(errorList[i])
+			if errObj then
+				--remove it since we have a cached item
+				table.remove(errorList, i)
+			end
+		end
+
+		if #errorList > 0 then
+			--loop again if we still have something
+			BSYC:StartTimer("DataDumpCache", 0.3, Data, "PopulateItemCache", errorList, errorCount)
+		end
+	end
+end
+
 function Data:CheckExpiredAuctions()
-	Debug(2, "CheckExpiredAuctions")
+	Debug(BSYC_DL.INFO, "CheckExpiredAuctions", BSYC.tracking.auction)
+	if not BSYC.tracking.auction then return end
 
 	for unitObj in self:IterateUnits(true) do
 		if not unitObj.isGuild and unitObj.data.auction and unitObj.data.auction.count then
@@ -451,7 +526,7 @@ function Data:CheckExpiredAuctions()
 					local timeleft
 					local link, count, qOpts = BSYC:Split(unitObj.data.auction.bag[x])
 
-					timeleft = (qOpts and qOpts.auction) or nil
+					timeleft = qOpts.auction or nil
 
 					--if the timeleft is greater than current time than keep it, it's not expired
 					if link and timeleft and tonumber(timeleft) then
@@ -465,26 +540,61 @@ function Data:CheckExpiredAuctions()
 
 			unitObj.data.auction.bag = slotItems
 			unitObj.data.auction.count = #slotItems or 0
-
 		end
 	end
-
 end
 
 function Data:GetGuild(unitObj)
 	if not unitObj and not IsInGuild() then return end
-	if not unitObj then	Debug(2, "GetGuild", unitObj) end
 
-	local player = unitObj or Unit:GetUnitInfo()
-	if not player.guild or not player.guildrealm then return end
+	local unit = unitObj or Unit:GetUnitInfo()
+	Debug(BSYC_DL.INFO, "GetGuild", unit)
 
-	if not BagSyncDB[player.guildrealm] then BagSyncDB[player.guildrealm] = {} end
-	if not BagSyncDB[player.guildrealm][player.guild] then BagSyncDB[player.guildrealm][player.guild] = {} end
-	return BagSyncDB[player.guildrealm][player.guild]
+	if not unit.guild or not unit.guildrealm then return end
+	if not BagSyncDB[unit.guildrealm] then BagSyncDB[unit.guildrealm] = {} end
+	if not BagSyncDB[unit.guildrealm][unit.guild] then BagSyncDB[unit.guildrealm][unit.guild] = {} end
+	return BagSyncDB[unit.guildrealm][unit.guild]
+end
+
+function Data:GetCurrentPlayer()
+	Debug(BSYC_DL.TRACE, "GetCurrentPlayer")
+	local player = Unit:GetUnitInfo(true)
+	local isConnectedRealm = (Unit:isConnectedRealm(player.realm) and true) or false
+	return {
+		realm = player.realm,
+		name = player.name,
+		data = BSYC.db.player,
+		isGuild = false,
+		isConnectedRealm = isConnectedRealm,
+		isXRGuild = false
+	}
+end
+
+function Data:GetPlayerGuild()
+	local player = Unit:GetUnitInfo()
+	Debug(BSYC_DL.TRACE, "GetPlayerGuild", player.guild, BSYC.tracking.guild)
+	if not player.guild then return end
+	if not BSYC.tracking.guild then return end
+
+	local isConnectedRealm = (Unit:isConnectedRealm(player.guildrealm) and true) or false
+	local isXRGuild = (player.guildrealm ~= player.realm) or false
+
+	if not BagSyncDB[player.guildrealm] then return end
+	if not BagSyncDB[player.guildrealm][player.guild] then return end
+	if BSYC.db.blacklist[player.guild..player.guildrealm] then return end
+
+	return {
+		realm = player.guildrealm,
+		name = player.guild,
+		data = BagSyncDB[player.guildrealm][player.guild],
+		isGuild = true,
+		isConnectedRealm = isConnectedRealm,
+		isXRGuild = isXRGuild
+	}
 end
 
 function Data:IterateUnits(dumpAll, filterList)
-	Debug(2, "IterateUnits", dumpAll, filterList)
+	Debug(BSYC_DL.INFO, "IterateUnits", dumpAll, filterList)
 
 	local player = Unit:GetUnitInfo()
 	local argKey, argValue = next(BagSyncDB)
@@ -503,7 +613,7 @@ function Data:IterateUnits(dumpAll, filterList)
 				--if they have guilds enabled, then we should show it anyways, regardless of the XR and BNET options
 				--NOTE: This should ONLY be done if the guild realm is NOT the player realm.  If it's the same realms for both then it would be processed anyways.
 				local isXRGuild = false
-				if BSYC.options.enableGuild and player.guild and not BSYC.options.enableCrossRealmsItems and not BSYC.options.enableBNetAccountItems then
+				if BSYC.tracking.guild and player.guild and not BSYC.options.enableCrossRealmsItems and not BSYC.options.enableBNetAccountItems then
 					isXRGuild = (player.guildrealm and argKey == player.guildrealm and argKey ~= player.realm) or false
 				end
 
@@ -534,13 +644,20 @@ function Data:IterateUnits(dumpAll, filterList)
 							end
 
 							if not skipReturn then
-								return {realm=argKey, name=k, data=v, isGuild=isGuild, isConnectedRealm=isConnectedRealm, isXRGuild=isXRGuild}
+								return {
+									realm = argKey,
+									name = k,
+									data = v,
+									isGuild = isGuild,
+									isConnectedRealm = isConnectedRealm,
+									isXRGuild = isXRGuild
+								}
 							end
 
 						elseif v.faction and (v.faction == BSYC.db.player.faction or BSYC.options.enableFaction) then
 
 							--check for guilds and if we have them merged or not
-							if BSYC.options.enableGuild and isGuild then
+							if BSYC.tracking.guild and isGuild then
 
 								--check for guilds only on current character if enabled and on their current realm
 								if (isXRGuild or BSYC.options.showGuildCurrentCharacter) and player.guild and player.guildrealm then
@@ -555,7 +672,7 @@ function Data:IterateUnits(dumpAll, filterList)
 								--check for the guild blacklist
 								if BSYC.db.blacklist[k..argKey] then skipReturn = true end
 
-							elseif not BSYC.options.enableGuild and isGuild then
+							elseif not BSYC.tracking.guild and isGuild then
 								skipReturn = true
 
 							elseif isXRGuild then
@@ -564,7 +681,14 @@ function Data:IterateUnits(dumpAll, filterList)
 							end
 
 							if not skipReturn then
-								return {realm=argKey, name=k, data=v, isGuild=isGuild, isConnectedRealm=isConnectedRealm, isXRGuild=isXRGuild}
+								return {
+									realm = argKey,
+									name = k,
+									data = v,
+									isGuild = isGuild,
+									isConnectedRealm = isConnectedRealm,
+									isXRGuild = isXRGuild
+								}
 							end
 
 						end

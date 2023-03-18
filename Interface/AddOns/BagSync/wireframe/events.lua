@@ -7,7 +7,7 @@
 --]]
 
 local BSYC = select(2, ...) --grab the addon namespace
-local Events = BSYC:NewModule("Events", 'AceEvent-3.0', 'AceTimer-3.0')
+local Events = BSYC:NewModule("Events", 'AceEvent-3.0')
 local Unit = BSYC:GetModule("Unit")
 local Scanner = BSYC:GetModule("Scanner")
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
@@ -16,63 +16,8 @@ local function Debug(level, ...)
     if BSYC.DEBUG then BSYC.DEBUG(level, "Events", ...) end
 end
 
-local alertTooltip = CreateFrame("GameTooltip", "BSYC_EventAlertTooltip", UIParent, "GameTooltipTemplate")
-alertTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-alertTooltip:SetHeight(30)
-alertTooltip:SetClampedToScreen(true)
-alertTooltip:SetFrameStrata("FULLSCREEN_DIALOG")
-alertTooltip:SetFrameLevel(1000)
-alertTooltip:SetToplevel(true)
-alertTooltip:ClearAllPoints()
-alertTooltip:SetPoint("CENTER", UIParent, "CENTER")
-alertTooltip:Hide()
-Events.alertTooltip = alertTooltip
-
-local function showEventAlert(text, alertType)
-	Debug(2, "showEventAlert", text, alertType)
-
-	Events.alertTooltip.alertType = alertType
-	Events.alertTooltip:ClearAllPoints()
-	Events.alertTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	Events.alertTooltip:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	Events.alertTooltip:ClearLines()
-	Events.alertTooltip:AddLine("|cffff6600BagSync|r")
-	Events.alertTooltip:AddLine("|cffddff00"..text.."|r")
-	Events.alertTooltip:HookScript("OnUpdate", function(self, elapse)
-		if self.alertType == "GUILDBANK" and not Unit.atGuildBank then
-			self:Hide()
-		end
-	end)
-	Events.alertTooltip:Show()
-end
-
-function Events:DoTimer(sName, sFunc, sDelay, sRepeat)
-	Debug(8, "DoTimer", sName, sFunc, sDelay, sRepeat)
-
-	if not self.timers then self.timers = {} end
-	if not sRepeat then
-		--stop and delete current timer to recreate
-		self:StopTimer(sName)
-		self.timers[sName] = self:ScheduleTimer(sFunc, sDelay)
-	else
-		--don't recreate a repeatingtimer if it already exists.
-		if not self.timers[sName] then
-			self.timers[sName] = self:ScheduleRepeatingTimer(sFunc, sDelay)
-		end
-	end
-	return self.timers[sName]
-end
-
-function Events:StopTimer(sName)
-	if not self.timers then return end
-	if not sName then return end
-	if not self.timers[sName] then return end
-	self:CancelTimer(self.timers[sName])
-	self.timers[sName] = nil
-end
-
 function Events:OnEnable()
-	Debug(2, "OnEnable")
+	Debug(BSYC_DL.INFO, "OnEnable")
 
 	self:RegisterEvent("PLAYER_MONEY")
 	self:RegisterEvent("GUILD_ROSTER_UPDATE")
@@ -84,8 +29,14 @@ function Events:OnEnable()
 
 	--this event is when we trigger a CheckInbox()
 	self:RegisterEvent("MAIL_INBOX_UPDATE", function()
-		self:DoTimer("MailBoxScan", function() Scanner:SaveMailbox() end, 0.3)
+		BSYC:StartTimer("MAIL_INBOX_UPDATE", 0.3, Scanner, "SaveMailbox")
 	end)
+	self:RegisterEvent("MAIL_SEND_SUCCESS", function()
+		Scanner:SendMail(nil, true)
+	end)
+    hooksecurefunc("SendMail", function(mailTo)
+		Scanner:SendMail(mailTo, false)
+    end)
 
 	self:RegisterEvent("PLAYERBANKSLOTS_CHANGED", function(event, slotID)
 		Scanner:SaveBank(true)
@@ -115,13 +66,12 @@ function Events:OnEnable()
 	--check to see if guildbanks are even enabled on server
 	if CanGuildBankRepair then
 		self:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED", function()
-			--due to a slight delay on the server, we have to add small timer before processing
-			self:DoTimer("GuildBankScan", function() self:GuildBank_Changed() end, 0.2)
+			BSYC:StartTimer("GUILDBANKBAGSLOTS_CHANGED", 1, Events, "GuildBank_Changed")
 		end)
 	end
 
 	--only do currency checks if the server even supports it
-	if C_CurrencyInfo then
+	if BSYC:CanDoCurrency() then
 		self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 	end
 
@@ -144,39 +94,37 @@ function Events:OnEnable()
 end
 
 function Events:BAGSYNC_EVENT_MAILBOX(event, isOpen)
-	Debug(1, "BAGSYNC_EVENT_MAILBOX", isOpen)
+	Debug(BSYC_DL.DEBUG, "BAGSYNC_EVENT_MAILBOX", isOpen)
 	if isOpen then
 		Scanner:SaveMailbox(true)
 	end
 end
 
 function Events:BAGSYNC_EVENT_BANK(event, isOpen)
-	Debug(1, "BAGSYNC_EVENT_BANK", isOpen)
+	Debug(BSYC_DL.DEBUG, "BAGSYNC_EVENT_BANK", isOpen)
 	if isOpen then
 		Scanner:SaveBank()
 	end
 end
 
 function Events:BAGSYNC_EVENT_AUCTION(event, isOpen, isReady)
-	Debug(1, "BAGSYNC_EVENT_AUCTION", isOpen, isReady)
+	Debug(BSYC_DL.DEBUG, "BAGSYNC_EVENT_AUCTION", isOpen, isReady)
 	if isOpen and isReady then
 		Scanner:SaveAuctionHouse()
 	end
 end
 
 function Events:BAGSYNC_EVENT_VOIDBANK(event, isOpen)
-	Debug(1, "BAGSYNC_EVENT_VOIDBANK", isOpen)
+	Debug(BSYC_DL.DEBUG, "BAGSYNC_EVENT_VOIDBANK", isOpen)
 	if isOpen then
 		Scanner:SaveVoidBank()
 	end
 end
 
 function Events:BAGSYNC_EVENT_GUILDBANK(event, isOpen)
-	Debug(1, "BAGSYNC_EVENT_GUILDBANK", isOpen)
+	Debug(BSYC_DL.DEBUG, "BAGSYNC_EVENT_GUILDBANK", isOpen)
 	if isOpen then
 		self:GuildBank_Open()
-	else
-		self:GuildBank_Close()
 	end
 end
 
@@ -199,18 +147,20 @@ function Events:PLAYER_EQUIPMENT_CHANGED(event)
 end
 
 function Events:BAG_UPDATE(event, bagid)
-	Debug(8, "BAG_UPDATE", bagid)
+	Debug(BSYC_DL.SL3, "BAG_UPDATE", bagid, BSYC.tracking.bag)
+	if not BSYC.tracking.bag then return end
 	if not self.SpamBagQueue then self.SpamBagQueue = {} end
 	self.SpamBagQueue[bagid] = true
 	self.SpamBagTotal = (self.SpamBagTotal or 0) + 1
 end
 
 function Events:BAG_UPDATE_DELAYED(event)
-	Debug(8, "BAG_UPDATE_DELAYED")
+	Debug(BSYC_DL.SL3, "BAG_UPDATE_DELAYED", BSYC.tracking.bag)
+	if not BSYC.tracking.bag then return end
 	if not self.SpamBagQueue then self.SpamBagQueue = {} end
 	if not self.SpamBagTotal then self.SpamBagTotal = 0 end
 	--NOTE: BSYC:GetHashTableLen(self.SpamBagQueue) may show more then is actually processed.  Example it has the banks in queue but we aren't at a bank.
-	Debug(2, "SpamBagQueue", self.SpamBagTotal)
+	Debug(BSYC_DL.INFO, "SpamBagQueue", self.SpamBagTotal)
 
 	local totalProcessed = 0
 
@@ -237,59 +187,43 @@ function Events:BAG_UPDATE_DELAYED(event)
 	end
 	self.SpamBagTotal = 0
 
-	Debug(2, "SpamBagQueue", "totalProcessed", totalProcessed)
+	Debug(BSYC_DL.INFO, "SpamBagQueue", "totalProcessed", totalProcessed)
 end
 
 function Events:GuildBank_Open()
-	if not BSYC.options.enableGuild then return end
-	if not self.GuildTabQueryQueue then self.GuildTabQueryQueue = {} end
-	Debug(2, "GuildBank_Open")
+	Debug(BSYC_DL.SL3, "GuildBank_Open", BSYC.tracking.guild)
+	if not BSYC.tracking.guild then return end
 
-	local numTabs = GetNumGuildBankTabs()
-	for tab = 1, numTabs do
-		local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals = GetGuildBankTabInfo(tab)
-		if isViewable then
-			self.GuildTabQueryQueue[tab] = true
-			if not self.queryGuild then
-				self.queryGuild  = true
-			end
+	--I used to do one query per server response, but honestly it wasn't much of a difference then just spamming them all
+	for tab=1, GetNumGuildBankTabs() do
+		--permissions issue, only query tabs we can see duh
+		if select(3,GetGuildBankTabInfo(tab)) then
+			QueryGuildBankTab(tab)
 		end
 	end
-end
-
-function Events:GuildBank_Close()
-	if not BSYC.options.enableGuild then return end
-	Debug(2, "GuildBank_Close")
-
-	if self.queryGuild then
-		BSYC:Print(L.ScanGuildBankError)
-		self.queryGuild = false
-	end
+	self.queryGuild = true
 end
 
 function Events:GuildBank_Changed()
-	if not Unit.atGuildBank then return end
-	if not BSYC.options.enableGuild then return end
+	Debug(BSYC_DL.SL3, "GuildBank_Changed", BSYC.tracking.guild)
+	if not BSYC.tracking.guild then return end
 
-	-- check if we need to process the queue
-	local tab = next(self.GuildTabQueryQueue)
-	if tab then
-		QueryGuildBankTab(tab)
-		self.GuildTabQueryQueue[tab] = nil
-		--show the alert
-		local numTab = string.format(L.ScanGuildBankScanInfo, tab or 0, GetNumGuildBankTabs() or 0)
-		if BSYC.options.showGuildBankScanAlert then
-			showEventAlert(numTab, "GUILDBANK")
-		end
-		Debug(3, "GuildBank_Changed", numTab)
-	else
+	if not Unit.atGuildBank then
 		if self.queryGuild then
+			BSYC:Print(L.ScanGuildBankError)
 			self.queryGuild = false
-			BSYC:Print(L.ScanGuildBankDone)
-			Events.alertTooltip:Hide()
 		end
-		-- the bank is ready for reading
+		return
+	end
+
+	if self.queryGuild then
+		self.queryGuild = false
+		BSYC:Print(L.ScanGuildBankDone)
+		--save all tabs
 		Scanner:SaveGuildBank()
+	else
+		--save only current tab we are viewing or changed to
+		Scanner:SaveGuildBank(GetCurrentGuildBankTab())
 	end
 end
 

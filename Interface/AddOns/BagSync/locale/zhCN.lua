@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("BagSync", "zhCN")
 if not L then return end
 
 --  zhCN client (NGA-[男爵凯恩]补齐)
---  Last update: 20223/2/21
+--  Last update: 20223/3/18
 
 L.Yes = "Yes"
 L.No = "No"
@@ -38,6 +38,10 @@ L.TooltipExpansion = "[来源]:"
 L.TooltipItemType = "[类型]:"
 L.TooltipDelimiter = ", "
 L.TooltipRealmKey = "服务器:"
+L.TooltipDetailsInfo = "物品详细摘要"
+L.DetailsBagID = "背包号:"
+L.DetailsSlot = "位置:"
+L.DetailsTab = "标签:"
 L.Debug_DEBUG = "Debug"
 L.Debug_INFO = "信息"
 L.Debug_TRACE = "追踪"
@@ -62,12 +66,13 @@ L.AdvancedLocationInformation = "* 选择所有因为无默认"
 L.Units = "名字:"
 L.Locations = "位置:"
 L.Profiles = "信息"
-L.SortOrder = "自定义排序"
+L.SortOrder = "排序"
 L.Professions = "专业"
 L.Currency = "货币"
 L.Blacklist = "黑名单"
 L.Whitelist = "白名单"
 L.Recipes = "配方"
+L.Details = "详细信息"
 L.Gold = "金币"
 L.Close = "关闭"
 L.FixDB = "优化数据库"
@@ -90,6 +95,8 @@ L.EnterItemID = "输入物品ID(请用 http://Wowhead.com/ 查询。)"
 L.AddGuild = "添加公会"
 L.AddItemID = "添加物品ID"
 L.RemoveItemID = "移除物品ID"
+L.PleaseRescan = "|cFF778899[请重新扫描]|r"
+L.UseFakeID = "使用虚拟ID[FakeID]用于战斗宠物的物品ID[ItemID]。"
 L.ItemIDNotFound = "[%s] 未找到物品ID。再试一次!"
 L.ItemIDNotValid = "[%s] 物品ID无效或者查询服务器未响应。再试一次!"
 L.ItemIDRemoved = "[%s] 物品ID已移除"
@@ -113,7 +120,7 @@ L.KeybindBlacklist = "显示黑名单窗口。"
 L.KeybindWhitelist = "显示白名单窗口。"
 L.KeybindCurrency = "显示货币窗口。"
 L.KeybindGold = "显示金币窗口。"
-L.KeybindProfessions = "显示职业窗口。"
+L.KeybindProfessions = "显示专业窗口。"
 L.KeybindProfiles = "显示配置文件。"
 L.KeybindSearch = "显示搜索窗口。"
 L.ObsoleteWarning = "\n\n注意：过时的物品将继续显示为缺失。 要修复此问题,请再次扫描您的角色以删除过时的物品。\n（背包、银行、虚空银行等 ...)"
@@ -138,7 +145,8 @@ L.SlashBlacklist = "黑名单"
 L.SlashWhitelist = "白名单"
 L.SlashResetDB = "重置"
 L.SlashDebug = "Debug"
-L.SlashResetPOS = "重置POS" --POS等国服上线在查看是什么功能
+L.SlashResetPOS = "重置各模块" 
+L.SlashSortOrder = "排序"
 ------------------------
 -- ----THESE USE THE SLASH OPERATOR COMMANDS FOUND ABOVE
 L.HelpSearchItemName = "快速搜索一件物品"
@@ -154,6 +162,7 @@ L.HelpBlacklistWindow = "打开黑名单窗口。"
 L.HelpWhitelistWindow = "打开白名单窗口。"
 L.HelpDebug = "打开 BagSync Debug 窗口。"
 L.HelpResetPOS = "重置 BagSync 所有模块的窗口位置。"
+L.HelpSortOrder = "角色和公会的自定义排序。"
 ------------------------
 L.EnableBagSyncTooltip = "启用 BagSync 鼠标提示"
 L.ShowOnModifier = "设置 BagSync 鼠标提示快捷键:"
@@ -167,7 +176,7 @@ L.EnableLoginVersionInfo = "显示 BagSync 的登录信息"
 L.FocusSearchEditBox = "打开搜索窗口时专注搜索框"
 L.AlwaysShowAdvSearch = "始终显示 Bagsync 高级搜索窗口"
 L.DisplayTotal = "显示 [总计] 金额。"
-L.DisplayGuildGoldInGoldTooltip = "显示 [公会] 金币总数。"
+L.DisplayGuildGoldInGoldWindow = "显示 [公会] 金币总数。"
 L.DisplayGuildBank = "显示公会银行物品。|cFF99CC33(需要扫描公会银行)|r"
 L.DisplayMailbox = "显示信箱内的物品。"
 L.DisplayAuctionHouse = "显示拍卖行物品。"
@@ -187,6 +196,8 @@ L.DisplayItemTypes = "在鼠标提示中显示 [物品类型|子类型] 。"
 L.DisplayTooltipTags = "标识符号"
 L.DisplayTooltipStorage = "仓库"
 L.DisplayTooltipExtra = "其他统计"
+L.DisplaySortOrderHelp = "排序帮助"
+L.DisplaySortOrderStatus = "当前排序: [%s]"
 L.DisplayWhitelistHelp = "白名单帮助"
 L.DisplayWhitelistStatus = "当前白名单: [%s]"
 L.DisplayWhitelistHelpInfo = "你只能在白名单数据库中输入物品ID. \n\n输入战斗宠物请使用虚拟ID[FakeID]而不是物品ID[ItemID], 你可以通过在BagSync设置内启用鼠标提示物品ID[ItemID]功能来获取虚拟ID[FakeID]。\n\n|cFFDF2B2B这对货币窗口不起作用。|r"
@@ -238,10 +249,106 @@ L.ConfigColorHeader = "BagSync 提示信息的颜色设置。"
 L.ConfigMain = "主设置"
 L.ConfigMainHeader = "BagSync 的主设置。"
 L.ConfigSearch = "搜索"
+L.ConfigKeybindings = "快捷键设置"
+L.ConfigKeybindingsHeader = "BagSync 各模块快捷键设置"
+L.ConfigExternalTooltip = "外部鼠标提示"
 L.ConfigSearchHeader = "搜索窗口的设置"
+L.ConfigFont = "字体"
+L.ConfigFontSize = "字体大小"
+L.ConfigFontOutline = "轮廓"
+L.ConfigFontOutline_NONE = "无"
+L.ConfigFontOutline_OUTLINE = "细"
+L.ConfigFontOutline_THICKOUTLINE = "粗"
+L.ConfigFontMonochrome = "单一颜色"
+L.ConfigTracking = "追踪"
+L.ConfigTrackingHeader = "追踪BagSync存储数据库位置的设置。"
+L.ConfigTrackingCaution = "警告"
+L.ConfigTrackingModules = "模块"
+L.ConfigTrackingInfo = [[
+|cFFDF2B2B注意|r: 禁用模块会导致BagSync停止追踪并将模块存储到数据库中。
+禁用的模块不会在任何BagSync窗口，斜杠命令，鼠标提示或小地图按钮中显示。
+]]
+L.TrackingModule_Bag = "背包"
+L.TrackingModule_Bank = "银行"
+L.TrackingModule_Reagents = "材料银行"
+L.TrackingModule_Equip = "已装备"
+L.TrackingModule_Mailbox = "信箱"
+L.TrackingModule_Void = "虚空仓库"
+L.TrackingModule_Auction = "拍卖行"
+L.TrackingModule_Guild = "公会银行"
+L.TrackingModule_Professions = "专业"
+L.TrackingModule_Currency = "货币"
 L.WarningItemSearch = "警告：共有 [|cFFFFFFFF%s|r] 个物品未被搜索！\n\nBagSync 仍在等待服务器/数据库响应\n\n按“搜索”或“刷新”按钮。"
 L.WarningUpdatedDB = "您已更新到最新的版本!您将需要再次重新扫描所有角色!|r "
 L.WarningHeader = "警告!"
+L.SavedSearch = "保存的搜索"
+L.SavedSearch_Add = "添加搜索"
+L.SavedSearch_Warn = "您必须在搜索框中输入一些内容。"
+---------------------------------------
+--Localization Note:  Please be advised that the commands for the SearchHelp are english only, however the variables can be any language.  Example: class:<name of class in your locale>
+--This includes name searches like name:<name in your locale>
+---------------------------------------
+L.SearchHelpHeader = "搜索帮助"
+L.SearchHelp = [[
+|cffff7d0a搜索选项|r:
+|cFFDF2B2B(注意: 所有命令及标点符号只能是英文!)|r
+
+|cFF99CC33物品在角色位置的顺序|r:
+@bag <背包>
+@bank <银行>
+@reagents <材料银行>
+@equip <已装备>
+@mailbox <信箱>
+@void <虚空仓库>
+@auction <拍卖行>
+@guild <公会>
+
+|cffff7d0a高级搜索|r (|cFF99CC33命令|r | |cFFFFD580示例|r):
+
+|cff00ffff<物品名称>|r = |cFF99CC33n|r ; |cFF99CC33name|r | 示例：|cFFFFD580[输入简称]:矿石|r ;  |cFFFFD580[输入全称]:宁铁矿石|r 
+
+|cff00ffff<物品已装备>|r = |cFF99CC33bind|r | 示例|cFFFFD580bind:boe|r ; types (boe, bop, bou, boq) i.e   boe = 已绑定装备
+
+|cff00ffff<品质>|r = |cFF99CC33q|r ; |cFF99CC33quality|r | 示例：|cFFFFD580q:史诗|r 
+
+|cff00ffff<物品等级>|r = |cFF99CC33l|r ; |cFF99CC33level|r ; |cFF99CC33lvl|r ; |cFF99CC33ilvl|r |示例： |cFFFFD580ilvl:382|r  ;  |cFFFFD580lvl:>=370|r 
+
+|cff00ffff<需要的等级><|r = |cFF99CC33r|r ; |cFF99CC33req|r ; |cFF99CC33rl|r ; |cFF99CC33reql|r ; |cFF99CC33reqlvl|r | 示例：|cFFFFD580r:>5|r  ;  |cFFFFD580req:>=20|r 
+
+|cff00ffff<种类/部位>|r = |cFF99CC33t|r ; |cFF99CC33type|r ; 示例：|cFF99CC33饰品|r  ;  |cFFFFD580t:脚|r 
+
+|cff00ffff<提示>|r = |cFF99CC33tt|r ; |cFF99CC33tip|r ; |cFF99CC33tooltip|r | |cFFFFD580tt:<text>|r (tt:summon)
+
+|cff00ffff<item set>|r = |cFF99CC33s|r ; |cFF99CC33set|r | |cFFFFD580s:<setname>|r (setname can be * for all sets)
+
+|cff00ffff<来源>|r = |cFF99CC33x|r ; |cFF99CC33xpac|r ; |cFF99CC33expansion|r | 示例： |cFFFFD580x:巨龙时代|r  ;   |cFFFFD580xpac:暗影国度|r 
+
+|cff00ffff<关键字>|r = |cFF99CC33k|r ; |cFF99CC33key|r ; |cFF99CC33keyword|r | 示例：|cFFFFD580k:任务|r (关键字: soulbound, bound, boe, bop, bou, boa, quest, unique, toy, reagent, crafting, naval, follower, follow, power, apperance)
+
+|cff00ffff<职业>|r = |cFF99CC33c|r ; |cFF99CC33class|r | 示例：|cFFFFD580class:战士|r  ;  |cFFFFD580c:恶魔猎手|r
+
+|cffff7d0a函数 <op>|r:
+|cFF99CC33:|r | |cFF99CC33=|r | |cFF99CC33==|r | |cFF99CC33!=|r | |cFF99CC33~=|r | |cFF99CC33<|r | |cFF99CC33>|r | |cFF99CC33<=|r | |cFF99CC33>=|r
+
+
+|cffff7d0a否定命令|r:
+示例: |cFF99CC33!|r|cFFFFD580bind:boe|r (不是已绑定装备)
+示例: |cFF99CC33!|r|cFFFFD580bind:boe|r |cFF99CC33&&|r |cFFFFD580lvl:>20|r (不是已绑定装备且物品等级大于20)
+
+|cffff7d0a联合搜索 (和搜索):|r
+(使用 |cFF99CC33&&|r 符号)
+示例: |cFFFFD580bind:boe|r |cFF99CC33&&|r |cFFFFD580lvl:>20|r
+
+|cffff7d0a交叉搜索 (或搜索):|r
+(使用竖 |cFF99CC33|||||r 符号)
+示例: |cFFFFD580bind:boe|r |cFF99CC33|||||r |cFFFFD580lvl:>20|r
+
+|cffff7d0a复杂搜索示例:|r
+(已绑定装备, 物品等级正好是20名字中带有'长袍' 一词)
+|cFFFFD580bind:boe|r|cFF99CC33&|r|cFFFFD580lvl:20|r|cFF99CC33&|r|cFFFFD580长袍|r
+|cFFFFD580bind:boe|r |cFF99CC33&&|r |cFFFFD580lvl:20|r |cFF99CC33&&|r |cFFFFD580name:长袍|r
+
+]]
 L.ConfigFAQ= " FAQ / 帮助 "
 L.ConfigFAQHeader = "BagSync 的常见问题和帮助介绍。"
 L.FAQ_Question_1 = "我在鼠标提示上遇到卡顿/滞后。"

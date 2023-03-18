@@ -11,6 +11,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 local config = LibStub("AceConfig-3.0")
 local configDialog = LibStub("AceConfigDialog-3.0")
 local MinimapIcon = LibStub("LibDBIcon-1.0")
+local SML = LibStub("LibSharedMedia-3.0")
+local SML_FONT = SML.MediaType and SML.MediaType.FONT or "font"
 
 local function Debug(level, ...)
     if BSYC.DEBUG then BSYC.DEBUG(level, "Config", ...) end
@@ -63,11 +65,19 @@ local function get(info)
 	local p, c = strsplit(".", info.arg)
 
 	if p == "color" then
-		return BSYC.options.colors[c].r, BSYC.options.colors[c].g, BSYC.options.colors[c].b
+		return BSYC.colors[c].r, BSYC.colors[c].g, BSYC.colors[c].b
+	elseif p == "tracking" then
+		return BSYC.tracking[c]
 	elseif p == "keybind" then
 		return GetBindingKey(c)
-	elseif c == "tooltipModifer" then
+	elseif c == "tooltipModifer" or c == "extTT_FontOutline" then
 		return BSYC.options[c] or "NONE"
+	elseif c == "extTT_FontSize" then
+		return BSYC.options[c] or 12
+	elseif c == "extTT_Font" then
+		for i, v in next, SML:List(SML_FONT) do
+			if v == BSYC.options["extTT_Font"] then return i end
+		end
 	else
 		if BSYC.options[c] then --if this is nil then it will default to false
 			return BSYC.options[c]
@@ -82,17 +92,24 @@ local function set(info, arg1, arg2, arg3, arg4)
 	local p, c = strsplit(".", info.arg)
 
 	if p == "color" then
-		BSYC.options.colors[c].r = arg1
-		BSYC.options.colors[c].g = arg2
-		BSYC.options.colors[c].b = arg3
+		BSYC.colors[c].r = arg1
+		BSYC.colors[c].g = arg2
+		BSYC.colors[c].b = arg3
+	elseif p == "tracking" then
+		BSYC.tracking[c] = arg1
+		--rebuild the minimap if any options have changed
+		if BSYC:GetModule("DataBroker", true) then
+			BSYC:GetModule("DataBroker"):BuildMinimapDropdown()
+		end
 	elseif p == "keybind" then
 	   local b1, b2 = GetBindingKey(c)
 	   if b1 then SetBinding(b1) end
 	   if b2 then SetBinding(b2) end
 	   SetBinding(arg1, c)
 	   SaveBindings(GetCurrentBindingSet())
-	elseif c == "tooltipModifer" then
-		BSYC.options[c] = arg1
+	elseif c == "extTT_Font" then
+		local list = SML:List(SML_FONT)
+		BSYC.options[c] = list[arg1]
 	else
 		BSYC.options[c] = arg1
 
@@ -124,6 +141,17 @@ local function set(info, arg1, arg2, arg3, arg4)
 		end
 
 	end
+
+	if p == "font" then
+		--recreate the fonts if we changed anything
+		BSYC:CreateFonts()
+	end
+
+	--reset tooltips just in case we changed any options related to it
+	if BSYC:GetModule("Tooltip", true) then
+		BSYC:GetModule("Tooltip"):ResetCache()
+		BSYC:GetModule("Tooltip"):ResetLastLink()
+	end
 end
 
 local modValues = {
@@ -154,90 +182,182 @@ options.args.main = {
 	name = L.ConfigMain,
 	desc = L.ConfigMainHeader,
 	args = {
-		enablebagsynctooltip = {
+		groupmain = {
+			name = "BagSync",
 			order = 1,
-			type = "toggle",
-			name = L.EnableBagSyncTooltip,
-			width = "full",
+			type = "group",
 			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "main.enableTooltips",
+			guiInline = true,
+			args = {
+				enablebagsynctooltip = {
+					order = 1,
+					type = "toggle",
+					name = L.EnableBagSyncTooltip,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "main.enableTooltips",
+				},
+				tooltipModifier = {
+					order = 2,
+					type = "select",
+					name = L.ShowOnModifier,
+					desc = L.ShowOnModifierDesc,
+					values = modValues,
+					sorting = modSorting,
+					get = get,
+					set = set,
+					arg = "main.tooltipModifer",
+				},
+				enabletooltipsearchonly = {
+					order = 3,
+					type = "toggle",
+					name = L.DisplayTooltipOnlySearch,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "main.tooltipOnlySearch",
+				},
+				focussearcheditbox = {
+					order = 4,
+					type = "toggle",
+					name = L.FocusSearchEditBox,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "main.focusSearchEditBox",
+				},
+				alwaysshowadvsearch = {
+					order = 5,
+					type = "toggle",
+					name = L.AlwaysShowAdvSearch,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "main.alwaysShowAdvSearch",
+				},
+				enableminimap = {
+					order = 6,
+					type = "toggle",
+					name = L.DisplayMinimap,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "minimap.enableMinimap",
+				},
+				enableversiontext = {
+					order = 7,
+					type = "toggle",
+					name = L.EnableLoginVersionInfo,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "main.enableLoginVersionInfo",
+				},
+			}
 		},
-		tooltipModifier = {
+		groupexternaltooltip = {
+			name = L.ConfigExternalTooltip,
 			order = 2,
-			type = "select",
-			name = L.ShowOnModifier,
-			desc = L.ShowOnModifierDesc,
-			values = modValues,
-			sorting = modSorting,
-			get = get,
-			set = set,
-			arg = "main.tooltipModifer",
+			type = "group",
+			descStyle = "hide",
+			guiInline = true,
+			args = {
+				enableexternaltooltip = {
+					order = 1,
+					type = "toggle",
+					name = L.EnableExtTooltip,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "main.enableExtTooltip",
+					disabled = function() return not BSYC.options["enableTooltips"] end,
+				},
+				font = {
+					type = "select",
+					name = L.ConfigFont,
+					order = 2,
+					values = SML:List(SML_FONT),
+					itemControl = "DDI-Font",
+					get = get,
+					set = set,
+					arg = "font.extTT_Font",
+				},
+				outline = {
+					type = "select",
+					name = L.ConfigFontOutline,
+					order = 3,
+					values = {
+						NONE = L.ConfigFontOutline_NONE,
+						OUTLINE = L.ConfigFontOutline_OUTLINE,
+						THICKOUTLINE = L.ConfigFontOutline_THICKOUTLINE,
+					},
+					get = get,
+					set = set,
+					arg = "font.extTT_FontOutline",
+				},
+				fontsize = {
+					type = "range",
+					name = L.ConfigFontSize,
+					descStyle = "hide",
+					order = 4,
+					max = 200, softMax = 72,
+					min = 10,
+					step = 1,
+					width = 2,
+					get = get,
+					set = set,
+					arg = "font.extTT_FontSize",
+				},
+				monochrome = {
+					type = "toggle",
+					name = L.ConfigFontMonochrome,
+					descStyle = "hide",
+					order = 5,
+					get = get,
+					set = set,
+					arg = "font.extTT_FontMonochrome",
+				},
+			}
 		},
-		enableexternaltooltip = {
-			order = 3,
-			type = "toggle",
-			name = L.EnableExtTooltip,
+	},
+}
+
+options.args.keybindings = {
+	type = "group",
+	order = 3,
+	name = L.ConfigKeybindings,
+	desc = L.ConfigKeybindingsHeader,
+	args = {
+		keybindsearch = {
+			order = 1,
+			type = "keybinding",
+			name = L.KeybindSearch,
 			width = "full",
 			descStyle = "hide",
 			get = get,
 			set = set,
-			arg = "main.enableExtTooltip",
-			disabled = function() return not BSYC.options["enableTooltips"] end,
+			arg = "keybind.BAGSYNCSEARCH",
 		},
-		enabletooltipsearchonly = {
-			order = 4,
-			type = "toggle",
-			name = L.DisplayTooltipOnlySearch,
+		keybindgold = {
+			order = 2,
+			type = "keybinding",
+			name = L.KeybindGold,
 			width = "full",
 			descStyle = "hide",
 			get = get,
 			set = set,
-			arg = "main.tooltipOnlySearch",
-		},
-		focussearcheditbox = {
-			order = 5,
-			type = "toggle",
-			name = L.FocusSearchEditBox,
-			width = "full",
-			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "main.focusSearchEditBox",
-		},
-		alwaysshowadvsearch = {
-			order = 6,
-			type = "toggle",
-			name = L.AlwaysShowAdvSearch,
-			width = "full",
-			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "main.alwaysShowAdvSearch",
-		},
-		enableminimap = {
-			order = 7,
-			type = "toggle",
-			name = L.DisplayMinimap,
-			width = "full",
-			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "minimap.enableMinimap",
-		},
-		enableversiontext = {
-			order = 8,
-			type = "toggle",
-			name = L.EnableLoginVersionInfo,
-			width = "full",
-			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "main.enableLoginVersionInfo",
+			arg = "keybind.BAGSYNCGOLD",
 		},
 		keybindblacklist = {
-			order = 9,
+			order = 3,
 			type = "keybinding",
 			name = L.KeybindBlacklist,
 			width = "full",
@@ -247,7 +367,7 @@ options.args.main = {
 			arg = "keybind.BAGSYNCBLACKLIST",
 		},
 		keybindwhitelist = {
-			order = 10,
+			order = 4,
 			type = "keybinding",
 			name = L.KeybindWhitelist,
 			width = "full",
@@ -257,7 +377,7 @@ options.args.main = {
 			arg = "keybind.BAGSYNCWHITELIST",
 		},
 		keybindcurrency = {
-			order = 11,
+			order = 5,
 			type = "keybinding",
 			name = L.KeybindCurrency,
 			width = "full",
@@ -265,20 +385,10 @@ options.args.main = {
 			get = get,
 			set = set,
 			arg = "keybind.BAGSYNCCURRENCY",
-			hidden = function() return not BSYC.IsRetail end,
-		},
-		keybindgold = {
-			order = 12,
-			type = "keybinding",
-			name = L.KeybindGold,
-			width = "full",
-			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "keybind.BAGSYNCGOLD",
+			hidden = function() return not BSYC:CanDoCurrency() end,
 		},
 		keybindprofessions = {
-			order = 13,
+			order = 6,
 			type = "keybinding",
 			name = L.KeybindProfessions,
 			width = "full",
@@ -289,7 +399,7 @@ options.args.main = {
 			hidden = function() return not BSYC.IsRetail end,
 		},
 		keybindprofiles = {
-			order = 14,
+			order = 7,
 			type = "keybinding",
 			name = L.KeybindProfiles,
 			width = "full",
@@ -298,22 +408,148 @@ options.args.main = {
 			set = set,
 			arg = "keybind.BAGSYNCPROFILES",
 		},
-		keybindsearch = {
-			order = 15,
-			type = "keybinding",
-			name = L.KeybindSearch,
-			width = "full",
+	},
+}
+
+options.args.tracking = {
+	type = "group",
+	order = 4,
+	name = L.ConfigTracking,
+	desc = L.ConfigTrackingHeader,
+	args = {
+		groupinfo = {
+			name = L.ConfigTrackingCaution,
+			order = 1,
+			type = "group",
 			descStyle = "hide",
-			get = get,
-			set = set,
-			arg = "keybind.BAGSYNCSEARCH",
+			guiInline = true,
+			args = {
+				infotext = {
+					order = 0,
+					fontSize = "medium",
+					type = "description",
+					name = L.ConfigTrackingInfo,
+				  },
+			}
+		},
+		groupmodules = {
+			name = L.ConfigTrackingModules,
+			order = 1,
+			type = "group",
+			descStyle = "hide",
+			guiInline = true,
+			args = {
+				module_bag = {
+					order = 1,
+					type = "toggle",
+					name = L.TrackingModule_Bag,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.bag",
+				},
+				module_bank = {
+					order = 2,
+					type = "toggle",
+					name = L.TrackingModule_Bank,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.bank",
+				},
+				module_reagents = {
+					order = 3,
+					type = "toggle",
+					name = L.TrackingModule_Reagents,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.reagents",
+				},
+				module_equip = {
+					order = 4,
+					type = "toggle",
+					name = L.TrackingModule_Equip,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.equip",
+				},
+				module_mailbox = {
+					order = 5,
+					type = "toggle",
+					name = L.TrackingModule_Mailbox,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.mailbox",
+				},
+				module_void = {
+					order = 6,
+					type = "toggle",
+					name = L.TrackingModule_Void,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.void",
+				},
+				module_auction = {
+					order = 7,
+					type = "toggle",
+					name = L.TrackingModule_Auction,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.auction",
+				},
+				module_guild = {
+					order = 8,
+					type = "toggle",
+					name = L.TrackingModule_Guild,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.guild",
+					hidden = function() return not CanGuildBankRepair end,
+				},
+				module_professions = {
+					order = 9,
+					type = "toggle",
+					name = L.TrackingModule_Professions,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.professions",
+					hidden = function() return not BSYC.IsRetail end,
+				},
+				module_currency = {
+					order = 10,
+					type = "toggle",
+					name = L.TrackingModule_Currency,
+					width = "full",
+					descStyle = "hide",
+					get = get,
+					set = set,
+					arg = "tracking.currency",
+					hidden = function() return not BSYC:CanDoCurrency() end,
+				},
+			}
 		},
 	},
 }
 
 options.args.display = {
 	type = "group",
-	order = 3,
+	order = 5,
 	name = L.ConfigDisplay,
 	desc = L.ConfigTooltipHeader,
 	args = {
@@ -322,63 +558,10 @@ options.args.display = {
 			type = "group",
 			name = L.DisplayTooltipStorage,
 			guiInline = true,
+			hidden = function() return not BSYC.IsRetail end,
 			args = {
-				mailbox = {
-					order = 0,
-					type = "toggle",
-					name = L.DisplayMailbox,
-					width = "full",
-					descStyle = "hide",
-					get = get,
-					set = set,
-					arg = "display.enableMailbox",
-				},
-				auction = {
-					order = 1,
-					type = "toggle",
-					name = L.DisplayAuctionHouse,
-					width = "full",
-					descStyle = "hide",
-					get = get,
-					set = set,
-					arg = "display.enableAuction",
-				},
-				guildbank = {
-					order = 2,
-					type = "toggle",
-					name = L.DisplayGuildBank,
-					width = "full",
-					descStyle = "hide",
-					get = get,
-					set = set,
-					arg = "display.enableGuild",
-					hidden = function() return BSYC.IsClassic end,
-				},
-				guildseparately = {
-					order = 3,
-					type = "toggle",
-					name = L.DisplayGuildSeparately,
-					width = "full",
-					descStyle = "hide",
-					get = get,
-					set = set,
-					arg = "display.showGuildSeparately",
-					hidden = function() return BSYC.IsClassic end,
-				},
-				guildbankscanalert = {
-					order = 4,
-					type = "toggle",
-					name = L.DisplayGuildBankScanAlert,
-					width = "full",
-					descStyle = "hide",
-					get = get,
-					set = set,
-					arg = "display.showGuildBankScanAlert",
-					disabled = function() return not BSYC.options["enableGuild"] end,
-					hidden = function() return BSYC.IsClassic end,
-				},
 				accuratebattlepets = {
-					order = 5,
+					order = 1,
 					type = "toggle",
 					name = L.DisplayAccurateBattlePets,
 					width = "full",
@@ -386,7 +569,6 @@ options.args.display = {
 					get = get,
 					set = set,
 					arg = "display.enableAccurateBattlePets",
-					hidden = function() return not BSYC.IsRetail end,
 				},
 			}
 		},
@@ -416,18 +598,8 @@ options.args.display = {
 					set = set,
 					arg = "display.enableTooltipItemID",
 				},
-				sourcedebuginfo = {
-					order = 2,
-					type = "toggle",
-					name = L.DisplaySourceDebugInfo,
-					width = "full",
-					descStyle = "hide",
-					get = get,
-					set = set,
-					arg = "display.enableSourceDebugInfo",
-				},
 				total = {
-					order = 3,
+					order = 2,
 					type = "toggle",
 					name = L.DisplayTotal,
 					width = "full",
@@ -437,18 +609,18 @@ options.args.display = {
 					arg = "display.showTotal",
 				},
 				guildgoldtooltip = {
-					order = 4,
+					order = 3,
 					type = "toggle",
-					name = L.DisplayGuildGoldInGoldTooltip,
+					name = L.DisplayGuildGoldInGoldWindow,
 					width = "full",
 					descStyle = "hide",
 					get = get,
 					set = set,
 					arg = "display.showGuildInGoldTooltip",
-					disabled = function() return not BSYC.options["enableGuild"] end,
+					disabled = function() return not BSYC.tracking.guild end,
 				},
 				faction = {
-					order = 5,
+					order = 4,
 					type = "toggle",
 					name = L.DisplayFaction..factionSmall,
 					width = "full",
@@ -458,7 +630,7 @@ options.args.display = {
 					arg = "display.enableFaction",
 				},
 				guildcurrentcharacter = {
-					order = 6,
+					order = 5,
 					type = "toggle",
 					name = L.DisplayGuildCurrentCharacter,
 					width = "full",
@@ -466,11 +638,11 @@ options.args.display = {
 					get = get,
 					set = set,
 					arg = "display.showGuildCurrentCharacter",
-					disabled = function() return not BSYC.options["enableGuild"] end,
-					hidden = function() return BSYC.IsClassic end,
+					disabled = function() return not BSYC.tracking.guild end,
+					hidden = function() return not CanGuildBankRepair end,
 				},
 				guildbanktabs = {
-					order = 7,
+					order = 6,
 					type = "toggle",
 					name = L.DisplayGuildBankTabs,
 					width = "full",
@@ -478,11 +650,11 @@ options.args.display = {
 					get = get,
 					set = set,
 					arg = "display.showGuildTabs",
-					disabled = function() return not BSYC.options["enableGuild"] end,
-					hidden = function() return BSYC.IsClassic end,
+					disabled = function() return not BSYC.tracking.guild end,
+					hidden = function() return not CanGuildBankRepair end,
 				},
 				whitelistonly = {
-					order = 8,
+					order = 7,
 					type = "toggle",
 					name = L.DisplayWhiteListOnly,
 					width = "full",
@@ -492,7 +664,7 @@ options.args.display = {
 					arg = "display.enableWhitelist",
 				},
 				whitelistbutton = {
-					order = 9,
+					order = 8,
 					type = "execute",
 					name = L.Whitelist,
 					func = function()
@@ -501,7 +673,7 @@ options.args.display = {
 					disabled = function() return not BSYC.options["enableWhitelist"] end,
 				},
 				sourceexpansion = {
-					order = 10,
+					order = 9,
 					type = "toggle",
 					name = L.DisplaySourceExpansion,
 					width = "full",
@@ -512,7 +684,7 @@ options.args.display = {
 					hidden = function() return not BSYC.IsRetail end,
 				},
 				itemtypes = {
-					order = 11,
+					order = 10,
 					type = "toggle",
 					name = L.DisplayItemTypes,
 					width = "full",
@@ -765,7 +937,7 @@ options.args.display = {
 
 options.args.color = {
 	type = "group",
-	order = 4,
+	order = 6,
 	name = L.ConfigColor,
 	desc = L.ConfigColorHeader,
 	args = {
@@ -927,7 +1099,7 @@ options.args.color = {
 
 options.args.faq = {
 	type = "group",
-	order = 5,
+	order = 7,
 	name = L.ConfigFAQ,
 	desc = L.ConfigFAQHeader,
 	args = {
@@ -1087,6 +1259,14 @@ BSYC.aboutPanel = LoadAboutFrame()
 -- General Options
 config:RegisterOptionsTable("BagSync-General", options.args.main)
 BSYC.blizzPanel = configDialog:AddToBlizOptions("BagSync-General", options.args.main.name, "BagSync")
+
+-- Keybindings Options
+config:RegisterOptionsTable("BagSync-Keybindings", options.args.keybindings)
+configDialog:AddToBlizOptions("BagSync-Keybindings", options.args.keybindings.name, "BagSync")
+
+-- Tracking Options
+config:RegisterOptionsTable("BagSync-Tracking", options.args.tracking)
+configDialog:AddToBlizOptions("BagSync-Tracking", options.args.tracking.name, "BagSync")
 
 -- Display Options
 config:RegisterOptionsTable("BagSync-Display", options.args.display)

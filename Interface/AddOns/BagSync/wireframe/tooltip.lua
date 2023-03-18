@@ -108,9 +108,9 @@ end
 
 function Tooltip:GetSortIndex(unitObj)
 	if unitObj then
-		if not unitObj.isGuild and unitObj.realm == Unit:GetUnitInfo().realm then
+		if not unitObj.isGuild and unitObj.realm == Unit:GetUnitInfo(true).realm then
 			return 1
-		elseif unitObj.isGuild and unitObj.realm == Unit:GetUnitInfo().realm then
+		elseif unitObj.isGuild and unitObj.realm == Unit:GetUnitInfo(true).realm then
 			return 2
 		elseif not unitObj.isGuild and unitObj.isConnectedRealm then
 			return 3
@@ -148,8 +148,8 @@ function Tooltip:GetRaceIcon(race, gender, size, xOffset, yOffset, useHiRez)
 end
 
 function Tooltip:GetClassColor(unitObj, switch, bypass, altColor)
-	if not unitObj then return altColor or BSYC.options.colors.first end
-	if not unitObj.data or not unitObj.data.class then return altColor or BSYC.options.colors.first end
+	if not unitObj then return altColor or BSYC.colors.first end
+	if not unitObj.data or not unitObj.data.class then return altColor or BSYC.colors.first end
 
 	local doChk = false
 	if switch == 1 then
@@ -161,14 +161,14 @@ function Tooltip:GetClassColor(unitObj, switch, bypass, altColor)
 	if bypass or ( doChk and RAID_CLASS_COLORS[unitObj.data.class] ) then
 		return RAID_CLASS_COLORS[unitObj.data.class]
 	end
-	return altColor or BSYC.options.colors.first
+	return altColor or BSYC.colors.first
 end
 
 function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple, showXRBNET)
 
 	if not unitObj.data then return nil end
 
-	local player = Unit:GetUnitInfo()
+	local player = Unit:GetUnitInfo(true)
 	local tmpTag = ""
 	local realm = unitObj.realm
 	local realmTag = ""
@@ -202,36 +202,36 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple, showXRBNET
 				end
 			end
 
-			--add faction icons
-			if bypass or BSYC.options.enableFactionIcons then
-				local FactionIcon = ""
-
-				if BSYC.IsRetail then
-					FactionIcon = [[|TInterface\Icons\Achievement_worldevent_brewmaster:20:20|t]]
-					if unitObj.data.faction == "Alliance" then
-						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Alliance:20:20|t]]
-					elseif unitObj.data.faction == "Horde" then
-						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Horde:20:20|t]]
-					end
-				else
-					FactionIcon = [[|TInterface\Icons\ability_seal:18|t]]
-					if unitObj.data.faction == "Alliance" then
-						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Alliance:20:20|t]]
-					elseif unitObj.data.faction == "Horde" then
-						FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Horde:20:20|t]]
-					end
-				end
-
-				if FactionIcon ~= "" then
-					tmpTag = FactionIcon.." "..tmpTag
-				end
-			end
-
 		end
 
 	else
 		--is guild
-		tmpTag = self:HexColor(BSYC.options.colors.guild, select(2, Unit:GetUnitAddress(unitObj.name)) )
+		tmpTag = self:HexColor(BSYC.colors.guild, select(2, Unit:GetUnitAddress(unitObj.name)) )
+	end
+
+	--add faction icons
+	if bypass or unitObj.isGuild or BSYC.options.enableFactionIcons then
+		local FactionIcon = ""
+
+		if BSYC.IsRetail then
+			FactionIcon = [[|TInterface\Icons\Achievement_worldevent_brewmaster:13:13|t]]
+			if unitObj.data.faction == "Alliance" then
+				FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Alliance:13:13|t]]
+			elseif unitObj.data.faction == "Horde" then
+				FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Horde:13:13|t]]
+			end
+		else
+			FactionIcon = [[|TInterface\Icons\ability_seal:18|t]]
+			if unitObj.data.faction == "Alliance" then
+				FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Alliance:13:13|t]]
+			elseif unitObj.data.faction == "Horde" then
+				FactionIcon = [[|TInterface\FriendsFrame\PlusManz-Horde:13:13|t]]
+			end
+		end
+
+		if FactionIcon ~= "" then
+			tmpTag = FactionIcon.." "..tmpTag
+		end
 	end
 
 	----------------
@@ -259,14 +259,14 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple, showXRBNET
 	if (showXRBNET or BSYC.options.enableBNetAccountItems) and not unitObj.isConnectedRealm then
 		realmTag = (showXRBNET or BSYC.options.enableRealmIDTags) and L.TooltipBattleNetTag..delimiter or ""
 		if string.len(realm) > 0 or string.len(realmTag) > 0 then
-			tmpTag = self:HexColor(BSYC.options.colors.bnet, "["..realmTag..realm.."]").." "..tmpTag
+			tmpTag = self:HexColor(BSYC.colors.bnet, "["..realmTag..realm.."]").." "..tmpTag
 		end
 	end
 
 	if (showXRBNET or BSYC.options.enableCrossRealmsItems) and unitObj.isConnectedRealm and unitObj.realm ~= player.realm then
 		realmTag = (showXRBNET or BSYC.options.enableRealmIDTags) and L.TooltipCrossRealmTag..delimiter or ""
 		if string.len(realm) > 0 or string.len(realmTag) > 0 then
-			tmpTag = self:HexColor(BSYC.options.colors.cross, "["..realmTag..realm.."]").." "..tmpTag
+			tmpTag = self:HexColor(BSYC.colors.cross, "["..realmTag..realm.."]").." "..tmpTag
 		end
 	end
 
@@ -275,12 +275,11 @@ function Tooltip:ColorizeUnit(unitObj, bypass, showRealm, showSimple, showXRBNET
 		realmTag = L.TooltipCrossRealmTag
 		if string.len(realm) > 0 or string.len(realmTag) > 0 then
 			--use an asterisk to denote that we are using a XRGuild Tag
-			tmpTag = self:HexColor(BSYC.options.colors.cross, "[*"..realmTag..realm.."]").." "..tmpTag
+			tmpTag = self:HexColor(BSYC.colors.cross, "[*"..realmTag..realm.."]").." "..tmpTag
 		end
 	end
 
-	Debug(2, "ColorizeUnit", tmpTag, unitObj.realm, unitObj.isConnectedRealm, unitObj.isXRGuild, player.realm)
-	Debug(7, "ColorizeUnit [Realm]", GetRealmName(), GetNormalizedRealmName())
+	Debug(BSYC_DL.INFO, "ColorizeUnit", tmpTag, unitObj.realm, unitObj.isConnectedRealm, unitObj.isXRGuild, player.realm)
 	return tmpTag
 end
 
@@ -320,172 +319,195 @@ function Tooltip:DoSort(tblData)
 	return tblData
 end
 
-function Tooltip:MoneyTooltip()
-	local tooltip = _G["BagSyncMoneyTooltip"] or nil
-	Debug(2, "MoneyTooltip")
-
-	if (not tooltip) then
-			tooltip = CreateFrame("GameTooltip", "BagSyncMoneyTooltip", UIParent, "GameTooltipTemplate")
-			_G["BagSyncMoneyTooltip"] = tooltip
-			--Add to special frames so window can be closed when the escape key is pressed.
-			tinsert(UISpecialFrames, "BagSyncMoneyTooltip")
-
-			local closeButton = CreateFrame("Button", nil, tooltip, "UIPanelCloseButton")
-			closeButton:SetPoint("TOPRIGHT", tooltip, 1, 0)
-
-			tooltip:SetToplevel(true)
-			tooltip:EnableMouse(true)
-			tooltip:SetMovable(true)
-			tooltip:SetClampedToScreen(true)
-
-			tooltip:SetScript("OnMouseDown",function(self)
-					self.isMoving = true
-					self:StartMoving();
-			end)
-			tooltip:SetScript("OnMouseUp",function(self)
-				if( self.isMoving ) then
-					self.isMoving = nil
-					self:StopMovingOrSizing()
-				end
-			end)
-	end
-
-	tooltip:ClearLines()
-	tooltip:ClearAllPoints()
-	tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	tooltip:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-	tooltip:AddLine("BagSync")
-	tooltip:AddLine(" ")
-
-	--loop through our characters
-	local usrData = {}
+function Tooltip:AddItems(unitObj, itemID, target, countList)
 	local total = 0
+	if not unitObj or not itemID or not target or not countList then return total end
+	if not unitObj.data then return total end
 
-	for unitObj in Data:IterateUnits() do
-		if unitObj.data.money and unitObj.data.money > 0 then
-			if not unitObj.isGuild or (unitObj.isGuild and BSYC.options.showGuildInGoldTooltip) then
-				table.insert(usrData, { unitObj=unitObj, colorized=self:ColorizeUnit(unitObj), sortIndex=self:GetSortIndex(unitObj), count=unitObj.data.money } )
-			end
-		end
-	end
-
-	--sort
-	usrData = self:DoSort(usrData)
-
-	for i=1, #usrData do
-		--use GetMoneyString and true to seperate it by thousands
-		tooltip:AddDoubleLine(usrData[i].colorized, GetMoneyString(usrData[i].unitObj.data.money, true), 1, 1, 1, 1, 1, 1)
-		total = total + usrData[i].unitObj.data.money
-	end
-	if BSYC.options.showTotal and total > 0 then
-		tooltip:AddLine(" ")
-		tooltip:AddDoubleLine(self:HexColor(BSYC.options.colors.total, L.TooltipTotal), GetMoneyString(total, true), 1, 1, 1, 1, 1, 1)
-	end
-
-	tooltip:AddLine(" ")
-	tooltip:Show()
-end
-
-function Tooltip:UnitTotals(unitObj, allowList, unitList, advUnitList)
-
-	local tallyString = ""
-	local total = 0
-	local grouped = 0
-	local gTabStr = ""
-
-	--order in which we want stuff displayed
-	local list = {
-		[1] = { source="bag", 		desc=L.Tooltip_bag },
-		[2] = { source="bank", 		desc=L.Tooltip_bank },
-		[3] = { source="reagents", 	desc=L.Tooltip_reagents },
-		[4] = { source="equip", 	desc=L.Tooltip_equip },
-		[5] = { source="guild", 	desc=L.Tooltip_guild },
-		[6] = { source="mailbox", 	desc=L.Tooltip_mailbox },
-		[7] = { source="void", 		desc=L.Tooltip_void },
-		[8] = { source="auction", 	desc=L.Tooltip_auction },
-	}
-
-	--check for guild tabs first only on servers that even have guild banks enabled
-	if BSYC.options.showGuildTabs and CanGuildBankRepair and BSYC:GetHashTableLen(allowList["gtab"]) > 0 then
-		for tab=1, MAX_GUILDBANK_TABS do
-			if allowList["gtab"][tab] then
-				gTabStr = gTabStr..","..tostring(allowList["gtab"][tab])
-			end
-		end
-		gTabStr = string.sub(gTabStr, 2)  -- remove comma
-	end
-
-	for i = 1, #list do
-		local count, desc = allowList[list[i].source], list[i].desc
-
-		if BSYC.options.singleCharLocations then
-			desc = L["TooltipSmall_"..list[i].source]
-		elseif BSYC.options.useIconLocations then
-			desc = L["TooltipIcon_"..list[i].source]
-		end
-		if count > 0 then
-			grouped = grouped + 1
-			total = total + count
-
-			desc = self:HexColor(self:GetClassColor(unitObj, 2), desc)..":"
-			count = self:HexColor(BSYC.options.colors.second, comma_value(count))
-
-			--check for guild tab
-			if string.len(gTabStr) > 0 then
-				gTabStr = self:HexColor(BSYC.options.colors.guildtabs, " ["..L.TooltipGuildTabs.." "..gTabStr.."]")
-			end
-
-			tallyString = tallyString..((grouped > 1 and L.TooltipDelimiter) or "")..desc.." "..count..gTabStr
-		end
-	end
-
-	if total < 1 or string.len(tallyString) < 1 then return end
-
-	--if it's groupped up and has more then one item then use a different color and show total
-	if grouped > 1 then
-		tallyString = self:HexColor(BSYC.options.colors.second, comma_value(total)).." ("..tallyString..")"
-	end
-
-	--add to list
-	local doAdv = (advUnitList and true) or false
-	table.insert(unitList, { unitObj=unitObj, colorized=self:ColorizeUnit(unitObj, false, doAdv, false, doAdv), tallyString=tallyString, sortIndex=self:GetSortIndex(unitObj), count=total } )
-
-end
-
-function Tooltip:ItemCount(data, itemID, allowList, source, total, skipTotal)
-	if #data < 1 then return total end
-	for i=1, #data do
-		if data[i] then
-			--we only really want the qOpts for guild banks to get the guild tab tally during the ItemCount process, otherwise it's extra processing time
-			local skipOpts = true
-			if source == "guild" and BSYC.options.showGuildTabs then
-				skipOpts = false
-			end
-
-			local link, count, qOpts = BSYC:Split(data[i], skipOpts)
-
-			if link then
+	local function getTotal(data)
+		local iCount = 0
+		for i=1, #data do
+			if data[i] then
+				local link, count = BSYC:Split(data[i], true)
 				if BSYC.options.enableShowUniqueItemsTotals then link = BSYC:GetShortItemID(link) end
-				if link == itemID then
-					allowList[source] = allowList[source] + (count or 1)
-					--check for any guild bank tabs and store the locations found
-					if qOpts and qOpts.gtab then
-						allowList["gtab"][tonumber(qOpts.gtab)] = tonumber(qOpts.gtab)
-					end
-					if not skipTotal then
-						total = total + (count or 1)
+				if link then
+					if link == itemID then
+						iCount = iCount + (count or 1)
 					end
 				end
 			end
 		end
+		return iCount
 	end
+
+	if unitObj.data[target] and BSYC.tracking[target] then
+		if target == "bag" or target == "bank" or target == "reagents" then
+			for bagID, bagData in pairs(unitObj.data[target] or {}) do
+				total = total + getTotal(bagData)
+			end
+		elseif target == "auction" then
+			total = getTotal(unitObj.data[target].bag or {})
+
+		elseif target == "equip" or target == "void" or target == "mailbox" then
+			total = getTotal(unitObj.data[target] or {})
+		end
+	end
+	if target == "guild" and BSYC.tracking.guild then
+		countList.gtab = {}
+		for tabID, tabData in pairs(unitObj.data.tabs or {}) do
+			local tabCount = getTotal(tabData)
+			if tabCount > 0 then
+				countList.gtab[tabID] = tabCount
+			end
+			total = total + tabCount
+		end
+	end
+
+	countList[target] = total
+
 	return total
 end
 
-function Tooltip:GetBottomChild(frame, qTip)
-	Debug(3, "GetBottomChild", frame, qTip)
+function Tooltip:GetCountString(colorType, dispType, srcType, srcCount, addStr)
+	local desc = self:HexColor(colorType, L[dispType..srcType])
+	local count = self:HexColor(BSYC.colors.second, comma_value(srcCount))
+	local tmp = string.format("%s: %s", desc, count)..(addStr or "")
+	return tmp
+end
+
+function Tooltip:UnitTotals(unitObj, countList, unitList, advUnitList)
+	local total = 0
+	local tallyCount = {}
+	local dispType = ""
+	local colorType = self:GetClassColor(unitObj, 2)
+
+	if BSYC.options.singleCharLocations then
+		dispType = "TooltipSmall_"
+	elseif BSYC.options.useIconLocations then
+		dispType = "TooltipIcon_"
+	else
+		dispType = "Tooltip_"
+	end
+
+	if ((countList["bag"] or 0) > 0) then
+		total = total + countList["bag"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "bag", countList["bag"]))
+	end
+	if ((countList["bank"] or 0) > 0) then
+		total = total + countList["bank"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "bank", countList["bank"]))
+	end
+	if ((countList["reagents"] or 0) > 0) then
+		total = total + countList["reagents"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "reagents", countList["reagents"]))
+	end
+	if ((countList["equip"] or 0) > 0) then
+		total = total + countList["equip"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "equip", countList["equip"]))
+	end
+	if ((countList["mailbox"] or 0) > 0) then
+		total = total + countList["mailbox"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "mailbox", countList["mailbox"]))
+	end
+	if ((countList["void"] or 0) > 0) then
+		total = total + countList["void"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "void", countList["void"]))
+	end
+	if ((countList["auction"] or 0) > 0) then
+		total = total + countList["auction"]
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "auction", countList["auction"]))
+	end
+	if ((countList["guild"] or 0) > 0) then
+		total = total + countList["guild"]
+		local gTabStr = ""
+
+		--check for guild tabs first
+		if BSYC.options.showGuildTabs then
+			table.sort(countList["gtab"], function(a, b) return a < b end)
+
+			for k, v in pairs(countList["gtab"]) do
+				gTabStr = gTabStr..","..tostring(k)
+			end
+			gTabStr = string.sub(gTabStr, 2)  -- remove comma
+
+			--check for guild tab
+			if string.len(gTabStr) > 0 then
+				gTabStr = self:HexColor(BSYC.colors.guildtabs, " ["..L.TooltipGuildTabs.." "..gTabStr.."]")
+			end
+		end
+
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "guild", countList["guild"], gTabStr))
+	end
+
+	if total < 1 then return end
+	local tallyString = ""
+
+    if (#tallyCount > 0) then
+		--if we only have one entry, then display that and no need to sort or concat
+		if #tallyCount == 1 then
+			tallyString = tallyCount[1]
+		else
+			table.sort(tallyCount)
+			tallyString = self:HexColor(BSYC.colors.second, comma_value(total)).." ("..table.concat(tallyCount, L.TooltipDelimiter.." ")..")"
+		end
+    end
+	if #tallyCount <= 0 or string.len(tallyString) < 1 then return end
+
+	--add to list
+	local doAdv = (advUnitList and true) or false
+	local unitData = {
+		unitObj=unitObj,
+		colorized=self:ColorizeUnit(unitObj, false, doAdv, false, doAdv),
+		tallyString=tallyString,
+		sortIndex=self:GetSortIndex(unitObj),
+		count=total
+	}
+	table.insert(unitList, unitData)
+	return unitData
+end
+
+function Tooltip:QTipCheck(source, isBattlePet)
+	local showQTip = false
+
+	--create the extra tooltip (qTip) only if it doesn't already exist
+	if BSYC.options.enableExtTooltip or isBattlePet then
+		local doQTip = true
+		--only show the external tooltip if we have the option enabled, otherwise show it inside the tooltip if isBattlePet
+		if source == "ArkInventory" and not BSYC.options.enableExtTooltip then doQTip = false end
+		if doQTip then
+			if not Tooltip.qTip then
+				Tooltip.qTip = LibQTip:Acquire("BagSyncQTip", 3, "LEFT", "CENTER", "RIGHT")
+				Tooltip.qTip:SetClampedToScreen(true)
+
+				Tooltip.qTip:SetScript("OnShow", function()
+					Tooltip:GetBottomChild()
+				end)
+			end
+			if BSYC.__font and BSYC.__fontFlags then
+				Tooltip.qTip:SetFont(BSYC.__font)
+			end
+			Tooltip.qTip:Clear()
+			showQTip = true
+		end
+	end
+	--release it if we aren't using the qTip
+	if Tooltip.qTip and not showQTip then
+		LibQTip:Release(Tooltip.qTip)
+		Tooltip.qTip = nil
+	end
+
+	return showQTip
+end
+
+function Tooltip:GetBottomChild()
+	Debug(BSYC_DL.TRACE, "GetBottomChild", Tooltip.objTooltip, Tooltip.qTip)
+
+	local frame, qTip = Tooltip.objTooltip, Tooltip.qTip
+	if not qTip then return end
 
 	local cache = {}
+
+	qTip:ClearAllPoints()
 
 	local function getMinLoc(top, bottom)
 		if top and bottom then
@@ -556,7 +578,7 @@ function Tooltip:GetBottomChild(frame, qTip)
 	end
 
 	if lastAnchor and lastLoc and lastPos then
-		Debug(8, "GetBottomChild", lastAnchor, lastLoc, lastPos, lastName)
+		Debug(BSYC_DL.SL3, "GetBottomChild", lastAnchor, lastLoc, lastPos, lastName)
 		if lastLoc == "top" then
 			qTip:SetPoint("BOTTOM", lastAnchor, "TOP")
 		else
@@ -570,10 +592,9 @@ function Tooltip:GetBottomChild(frame, qTip)
 end
 
 function Tooltip:SetQTipAnchor(frame, qTip)
-	Debug(7, "SetQTipAnchor", frame, qTip)
+	Debug(BSYC_DL.SL2, "SetQTipAnchor", frame, qTip)
 
     local x, y = frame:GetCenter()
-	qTip:ClearAllPoints()
 
     if not x or not y then
         qTip:SetPoint("TOPLEFT", frame, "BOTTOMLEFT")
@@ -587,7 +608,13 @@ function Tooltip:SetQTipAnchor(frame, qTip)
 	qTip:SetPoint(vhalf .. hhalf, frame, (vhalf == "TOP" and "BOTTOM" or "TOP") .. hhalf)
 end
 
-function Tooltip:Reset()
+function Tooltip:ResetCache()
+	if Data.__cache and Data.__cache.tooltip then
+		Data.__cache.tooltip = {}
+	end
+end
+
+function Tooltip:ResetLastLink()
 	self.__lastLink = nil
 end
 
@@ -613,74 +640,52 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	--check for modifier option
 	if not self:CheckModifier() then return end
 
-	local showQTip = false
+	local showQTip = Tooltip:QTipCheck(source, isBattlePet)
 	local skipTally = false
 
-	--create the extra tooltip (qTip) only if it doesn't already exist
-	if BSYC.options.enableExtTooltip or isBattlePet then
-		local doQTip = true
-		--only show the external tooltip if we have the option enabled, otherwise show it inside the tooltip if isBattlePet
-		if source == "ArkInventory" and not BSYC.options.enableExtTooltip then doQTip = false end
-		if doQTip then
-			if not objTooltip.qTip or not LibQTip:IsAcquired("BagSyncQTip") then
-				objTooltip.qTip = LibQTip:Acquire("BagSyncQTip", 3, "LEFT", "CENTER", "RIGHT")
-				objTooltip.qTip:SetClampedToScreen(true)
-
-				objTooltip.qTip:SetScript("OnShow", function()
-					Tooltip:GetBottomChild(objTooltip, objTooltip.qTip)
-				end)
-			end
-			objTooltip.qTip:Clear()
-			showQTip = true
-		end
-	end
-	--release it if we aren't using the qTip
-	if objTooltip.qTip and not showQTip then
-		LibQTip:Release(objTooltip.qTip)
-		objTooltip.qTip = nil
-	end
-
-	local tooltipOwner = objTooltip.GetOwner and objTooltip:GetOwner()
-	local tooltipType = tooltipOwner and tooltipOwner.obj and tooltipOwner.obj.type
+	Tooltip.objTooltip = objTooltip
 
 	--only show tooltips in search frame if the option is enabled
-	if BSYC.options.tooltipOnlySearch and (not tooltipOwner or not tooltipType or tooltipType ~= "BagSyncInteractiveLabel")  then
+	if BSYC.options.tooltipOnlySearch and not objTooltip.isBSYCSearch then
 		objTooltip:Show()
-		return
-	end
-
-	--if we already did the item, then display the previous information, use the unparsed link to verify
-	if self.__lastLink and self.__lastLink == link then
-		if self.__lastTally and #self.__lastTally > 0 then
-			for i=1, #self.__lastTally do
-				local color = self:GetClassColor(self.__lastTally[i].unitObj, 2, false, BSYC.options.colors.total)
-				if showQTip then
-					local lineNum = objTooltip.qTip:AddLine(self.__lastTally[i].colorized, 	string.rep(" ", 4), self.__lastTally[i].tallyString)
-					objTooltip.qTip:SetLineTextColor(lineNum, color.r, color.g, color.b, 1)
-				else
-					objTooltip:AddDoubleLine(self.__lastTally[i].colorized, self.__lastTally[i].tallyString, color.r, color.g, color.b, color.r, color.g, color.b)
-				end
-			end
-			objTooltip:Show()
-			if showQTip then objTooltip.qTip:Show() end
-		end
-		objTooltip.__tooltipUpdated = true
 		return
 	end
 
 	local origLink = link --store the original unparsed link
 	--remember when no count is provided to ParseItemLink, only the itemID is returned.  Integer or a string if it has bonusID
 	link = BSYC:ParseItemLink(link)
+	link = BSYC:Split(link, true) --if we are parsing a database entry, return only the itemID portion
+
+	--we do this because the itemID portion can be something like 190368::::::::::::5:8115:7946:6652:7579:1491::::::
+	local shortID = BSYC:GetShortItemID(link)
+	--we want to make sure the origLink for BattlePets is alwayhs the fakeID for parsing through cache below
+	if isBattlePet then origLink = shortID end
 
 	--make sure we have something to work with
-	--since we aren't using a count, it will return only the itemid
-	if not link then
+	if not link or not shortID then
 		objTooltip:Show()
+		Debug(BSYC_DL.WARN, "TallyUnits", "NoLink", origLink, source, isBattlePet)
 		return
 	end
 
-	link = BSYC:Split(link, true) --if we are parsing a database entry, return only the itemID portion
-	local shortID = BSYC:GetShortItemID(link)
+	--if we already did the item, then display the previous information, use the unparsed link to verify
+	if self.__lastLink and self.__lastLink == origLink then
+		if self.__lastTally and #self.__lastTally > 0 then
+			for i=1, #self.__lastTally do
+				local color = self:GetClassColor(self.__lastTally[i].unitObj, 2, false, BSYC.colors.total)
+				if showQTip then
+					local lineNum = Tooltip.qTip:AddLine(self.__lastTally[i].colorized, string.rep(" ", 4), self.__lastTally[i].tallyString)
+					Tooltip.qTip:SetLineTextColor(lineNum, color.r, color.g, color.b, 1)
+				else
+					objTooltip:AddDoubleLine(self.__lastTally[i].colorized, self.__lastTally[i].tallyString, color.r, color.g, color.b, color.r, color.g, color.b)
+				end
+			end
+			objTooltip:Show()
+			if showQTip then Tooltip.qTip:Show() end
+		end
+		objTooltip.__tooltipUpdated = true
+		return
+	end
 
 	local permIgnore ={
 		[6948] = "Hearthstone",
@@ -689,23 +694,20 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		[128353] = "Admiral's Compass",
 		[141605] = "Flight Master's Whistle",
 	}
+
 	--check blacklist
 	if shortID and (permIgnore[tonumber(shortID)] or BSYC.db.blacklist[tonumber(shortID)]) then
 		skipTally = true
 	end
 	--check whitelist
 	if BSYC.options.enableWhitelist then
-		if not BSYC.db.whitelist[tonumber(link)] then
+		if not BSYC.db.whitelist[tonumber(shortID)] then
 			skipTally = true
-		end
-		--always display if we are showing tooltips in the search window of ANY kind when using whitelist
-		if tooltipType and tooltipType == "BagSyncInteractiveLabel" then
-			skipTally = false
 		end
 	end
 
 	--short the shortID and ignore all BonusID's and stats
-	if BSYC.options.enableShowUniqueItemsTotals and shortID then link = shortID end
+	if BSYC.options.enableShowUniqueItemsTotals then link = shortID end
 
 	--store these in the addon itself not in the tooltip
 	self.__lastTally = {}
@@ -713,121 +715,160 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 	local grandTotal = 0
 	local unitList = {}
-	local tmpGuildList = {}
-	local player = Unit:GetUnitInfo()
+	local countList = {}
+	local player = Unit:GetUnitInfo(false)
+
+	local allowList = {
+		bag = true,
+		bank = true,
+		reagents = true,
+		equip = true,
+		mailbox = true,
+		void = true,
+		auction = true,
+	}
 
 	--the true option for GetModule is to set it to silent and not return an error if not found
-	--only display advanced search results in the BagSync search window
-	local advUnitList = not skipTally and BSYC:GetModule("Search", true) and BSYC:GetModule("Search").advUnitList
+	--only display advanced search results in the BagSync search window, but make sure to show tooltips regularly outside of that by checking isBSYCSearch
+	local advUnitList = not skipTally and objTooltip.isBSYCSearch and BSYC.advUnitList
 
+	--DB TOOLTIP COUNTS
+	-------------------
 	if advUnitList or not skipTally then
 
-		--allow advance search matches if found, no need to set to true as advUnitList will default to dumpAll if found
-		for unitObj in Data:IterateUnits(false, advUnitList) do
+		--OTHER PLAYERS AND GUILDS
+		-----------------
+		--CACHE CHECK
+		--NOTE: This cache check is ONLY for units (guild, players) that isn't related to the current player.  Since that data doesn't really change we can cache those lines
+		--For the player however, we always want to grab the latest information.  So once it's grabbed we can do a small local cache for that using __lastTally
+		--Advanced Searches should always be processed and not stored in the cache
+		if advUnitList or not Data.__cache.tooltip[origLink] then
 
-			local allowList = {
-				["bag"] = 0,
-				["bank"] = 0,
-				["reagents"] = 0,
-				["equip"] = 0,
-				["mailbox"] = 0,
-				["void"] = 0,
-				["auction"] = 0,
-				["guild"] = 0,
-				["gtab"] = {}, --guild bank tab
-			}
+			--allow advance search matches if found, no need to set to true as advUnitList will default to dumpAll if found
+			for unitObj in Data:IterateUnits(false, advUnitList) do
 
-			if not unitObj.isGuild then
-				--Due to crafting items being used in reagents bank, or turning in quests with items in the bank, etc..
-				--The cached item info for the current player would obviously be out of date until they returned to the bank to scan again.
-				--In order to combat this, lets just get the realtime count for the currently logged in player every single time.
-				--This is why we check for player name and realm below, the only one we really want to check is the equip status to get a accurate count.
-				--The only exception to this would be for battlepets, so every item except battlepets in realmtime.
+				countList = {}
 
-				local isCurrentPlayer = ((unitObj.name == player.name and unitObj.realm == player.realm) and true) or false
+				if not unitObj.isGuild then
+					--Due to crafting items being used in reagents bank, or turning in quests with items in the bank, etc..
+					--The cached item info for the current player would obviously be out of date until they returned to the bank to scan again.
+					--In order to combat this, lets just get the realtime count for the currently logged in player every single time.
+					--This is why we check for player name and realm below, we don't want to do anything in regards to the current player when the Database.
 
-				for k, v in pairs(unitObj.data) do
-					if allowList[k] and type(v) == "table" then
-						--bags, bank, reagents are stored in individual bags
-						if k == "bag" or k == "bank" or k == "reagents" then
-							--don't check for current player unless its a battlepet
-							if not isCurrentPlayer or isBattlePet then
-								for bagID, bagData in pairs(v) do
-									grandTotal = self:ItemCount(bagData, link, allowList, k, grandTotal)
-								end
-							end
-						else
-							--with the exception of auction, everything else is stored in a numeric list
-							--auction is stored in a numeric list but within an individual bag
-							--auction, equip, void, mailbox
-							local passChk = true
-							if k == "auction" and not BSYC.options.enableAuction then passChk = false end
-							if k == "mailbox" and not BSYC.options.enableMailbox then passChk = false end
-
-							if passChk then
-								grandTotal = self:ItemCount(k == "auction" and v.bag or v, link, allowList, k, grandTotal)
-							end
+					local isCurrentPlayer = ((unitObj.name == player.name and unitObj.realm == player.realm) and true) or false
+					if not isCurrentPlayer then
+						for k, v in pairs(allowList) do
+							grandTotal = grandTotal + self:AddItems(unitObj, link, k, countList)
 						end
 					end
-				end
-
-				--grab the realtime amount of the current player only if it's not a battlepet, read explanation above as to why
-				if isCurrentPlayer and not isBattlePet then
-					local equipCount = allowList["equip"] or 0
-					local carryCount, bagCount, bankCount, regCount = 0, 0, 0, 0
-
-					carryCount = GetItemCount(origLink) or 0 --get the total amount the player is currently carrying (bags + equip)
-					bagCount = carryCount - equipCount -- subtract the equipment count from the carry amount to get bag count
-
-					if IsReagentBankUnlocked and IsReagentBankUnlocked() then
-						--GetItemCount returns the bag count + reagent regardless of parameters.  So we have to subtract bag and reagents.  This does not include bank totals
-						regCount = GetItemCount(origLink, false, false, true) or 0
-						regCount = regCount - carryCount
-						if regCount < 0 then regCount = 0 end
-					end
-
-					--bankCount = GetItemCount returns the bag + bank count + reagent regardless of parameters.  So we have to subtract the carry and reagent totals
-					--it will always add the reagents totals regardless of whatever parameters are passed.  So we have to do some math to adjust for this
-					bankCount = GetItemCount(origLink, true, false, false) or 0
-					bankCount = (bankCount - regCount) - carryCount
-					if bankCount < 0 then bankCount = 0 end
-
-					--now assign the values
-					allowList["bag"] = bagCount
-					allowList["bank"] = bankCount
-					allowList["reagents"] = regCount
-					grandTotal = grandTotal + (bagCount + bankCount + regCount)
-				end
-
-				if not BSYC.options.showGuildSeparately and BSYC.options.enableGuild then
-					local guildObj = Data:GetGuild(unitObj.data)
-					if guildObj and guildObj.bag then
-						--make sure we don't add to the grand total twice for the same guild
-						grandTotal = self:ItemCount(guildObj.bag, link, allowList, "guild", grandTotal, (tmpGuildList[guildObj] and true) or false)
-						tmpGuildList[guildObj] = true
+				else
+					--don't cache the players guild bank, lets get that in real time in case they put stuff in it
+					if not player.guild or unitObj.realm ~= player.guildrealm or unitObj.name ~= player.guild then
+						grandTotal = grandTotal + self:AddItems(unitObj, link, "guild", countList)
 					end
 				end
-			else
-				if BSYC.options.showGuildSeparately then
-					grandTotal = self:ItemCount(unitObj.data.bag, link, allowList, "guild", grandTotal)
+
+				--only process the totals if we have something to work with
+				if grandTotal > 0 then
+					--table variables gets passed as byRef
+					self:UnitTotals(unitObj, countList, unitList, advUnitList)
 				end
 			end
 
-			--only process the totals if we have something to work with
+			--do not cache if we are viewing an advanced search list, otherwise it won't display everything normally
+			--finally, only cache if we have something to work with
+			if not advUnitList and grandTotal > 0 then
+				--store it in the cache, copy the tables don't reference them
+				Data.__cache.tooltip[origLink] = Data.__cache.tooltip[origLink] or {}
+				Data.__cache.tooltip[origLink].unitList = CopyTable(unitList)
+				Data.__cache.tooltip[origLink].grandTotal = grandTotal
+			end
+		elseif Data.__cache.tooltip[origLink] then
+			--use the cached results from previous DB searches, copy the table don't reference it
+			unitList = CopyTable(Data.__cache.tooltip[origLink].unitList)
+			grandTotal = Data.__cache.tooltip[origLink].grandTotal
+			Debug(BSYC_DL.INFO, "TallyUnits", "|cFF09DBE0CacheUsed|r", origLink)
+		end
+
+		--CURRENT PLAYER
+		-----------------
+		if not advUnitList or (advUnitList and advUnitList[player.realm] and advUnitList[player.realm][player.name]) then
+			countList = {}
+			local playerObj = Data:GetCurrentPlayer()
+
+			--grab the equip count as we need that below for an accurate count on the bags, bank and reagents
+			grandTotal = grandTotal + self:AddItems(playerObj, link, "equip", countList)
+			--GetItemCount does not work in the auction, void bank or mailbox, so grab it manually
+			grandTotal = grandTotal + self:AddItems(playerObj, link, "auction", countList)
+			grandTotal = grandTotal + self:AddItems(playerObj, link, "void", countList)
+			grandTotal = grandTotal + self:AddItems(playerObj, link, "mailbox", countList)
+
+			--GetItemCount does not work on battlepet links either, grab bag, bank and reagents
+			if isBattlePet then
+				grandTotal = grandTotal + self:AddItems(playerObj, link, "bag", countList)
+				grandTotal = grandTotal + self:AddItems(playerObj, link, "bank", countList)
+				grandTotal = grandTotal + self:AddItems(playerObj, link, "reagents", countList)
+
+			elseif not isBattlePet then
+				local equipCount = countList["equip"] or 0
+				local carryCount, bagCount, bankCount, regCount = 0, 0, 0, 0
+
+				carryCount = GetItemCount(origLink) or 0 --get the total amount the player is currently carrying (bags + equip)
+				bagCount = carryCount - equipCount -- subtract the equipment count from the carry amount to get bag count
+
+				if IsReagentBankUnlocked and IsReagentBankUnlocked() then
+					--GetItemCount returns the bag count + reagent regardless of parameters.  So we have to subtract bag and reagents.  This does not include bank totals
+					regCount = GetItemCount(origLink, false, false, true) or 0
+					regCount = regCount - carryCount
+					if regCount < 0 then regCount = 0 end
+				end
+
+				--bankCount = GetItemCount returns the bag + bank count + reagent regardless of parameters.  So we have to subtract the carry and reagent totals
+				--it will always add the reagents totals regardless of whatever parameters are passed.  So we have to do some math to adjust for this
+				bankCount = GetItemCount(origLink, true, false, false) or 0
+				bankCount = (bankCount - regCount) - carryCount
+				if bankCount < 0 then bankCount = 0 end
+
+				-- --now assign the values (check for disabled modules)
+				if not BSYC.tracking.bag then bagCount = 0 end
+				if not BSYC.tracking.bank then bankCount = 0 end
+				if not BSYC.tracking.reagents then regCount = 0 end
+				countList.bag = bagCount
+				countList.bank = bankCount
+				countList.reagents = regCount
+				grandTotal = grandTotal + (bagCount + bankCount + regCount)
+			end
+
 			if grandTotal > 0 then
 				--table variables gets passed as byRef
-				self:UnitTotals(unitObj, allowList, unitList, advUnitList)
+				self:UnitTotals(playerObj, countList, unitList, advUnitList)
 			end
+		end
 
+		--CURRENT PLAYER GUILD
+		--We do this separately so that the guild has it's own line in the unitList and not included inline with the player character
+		--We also want to do this in real time and not cache, otherwise they may put stuff in their guild bank which will not be reflected in a cache
+		-----------------
+		if player.guild and BSYC.tracking.guild then
+			if not advUnitList or (advUnitList and advUnitList[player.guildrealm] and advUnitList[player.guildrealm][player.guild]) then
+				countList = {}
+				local guildObj = Data:GetPlayerGuild()
+				grandTotal = grandTotal + self:AddItems(guildObj, link, "guild", countList)
+				if grandTotal > 0 then
+					--table variables gets passed as byRef
+					self:UnitTotals(guildObj, countList, unitList, advUnitList)
+				end
+			end
 		end
 
 		--only sort items if we have something to work with
 		if #unitList > 0 then
 			unitList = self:DoSort(unitList)
 		end
-
 	end
 
+	--EXTRA OPTIONAL DISPLAYS
+	-------------------------
 	local desc, value = '', ''
 	local addSeparator = false
 
@@ -836,15 +877,15 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		--add a separator after the character list
 		table.insert(unitList, { colorized=" ", tallyString=" "} )
 
-		desc = self:HexColor(BSYC.options.colors.total, L.TooltipTotal)
-		value = self:HexColor(BSYC.options.colors.second, comma_value(grandTotal))
+		desc = self:HexColor(BSYC.colors.total, L.TooltipTotal)
+		value = self:HexColor(BSYC.colors.second, comma_value(grandTotal))
 		table.insert(unitList, { colorized=desc, tallyString=value} )
 	end
 
 	--add ItemID
 	if BSYC.options.enableTooltipItemID and shortID then
-		desc = self:HexColor(BSYC.options.colors.itemid, L.TooltipItemID)
-		value = self:HexColor(BSYC.options.colors.second, shortID)
+		desc = self:HexColor(BSYC.colors.itemid, L.TooltipItemID)
+		value = self:HexColor(BSYC.colors.second, shortID)
 		if isBattlePet then
 			desc = string.format("|cFFCA9BF7%s|r ", L.TooltipFakeID)
 		end
@@ -859,10 +900,14 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	if not isBattlePet then
 		--add expansion
 		if BSYC.IsRetail and BSYC.options.enableSourceExpansion and shortID then
-			desc = self:HexColor(BSYC.options.colors.expansion, L.TooltipExpansion)
-
-			local expacID = select(15, GetItemInfo(shortID))
-			value = self:HexColor(BSYC.options.colors.second, (expacID and _G["EXPANSION_NAME"..expacID]) or "?")
+			desc = self:HexColor(BSYC.colors.expansion, L.TooltipExpansion)
+			local expacID
+			if Data.__cache.items[shortID] then
+				expacID = Data.__cache.items[shortID].expacID
+			else
+				expacID = select(15, GetItemInfo(shortID))
+			end
+			value = self:HexColor(BSYC.colors.second, (expacID and _G["EXPANSION_NAME"..expacID]) or "?")
 
 			if not addSeparator then
 				table.insert(unitList, 1, { colorized=" ", tallyString=" "} )
@@ -870,15 +915,22 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 			end
 			table.insert(unitList, 1, { colorized=desc, tallyString=value} )
 		end
-
 		--add item types
 		if BSYC.options.enableItemTypes and shortID then
-			local itemType, itemSubType, _, _, _, _, classID, subclassID = select(6, GetItemInfo(shortID))
+			local itemType, itemSubType, _, _, _, _, classID, subclassID
+			if Data.__cache.items[shortID] then
+				itemType = Data.__cache.items[shortID].itemType
+				itemSubType = Data.__cache.items[shortID].itemSubType
+				classID = Data.__cache.items[shortID].classID
+				subclassID = Data.__cache.items[shortID].subclassID
+			else
+				itemType, itemSubType, _, _, _, _, classID, subclassID = select(6, GetItemInfo(shortID))
+			end
 			local typeString = Tooltip:GetItemTypeString(itemType, itemSubType, classID, subclassID)
 
 			if typeString then
-				desc = self:HexColor(BSYC.options.colors.itemtypes, L.TooltipItemType)
-				value = self:HexColor(BSYC.options.colors.second, typeString)
+				desc = self:HexColor(BSYC.colors.itemtypes, L.TooltipItemType)
+				value = self:HexColor(BSYC.colors.second, typeString)
 
 				if not addSeparator then
 					table.insert(unitList, 1, { colorized=" ", tallyString=" "} )
@@ -889,14 +941,6 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		end
 	end
 
-	--add debug info
-	if BSYC.options.enableSourceDebugInfo and source then
-		desc = self:HexColor(BSYC.options.colors.debug, L.TooltipDebug)
-		value = self:HexColor(BSYC.options.colors.second, "1;"..source..";"..tostring(shortID or 0)..";"..tostring(isBattlePet or "false"))
-		table.insert(unitList, 1, { colorized=" ", tallyString=" "} )
-		table.insert(unitList, 1, { colorized=desc, tallyString=value} )
-	end
-
 	--add separator if enabled and only if we have something to work with
 	if not showQTip and BSYC.options.enableTooltipSeparator and #unitList > 0 then
 		table.insert(unitList, 1, { colorized=" ", tallyString=" "} )
@@ -904,16 +948,17 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 	--finally display it
 	for i=1, #unitList do
-		local color = self:GetClassColor(unitList[i].unitObj, 2, false, BSYC.options.colors.total)
+		local color = self:GetClassColor(unitList[i].unitObj, 2, false, BSYC.colors.total)
 		if showQTip then
 			-- Add an new line, using all columns
-			local lineNum = objTooltip.qTip:AddLine(unitList[i].colorized, string.rep(" ", 4), unitList[i].tallyString)
-			objTooltip.qTip:SetLineTextColor(lineNum, color.r, color.g, color.b, 1)
+			local lineNum = Tooltip.qTip:AddLine(unitList[i].colorized, string.rep(" ", 4), unitList[i].tallyString)
+			Tooltip.qTip:SetLineTextColor(lineNum, color.r, color.g, color.b, 1)
 		else
 			objTooltip:AddDoubleLine(unitList[i].colorized, unitList[i].tallyString, color.r, color.g, color.b, color.r, color.g, color.b)
 		end
 	end
 
+	--this is only a local cache for the current tooltip and will be reset on bag updates, it is not the same as Data.__cache.tooltip
 	self.__lastTally = unitList
 
 	objTooltip.__tooltipUpdated = true
@@ -921,20 +966,19 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 	if showQTip then
 		if #unitList > 0 then
-			objTooltip.qTip:Show()
+			Tooltip.qTip:Show()
 		else
-			objTooltip.qTip:Hide()
+			Tooltip.qTip:Hide()
 		end
 	end
 
-	if not skipTally or #unitList > 0 then
-		local WLChk = (BSYC.options.enableWhitelist and "WL-ON") or "WL-OFF"
-		Debug(2, "TallyUnits", link, shortID, origLink, source, isBattlePet, grandTotal, WLChk)
-	end
+	local WLChk = (BSYC.options.enableWhitelist and "WL-ON") or "WL-OFF"
+	Debug(BSYC_DL.INFO, "TallyUnits", link, shortID, source, isBattlePet, grandTotal, WLChk)
 end
 
 function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currencyID, source)
-	Debug(2, "CurrencyTooltip", currencyName, currencyIcon, currencyID, source)
+	Debug(BSYC_DL.INFO, "CurrencyTooltip", currencyName, currencyIcon, currencyID, source, BSYC.tracking.currency)
+	if not BSYC.tracking.currency then return end
 
 	currencyID = tonumber(currencyID) --make sure it's a number we are working with and not a string
 	if not currencyID then return end
@@ -948,48 +992,68 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	if permIgnore[currencyID] then return end
 
 	for unitObj in Data:IterateUnits() do
-		if not unitObj.isGuild and unitObj.data.currency and unitObj.data.currency[currencyID] then
-			table.insert(usrData, { unitObj=unitObj, colorized=self:ColorizeUnit(unitObj), sortIndex=self:GetSortIndex(unitObj), count=unitObj.data.currency[currencyID].count} )
+		if not unitObj.isGuild and unitObj.data.currency and unitObj.data.currency[currencyID] and unitObj.data.currency[currencyID].count > 0 then
+			table.insert(usrData, {
+				unitObj=unitObj,
+				colorized=self:ColorizeUnit(unitObj),
+				sortIndex=self:GetSortIndex(unitObj),
+				count=unitObj.data.currency[currencyID].count
+			})
 		end
 	end
 
 	--sort
 	usrData = self:DoSort(usrData)
 
+	local displayList = {}
+	local showQTip = Tooltip:QTipCheck()
+
+	if not showQTip then
+		--add a space at the top of standard gametooltip method
+		table.insert(displayList, {" ", " "})
+	end
 	if currencyName then
-		objTooltip:AddLine(currencyName, 64/255, 224/255, 208/255)
-		objTooltip:AddLine(" ")
+		table.insert(displayList, {string.format("|cff%s%s|r", RGBPercToHex(64/255, 224/255, 208/255), tostring(currencyName)), " "})
+		table.insert(displayList, {" ", " "})
 	end
 
 	for i=1, #usrData do
 		if usrData[i].count then
-			objTooltip:AddDoubleLine(usrData[i].colorized, comma_value(usrData[i].count), 1, 1, 1, 1, 1, 1)
+			table.insert(displayList, {usrData[i].colorized, comma_value(usrData[i].count)})
 		end
+	end
+	if #usrData <= 0 then
+		table.insert(displayList, {NONE, " "})
 	end
 
 	if BSYC.options.enableTooltipItemID and currencyID then
-		local desc = self:HexColor(BSYC.options.colors.itemid, L.TooltipCurrencyID)
-		local value = self:HexColor(BSYC.options.colors.second, currencyID)
-		objTooltip:AddDoubleLine(" ", " ", 1, 1, 1, 1, 1, 1)
-		objTooltip:AddDoubleLine(desc, value, 1, 1, 1, 1, 1, 1)
+		local desc = self:HexColor(BSYC.colors.itemid, L.TooltipCurrencyID)
+		local value = self:HexColor(BSYC.colors.second, currencyID)
+		table.insert(displayList, {" ", " "})
+		table.insert(displayList, {desc, value})
 	end
 
-	if BSYC.options.enableSourceDebugInfo and source then
-		local desc = self:HexColor(BSYC.options.colors.debug, L.TooltipDebug)
-		local value = self:HexColor(BSYC.options.colors.second, "2;"..source..";"..tostring(currencyID or 0)..";"..tostring(currencyIcon or 0))
-		objTooltip:AddDoubleLine(" ", " ", 1, 1, 1, 1, 1, 1)
-		objTooltip:AddDoubleLine(desc, value, 1, 1, 1, 1, 1, 1)
+	--finally display it
+	for i=1, #displayList do
+		if showQTip then
+			Tooltip.qTip:AddLine(displayList[i][1], string.rep(" ", 4), displayList[i][2])
+		else
+			objTooltip:AddDoubleLine(displayList[i][1], displayList[i][2], 1, 1, 1, 1, 1, 1)
+		end
 	end
 
 	objTooltip.__tooltipUpdated = true
 	objTooltip:Show()
+	if showQTip then
+		Tooltip.qTip:Show()
+	end
 end
 
 function Tooltip:HookTooltip(objTooltip)
 	--if the tooltip doesn't exist, chances are it's the BattlePetTooltip and they are on Classic or WOTLK
 	if not objTooltip then return end
 
-	Debug(2, "HookTooltip", objTooltip)
+	Debug(BSYC_DL.INFO, "HookTooltip", objTooltip)
 
 	--MORE INFO (https://wowpedia.fandom.com/wiki/Category:API_namespaces/C_TooltipInfo)
 	--https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes#Tooltip_Changes
@@ -998,15 +1062,13 @@ function Tooltip:HookTooltip(objTooltip)
 
 	objTooltip:HookScript("OnHide", function(self)
 		self.__tooltipUpdated = false
-		if self.qTip then
-			LibQTip:Release(self.qTip)
-			self.qTip = nil
-		end
+		--we don't want to Release() the qTip until we aren't using it anymore because they disabled it.  Otherwise just hide it.
+		if Tooltip.qTip then Tooltip.qTip:Hide() end
 	end)
 	--the battlepet tooltips don't use this, so check for it
 	if objTooltip ~= BattlePetTooltip and objTooltip ~= FloatingBattlePetTooltip then
 		objTooltip:HookScript("OnTooltipCleared", function(self)
-			--this gets called repeatedly on some occasions. Do not reset Tooltip.__lastLink here
+			--this gets called repeatedly on some occasions. Do not reset Tooltip cache here at all
 			self.__tooltipUpdated = false
 		end)
 	else
@@ -1023,7 +1085,6 @@ function Tooltip:HookTooltip(objTooltip)
 		--see https://github.com/tomrus88/BlizzardInterfaceCode/blob/de20049d4dc15eb268fb959148220acf0a23694c/Interface/AddOns/Blizzard_APIDocumentationGenerated/TooltipInfoSharedDocumentation.lua
 
 		local function OnTooltipSetItem(tooltip, data)
-
 			if (tooltip == GameTooltip or tooltip == EmbeddedItemTooltip or tooltip == ItemRefTooltip) then
 				if tooltip.__tooltipUpdated then return end
 
@@ -1063,7 +1124,9 @@ function Tooltip:HookTooltip(objTooltip)
 				local currencyID = BSYC:GetShortCurrencyID(link)
 
 				if currencyID then
-					local currencyData = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+					--WOTLK still uses the old API functions, check for it
+					local xGetCurrencyInfo = (C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo) or GetCurrencyInfo
+					local currencyData = xGetCurrencyInfo(currencyID)
 					if currencyData then
 						Tooltip:CurrencyTooltip(tooltip, currencyData.name, currencyData.iconFileID, currencyID, "OnTooltipSetCurrency")
 					end
@@ -1083,10 +1146,10 @@ function Tooltip:HookTooltip(objTooltip)
 		else
 			--BattlePetToolTip_Show
 			if objTooltip == BattlePetTooltip then
-				hooksecurefunc("BattlePetToolTip_Show", function(speciesID)
+				hooksecurefunc("BattlePetToolTip_Show", function(speciesID, level, breedQuality, maxHealth, power, speed, name)
 					if objTooltip.__tooltipUpdated then return end
 					if speciesID then
-						local fakeID = BSYC:CreateFakeBattlePetID(nil, nil, speciesID)
+						local fakeID = BSYC:CreateFakeID(nil, nil, speciesID, level, breedQuality, maxHealth, power, speed, name)
 						if fakeID then
 							Tooltip:TallyUnits(objTooltip, fakeID, "BattlePetToolTip_Show", true)
 						end
@@ -1095,10 +1158,10 @@ function Tooltip:HookTooltip(objTooltip)
 			end
 			--FloatingBattlePet_Show
 			if objTooltip == FloatingBattlePetTooltip then
-				hooksecurefunc("FloatingBattlePet_Show", function(speciesID)
+				hooksecurefunc("FloatingBattlePet_Show", function(speciesID, level, breedQuality, maxHealth, power, speed, name)
 					if objTooltip.__tooltipUpdated then return end
 					if speciesID then
-						local fakeID = BSYC:CreateFakeBattlePetID(nil, nil, speciesID)
+						local fakeID = BSYC:CreateFakeID(nil, nil, speciesID, level, breedQuality, maxHealth, power, speed, name)
 						if fakeID then
 							Tooltip:TallyUnits(objTooltip, fakeID, "FloatingBattlePet_Show", true)
 						end
@@ -1153,7 +1216,7 @@ function Tooltip:HookTooltip(objTooltip)
 end
 
 function Tooltip:OnEnable()
-	Debug(2, "OnEnable")
+	Debug(BSYC_DL.INFO, "OnEnable")
 
 	self:HookTooltip(GameTooltip)
 	self:HookTooltip(ItemRefTooltip)

@@ -61,7 +61,7 @@ if C_PlayerInteractionManager then
 
 	Unit:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", function(event, winArg)
 		if winArg and showDebug[winArg] then
-			Debug(1, "PLAYER_INTERACTION_MANAGER_FRAME_SHOW", winArg)
+			Debug(BSYC_DL.DEBUG, "PLAYER_INTERACTION_MANAGER_FRAME_SHOW", winArg)
 		end
 		if winArg == InteractType.MailInfo then
 			Unit.atMailbox = true
@@ -88,7 +88,7 @@ if C_PlayerInteractionManager then
 	--Introduced in Dragonflight (https://wowpedia.fandom.com/wiki/PLAYER_INTERACTION_MANAGER_FRAME_SHOW)
 	Unit:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", function(event, winArg)
 		if winArg and showDebug[winArg] then
-			Debug(1, "PLAYER_INTERACTION_MANAGER_FRAME_HIDE", winArg)
+			Debug(BSYC_DL.DEBUG, "PLAYER_INTERACTION_MANAGER_FRAME_HIDE", winArg)
 		end
 		if winArg == InteractType.MailInfo then
 			Unit.atMailbox = false
@@ -193,11 +193,16 @@ function Unit:GetUnitAddress(unit)
 	return realm or REALM, guildName or unit, guildName and true
 end
 
-function Unit:GetUnitInfo(unit)
+function Unit:GetUnitInfo(shallow)
 	local realm, name, isguild = self:GetUnitAddress(unit)
 	local unit = {}
 
 	unit.faction = FACTION
+	unit.name, unit.realm = name, realm
+	if shallow then
+		Debug(BSYC_DL.TRACE, "GetUnitInfo-Shallow", shallow, name, realm, FACTION)
+		return unit
+	end
 
 	if not isguild then
 		unit.money = (GetMoney() or 0) - GetCursorMoney() - GetPlayerTradeMoney()
@@ -211,11 +216,11 @@ function Unit:GetUnitInfo(unit)
 	end
 
 	unit.guild = unit.guild and (unit.guild..'©')
-	unit.name, unit.realm, unit.isguild = name, realm, isguild
+	unit.isguild = isguild
 	unit.realmKey = realmKey
 	unit.rwsKey = self:GetRealmKey_RWS()
 
-	Debug(3, "GetUnitInfo", name, realm, isguild, FACTION, unit.class, unit.race, unit.gender, unit.guild, unit.guildrealm, unit.realmKey, unit.rwsKey)
+	Debug(BSYC_DL.TRACE, "GetUnitInfo", name, realm, isguild, FACTION, unit.class, unit.race, unit.gender, unit.guild, unit.guildrealm, unit.realmKey, unit.rwsKey)
 	return unit
 end
 

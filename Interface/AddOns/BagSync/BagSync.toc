@@ -5,7 +5,7 @@
 ## Notes-frFR: BagSync fait l'inventaire des objets de vos personnages et l'affiche dans des infobulles.
 ## Notes-deDE: BagSync verfolgt die Gegenstände Deiner Charaktere und zeigt sie in Tooltips an.
 ## Author: Xruptor
-## Version: 18.22
+## Version: 19.0
 ## X-Curse-Project-ID: 22067
 ## X-WoWI-ID: 15351
 ## X-Wago-ID: xZKxjQNk
@@ -20,11 +20,12 @@ libs\AceConfig-3.0\AceConfig-3.0.xml
 libs\AceLocale-3.0\AceLocale-3.0.xml
 libs\AceConsole-3.0\AceConsole-3.0.xml
 libs\AceEvent-3.0\AceEvent-3.0.xml
-libs\AceTimer-3.0\AceTimer-3.0.xml
 libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 libs\LibItemScout-1.0\LibItemScout-1.0.lua
 libs\LibQTip-1.0\LibQTip-1.0.lua
+libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+libs\LibDDI-1.0\lib.xml
 
 locale\enUS.lua
 locale\deDE.lua
@@ -37,10 +38,9 @@ locale\ptBR.lua
 locale\esES.lua
 
 core.lua
+coreui.xml
 
 wireframe\debug.lua
-wireframe\label.lua
-wireframe\interactivelabel.lua
 wireframe\unit.lua
 wireframe\data.lua
 wireframe\scanner.lua
@@ -49,11 +49,14 @@ wireframe\tooltip.lua
 
 modules\databroker.lua
 modules\search.lua
+modules\advancedsearch.lua
+modules\details.lua
 modules\currency.lua
 modules\professions.lua
 modules\recipes.lua
 modules\blacklist.lua
 modules\whitelist.lua
+modules\gold.lua
 modules\profiles.lua
 modules\sortorder.lua
 modules\config.lua

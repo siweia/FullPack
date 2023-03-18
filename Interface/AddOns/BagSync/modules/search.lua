@@ -7,8 +7,7 @@
 --]]
 
 local BSYC = select(2, ...) --grab the addon namespace
-local Search = BSYC:NewModule("Search", 'AceTimer-3.0')
-local Unit = BSYC:GetModule("Unit")
+local Search = BSYC:NewModule("Search")
 local Data = BSYC:GetModule("Data")
 local Tooltip = BSYC:GetModule("Tooltip")
 
@@ -17,751 +16,633 @@ local function Debug(level, ...)
 end
 
 local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
-local AceGUI = LibStub("AceGUI-3.0")
 local ItemScout = LibStub("LibItemScout-1.0")
 
-function Search:OnEnable()
+Search.cacheItems = {}
 
-	--lets create our widgets
-	local SearchFrame = AceGUI:Create("Window")
-	_G["BagSyncSearchFrame"] = SearchFrame
+function Search:OnEnable()
+    local searchFrame = _G.CreateFrame("Frame", nil, UIParent, "BagSyncSearchFrameTemplate")
+	Mixin(searchFrame, Search) --implement new frame to our parent module Mixin, to have access to parent methods
+	_G["BagSyncSearchFrame"] = searchFrame
     --Add to special frames so window can be closed when the escape key is pressed.
     tinsert(UISpecialFrames, "BagSyncSearchFrame")
-	Search.frame = SearchFrame
-	Search.parentFrame = SearchFrame.frame
+    searchFrame.TitleText:SetText("BagSync - "..L.Search)
+	searchFrame:SetWidth(400)
+    searchFrame:SetHeight(500)
+    searchFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    searchFrame:EnableMouse(true) --don't allow clickthrough
+    searchFrame:SetMovable(true)
+    searchFrame:SetResizable(false)
+    searchFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+	searchFrame:RegisterForDrag("LeftButton")
+	searchFrame:SetClampedToScreen(true)
+	searchFrame:SetScript("OnDragStart", searchFrame.StartMoving)
+	searchFrame:SetScript("OnDragStop", searchFrame.StopMovingOrSizing)
+	searchFrame:SetScript("OnShow", function() Search:OnShow() end)
+	searchFrame:SetScript("OnHide", function() Search:OnHide() end)
+	local closeBtn = CreateFrame("Button", nil, searchFrame, "UIPanelCloseButton")
+	closeBtn:SetPoint("TOPRIGHT", C_EditMode and -3 or 2, C_EditMode and -3 or 1) --check for classic servers to adjust for positioning using a check for the new EditMode
+    searchFrame.closeBtn = closeBtn
+    Search.frame = searchFrame
 
-	SearchFrame:SetTitle("BagSync - "..L.Search)
-	SearchFrame:SetHeight(500)
-	SearchFrame:SetWidth(380)
-	SearchFrame:EnableResize(false)
+    Search.scrollFrame = _G.CreateFrame("ScrollFrame", nil, searchFrame, "HybridScrollFrameTemplate")
+    Search.scrollFrame:SetWidth(357)
+    Search.scrollFrame:SetPoint("TOPLEFT", searchFrame, "TOPLEFT", 13, -60)
+    --set ScrollFrame height by altering the distance from the bottom of the frame
+    Search.scrollFrame:SetPoint("BOTTOMLEFT", searchFrame, "BOTTOMLEFT", -25, 42)
+    Search.scrollFrame.scrollBar = CreateFrame("Slider", "$parentscrollBar", Search.scrollFrame, "HybridScrollBarTemplate")
+    Search.scrollFrame.scrollBar:SetPoint("TOPLEFT", Search.scrollFrame, "TOPRIGHT", 1, -16)
+    Search.scrollFrame.scrollBar:SetPoint("BOTTOMLEFT", Search.scrollFrame, "BOTTOMRIGHT", 1, 12)
+	--initiate the scrollFrame
+    --the items we will work with
+    Search.items = {}
+	Search.scrollFrame.update = function() Search:RefreshList(); end
+    HybridScrollFrame_SetDoNotHideScrollBar(Search.scrollFrame, true)
+	HybridScrollFrame_CreateButtons(Search.scrollFrame, "BagSyncListItemTemplate")
 
-	local w = AceGUI:Create("SimpleGroup")
-	w:SetLayout("Flow")
-	w:SetFullWidth(true)
-	SearchFrame:AddChild(w)
+	--total counter
+	searchFrame.totalText = searchFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+	searchFrame.totalText:SetText(L.TooltipTotal.." |cFFFFFFFF0|r")
+	searchFrame.totalText:SetFont(STANDARD_TEXT_FONT, 12, "")
+	searchFrame.totalText:SetTextColor(1, 165/255, 0)
+	searchFrame.totalText:SetPoint("LEFT", searchFrame, "BOTTOMLEFT", 15, 20)
+	searchFrame.totalText:SetJustifyH("LEFT")
 
-	local searchbar = AceGUI:Create("EditBox")
-	searchbar:SetText()
-	searchbar:SetWidth(255)
-	searchbar:SetCallback("OnEnterPressed",function(widget)
-		searchbar:ClearFocus()
-		self:DoSearch(searchbar:GetText())
-	end)
+	--Advanced Search button
+	searchFrame.advSearchBtn = _G.CreateFrame("Button", nil, searchFrame, "UIPanelButtonTemplate")
+	searchFrame.advSearchBtn:SetText(L.AdvancedSearch)
+	searchFrame.advSearchBtn:SetHeight(20)
+	searchFrame.advSearchBtn:SetWidth(searchFrame.advSearchBtn:GetTextWidth() + 30)
+	searchFrame.advSearchBtn:SetPoint("RIGHT", searchFrame, "BOTTOMRIGHT", -10, 23)
+	searchFrame.advSearchBtn:SetScript("OnClick", function() Search:ShowAdvanced() end)
 
-	Search.searchbar = searchbar
-	w:AddChild(searchbar)
+	--Reset button
+	searchFrame.resetButton = _G.CreateFrame("Button", nil, searchFrame, "UIPanelButtonTemplate")
+	searchFrame.resetButton:SetText(L.Reset)
+	searchFrame.resetButton:SetHeight(20)
+	searchFrame.resetButton:SetWidth(searchFrame.resetButton:GetTextWidth() + 30)
+	searchFrame.resetButton:SetPoint("RIGHT", searchFrame.advSearchBtn, "LEFT", 0, 0)
+	searchFrame.resetButton:SetScript("OnClick", function() Search:Reset() end)
 
-	local refreshbutton = AceGUI:Create("Button")
-	refreshbutton:SetText(L.Refresh)
-	refreshbutton:SetWidth(100)
-	refreshbutton:SetHeight(20)
-	refreshbutton:SetCallback("OnClick", function()
-		searchbar:ClearFocus()
-		local sbText = searchbar:GetText() or ''
-		self:DoSearch((string.len(sbText) > 0 and sbText) or Search.searchStr)
-	end)
-	Search.refreshbutton = refreshbutton
-	w:AddChild(refreshbutton)
+	--Warning Frame
+	local warningFrame = _G.CreateFrame("Frame", nil, searchFrame, "BagSyncInfoFrameTemplate")
+	warningFrame:Hide()
+	warningFrame:SetBackdropColor(0, 0, 0, 0.75)
+    warningFrame:EnableMouse(true) --don't allow clickthrough
+    warningFrame:SetMovable(false)
+	warningFrame:SetResizable(false)
+    warningFrame:SetFrameStrata("HIGH")
+	warningFrame:ClearAllPoints()
+	warningFrame:SetPoint("BOTTOMLEFT", searchFrame, "BOTTOMRIGHT", 5, 0)
+	warningFrame.TitleText:SetText(L.WarningHeader)
+	warningFrame.TitleText:SetFont(STANDARD_TEXT_FONT, 14, "")
+	warningFrame.TitleText:SetTextColor(1, 1, 1)
+	warningFrame.infoText1 = warningFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+	warningFrame.infoText1:SetText(L.WarningItemSearch)
+	warningFrame.infoText1:SetFont(STANDARD_TEXT_FONT, 14, "")
+	warningFrame.infoText1:SetTextColor(1, 165/255, 0) --orange, red is just too much sometimes
+	warningFrame.infoText1:SetJustifyH("CENTER")
+	warningFrame.infoText1:SetWidth(warningFrame:GetWidth() - 30)
+	warningFrame.infoText1:SetPoint("LEFT", warningFrame, "TOPLEFT", 10, -100)
+	warningFrame.infoText2 = warningFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+	warningFrame.infoText2:SetText(L.ObsoleteWarning)
+	warningFrame.infoText2:SetFont(STANDARD_TEXT_FONT, 14, "")
+	warningFrame.infoText2:SetTextColor(50/255, 165/255, 0)
+	warningFrame.infoText2:SetWidth(warningFrame:GetWidth() - 30)
+	warningFrame.infoText2:SetPoint("LEFT", warningFrame.infoText1, "BOTTOMLEFT", 5, -70)
+	warningFrame.infoText2:SetJustifyH("CENTER")
+	Search.warningFrame = warningFrame
 
-	local scrollframe = AceGUI:Create("ScrollFrame");
-	scrollframe:SetFullWidth(true)
-	scrollframe:SetLayout("Flow")
+	--Help Frame
+	local helpFrame = _G.CreateFrame("Frame", nil, searchFrame, "BagSyncInfoFrameTemplate")
+	helpFrame:Hide()
+	helpFrame:SetWidth(500)
+	helpFrame:SetHeight(300)
+	helpFrame:SetBackdropColor(0, 0, 0, 0.75)
+    helpFrame:EnableMouse(true) --don't allow clickthrough
+    helpFrame:SetMovable(false)
+	helpFrame:SetResizable(false)
+    helpFrame:SetFrameStrata("HIGH")
+	helpFrame:ClearAllPoints()
+	helpFrame:SetPoint("BOTTOMLEFT", searchFrame, "BOTTOMRIGHT", 5, 0)
+	helpFrame.TitleText:SetText(L.SearchHelpHeader)
+	helpFrame.TitleText:SetFont(STANDARD_TEXT_FONT, 14, "")
+	helpFrame.TitleText:SetTextColor(1, 1, 1)
+	helpFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, helpFrame, "UIPanelScrollFrameTemplate")
+	helpFrame.ScrollFrame:SetPoint("TOPLEFT", helpFrame, "TOPLEFT", 8, -30)
+	helpFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", helpFrame, "BOTTOMRIGHT", -30, 8)
+	helpFrame.EditBox = _G.CreateFrame("EditBox", nil, helpFrame.ScrollFrame)
+	helpFrame.EditBox:SetAllPoints()
+	helpFrame.EditBox:SetFontObject(ChatFontNormal)
+	helpFrame.EditBox:SetMultiLine(true)
+	helpFrame.EditBox:SetAutoFocus(false)
+	helpFrame.EditBox:SetMaxLetters(0)
+	helpFrame.EditBox:SetCountInvisibleLetters(false)
+	helpFrame.EditBox:SetText(L.SearchHelp)
+	helpFrame.EditBox:SetWidth(465) --set the boundaries for word wrapping on the scrollbar, if smaller than the frame it will wrap it
+	helpFrame.ScrollFrame:SetScrollChild(helpFrame.EditBox)
+	--lets set it to disabled to prevent editing
+	helpFrame.EditBox:ClearFocus()
+	helpFrame.EditBox:EnableMouse(false)
+	helpFrame.EditBox:SetTextColor(1, 1, 1) --set default to white
+	helpFrame.ScrollFrame:EnableMouse(false)
+	Search.helpFrame = helpFrame
 
-	Search.scrollframe = scrollframe
-	SearchFrame:AddChild(scrollframe)
+	--Saved Search Frame
+	local savedSearch = _G.CreateFrame("Frame", nil, searchFrame, "BagSyncInfoFrameTemplate")
+	savedSearch:Hide()
+	savedSearch:SetHeight(200)
+	savedSearch:SetWidth(400)
+	savedSearch:SetBackdropColor(0, 0, 0, 0.75)
+    savedSearch:EnableMouse(true) --don't allow clickthrough
+    savedSearch:SetMovable(false)
+	savedSearch:SetResizable(false)
+    savedSearch:SetFrameStrata("HIGH")
+	savedSearch:ClearAllPoints()
+	savedSearch:SetPoint("TOPLEFT", searchFrame, "TOPRIGHT", 5, 0)
+	savedSearch.TitleText:SetText(L.SavedSearch)
+	savedSearch.TitleText:SetFont(STANDARD_TEXT_FONT, 14, "")
+	savedSearch.TitleText:SetTextColor(1, 1, 1)
+	savedSearch:SetScript("OnShow", function() Search:SavedSearch_UpdateList() end)
+	Search.savedSearch = savedSearch
+    savedSearch.scrollFrame = _G.CreateFrame("ScrollFrame", nil, savedSearch, "HybridScrollFrameTemplate")
+    savedSearch.scrollFrame:SetWidth(357)
+    savedSearch.scrollFrame:SetPoint("TOPLEFT", savedSearch, "TOPLEFT", 13, -32)
+    --set ScrollFrame height by altering the distance from the bottom of the frame
+    savedSearch.scrollFrame:SetPoint("BOTTOMLEFT", savedSearch, "BOTTOMLEFT", -25, 36)
+    savedSearch.scrollFrame.scrollBar = CreateFrame("Slider", "$parentscrollBar", savedSearch.scrollFrame, "HybridScrollBarTemplate")
+    savedSearch.scrollFrame.scrollBar:SetPoint("TOPLEFT", savedSearch.scrollFrame, "TOPRIGHT", 1, -16)
+    savedSearch.scrollFrame.scrollBar:SetPoint("BOTTOMLEFT", savedSearch.scrollFrame, "BOTTOMRIGHT", 1, 12)
+	--initiate the scrollFrame
+    --the items we will work with
+    savedSearch.items = {}
+	savedSearch.scrollFrame.update = function() Search:SavedSearch_RefreshList(); end
+    HybridScrollFrame_SetDoNotHideScrollBar(savedSearch.scrollFrame, true)
+	HybridScrollFrame_CreateButtons(savedSearch.scrollFrame, "BagSyncSavedListTemplate")
+	--Add Search Button
+	savedSearch.addSavedBtn = _G.CreateFrame("Button", nil, savedSearch, "UIPanelButtonTemplate")
+	savedSearch.addSavedBtn:SetText(L.SavedSearch_Add)
+	savedSearch.addSavedBtn:SetHeight(20)
+	savedSearch.addSavedBtn:SetWidth(savedSearch.addSavedBtn:GetTextWidth() + 30)
+	savedSearch.addSavedBtn:SetPoint("BOTTOM", savedSearch, "BOTTOM", 0, 5)
+	savedSearch.addSavedBtn:SetScript("OnClick", function() Search:SavedSearch_AddItem() end)
 
-	local totalCountLabel = AceGUI:Create("BagSyncLabel")
-
-	totalCountLabel:SetText(L.TooltipTotal.." |cFFFFFFFF0|r")
-	totalCountLabel:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-	totalCountLabel:SetColor(1, 165/255, 0)
-	totalCountLabel:SetFullWidth(true)
-
-	totalCountLabel:ClearAllPoints()
-	totalCountLabel.frame:SetParent(SearchFrame.frame)
-	totalCountLabel:SetPoint("CENTER", SearchFrame.frame, "BOTTOM", -75, 25)
-	totalCountLabel.frame:Show()
-	Search.totalCountLabel = totalCountLabel
-
-	SearchFrame:SetCallback("OnShow", function()
-		if not BSYC.options.alwaysShowAdvSearch then
-			self:ScheduleTimer(function()
-				if BSYC.options.focusSearchEditBox then
-					searchbar:ClearFocus()
-					searchbar:SetFocus()
-				end
-			end, 0.5)
-		else
-			if self.advancedsearchframe then self.advancedsearchframe:Show() end
-		end
-	end)
-
-	----------------------------------------------------------
-	----------------------------------------------------------
-	-------  WARNING FRAME
-
-	local WarningFrame = AceGUI:Create("Window")
-	WarningFrame:SetTitle(L.WarningHeader)
-	WarningFrame:SetWidth(300)
-	WarningFrame:SetHeight(280)
-	WarningFrame.frame:SetParent(SearchFrame.frame)
-	WarningFrame:SetLayout("Flow")
-	WarningFrame:EnableResize(false)
-
-	local warninglabel = AceGUI:Create("BagSyncLabel")
-	warninglabel:SetText(L.WarningItemSearch)
-	warninglabel:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-	warninglabel:SetColor(1, 165/255, 0) --orange, red is just too much sometimes
-	warninglabel:SetFullWidth(true)
-	WarningFrame:AddChild(warninglabel)
-
-	local warninglabel2 = AceGUI:Create("BagSyncLabel")
-	warninglabel2:SetText(L.ObsoleteWarning)
-	warninglabel2:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-	warninglabel2:SetColor(50/255, 165/255, 0)
-	warninglabel2:SetFullWidth(true)
-	WarningFrame:AddChild(warninglabel2)
-
-	Search.warningframe = WarningFrame
-	Search.warninglabel = warninglabel
-
-	hooksecurefunc(WarningFrame, "Show" ,function()
-		--always show the warning frame on the right of the BagSync Search window
-		WarningFrame.frame:ClearAllPoints()
-		WarningFrame:SetPoint( "TOPLEFT", SearchFrame.frame, "TOPRIGHT", 0, 0)
-	end)
-
-	WarningFrame:Hide()
-
-	----------------------------------------------------------
-	----------------------------------------------------------
-	-------  ADVANCED SEARCH
-
-	--Button
-	local spacer = AceGUI:Create("BagSyncLabel")
-	spacer:SetFullWidth(true)
-	spacer:SetText(" ")
-	SearchFrame:AddChild(spacer)
-
-	local advSearchBtn = AceGUI:Create("Button")
-	advSearchBtn:SetText(L.AdvancedSearch)
-	advSearchBtn:SetHeight(20)
-	advSearchBtn:SetWidth(150)
-
-	advSearchBtn:ClearAllPoints()
-	advSearchBtn.frame:SetParent(SearchFrame.frame)
-	advSearchBtn:SetPoint("CENTER", SearchFrame.frame, "BOTTOM", 105, 25)
-	advSearchBtn.frame:Show()
-
-	SearchFrame.advsearchbtn = advSearchBtn
-
-	local searchResetBtn = AceGUI:Create("Button")
-	searchResetBtn:SetText(L.Reset)
-	searchResetBtn:SetHeight(20)
-	searchResetBtn:SetAutoWidth(true)
-
-	searchResetBtn:ClearAllPoints()
-	searchResetBtn.frame:SetParent(SearchFrame.frame)
-	searchResetBtn:SetPoint("RIGHT", advSearchBtn.frame, "LEFT", 0, 0)
-	searchResetBtn.frame:Show()
-
-	SearchFrame.searchResetBtn = searchResetBtn
-
-	searchResetBtn:SetCallback("OnClick", function()
-		Search:DoReset()
-	end)
-	--------------------
-
-	local AdvancedSearchFrame = AceGUI:Create("Window")
-	AdvancedSearchFrame:SetTitle(L.AdvancedSearch)
-	AdvancedSearchFrame:SetHeight(550)
-	AdvancedSearchFrame:SetWidth(380)
-	AdvancedSearchFrame.frame:SetParent(SearchFrame.frame)
-	AdvancedSearchFrame:EnableResize(false)
-
-	Search.advancedsearchframe = AdvancedSearchFrame
-
-	local advSearchInformation = AceGUI:Create("BagSyncLabel")
-	advSearchInformation:SetText(L.AdvancedSearchInformation)
-	advSearchInformation:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-	advSearchInformation:SetColor(1, 165/255, 0)
-	advSearchInformation:SetFullWidth(true)
-	AdvancedSearchFrame:AddChild(advSearchInformation)
-
-	local advSearchbar = AceGUI:Create("EditBox")
-	advSearchbar:SetText()
-	advSearchbar:SetWidth(255)
-	advSearchbar:SetCallback("OnEnterPressed",function(widget)
-		advSearchbar:ClearFocus()
-		Search:DoAdvancedSearch()
-	end)
-	AdvancedSearchFrame.advsearchbar = advSearchbar
-	AdvancedSearchFrame:AddChild(advSearchbar)
-
-	hooksecurefunc(AdvancedSearchFrame, "Show" ,function()
-		--always show the advanced search on the left of the BagSync Search window
-		AdvancedSearchFrame.frame:ClearAllPoints()
-		AdvancedSearchFrame:SetPoint( "TOPRIGHT", SearchFrame.frame, "TOPLEFT", 0, 0)
-	end)
-
-	advSearchBtn:SetCallback("OnClick", function()
-		if AdvancedSearchFrame.frame:IsVisible() then
-			AdvancedSearchFrame:Hide()
-		else
-			AdvancedSearchFrame:Show()
-		end
-	end)
-
-	--player list
-	local spacer = AceGUI:Create("BagSyncLabel")
-    spacer:SetFullWidth(true)
-	spacer:SetText(" ")
-	AdvancedSearchFrame:AddChild(spacer)
-
-	local pListInfo = AceGUI:Create("BagSyncLabel")
-	pListInfo:SetText(L.Units)
-	pListInfo:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-	pListInfo:SetColor(0, 1, 0)
-	pListInfo:SetFullWidth(true)
-	AdvancedSearchFrame:AddChild(pListInfo)
-
-	local advSelectAllBtn = AceGUI:Create("Button")
-	advSelectAllBtn:SetText(L.SelectAll)
-	advSelectAllBtn:SetHeight(16)
-	advSelectAllBtn:SetAutoWidth(true)
-	advSelectAllBtn:SetCallback("OnClick", function()
-		Search:DisplayAdvSearchSelectAll()
-	end)
-	AdvancedSearchFrame.advSelectAllBtn = advSelectAllBtn
-
-	advSelectAllBtn.frame:SetParent(AdvancedSearchFrame.frame)
-	advSelectAllBtn:ClearAllPoints()
-	advSelectAllBtn:SetPoint("RIGHT", pListInfo.frame, "RIGHT", -20, 5)
-	advSelectAllBtn.frame:Show()
-
-	local playerListScrollFrame = AceGUI:Create("ScrollFrame");
-	playerListScrollFrame:SetFullWidth(true)
-	playerListScrollFrame:SetLayout("Flow")
-	playerListScrollFrame:SetHeight(240)
-
-	AdvancedSearchFrame.playerlistscrollframe = playerListScrollFrame
-	AdvancedSearchFrame:AddChild(playerListScrollFrame)
-
- 	--location list (bank, bags, etc..)
-	local spacer = AceGUI:Create("BagSyncLabel")
-    spacer:SetFullWidth(true)
-	spacer:SetText(" ")
-	AdvancedSearchFrame:AddChild(spacer)
-
-	local locListInfo = AceGUI:Create("BagSyncLabel")
-	locListInfo:SetText(L.Locations)
-	locListInfo:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-	locListInfo:SetColor(0, 1, 0)
-	locListInfo:SetFullWidth(true)
-	AdvancedSearchFrame:AddChild(locListInfo)
-
-	local advLocationInformation = AceGUI:Create("BagSyncLabel")
-	advLocationInformation:SetText(L.AdvancedLocationInformation)
-	advLocationInformation:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-	advLocationInformation:SetColor(1, 165/255, 0)
-	advLocationInformation:SetFullWidth(true)
-	AdvancedSearchFrame:AddChild(advLocationInformation)
-
-	local locationListScrollFrame = AceGUI:Create("ScrollFrame");
-	locationListScrollFrame:SetFullWidth(true)
-	locationListScrollFrame:SetLayout("Flow")
-	locationListScrollFrame:SetHeight(140)
-
-	AdvancedSearchFrame.locationlistscrollframe = locationListScrollFrame
-	AdvancedSearchFrame:AddChild(locationListScrollFrame)
-
- 	hooksecurefunc(AdvancedSearchFrame, "Show" ,function()
-		self:DisplayAdvSearchLists()
-	end)
-
-	local spacer = AceGUI:Create("BagSyncLabel")
-    spacer:SetFullWidth(true)
-	spacer:SetText(" ")
-	AdvancedSearchFrame:AddChild(spacer)
-
-	local advDoSearchBtn = AceGUI:Create("Button")
-	advDoSearchBtn:SetText(L.AdvSearchBtn)
-	advDoSearchBtn:SetHeight(20)
-	advDoSearchBtn:SetWidth(150)
-	advDoSearchBtn:SetCallback("OnClick", function()
-		Search:DoAdvancedSearch()
-	end)
-	AdvancedSearchFrame:AddChild(advDoSearchBtn)
-	AdvancedSearchFrame.advdosearchbtn = advDoSearchBtn
-
-	local advDoResetBtn = AceGUI:Create("Button")
-	advDoResetBtn:SetText(L.Reset)
-	advDoResetBtn:SetHeight(20)
-	advDoResetBtn:SetWidth(150)
-	advDoResetBtn:SetCallback("OnClick", function()
-		--just refresh the list to empty it
-		Search:DisplayAdvSearchLists()
-	end)
-	AdvancedSearchFrame:AddChild(advDoResetBtn)
-	AdvancedSearchFrame.advdoresetbtn = advDoResetBtn
-
-	advDoResetBtn:ClearAllPoints()
-	advDoResetBtn:SetPoint("LEFT", advDoSearchBtn.frame, "LEFT", 210, 0)
-
-	AdvancedSearchFrame:SetCallback("OnShow",function(widget)
-		Search.searchbar.frame:Hide()
-		Search.refreshbutton.frame:Hide()
-
-		self:ScheduleTimer(function()
-			if BSYC.options.focusSearchEditBox then
-				advSearchbar:ClearFocus()
-				advSearchbar:SetFocus()
-			end
-		end, 0.5)
-	end)
-	AdvancedSearchFrame:SetCallback("OnClose",function(widget)
-		Search.searchbar.frame:Show()
-		Search.refreshbutton.frame:Show()
-	end)
-
-	AdvancedSearchFrame:Hide()
-
-	----------------------------------------------------------
-	----------------------------------------------------------
-
-	SearchFrame:SetCallback("OnClose",function(widget)
-		WarningFrame:Hide()
-		AdvancedSearchFrame:Hide()
-	end)
-
-	SearchFrame:Hide()
+	searchFrame:Hide() --important
 end
 
-function Search:StartSearch(searchStr)
-	self.frame:Show()
+function Search:OnShow()
+	BSYC:SetBSYC_FrameLevel(Search)
+	Data:PopulateItemCache() --do a background caching of items
 
 	if not BSYC.options.alwaysShowAdvSearch then
-		self.searchbar:SetText(searchStr)
-		self:DoSearch(searchStr)
+		C_Timer.After(0.5, function()
+			if BSYC.options.focusSearchEditBox then
+				Search.frame.SearchBox:ClearFocus()
+				Search.frame.SearchBox:SetFocus()
+			end
+		end)
 	else
-		self.advancedsearchframe.advsearchbar:SetText(searchStr)
+		Search:ShowAdvanced(true)
 	end
+    Search:RefreshList()
 end
 
-function Search:AddEntry(entry)
-
-	local highlightColor = {1, 0, 0}
-	local label = AceGUI:Create("BagSyncInteractiveLabel")
-
-	local name, link, rarity, texture = entry.name, entry.link, entry.rarity, entry.texture
-	local r, g, b, hex = GetItemQualityColor(rarity)
-	local isBattlePet = false
-
-	local _, _, qOpts = BSYC:Split(link)
-	if qOpts and qOpts.battlepet then isBattlePet = true end
-
-	--if its a battlepet and we don't have access to BattlePetTooltip, then don't display it
-	if isBattlePet and not BattlePetTooltip then return end
-	label.highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
-	label.highlight:SetVertexColor(0,1,0,0.3)
-	label:SetColor( r, g, b)
-	label:SetImage(texture)
-	label:SetImageSize(18, 18)
-	label:SetFullWidth(true)
-	label:SetText(name)
-	label:ApplyJustifyH("LEFT")
-	label:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-	label:SetFullWidth(true)
-	label:SetCallback(
-		"OnClick",
-		function (widget, sometable, button)
-			if not isBattlePet then
-				ChatEdit_InsertLink(link)
-			else
-				FloatingBattlePet_Toggle(tonumber(qOpts.battlepet), 0, 0, 0, 0, 0, nil, nil)
-			end
-		end)
-	label:SetCallback(
-		"OnEnter",
-		function (widget, sometable)
-			label:SetColor(unpack(highlightColor))
-			if not isBattlePet then
-				GameTooltip:SetOwner(label.frame, "ANCHOR_BOTTOMRIGHT")
-				GameTooltip:SetHyperlink(link)
-				GameTooltip:Show()
-			else
-				GameTooltip:SetOwner(label.frame, "ANCHOR_BOTTOMRIGHT")
-				BattlePetToolTip_Show(tonumber(qOpts.battlepet), 0, 0, 0, 0, 0, nil)
-			end
-		end)
-	label:SetCallback(
-		"OnLeave",
-		function (widget, sometable)
-			label:SetColor(r, g, b)
-			GameTooltip:Hide()
-			if not isBattlePet then
-				GameTooltip:Hide()
-			else
-				BattlePetTooltip:Hide()
-			end
-		end)
-
-	self.scrollframe:AddChild(label)
+function Search:OnHide()
+	Search.warningFrame:Hide()
+	Search.helpFrame:Hide()
+	Search:ShowAdvanced(false)
 end
 
-function Search:AdvancedSearchAddEntry(entry, isHeader, isUnit)
-
-	local label = AceGUI:Create("BagSyncInteractiveLabel")
-
-	label:SetHeaderHighlight("Interface\\QuestFrame\\UI-QuestTitleHighlight")
-
-	label:ToggleHeaderHighlight(false)
-	label.entry = entry
-	label:SetColor(1, 1, 1)
-
-	if isHeader then
-		label:SetText(entry.unitObj.realm)
-		label:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-		label:SetFullWidth(true)
-		label:ApplyJustifyH("CENTER")
-		label:ToggleHeaderHighlight(true)
-		label.userdata.isHeader = true
-	else
-		if entry.unitObj.isGuild then
-			label:SetText(GUILD..":  "..entry.colorized)
-		else
-			label:SetText(entry.colorized)
+function Search:ShowAdvanced(visible)
+	if BSYC:GetModule("AdvancedSearch", true) then
+		local frame = BSYC:GetModule("AdvancedSearch", true).frame
+		if frame then
+			if visible == nil then
+				frame:SetShown(not frame:IsShown())
+			elseif visible == true then
+				frame:Show()
+			else
+				frame:Hide()
+			end
 		end
-		label:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-		label:SetFullWidth(true)
-		label:ApplyJustifyH("LEFT")
-		label.userdata.isHeader = false
-
-		label:SetImage("Interface\\RaidFrame\\ReadyCheck-NotReady")
-		label.isSelected = false
-	end
-
-	label:SetCallback(
-		"OnClick",
-		function (widget, sometable, button)
-			if label.isSelected then
-				label:SetImage("Interface\\RaidFrame\\ReadyCheck-NotReady")
-				label.isSelected = false
-			else
-				label.isSelected = true
-				label:SetImage("Interface\\RaidFrame\\ReadyCheck-Ready")
-			end
-		end)
-	label:SetCallback(
-		"OnEnter",
-		function (widget, sometable)
-			if not label.userdata.isHeader then
-				--override the single tooltip use of BagSync
-				label.highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
-				label.highlight:SetVertexColor(0,1,0,0.3)
-			end
-		end)
-	label:SetCallback(
-		"OnLeave",
-		function (widget, sometable)
-			--override the single tooltip use of BagSync
-			label.highlight:SetTexture(nil)
-		end)
-
-	if isUnit then
-		self.advancedsearchframe.playerlistscrollframe:AddChild(label)
-	else
-		self.advancedsearchframe.locationlistscrollframe:AddChild(label)
 	end
 end
 
-local function checkData(data, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
+function Search:CheckItems(searchStr, unitObj, target, checkList, atUserLoc)
+	local total = 0
+	if not unitObj or not target then return total end
 	searchStr = searchStr or ''
 
-	for i=1, #data do
-		if data[i] then
-			local link, count, qOpts = BSYC:Split(data[i])
+	local function parseItems(data)
+		local iCount = 0
+		for i=1, #data do
+			if data[i] then
+				local link = BSYC:Split(data[i], true)
+				if BSYC.options.enableShowUniqueItemsTotals and link then link = BSYC:GetShortItemID(link) end
 
-			if link then
-				local dName, dItemLink, dRarity, dTexture
-				local testMatch = false
+				--we only really want to grab and search the item only once
+				if link and not checkList[link] then
+					--do cache grab
+					local cacheObj = Data:CacheLink(link)
+					if cacheObj then
+						local entry = cacheObj.speciesName or cacheObj.itemLink --GetItemInfo does not support battlepet links, use speciesName instead
+						local texture = cacheObj.speciesIcon or cacheObj.itemTexture
+						local itemName = cacheObj.speciesName or cacheObj.itemName
+						local testMatch = ItemScout:Find(entry, searchStr, cacheObj)
 
-				--qOpts.battlepet would be speciesID
-				if qOpts and qOpts.battlepet then
-					dName, dTexture = C_PetJournal.GetPetInfoBySpeciesID(qOpts.battlepet)
-					dRarity = 1
-					dItemLink = data[i] --use the whole link, not just the FakeID
-					testMatch = ItemScout:Find(dName, searchStr) --use the name instead of a link
-				else
-					dName, dItemLink, dRarity, _, _, _, _, _, _, dTexture = GetItemInfo("item:"..link)
-					testMatch = ItemScout:Find(dItemLink, searchStr)
-				end
+						--for debugging purposes only
+						if entry and (testMatch or atUserLoc) then
+							Debug(BSYC_DL.SL1, "FoundItem", searchStr, entry, unitObj.name, unitObj.realm)
+						end
 
-				--for debugging purposes only
-				if dName and (viewCustomList or testMatch) then
-					Debug(6, "FoundItem", searchStr, dName, unitObj.name, unitObj.realm)
-				end
+						checkList[link] = entry
 
-				--we only really want to grab the item once in our list, no need to add it multiple times per character
-				if (dName and not tempList[link]) then
-					tempList[link] = dName
-					if (viewCustomList or testMatch) then
-						table.insert(searchTable, { name=dName, link=dItemLink, rarity=dRarity, texture=dTexture } )
+						if testMatch or atUserLoc then
+							table.insert(Search.items, {
+								name = itemName,
+								parseLink = link,
+								entry = entry,
+								link = cacheObj.itemLink,
+								rarity = cacheObj.itemQuality,
+								icon = texture,
+								speciesID = BSYC:FakeIDToSpeciesID(link)
+							})
+						end
+					else
+						--add to warning count total if we haven't processed that item
+						iCount = iCount + 1
 					end
-				elseif not tempList[link] then
-					--only show a warning if we haven't already processed that item
-					countWarning = countWarning + 1
 				end
 			end
 		end
+		return iCount
 	end
-	return countWarning
-end
 
-function Search:DoReset()
-	Search.searchStr = nil
-	Search.advUnitList = nil
-	self.advancedsearchframe.advsearchbar:SetText(nil)
-	self.searchbar:SetText(nil)
-	self.totalCountLabel:SetText(L.TooltipTotal.." |cFFFFFFFF0|r")
-	self.scrollframe:ReleaseChildren()
-	self.scrollframe.frame:Hide()
-end
+	if unitObj.data[target] and BSYC.tracking[target] then
+		if target == "bag" or target == "bank" or target == "reagents" then
+			for bagID, bagData in pairs(unitObj.data[target] or {}) do
+				total = total + parseItems(bagData)
+			end
+		elseif target == "auction" then
+			total = parseItems(unitObj.data[target].bag or {})
 
-function Search:DisplayAdvSearchSelectAll()
-	for i = 1, #self.advancedsearchframe.playerlistscrollframe.children do
-		local label = self.advancedsearchframe.playerlistscrollframe.children[i] --grab the label
-		if label and not label.userdata.isHeader then
-			label.isSelected = true
-			label:SetImage("Interface\\RaidFrame\\ReadyCheck-Ready")
+		elseif target == "equip" or target == "void" or target == "mailbox" then
+			total = parseItems(unitObj.data[target] or {})
 		end
 	end
-end
-
-function Search:DoAdvancedSearch()
-	Debug(2, "init:DoAdvancedSearch", Search.searchStr, advUnitList, advAllowList)
-
-	local advUnitList = {}
-	local unitCount = 0
-
-	--units
-	for i = 1, #self.advancedsearchframe.playerlistscrollframe.children do
-		local label = self.advancedsearchframe.playerlistscrollframe.children[i] --grab the label
-		local unitObj = label.entry.unitObj
-
-		--if it's not a headler and it's selected in the list
-		if not label.userdata.isHeader and label.isSelected then
-			--order of operations for filters -> realm -> name -> realmKey
-			if not advUnitList[unitObj.realm] then advUnitList[unitObj.realm] = {} end
-			advUnitList[unitObj.realm][unitObj.name] = {realmKey=unitObj.data.realmKey}
-			unitCount = unitCount + 1
+	if target == "guild" and BSYC.tracking.guild then
+		for tabID, tabData in pairs(unitObj.data.tabs or {}) do
+			total = total + parseItems(tabData)
 		end
 	end
-	if unitCount < 1 then advUnitList = nil end
 
-	local advAllowList = {}
-	local locCount = 0
-
-	--locations
-	for i = 1, #self.advancedsearchframe.locationlistscrollframe.children do
-		local label = self.advancedsearchframe.locationlistscrollframe.children[i] --grab the label
-		if label.isSelected then
-			advAllowList[label.entry.unitObj.name] = true --get the source name
-			locCount = locCount + 1
-		end
-	end
-	if locCount < 1 then advAllowList = nil end
-
-	--global for tooltip checks
-	Search.advUnitList = advUnitList
-
-	--send it off to the regular search
-	self:DoSearch(nil, advUnitList, advAllowList)
+	return total
 end
 
-function Search:DoSearch(searchStr, advUnitList, advAllowList)
+function Search:DoSearch(searchStr, advUnitList, advAllowList, isAdvancedSearch, warnCount)
 
-	local sbText = self.searchbar:GetText() or ''
-	local advsbText = self.advancedsearchframe.advsearchbar:GetText() or ''
-
-	--only do if we aren't doing an advanced search
-	if not advUnitList then
-		Search.advUnitList = nil -- we aren't doing an advanced search so lets reset this
-		searchStr = (string.len(sbText) > 0 and sbText) or Search.searchStr
-		if not searchStr then return end
-		if string.len(searchStr) < 1 then return end
-	else
-		--we are doing an advanced search
-		searchStr = (string.len(advsbText) > 0 and advsbText) or Search.searchStr
-		self.advancedsearchframe.advsearchbar:SetText(nil) --reset always, we only want to use searchStr
+	--only check for specifics when not using advanced search
+	if not isAdvancedSearch then
+		if not searchStr then searchStr = Search.frame.SearchBox:GetText() end
+		if string.len(searchStr) <= 0 then return end
 	end
 
-	self.searchbar:SetText(nil) --reset always, we only want to use searchStr
-	searchStr = searchStr:lower() --always make sure everything is lowercase when doing searches
-	Search.searchStr = searchStr --store globally for the refresh
-	self.scrollframe:ReleaseChildren() --clear out the scrollframe
+	Search.items = {}
+	local checkList = {}
+	local warnTotal = 0
+	local atUserLoc
 
-	local searchTable = {}
-	local tempList = {}
-	local countWarning = 0
-	local viewCustomList
-	local player = Unit:GetUnitInfo()
+	--make sure to always be using updated information, especially if processing items from Advanced Frame
+	Tooltip:ResetLastLink()
+
+	BSYC.advUnitList = advUnitList
 
 	--items aren't counted into this array, it's just for allowing the search to pass through
 	local allowList = {
-		["bag"] = true,
-		["bank"] = true,
-		["reagents"] = true,
-		["equip"] = true,
-		["mailbox"] = true,
-		["void"] = true,
-		["auction"] = true,
+		bag = true,
+		bank = true,
+		reagents = true,
+		equip = true,
+		mailbox = true,
+		void = true,
+		auction = true,
 	}
 
 	--This is used when a player is requesting to view a custom list, such as @bank, @auction, @bag etc...
-	--only do if we aren't using an advance search
-	if not advUnitList and string.len(searchStr) > 1 and string.find(searchStr, "@") and allowList[string.sub(searchStr, 2)] ~= nil then
-		viewCustomList = string.sub(searchStr, 2)
+	if not isAdvancedSearch and string.len(searchStr) > 1 then
+		atUserLoc = searchStr:match("@(.+)")
+		--check it to verify it's a valid command
+		if atUserLoc and (string.len(atUserLoc) < 1 or (atUserLoc ~= "guild" and not allowList[atUserLoc])) then atUserLoc = nil end
 	end
 
 	--overwrite the allowlist with the advance one if it isn't empty
 	allowList = advAllowList or allowList
+	Debug(BSYC_DL.INFO, "init:DoSearch", searchStr, atUserLoc, advUnitList, advAllowList, isAdvancedSearch, warnCount)
 
-	Debug(2, "init:DoSearch", searchStr, advUnitList, advAllowList)
-
-	--advUnitList will force dumpAll to be true if necessary for advanced search, no need to set it to true
-	for unitObj in Data:IterateUnits(false, advUnitList) do
-
-		if not unitObj.isGuild then
-			Debug(5, "Search-IterateUnits", "player", unitObj.name, player.realm)
-			for k, v in pairs(unitObj.data) do
-				if allowList[k] and type(v) == "table" then
-					Debug(5, k)
-					--bags, bank, reagents are stored in individual bags
-					if k == "bag" or k == "bank" or k == "reagents" then
-						for bagID, bagData in pairs(v) do
-							if not viewCustomList or (viewCustomList == k and unitObj.name == player.name and unitObj.realm == player.realm) then
-								countWarning = checkData(bagData, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
-							end
-						end
-					else
-						local passChk = true
-						if k == "auction" and not BSYC.options.enableAuction then passChk = false end
-						if k == "mailbox" and not BSYC.options.enableMailbox then passChk = false end
-
-						if passChk then
-							if not viewCustomList or (viewCustomList == k and unitObj.name == player.name and unitObj.realm == player.realm) then
-								countWarning = checkData(k == "auction" and v.bag or v, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
-							end
-						end
-					end
-				end
-			end
-		else
-			Debug(5, "Search-IterateUnits", "guild", unitObj.name, player.realm, unitObj.data.realmKey)
-			if not advUnitList then
-				if not viewCustomList or (viewCustomList == "guild" and unitObj.name == player.guild and unitObj.realm == player.guildrealm) then
-					countWarning = checkData(unitObj.data.bag, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
+	if not atUserLoc then
+		for unitObj in Data:IterateUnits(false, advUnitList) do
+			if not unitObj.isGuild then
+				for k, v in pairs(allowList) do
+					warnTotal = warnTotal + Search:CheckItems(searchStr, unitObj, k, checkList)
 				end
 			else
-				countWarning = checkData(unitObj.data.bag, searchStr, searchTable, tempList, countWarning, viewCustomList, unitObj)
+				--only do guild if we aren't using a custom adllowlist, otherwise it will always show up regardless of what custom field is selected
+				--obviously guilds can't have stuff stored in AH, Mailbox, Void, etc...
+				if not advAllowList then
+					warnTotal = warnTotal + Search:CheckItems(searchStr, unitObj, "guild", checkList)
+				end
 			end
 		end
+	else
+		--player using an @location, so lets only search their database and not IterateUnits
+		local playerObj = Data:GetCurrentPlayer()
 
+		if atUserLoc ~= "guild" then
+			warnTotal = warnTotal + Search:CheckItems(searchStr, playerObj, atUserLoc, checkList, true)
+		else
+			--only do guild if we aren't using a custom adllowlist, otherwise it will always show up regardless of what custom field is selected
+			if playerObj.data.guild and not advAllowList then
+				local guildObj = Data:GetPlayerGuild()
+				if guildObj then
+					warnTotal = warnTotal + Search:CheckItems(searchStr, guildObj, atUserLoc, checkList, true)
+				end
+			end
+		end
 	end
 
 	--show warning window if the server hasn't queried all the items yet
-	if countWarning > 0 then
-		self.warninglabel:SetText(L.WarningItemSearch:format(countWarning))
+	if warnTotal > 0 then
+		Search.helpFrame:Hide()
+		Search.warningFrame.infoText1:SetText(L.WarningItemSearch:format(warnTotal))
+		Search.warningFrame:Show()
 
-		if not advUnitList then
-			self.searchbar:SetText(searchStr) --set for the refresh button
-		else
-			self.advancedsearchframe.advsearchbar:SetText(searchStr) --set for the refresh button
+		--lets not do TOO many refreshes
+		if not warnCount or warnCount <= 5 then
+			warnCount = (warnCount or 0) + 1
+			BSYC:StartTimer("SearchCacheChk", 0.5, Search, "DoSearch", searchStr, advUnitList, advAllowList, isAdvancedSearch, warnCount)
+			return
 		end
-
-		self.warningframe:Show()
 	else
-		self.warningframe:Hide()
+		Search.warningFrame:Hide()
 	end
 
-	if #searchTable > 0 then
-		table.sort(searchTable, function(a,b) return (a.name < b.name) end)
-		for i=1, #searchTable do
-			self:AddEntry(searchTable[i])
-		end
-		self.scrollframe.frame:Show()
-		self.totalCountLabel:SetText(L.TooltipTotal.." |cFFFFFFFF"..tostring(#searchTable).."|r")
-	else
-		self.totalCountLabel:SetText(L.TooltipTotal.." |cFFFFFFFF0|r")
-		self.scrollframe.frame:Hide()
-	end
-
+	Search:RefreshList()
 end
 
-function Search:DisplayAdvSearchLists()
+function Search:RefreshList()
+    local items = Search.items
+    local buttons = HybridScrollFrame_GetButtons(Search.scrollFrame)
+    local offset = HybridScrollFrame_GetOffset(Search.scrollFrame)
+	if not buttons then return end
 
-	self.scrollframe:ReleaseChildren() --clear out the main search scroll frame
-	self.advancedsearchframe.playerlistscrollframe:ReleaseChildren() --clear out the scrollframe
-	self.advancedsearchframe.locationlistscrollframe:ReleaseChildren() --clear out the scrollframe
+    for buttonIndex = 1, #buttons do
+        local button = buttons[buttonIndex]
+		button.parentHandler = Search
 
-	local playerListTable = {}
+        local itemIndex = buttonIndex + offset
 
-	--show simple for ColorizeUnit
-	for unitObj in Data:IterateUnits(true) do
-		table.insert(playerListTable, { unitObj=unitObj, colorized=Tooltip:ColorizeUnit(unitObj, false, false, true) } )
-	end
+        if itemIndex <= #items then
+            local item = items[itemIndex]
+			local r, g, b, hex = GetItemQualityColor(item.rarity or 1)
 
-	--units
-	if #playerListTable > 0 then
+            button:SetID(itemIndex)
+			button.data = item
+            button.Icon:SetTexture(item.icon or nil)
+			button.Text:SetFont(STANDARD_TEXT_FONT, 14, "")
+            button.Text:SetText(item.name or "")
+			button.Text:SetTextColor(r, g, b)
+            button:SetWidth(Search.scrollFrame.scrollChild:GetWidth())
 
-		table.sort(playerListTable, function(a, b)
-			if a.unitObj.realm  == b.unitObj.realm then
-				return a.unitObj.name < b.unitObj.name;
+			--while we are updating the scrollframe, is the mouse currently over a button?
+			--if so we need to force the OnEnter as the items will scroll up in data but the button remains the same position on our cursor
+			if GetMouseFocus() == button then
+				Search:Item_OnLeave() --hide first
+				Search:Item_OnEnter(button)
 			end
-			return a.unitObj.realm < b.unitObj.realm;
-		end)
 
-		local lastHeader = ""
-		for i=1, #playerListTable do
-			if lastHeader ~= playerListTable[i].unitObj.realm then
-				self:AdvancedSearchAddEntry(playerListTable[i], true, true) --add header
-				self:AdvancedSearchAddEntry(playerListTable[i], false, true) --add entry
-				lastHeader = playerListTable[i].unitObj.realm
+            button:Show()
+        else
+            button:Hide()
+        end
+    end
+
+	Search.frame.totalText:SetText(L.TooltipTotal.." |cFFFFFFFF"..(#items or 0).."|r")
+
+    local buttonHeight = Search.scrollFrame.buttonHeight
+    local totalHeight = #items * buttonHeight
+    local shownHeight = #buttons * buttonHeight
+
+    HybridScrollFrame_Update(Search.scrollFrame, totalHeight, shownHeight)
+end
+
+function Search:Reset()
+	Search.frame.SearchBox:SetText("")
+	Search.frame.SearchBox.ClearButton:Hide()
+	Search.frame.SearchBox.SearchInfo:Show()
+	BSYC.advUnitList = nil
+	Search.items = {}
+	Search:RefreshList()
+end
+
+function Search:RefreshClick()
+	Search:DoSearch()
+end
+
+function Search:HelpClick()
+	Search.helpFrame:SetShown(not Search.helpFrame:IsShown())
+end
+
+function Search:SearchBox_ResetSearch(btn)
+	btn:Hide()
+	Search:Reset()
+end
+
+function Search:ItemDetails(btn)
+	if BSYC:GetModule("Details", true) then
+		local item = btn:GetParent()
+		if item and item.data then
+			BSYC:GetModule("Details"):ShowItem(item.data.parseLink, item.data.entry)
+		end
+	end
+end
+
+function Search:Item_OnClick(btn)
+	if btn.data then
+		if btn.data.speciesID then
+			if IsModifiedClick("DRESSUP") then
+				--https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/DressUpFrames.lua
+				local _, _ ,_ , creatureID, _, _, _, _, _, _, _, displayID = C_PetJournal.GetPetInfoBySpeciesID(btn.data.speciesID)
+				DressUpBattlePet(creatureID, displayID, btn.data.speciesID)
+			end
+			return
+		end
+		if IsModifiedClick("CHATLINK") then
+			ChatEdit_InsertLink(btn.data.link)
+		elseif IsModifiedClick("DRESSUP") then
+			if BSYC.IsRetail then
+				DressUpLink(btn.data.link)
 			else
-				self:AdvancedSearchAddEntry(playerListTable[i], false, true) --add entry
+				DressUpItemLink(btn.data.link)
 			end
 		end
-		self.advancedsearchframe.playerlistscrollframe.frame:Show()
+	end
+end
+
+function Search:Item_OnEnter(btn)
+	if BSYC.advUnitList then
+		--reset the last cache link when using the advanced search to prevent improper listings from being cached
+		Tooltip:ResetLastLink()
+	end
+    if btn.data then
+		if not btn.data.speciesID then
+			GameTooltip.isBSYCSearch = true
+			GameTooltip:SetOwner(btn, "ANCHOR_BOTTOMRIGHT")
+			GameTooltip:SetHyperlink("item:"..btn.data.parseLink)
+			GameTooltip:Show()
+		else
+			--BattlePetToolTip_Show uses the previous GameTooltip owner positioning
+			GameTooltip:SetOwner(btn, "ANCHOR_BOTTOMRIGHT")
+			BattlePetTooltip.isBSYCSearch = true
+			BattlePetToolTip_Show(tonumber(btn.data.speciesID), 0, 0, 0, 0, 0, nil)
+		end
+	end
+end
+
+function Search:Item_OnLeave()
+	if BSYC.advUnitList then
+		--reset the last cache link when using the advanced search to prevent improper listings from being cached
+		Tooltip:ResetLastLink()
+	end
+	GameTooltip.isBSYCSearch = nil
+	GameTooltip:Hide()
+	if BattlePetTooltip then
+		BattlePetTooltip.isBSYCSearch = nil
+		BattlePetTooltip:Hide()
+	end
+end
+
+function Search:SearchBox_OnEnterPressed(text)
+	Search:DoSearch(text)
+end
+
+function Search:ItemDetails_OnEnter(btn)
+	local item = btn:GetParent()
+
+	GameTooltip:SetOwner(btn, "ANCHOR_RIGHT")
+	GameTooltip:AddLine("|cFFe454fd"..L.Details.."|r")
+	GameTooltip:AddLine("|cFFFFFFFF"..L.TooltipDetailsInfo.."|r")
+	GameTooltip:AddLine(" ")
+	if item and item.data then
+		GameTooltip:AddLine("|cFFCF9FFF"..item.data.entry.."|r")
+	end
+	GameTooltip:Show()
+end
+
+function Search:ItemDetails_OnLeave()
+	Search:Item_OnLeave()
+end
+
+function Search:PlusClick()
+	Search.savedSearch:SetShown(not Search.savedSearch:IsShown())
+end
+
+-----------------------------
+--- SAVED SEARCH
+-----------------------------
+
+function Search:SavedSearch_UpdateList()
+	Search:SavedSearch_CreateList()
+	Search:SavedSearch_RefreshList()
+end
+
+function Search:SavedSearch_CreateList()
+	Search.savedSearch.items = {}
+
+	--loop through our blacklist
+	for i=1, #BSYC.db.savedsearch do
+		table.insert(Search.savedSearch.items, {
+			key = i,
+			value = BSYC.db.savedsearch[i]
+		})
+	end
+end
+
+function Search:SavedSearch_RefreshList()
+	local items = Search.savedSearch.items
+    local buttons = HybridScrollFrame_GetButtons(Search.savedSearch.scrollFrame)
+    local offset = HybridScrollFrame_GetOffset(Search.savedSearch.scrollFrame)
+	if not buttons then return end
+
+    for buttonIndex = 1, #buttons do
+        local button = buttons[buttonIndex]
+		button.parentHandler = Search
+
+        local itemIndex = buttonIndex + offset
+
+        if itemIndex <= #items then
+            local item = items[itemIndex]
+
+            button:SetID(itemIndex)
+			button.data = item
+			button.Text:SetFont(STANDARD_TEXT_FONT, 14, "")
+            button:SetWidth(Search.savedSearch.scrollFrame.scrollChild:GetWidth())
+
+			button.Text:SetJustifyH("LEFT")
+			button.Text:SetTextColor(1, 1, 1)
+			button.Text:SetText(item.value or "")
+			button.HeaderHighlight:SetAlpha(0)
+
+            button:Show()
+        else
+            button:Hide()
+        end
+    end
+
+    local buttonHeight = Search.savedSearch.scrollFrame.buttonHeight
+    local totalHeight = #items * buttonHeight
+    local shownHeight = #buttons * buttonHeight
+
+    HybridScrollFrame_Update(Search.savedSearch.scrollFrame, totalHeight, shownHeight)
+end
+
+function Search:SavedSearch_AddItem()
+	local storeText = ""
+	local frame = Search.frame
+
+	if BSYC:GetModule("AdvancedSearch", true) and BSYC:GetModule("AdvancedSearch").frame:IsVisible() then
+		frame = BSYC:GetModule("AdvancedSearch").frame
+	end
+	storeText = frame.SearchBox:GetText()
+	if not storeText or string.len(storeText) < 1 then
+		BSYC:Print(L.SavedSearch_Warn)
+		return
+	end
+	--store it and update the view list
+	table.insert(BSYC.db.savedsearch, storeText)
+	Search:SavedSearch_UpdateList()
+end
+
+function Search:SavedSearch_Delete(btn)
+	local item = btn:GetParent()
+	table.remove(BSYC.db.savedsearch, item.data.key)
+	Search:SavedSearch_UpdateList()
+end
+
+function Search:SavedSearch_Item_OnClick(btn)
+	local frame = Search.frame
+	local isAdvanced = false
+
+	if BSYC:GetModule("AdvancedSearch", true) and BSYC:GetModule("AdvancedSearch").frame:IsVisible() then
+		frame = BSYC:GetModule("AdvancedSearch").frame
+		isAdvanced = true
+	end
+
+	frame.SearchBox.SearchInfo:Hide()
+	frame.SearchBox:SetText(btn.data.value)
+
+	if isAdvanced then
+		BSYC:GetModule("AdvancedSearch"):DoSearch()
 	else
-		self.advancedsearchframe.playerlistscrollframe.frame:Hide()
+		Search:DoSearch()
 	end
-
-	--locations
-	local list = {
-		[1] = { source="bag", 		desc=L.Tooltip_bag },
-		[2] = { source="bank", 		desc=L.Tooltip_bank },
-		[3] = { source="reagents", 	desc=L.Tooltip_reagents },
-		[4] = { source="equip", 	desc=L.Tooltip_equip },
-		[5] = { source="mailbox", 	desc=L.Tooltip_mailbox },
-		[6] = { source="void", 		desc=L.Tooltip_void },
-		[7] = { source="auction", 	desc=L.Tooltip_auction },
-	}
-
-	for i = 1, #list do
-
-		--make sure to return not player
-		local tmpLoc = {
-			unitObj={name=list[i].source, isGuild=false, isConnectedRealm=false},
-			colorized=Tooltip:HexColor(BSYC.options.colors.first, list[i].desc)
-		}
-
-		self:AdvancedSearchAddEntry(tmpLoc, false, false) --add entry
-
-	end
-
-	self.totalCountLabel:SetText(L.TooltipTotal.." |cFFFFFFFF0|r")
-
-	self.advancedsearchframe.locationlistscrollframe.frame:Show()
-
 end

@@ -22,8 +22,8 @@
 
 	Grammar:
 	<search> 				:=	<intersect search>
-	<intersect search> 		:=	<union search> & <union search> ; <union search>
-	<union search>			:=	<negatable search>  | <negatable search> ; <negatable search>
+	<intersect search> 		:=	<union search> && <union search> ; <union search>
+	<union search>			:=	<negatable search>  || <negatable search> ; <negatable search>
 	<negatable search> 		:=	!<primitive search> ; <primitive search>
 	<item name search>		:=	n ; name | n:<text> ; name:<text>
 	<item bind search>		:=	bind | bind:<type> ; types (boe, bop, bou, boq) i.e boe = bind on equip
@@ -31,9 +31,12 @@
 	<ilvl search>			:=	l ; level ; lvl ; ilvl | ilvl<op><number> ; lvl<op><number> (lvl:>5 ; lvl:>=20)
 	<required ilvl search>	:=	r ; req ; rl ; reql ; reqlvl | req<op><number> ; req<op><number> (req:>5 ; req:>=20)
 	<type / slot search>	:=	t ; type ; slot | t:<text>
+	<tooltip search>		:=	tt ; tip; tooltip | tt:<text>
 	<text search>			:=	<text>
-	<item set search>		:=	s:<setname> (setname can be * for all sets)
+	<item set search>		:=	s ; set | s:<setname> (setname can be * for all sets)
 	<expansion search>		:=	x ; xpac ; expansion | x:<expacID> ; x:<expansion name> ; xpac:<expansion name> ; expansion:<expansion name>
+	<keyword search>		:=	k ; key ; keyword | k:<keyword> ; (keywords: soulbound, bound, boe, bop, bou, boa, quest, unique, toy, reagent, crafting, naval, follower, follow, power, apperance)
+	<class search>			:=	c ; class | c:<classname> ; class:<classname>
 	<op>					:=  : | = | == | != | ~= | < | > | <= | >=
 --]]
 
@@ -46,9 +49,15 @@ end
 
 --[[ Locals ]]--
 
-local tonumber, select, split = tonumber, select, strsplit
+local tonumber, select, split, trim = tonumber, select, strsplit, strtrim
+local cache = {}
 local function useful(a) -- check if the search has a decent size
 	return a and #a >= 1
+end
+
+local function dotrim(a)
+	if a then return trim(a) end
+	return a
 end
 
 local function compare(op, a, b)
@@ -83,8 +92,9 @@ end
 
 
 --[[ User API ]]--
-
-function Lib:Find(itemLink, search)
+--cache object must use same variable names as --https://wowpedia.fandom.com/wiki/API_GetItemInfo
+--Table Example: {itemName=<name>, itemLink=<link>, itemQuality=<quality>}
+function Lib:Find(itemLink, search, cacheObj)
 	if not useful(search) then
 		return true
 	end
@@ -93,27 +103,34 @@ function Lib:Find(itemLink, search)
 		return false
 	end
 
-	return self:FindUnionSearch(itemLink, split('\124', search:lower()))
+	if cacheObj then
+		cache = cacheObj
+	end
+	--\124 ascii code for |
+	return self:FindUnionSearch(itemLink, split('\124\124', search:lower()))
 end
 
 
 --[[ Top-Layer Processing ]]--
 
--- union search: <search>&<search>
+-- union search: <search>&&<search>
 function Lib:FindUnionSearch(item, ...)
 	for i = 1, select('#', ...) do
 		local search = select(i, ...)
-		if useful(search) and self:FindIntersectSearch(item, split('\038', search)) then
+		search = dotrim(search)
+		--\038 ascii code for &
+		if useful(search) and self:FindIntersectSearch(item, split('\038\038', search)) then
 			return true
 		end
 	end
 end
 
 
--- intersect search: <search>|<search>
+-- intersect search: <search>||<search>
 function Lib:FindIntersectSearch(item, ...)
 	for i = 1, select('#', ...) do
 		local search = select(i, ...)
+		search = dotrim(search)
 		if useful(search) and not self:FindNegatableSearch(item, search) then
 			return false
 		end
@@ -126,6 +143,7 @@ end
 function Lib:FindNegatableSearch(item, search)
 	local negatedSearch = search:match('^[!~][%s]*(.+)$')
 	if negatedSearch then
+		negatedSearch = dotrim(negatedSearch)
 		return not self:FindTypedSearch(item, negatedSearch)
 	end
 	return self:FindTypedSearch(item, search, true)
@@ -227,7 +245,7 @@ Lib:RegisterTypedSearch{
 	end,
 
 	findItem = function(self, item, _, search)
-		local name = C_Item.GetItemNameByID(item) or item:match('%[(.+)%]') or (item and tostring(item))
+		local name = cache.itemName or C_Item.GetItemNameByID(item) or item:match('%[(.+)%]') or (item and tostring(item))
 		return match(search, name)
 	end
 }
@@ -235,13 +253,14 @@ Lib:RegisterTypedSearch{
 Lib:RegisterTypedSearch{
 	id = 'itemBind',
 	tags = {'bind'},
+	onlyTags = true,
 
 	canSearch = function(self, operator, search)
 		return not operator and self.keywords[search]
 	end,
 
 	findItem = function(self, item, _, search)
-		return search == select(14, GetItemInfo(item))
+		return search == (cache.bindType or select(14, GetItemInfo(item)))
 	end,
 
 	keywords = {
@@ -263,7 +282,7 @@ Lib:RegisterTypedSearch{
 	end,
 
 	findItem = function(self, item, _, search)
-		local expacID = select(15, GetItemInfo(item))
+		local expacID = (cache.expacID or select(15, GetItemInfo(item)))
 		local xPacName = expacID and _G["EXPANSION_NAME"..expacID]
 		return match(search, expacID and tostring(expacID), xPacName)
 	end
@@ -274,13 +293,19 @@ Lib:RegisterTypedSearch{
 Lib:RegisterTypedSearch{
 	id = 'itemType',
 	tags = {'t', 'type', 'slot'},
+	onlyTags = true,
 
 	canSearch = function(self, operator, search)
 		return not operator and search
 	end,
 
 	findItem = function(self, item, _, search)
-		local type, subType, _, equipSlot = select(6, GetItemInfo(item))
+		local type, subType, _, equipSlot
+		if cache.itemType then
+			type, subType, equipSlot = cache.itemType, cache.itemSubType, cache.itemEquipLoc
+		else
+			type, subType, _, equipSlot = select(6, GetItemInfo(item))
+		end
 		return match(search, type, subType, _G[equipSlot])
 	end
 }
@@ -296,6 +321,7 @@ end
 Lib:RegisterTypedSearch{
 	id = 'itemQuality',
 	tags = {'q', 'quality'},
+	onlyTags = true,
 
 	canSearch = function(self, _, search)
 		for i, name in pairs(qualities) do
@@ -306,7 +332,7 @@ Lib:RegisterTypedSearch{
 	end,
 
 	findItem = function(self, link, operator, num)
-		local quality = select(3, GetItemInfo(link))
+		local quality = (cache.itemQuality or select(3, GetItemInfo(link)))
 		return compare(operator, quality, num)
 	end,
 }
@@ -317,13 +343,14 @@ Lib:RegisterTypedSearch{
 Lib:RegisterTypedSearch{
 	id = 'itemLevel',
 	tags = {'l', 'level', 'lvl', 'ilvl'},
+	onlyTags = true,
 
 	canSearch = function(self, _, search)
 		return tonumber(search)
 	end,
 
 	findItem = function(self, link, operator, num)
-		local lvl = select(4, GetItemInfo(link))
+		local lvl = (cache.itemLevel or select(4, GetItemInfo(link)))
 		if lvl then
 			return compare(operator, lvl, num)
 		end
@@ -335,13 +362,14 @@ Lib:RegisterTypedSearch{
 Lib:RegisterTypedSearch{
 	id = 'reqItemLevel',
 	tags = {'r', 'req', 'rl', 'reql', 'reqlvl'},
+	onlyTags = true,
 
 	canSearch = function(self, _, search)
 		return tonumber(search)
 	end,
 
 	findItem = function(self, link, operator, num)
-		local lvl = select(5, GetItemInfo(link))
+		local lvl = (cache.itemMinLevel or select(5, GetItemInfo(link)))
 		if lvl then
 			return compare(operator, lvl, num)
 		end
@@ -557,6 +585,7 @@ end
 Lib:RegisterTypedSearch{
 	id = 'equipmentSet',
 	tags = {'s', 'set'},
+	onlyTags = true,
 
 	canSearch = function(self, operator, search)
 		return not operator and search
