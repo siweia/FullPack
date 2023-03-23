@@ -1,21 +1,27 @@
 # BagSync
 
-## [v19.2](https://github.com/Xruptor/BagSync/tree/v19.2) (2023-03-21)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.1...v19.2) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.3](https://github.com/Xruptor/BagSync/tree/v19.3) (2023-03-22)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.2...v19.3) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Options Cleanup & Cache Fix  
-    * Several options have been reset and cleaned up in the code.  They were a bit confusing to people and it's been made clearer to understand.  
-    * Fix for the login cache check.  It should not properly iterate through all items and cache them appropriately.  
-- Merge pull request #278 from nanjuekaien1/patch-46  
+- Version Update  
+    Some version updates.  
+- Fix for Tooltip and Cache  
+    * Fixed an issue where incorrectly players where being listed in the Tooltip counts.  (Fixes #280)  
+    * Added an option to the BagSync Debug screen to disable Cache checks.  
+    * Classic and WOTLK servers will now have Void and Reagent modules disabled by default.  
+    * Fixed an issue where player sometimes was not detected on profiles window.  
+- Merge remote-tracking branch 'origin/master'  
+- Merge pull request #283 from nanjuekaien1/patch-49  
+    Update BagSync.toc  
+- Update BagSync.toc  
+- Auto stash before checking out "HEAD"  
+- Merge pull request #281 from nanjuekaien1/patch-48  
     Update zhCN.lua  
+- Merge pull request #282 from BlueNightSky/patch-9  
+    Update zhTW  
+- Update zhTW  
 - Update zhCN.lua  
-- Update zhCN.lua  
-- Connected Realms Confusion  
-    In order to prevent confusion, I have renamed all instances of Cross-Realm to Connected Realms.  Since in reality it's Connected Realm characters that are being displayed and not Cross-Realm.  That is something entirely different.  If you want to show characters from other realms other then a Connected Realm, then you must select the Battle.Net option instead from BagSync Config.  
-    Connected Realms are servers that are linked together but share the same data between them.  Cross-Realm is when a character joins your server from a realm other then your Connected Realms.  
-    The XR tag has been renamed to CR instead to go along with this change.  
-- Tooltip Tag Fixes and Connected Realm Guild fix  
-    * Fixed an issue where Connected Realm Guilds were being displayed improperly based on Account Wide settings in BagSync.  They should now properly display if you have both BNET and Connected Realms disabled.  These special guilds are denoted with a [+] in the front to let you know it's a Connected Realm Guild your character is part of.  (Fixes #277)  
-    * Added Battle Pet quality coloring to the BagSync Details window.  The word "Level" will now change color based on the quality of the Battle Pet.  
-    * All BNET, CR, and BagSync Tag settings should now be be inherited properly applied to all BagSync windows and tooltips.  There were situations where player selected settings were being overwritten.  
-    * Fixed an issue where Classic servers were still processing Guild and Currency alerts even with tracking disabled.  
+- Merge pull request #279 from nanjuekaien1/patch-47  
+    Update koKR.lua  
+- Update koKR.lua  
+- Update koKR.lua  

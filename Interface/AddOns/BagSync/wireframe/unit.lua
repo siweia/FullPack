@@ -14,10 +14,6 @@ local function Debug(level, ...)
     if BSYC.DEBUG then BSYC.DEBUG(level, "Unit", ...) end
 end
 
-local REALM = GetRealmName()
-local PLAYER = UnitName('player')
-local FACTION = UnitFactionGroup('player')
-
 local BROKEN_REALMS = {
 	['Aggra(Português)'] = 'Aggra (Português)',
 	['AzjolNerub'] = 'Azjol-Nerub',
@@ -25,12 +21,12 @@ local BROKEN_REALMS = {
 	['Корольлич'] = 'Король-лич',
 }
 
-local Realms = GetAutoCompleteRealms()
+local Realms = _G.GetAutoCompleteRealms()
 local RealmsCR = {}
 local RealmsRWS = {}
 
 if not Realms or #Realms == 0 then
-	Realms = {REALM}
+	Realms = {_G.GetRealmName()}
 end
 
 for i,realm in ipairs(Realms) do
@@ -184,6 +180,9 @@ else
 end
 
 function Unit:GetUnitAddress(unit)
+	local REALM = _G.GetRealmName()
+	local PLAYER = _G.UnitName("player")
+
 	if not unit then
 		return REALM, PLAYER
 	end
@@ -193,34 +192,31 @@ function Unit:GetUnitAddress(unit)
 	return realm or REALM, guildName or unit, guildName and true
 end
 
-function Unit:GetUnitInfo(shallow)
-	local realm, name, isguild = self:GetUnitAddress(unit)
+function Unit:GetPlayerInfo(bypassDebug)
+	local REALM = _G.GetRealmName()
+	local PLAYER = _G.UnitName("player")
+	local FACTION = _G.UnitFactionGroup("player")
 	local unit = {}
 
 	unit.faction = FACTION
-	unit.name, unit.realm = name, realm
-	if shallow then
-		Debug(BSYC_DL.TRACE, "GetUnitInfo-Shallow", shallow, name, realm, FACTION)
-		return unit
+	unit.realm = REALM
+	unit.name = PLAYER
+	unit.money = (_G.GetMoney() or 0) - _G.GetCursorMoney() - _G.GetPlayerTradeMoney()
+	unit.class = select(2, _G.UnitClass("player"))
+	unit.race = select(2, _G.UnitRace("player"))
+	unit.guild = _G.GetGuildInfo("player")
+	if unit.guild then
+		unit.guildrealm = select(4, _G.GetGuildInfo("player")) or REALM
 	end
-
-	if not isguild then
-		unit.money = (GetMoney() or 0) - GetCursorMoney() - GetPlayerTradeMoney()
-		unit.class = select(2, UnitClass('player'))
-		unit.race = select(2, UnitRace('player'))
-		unit.guild = GetGuildInfo('player')
-		if unit.guild then
-			unit.guildrealm = select(4, GetGuildInfo('player')) or realm
-		end
-		unit.gender = UnitSex('player')
-	end
+	unit.gender = _G.UnitSex("player")
 
 	unit.guild = unit.guild and (unit.guild..'©')
-	unit.isguild = isguild
 	unit.realmKey = realmKey
 	unit.rwsKey = self:GetRealmKey_RWS()
 
-	Debug(BSYC_DL.TRACE, "GetUnitInfo", name, realm, isguild, FACTION, unit.class, unit.race, unit.gender, unit.guild, unit.guildrealm, unit.realmKey, unit.rwsKey)
+	if not bypassDebug then
+		Debug(BSYC_DL.TRACE, "GetPlayerInfo", PLAYER, REALM, FACTION, unit.class, unit.race, unit.guild)
+	end
 	return unit
 end
 
