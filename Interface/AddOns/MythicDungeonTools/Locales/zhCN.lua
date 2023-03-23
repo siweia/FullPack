@@ -1720,6 +1720,8 @@ L["Volatile Sapling"] = "不稳定的树液"
 L["Volcanic"] = "火山"
 L["Vol'kaal"] = "沃卡尔"
 L["Vol'zith the Whisperer"] = "低语者沃尔兹斯"
+--[[Translation missing --]]
+L["VortexPinnacle"] = "Vortex Pinnacle"
 L["Vy Relic"] = "维型圣物"
 L["Wandering Shellback"] = "游荡的硬壳龟"
 L["Wanton Sapper"] = "暴虐的工兵"
@@ -1789,6 +1791,12 @@ L["Zolramus Gatekeeper"] = "佐尔拉姆斯守门人"
 L["Zolramus Necromancer"] = "佐尔拉姆斯通灵师"
 L["Zolramus Siphoner"] = "佐尔拉姆斯虹吸者 "
 L["Zolramus Sorcerer"] = "佐尔拉姆斯巫师"
+--[[Translation missing --]]
+L["Zoom"] = "Zoom"
+--[[Translation missing --]]
+L["zoomIn"] = "In"
+--[[Translation missing --]]
+L["zoomOut"] = "Out"
 L["Zo'phex"] = "佐·菲克斯"
 L["Zul'gamux"] = "祖尔加玛斯"
 L["Zul'Gurub"] = "祖尔格拉布"
