@@ -18,7 +18,7 @@ L['options_icons_profession_treasures_desc'] = 'Отображение мест�
 
 L['dragon_glyph'] = 'Драконий символ'
 L['options_icons_dragon_glyph'] = 'Драконий символ'
-L['options_icons_dragon_glyph_desc'] = 'Показать расположение всех 48 драконьих символов.'
+L['options_icons_dragon_glyph_desc'] = 'Показать расположение всех 56 драконьих символов.'
 
 L['dragonscale_expedition_flag'] = 'Флаг Драконьей экспедиции'
 L['flags_placed'] = 'высокий пик'
@@ -92,9 +92,9 @@ L['signal_transmitter_note'] = '{note:Требуется 10 очков в Мас
 L['options_icons_signal_transmitter'] = 'Драконий генератор червоточин'
 L['options_icons_signal_transmitter_desc'] = 'Отображение местоположения {object:Отключенных передатчиков} для {item:198156}.'
 
-L['rare_14h'] = 'Редкий монстр находится в 14-часовой ротации с другими редкими монстрами, один редкий монстр появляеться каждые 30 минут.\n\nСледующее появление: {note:%s}'
-L['time_format_12hrs'] = '%B %d - %I:%M %p Местное время'
-L['time_format_24hrs'] = '%B %d - %H:%M Местное время'
+L['rare_14h'] = 'Редкий монстр находится в 14-часовой ротации с другими редкими монстрами, один редкий монстр появляеться каждые 30 минут.\n\nСледующее появление через: {note:%s}'
+L['time_format_12hrs'] = '%e.%m - %I:%M %p Местное время'
+L['time_format_24hrs'] = '%e.%m - %H:%M Местное время'
 L['now'] = 'Сейчас'
 L['spawns_at_night'] = '{note:Появляется только ночью. (После 18:30 по серверному времени)}'
 
@@ -251,8 +251,12 @@ L['icemaw_storage_cache'] = 'Тайное хранилище ледочрево�
 L['options_icons_icemaw_storage_cache'] = 'Тайное хранилище ледочревов'
 L['options_icons_icemaw_storage_cache_desc'] = 'Показать возможные места {object:Тайные хранилища ледочревов}.'
 
+L['kazzi_note_start'] = 'Обменяйте {item:202017} и {item:202018} на трансмогрификацию, манускрипты для дракона, питомца и многое другое.'
+L['kazzi_note_item'] = 'В настоящее время у вас есть %s {item:%s}.'
+L['kazzi_achievement_suffix'] = 'ранг изучения языка'
+
 -------------------------------------------------------------------------------
-------------------------------- FORBIDDEN REACH -------------------------------
+------------------ FORBIDDEN REACH (DRACTHYR STARTING ZONE) -------------------
 -------------------------------------------------------------------------------
 
 L['bag_of_enchanted_wind'] = 'Мешок зачарованного ветра'
@@ -262,6 +266,117 @@ L['lost_draconic_hourglass'] = 'Потерянные песочные часы �
 L['suspicious_bottle_treasure'] = 'Подозрительная бутылка'
 L['mysterious_wand'] = 'Таинственный жезл'
 L['mysterious_wand_note'] = 'Поднимите {object:Кристальный ключ} и поместите его в {object:Кристаллическое средоточие}.'
+
+-------------------------------------------------------------------------------
+------------------------- FORBIDDEN REACH (MAIN ZONE) -------------------------
+-------------------------------------------------------------------------------
+
+-- Locations
+L['in_dragonskull_island'] = nil
+L['in_froststone_vault'] = nil
+L['in_the_high_creche'] = nil
+L['in_the_lost_atheneum'] = nil
+L['in_the_siege_creche'] = nil
+L['in_the_support_creche'] = nil
+L['in_the_war_creche'] = nil
+L['in_zskera_vaults'] = nil
+
+-- Rares
+L['duzalgor_note'] = nil
+L['mad_eye_carrey_note'] = '{npc:201181} находится в группе с {npc:201184} и {npc:201182}'
+L['wymslayer_angvardi_note'] = '{npc:201013} является партнером {npc:201310}'
+L['loot_specialist_note'] = '{npc:203353} появляется с двумя {spell:406143} и {spell:132653} и убегает при нападении.\n\n{note:Убейте его быстро, прежде чем он закончит применение {spell:406141}.}'
+
+-- Profession Rares
+L['profession_required'] = '{note:Требуется игрок с профессией %s.}'
+L['pr_crafting_note'] = 'Создайте {item:%s} из {item:%s} и взаимодействуйте с {object:%s}, чтобы призвать редкого монстра.'
+L['pr_gathering_note'] = 'Используйте {item:%s}, чтобы взаимодействовать с {object:%s}, чтобы вызвать редкого монстра.'
+L['pr_recipe_note'] = 'Рецепт {item:%s} можно приобрести у {npc:202445} за 10 {item:190456}.'
+
+L['pr_awakened_soil'] = nil
+L['pr_book_of_arcane_entities'] = nil
+L['pr_damaged_buzzspire'] = nil
+L['pr_empty_crab_trap'] = nil
+L['pr_farescale_shrine'] = nil
+L['pr_raw_argali_pelts'] = nil
+L['pr_resonating_crystal'] = nil
+L['pr_rumbling_deposit'] = nil
+L['pr_spellsworn_ward'] = nil
+L['pr_spiceless_stew'] = nil
+L['pr_tuskarr_kite_post'] = nil
+L['pr_tuskarr_tanning_rack'] = nil
+L['pr_volatile_brazier'] = nil
+
+-- Treasures
+L['storm_bound_chest_label'] = nil
+
+-- Forbidden Hoard
+L['hoarder_of_the_forbidden_reach_suffix'] = nil
+L['forbidden_spoils_suffix'] = nil
+L['forbidden_hoard_label'] = nil
+
+L['options_icons_forbidden_hoard'] = nil
+L['options_icons_forbidden_hoard_desc'] = nil
+
+-- Froststone Primal Vault Storm
+L['froststone_vault_storm_label'] = nil
+L['gooey_snailemental_note'] = nil
+
+L['options_icons_froststone_vault_storm'] = nil
+L['options_icons_froststone_vault_storm_desc'] = nil
+
+-- Small Treasures
+L['small_treasures_label'] = nil
+L['small_treasures_note'] = nil
+
+L['options_icons_small_treasures'] = nil
+L['options_icons_small_treasures_desc'] = nil
+
+-- Zskera Vaults
+L['zskera_vaults_label'] = 'Зкерское Хранилище'
+L['zskera_vaults_note'] = nil
+L['door_buster_suffix'] = nil
+
+L['recipe_rat_note_1'] = nil
+L['recipe_rat_note_2'] = nil
+L['recipe_rat_note_3'] = nil
+L['recipe_rat_note_4'] = nil
+
+L['mm_start_note'] = nil
+L['mm_status_note'] = nil
+
+L['options_icons_zskera_vaults'] = 'Зкерское Хранилище'
+L['options_icons_zskera_vaults_desc'] = 'Показать награды из {location:Зкерского Хранилища}.'
+
+-- Librarian of the Reach
+L['confiscated_journal_label'] = nil
+L['farscale_manifesto_label'] = nil
+L['lost_expeditions_notes_label'] = nil
+L['pirate_proclamation_label'] = nil
+L['spellsworn_missive_label'] = nil
+L['vrykul_tome_label'] = nil
+
+L['library_note'] = nil
+
+L['options_icons_librarian_of_the_reach'] = nil
+L['options_icons_librarian_of_the_reach_desc'] = nil
+
+-- Scroll Hunter
+L['scroll_hunter_suffix'] = nil
+L['scroll_hunter_note'] = nil
+
+L['options_icons_scroll_hunter'] = nil
+L['options_icons_scroll_hunter_desc'] = nil
+
+-- While We Were Sleeping
+L['options_icons_scalecommander_item'] = nil
+L['options_icons_scalecommander_item_desc'] = nil
+
+-- Misc
+L['spellsworn_gateway'] = nil
+L['gemstone_of_return'] = nil
+
+L['morqut_village_vendor_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
@@ -364,7 +479,7 @@ L['lightning_bound_chest'] = 'Скованный молнией сундук'
 L['options_icons_lightning_bound_chest'] = 'Скованный молнией сундук'
 L['options_icons_lightning_bound_chest_desc'] = 'Показать возможные места {object:Скованных молнией сундуков}.'
 
-L['bloodgullet_note'] = nil
+L['bloodgullet_note'] = 'Получить {spell:369277} бафф (1 час) в палатке на {location:Timberstep Outpost} от {object:Сущности пробуждения} чтобы увидеть духа зверя.\n\n{note:Появляется только у охотников в специализации повелитель зверей.}'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
