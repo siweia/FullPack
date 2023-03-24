@@ -1,27 +1,32 @@
 # Details! Damage Meter
 
-## [Details.DF.Wrath.10.0.5.10662.148](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.DF.Wrath.10.0.5.10662.148) (2023-03-07)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.DF.Wrath.10.0.5.10661.148...Details.DF.Wrath.10.0.5.10662.148) 
+## [Details.DF.Wrath.10.0.7.10722.148](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.DF.Wrath.10.0.7.10722.148) (2023-03-23)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.DF.Wrath.10.0.5.10662.148...Details.DF.Wrath.10.0.7.10722.148) 
 
-- Updates on Framework and Libraries  
-- Libraries update  
-- Place back the enchant for legs  
-- Revert "Open Raid Library update"  
-- Open Raid Library update  
-- Only cache defensive spells as the list fills 'DefensiveCooldownSpells'  
+- version bump  
+- release for the new patch  
+- Toc Update  
+- Code cleanups  
+- Fixed an issue when using Click to Open Menus + Auto Hide Menu  
 - Merge branch 'master' of https://github.com/Tercioo/Details-Damage-Meter  
-- commit  
-- Merge pull request #465 from Flamanis/cooldownsClasses  
-    Add Demonhunter and Evoker to DefensiveCooldownSpells. Use LibOpenRaid if possible  
-- Merge pull request #461 from Flamanis/CoupleQuickFixes  
-    Statusbar fixes and click showing hidden frame fix  
-- Merge pull request #460 from Ricodyn/Custom\_Text\_Offsets  
-    Added options for Custom Text Offsets  
-- Merge pull request #459 from Ricodyn/Actual\_Edge\_Case\_Fix  
-    Actually fixes the edge case where player bar isn't always shown.  
-- Add Demonhunter and Evoker to DefensiveCooldownSpells. Use LibOpenRaid if possible  
-- Use skin for loading instead of default instance  
-- Statusbar fixes and click showing hidden frame fix  
-- Added option to change the vertical offset for bar text.  
-    Added option to change the horizontal offset for the left bar text.  
-- Actually fixes the edge case where player bar isn't always shown when using the total bar.  
+- Reverse Deaths for Mythic plus updates  
+- Internal Garbage Collector update  
+- Update Definitions.lua  
+- Libraries update  
+- Merge pull request #474 from Flamanis/multifontfixes  
+    Correctly handle inverted bars with new anchors  
+- Correctly handle inverted bars with new anchors  
+- Merge pull request #467 from bpreynolds/BPReynolds/DeathsSorting  
+    Make the Deaths window use the sort order from config  
+- Merge pull request #473 from Flamanis/multifontfixes  
+    Fix all issues related to new textL\_offset and text\_yoffset  
+- Fix all issues related to new textL\_offset and text\_yoffset  
+    With the new additions of Text Y Offset and the left text offset. The indexes to disable/hide were not updated properly and thus you could not edit Per Second, percent if multifontstring was enabled. And could not even see the seperator box.  
+    A lot of SetPoint calls were not properly updated with the new anchor settings  
+- Mythic+ Clean Up: Removed deprecated option for "Overall Segment Boss Only"  
+- Mythic+ Clean Up: Removed deprecated option "Always in Combat"  
+- Fixed an error when trying to delete a profile without having selected one before  
+- Damage to Volatile Spark is now Ignored at Razgareth's encounter on Vault of the Incarnates  
+- Merge spells from 'All-Totem of the Master'  
+- Open raid lib update  
+- Make the Deaths window use the sort order from config  

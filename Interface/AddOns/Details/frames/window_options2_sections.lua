@@ -2198,9 +2198,9 @@ do
         sectionOptions.always_boxfirst = true
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
-        local separatorOption = sectionFrame.widget_list[23]
-        local bracketOption = sectionFrame.widget_list[24]
-        local warningLabel = sectionFrame.widget_list[25]
+        local separatorOption = sectionFrame.widget_list[25]
+        local bracketOption = sectionFrame.widget_list[26]
+        local warningLabel = sectionFrame.widget_list[27]
         Details.options.textSeparatorOption = separatorOption
         Details.options.textbracketOption = bracketOption
 
@@ -2595,7 +2595,7 @@ do
                 name = Loc ["STRING_OPTIONS_CLICK_TO_OPEN_MENUS"],
                 desc = Loc ["STRING_OPTIONS_CLICK_TO_OPEN_MENUS_DESC"],
             },
-
+            
             {--auto hide buttons
                 type = "toggle",
                 get = function() return currentInstance.auto_hide_menu.left end,
@@ -5519,27 +5519,28 @@ do
 
 		for id, i in ipairs(optionsOrder) do
 			local line = _G.CreateFrame("frame", nil, sectionFrame,"BackdropTemplate")
-			line:SetSize(300, 22)
+			line:SetSize(322, 22)
 			line:SetPoint("topleft", sectionFrame, "topleft", right_start_at, yyy + ((id) * -23) + 4)
 			DetailsFramework:ApplyStandardBackdrop(line)
 
 			local contextLabel = DetailsFramework:CreateLabel(line, typeCombatAlpha[i])
 			contextLabel:SetPoint("left", line, "left", 2, 0)
+            contextLabel.textsize = 10
 
 			local enabledCheckbox = DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
-			enabledCheckbox:SetPoint("left", line, "left", 118, 0)
+			enabledCheckbox:SetPoint("left", line, "left", 140, 0)
 			enabledCheckbox:SetAsCheckBox()
 			enabledCheckbox.OnSwitch = onEnableHideContext
 			enabledCheckbox:SetFixedParameter(i)
 
 			local reverseCheckbox = DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
-			reverseCheckbox:SetPoint("left", line, "left", 140, 0)
+			reverseCheckbox:SetPoint("left", line, "left", 162, 0)
 			reverseCheckbox:SetAsCheckBox()
 			reverseCheckbox.OnSwitch = onInverseValue
 			reverseCheckbox:SetFixedParameter(i)
 
 			local alphaSlider = DetailsFramework:CreateSlider(line, 138, 20, 0, 100, 1, 100, false, nil, nil, nil, options_slider_template)
-			alphaSlider:SetPoint("left", line, "left", 162, 0)
+			alphaSlider:SetPoint("left", line, "left", 184, 0)
 			alphaSlider:SetHook("OnValueChanged", onAlphaChanged)
 			alphaSlider:SetFixedParameter(i)
             alphaSlider.thumb:SetWidth(32)
@@ -6915,15 +6916,6 @@ do
 
         local sectionOptions = {
             {type = "label", get = function() return Loc["STRING_OPTIONS_GENERAL_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
-            {--always in combat
-                type = "toggle",
-                get = function() return Details.mythic_plus.always_in_combat end,
-                set = function(self, fixedparam, value)
-                    Details.mythic_plus.always_in_combat = value
-                end,
-                name = "Always in Combat",
-                desc = "Details won't create new segments for trash or boss and treat the run as a single segment.",
-            },
 
             {--dedicated segment for bosses
                 type = "toggle",
@@ -6931,7 +6923,7 @@ do
                 set = function(self, fixedparam, value)
                     Details.mythic_plus.boss_dedicated_segment = value
                 end,
-                name = "Boss Dedicated Segment",
+                name = "New Combat on Boss Pull",
                 desc = "If a boss is pulled while in combat, Details! close the combat and start a new one for the boss.",
             },
 
@@ -6945,16 +6937,6 @@ do
                 desc = "When the run is done, make an overall segment.",
             },
 
-            {--overall only with bosses
-                type = "toggle",
-                get = function() return Details.mythic_plus.make_overall_boss_only end,
-                set = function(self, fixedparam, value)
-                    Details.mythic_plus.make_overall_boss_only = value
-                end,
-                name = "Overall Segment Boss Only",
-                desc = "Only add boss segments on the overall.",
-            },
-
             {--merge trash
                 type = "toggle",
                 get = function() return Details.mythic_plus.merge_boss_trash end,
@@ -6965,15 +6947,7 @@ do
                 desc = "Merge Trash",
             },
 
-            {--delete merged trash
-                type = "toggle",
-                get = function() return Details.mythic_plus.delete_trash_after_merge end,
-                set = function(self, fixedparam, value)
-                    Details.mythic_plus.delete_trash_after_merge = value
-                end,
-                name = "Delete Merged Trash Segments",
-                desc = "After have the segment merged, if this option is enabled it'll delete those merged segments.",
-            },            
+            {type = "blank"},
 
             {--show chart popup
                 type = "toggle",

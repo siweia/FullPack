@@ -108,7 +108,7 @@
 	--pets
 		local container_pets = {} --just initialize table (placeholder)
 	--ignore deaths
-		local ignore_death = {}
+		local ignore_death_cache = {}
 	--cache
 		local cacheAnything = {
 			arenaHealth = {},
@@ -258,6 +258,11 @@
 
 			--charge warrior
 			[105771] = 126664,
+
+			--elemental stances
+			[377458] = 377459,
+			[377461] = 377459,
+			[382133] = 377459,
 		}
 
 	else --retail
@@ -353,6 +358,9 @@
 		[169429] = true,
 		[169428] = true,
 		[169430] = true,
+
+		--Volatile Spark on razga'reth
+		[194999] = true,
 	}
 
 	local ignored_npcids = {}
@@ -2468,7 +2476,7 @@
 
 				C_Timer.After(0.05, function() --25/12/2022: enabled the delay to wait the combatlog dump damage events which will happen after the buff is applied
 					parser:dead("UNIT_DIED", time, sourceSerial, sourceName, sourceFlags, targetSerial, targetName, targetFlags)
-					ignore_death [sourceName] = true
+					ignore_death_cache [sourceName] = true
 				end)
 				return
 
@@ -4085,8 +4093,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				--must be in combat
 				_in_combat
 			) then
-				if (ignore_death[targetName]) then
-					ignore_death[targetName] = nil
+				if (ignore_death_cache[targetName]) then
+					ignore_death_cache[targetName] = nil
 					return
 				end
 
@@ -4120,6 +4128,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				if (not recordedEvents) then
 					recordedEvents = _current_combat:CreateLastEventsTable(targetName)
 				end
+
+				--during a regular combat, 99.9% of the events aren't used by the death log
+				--hence the process of getting data for the death log is made as fast as it can be
+				--when a death occurs, the death log data is then parsed and built, the next 200 lines does this processing
 
 				--lesses index = older / higher index = newer
 
@@ -4318,10 +4330,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 						overallDeathTable.dead_at = mythicPlusElapsedTime
 
 						--save data about the mythic run in the deathTable which goes in the regular segment
+						--confused? 'playerDeathTable' is added into the '_current_combat.last_events_tables' ~20 above on a tinsert
 						playerDeathTable["mythic_plus"] = true
 						playerDeathTable["mythic_plus_dead_at"] = mythicPlusElapsedTime
 						playerDeathTable["mythic_plus_dead_at_string"] = overallDeathTable[6]
 
+						--now add the death table into the overall data (this is the regular overall data, not the mythic plus overall data)
 						tinsert(_detalhes.tabela_overall.last_events_tables, #_detalhes.tabela_overall.last_events_tables + 1, overallDeathTable)
 					end
 				end
@@ -5549,7 +5563,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 			if (_detalhes.in_group) then
 				--player entered in a group, cleanup and set the new enviromnent
-				Details:RestartInternalGarbageCollector(true)
+				Details222.GarbageCollector.RestartInternalGarbageCollector(true)
 				Details:WipePets()
 				Details:SchedulePetUpdate(1)
 				Details:InstanceCall(Details.AdjustAlphaByContext)
@@ -5569,7 +5583,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 			if (not _detalhes.in_group) then
 				--player left the group, run routines to cleanup the environment
-				Details:RestartInternalGarbageCollector(true)
+				Details222.GarbageCollector.RestartInternalGarbageCollector(true)
 				Details:WipePets()
 				Details:SchedulePetUpdate(1)
 				wipe(Details.details_users)
@@ -5957,7 +5971,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		wipe(enemy_cast_cache)
 		wipe(empower_cache)
 
-		wipe(ignore_death)
+		wipe(ignore_death_cache)
 
 		wipe(reflection_damage)
 		wipe(reflection_debuffs)
@@ -6242,31 +6256,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	function Details:IsInEncounter()
 		return Details.encounter_table.id and true or false
-	end
-
-	--get combat
-	function Details:GetCombat(combat)
-		if (not combat) then
-			return _current_combat
-
-		elseif (type(combat) == "number") then
-			if (combat == -1) then --overall
-				return Details.tabela_overall
-			elseif (combat == 0) then --current
-				return _current_combat
-			else
-				return Details.tabela_historico.tabelas [combat]
-			end
-
-		elseif (type(combat) == "string") then
-			if (combat == "overall") then
-				return Details.tabela_overall
-			elseif (combat == "current") then
-				return _current_combat
-			end
-		end
-
-		return nil
 	end
 
 	function Details:GetAllActors(_combat, _actorname)
