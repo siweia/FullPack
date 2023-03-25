@@ -113,7 +113,10 @@
 		local cacheAnything = {
 			arenaHealth = {},
 			paladin_vivaldi_blessings = {},
+			track_hunter_frenzy = false,
 		}
+
+		
 
 	--cache the data for passive trinkets procs
 		local _trinket_data_cache = {}
@@ -319,6 +322,28 @@
 			[45284] = 188196, --shaman lightining bolt overloaded
 
 			[228361] = 228360, --shadow priest void erruption
+
+			--ring powers merged, https://gist.github.com/ljosberinn/65abe150133ff3a08cd70f840f7dd019 (by Gerrit Alex - WCL)
+			[403225] = 404884, -- Flame Licked Stone
+			[404974] = 404884, -- Shining Obsidian Stone
+			[405220] = 404884, -- Pestilent Plague Stone
+			[405221] = 404884, -- Pestilent Plague Stone
+			[405209] = 404884, -- Humming Arcane Stone
+			[403391] = 404884, -- Freezing Ice Stone
+			[404911] = 404884, -- Desirous Blood Stone
+			[404941] = 404884, -- Shining Obsidian Stone
+			[403087] = 404884, -- Storm Infused Stone
+			[403273] = 404884, -- Fel Flame via Entropic Fel Stone
+			[403171] = 404884, -- Uncontainable Charge via Echoing Thunder Stone
+			[405235] = 404884, -- Wild Spirit Stone
+			[403381] = 404884, -- Deluging Water Stone
+			[405118] = 404884, -- Exuding Steam Stone
+			[403408] = 404884, -- Exuding Steam Stone
+			[403336] = 404884, -- Indomitable Earth Stone
+			[403392] = 404884, -- Cold Frost Stone
+			[403376] = 404884, -- Gleaming Iron Stone
+			[403253] = 404884, -- Raging Magma Stone
+			[403257] = 404884, -- Searing Smokey Stone
 		}
 	end
 
@@ -2484,7 +2509,7 @@
 				--BfA monk talent
 				monk_guard_talent [sourceSerial] = amount
 
-			elseif (spellId == 272790) then --hunter pet Frenzy quick fix for show the Frenzy uptime
+			elseif (spellId == 272790 and cacheAnything.track_hunter_frenzy) then --hunter pet Frenzy quick fix for show the Frenzy uptime
 				if (pet_frenzy_cache[sourceName]) then
 					if (DetailsFramework:IsNearlyEqual(pet_frenzy_cache[sourceName], time, 0.2)) then
 						return
@@ -2693,7 +2718,7 @@
 		end
 
 		if (tipo == "BUFF") then
-			if (spellid == 272790) then --hunter pet Frenzy spellid
+			if (spellid == 272790 and cacheAnything.track_hunter_frenzy) then --hunter pet Frenzy spellid
 				local miscActorObject = misc_cache[sourceName]
 				if (miscActorObject) then
 					--fastest way to query utility spell data
@@ -2781,7 +2806,7 @@
 		end
 
 		if (tipo == "BUFF") then
-				if (spellid == 272790) then --hunter pet Frenzy spellid
+				if (spellid == 272790 and cacheAnything.track_hunter_frenzy) then --hunter pet Frenzy spellid
 					if (not pet_frenzy_cache[sourceName]) then
 						return
 					end
@@ -5983,6 +6008,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		wipe(dk_pets_cache.apoc)
 
 		wipe(cacheAnything.paladin_vivaldi_blessings)
+
+		cacheAnything.track_hunter_frenzy = Details.combat_log.track_hunter_frenzy
 
 		damage_cache = setmetatable({}, _detalhes.weaktable)
 		damage_cache_pets = setmetatable({}, _detalhes.weaktable)
