@@ -28,7 +28,22 @@ ns.expansion = 10
 ----------------------------------- GROUPS ------------------------------------
 -------------------------------------------------------------------------------
 
+ns.groups.CLAN_CHEST = Group('clan_chest', 'chest_bk', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
 ns.groups.COMMUNITY_FEAST = ns.Group('community_feast', 629056, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.DECAY_COVERED_CHEST = Group('decay_covered_chest', 'chest_pk', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570, {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
@@ -38,7 +53,7 @@ ns.groups.DJARADIN_CACHE = Group('djaradin_cache', 'chest_pp', {
     type = ns.group_types.EXPANSION
 })
 
-ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570, {
+ns.groups.DRACTHYR_SUPPLY_CHEST = Group('dracthyr_supply_chest', 'chest_bl', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
@@ -78,6 +93,11 @@ ns.groups.FORBIDDEN_HOARD = Group('forbidden_hoard', 'chest_pp', {
     type = ns.group_types.EXPANSION
 })
 
+ns.groups.FROSTBOUND_CHEST = Group('frostbound_chest', 'chest_rd', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
 ns.groups.FROSTSTONE_VAULT_STORM = Group('froststone_vault_storm', 463562, {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
@@ -88,12 +108,32 @@ ns.groups.GRAND_HUNTS = Group('grand_hunts', 237377, {
     type = ns.group_types.EXPANSION
 })
 
+ns.groups.ICEMAW_STORAGE_CACHE = Group('icemaw_storage_cache', 'chest_nv', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.LIGHTNING_BOUND_CHEST = Group('lightning_bound_chest', 'chest_pp', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
 ns.groups.MAGICBOUND_CHEST = Group('magicbound_chest', 'chest_tl', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
 
+ns.groups.PROFESSION_RARES = Group('profession_rares', 'peg_rd', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
 ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.EXPANSION
+})
+
+ns.groups.REED_CHEST = Group('reed_chest', 'chest_yw', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
@@ -115,47 +155,12 @@ ns.groups.SIGNAL_TRANSMITTER = Group('signal_transmitter', 4548860, {
     end
 })
 
-ns.groups.SMALL_TREASURES = Group('small_treasures', 'chest_rd', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
-ns.groups.TUSKARR_TACKLEBOX = Group('tuskarr_tacklebox', 'chest_yw', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
-ns.groups.TUSKARR_CHEST = Group('tuskarr_chest', 'chest_bn', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
-ns.groups.CLAN_CHEST = Group('clan_chest', 'chest_bk', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
-ns.groups.DECAY_COVERED_CHEST = Group('decay_covered_chest', 'chest_pk', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
-ns.groups.REED_CHEST = Group('reed_chest', 'chest_yw', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
-ns.groups.DRACTHYR_SUPPLY_CHEST = Group('dracthyr_supply_chest', 'chest_bl', {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.EXPANSION
-})
-
 ns.groups.SIMMERING_CHEST = Group('simmering_chest', 'chest_gn', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
 
-ns.groups.ICEMAW_STORAGE_CACHE = Group('icemaw_storage_cache', 'chest_nv', {
+ns.groups.SMALL_TREASURES = Group('small_treasures', 'chest_rd', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
@@ -165,12 +170,12 @@ ns.groups.TITAN_CHEST = Group('titan_chest', 'chest_rd', {
     type = ns.group_types.EXPANSION
 })
 
-ns.groups.FROSTBOUND_CHEST = Group('frostbound_chest', 'chest_rd', {
+ns.groups.TUSKARR_CHEST = Group('tuskarr_chest', 'chest_bn', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
 
-ns.groups.LIGHTNING_BOUND_CHEST = Group('lightning_bound_chest', 'chest_pp', {
+ns.groups.TUSKARR_TACKLEBOX = Group('tuskarr_tacklebox', 'chest_yw', {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.EXPANSION
 })
@@ -242,12 +247,6 @@ ns.groups.KITE = Group('kite', 133837, {
     achievement = 16584
 })
 
-ns.groups.NOKHUD_DO_IT = Group('nokhud_do_it', 1103068, {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.ACHIEVEMENT,
-    achievement = 16583
-})
-
 ns.groups.LEGENDARY_ALBUM = Group('legendary_album', 1109168, {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.ACHIEVEMENT,
@@ -270,6 +269,12 @@ ns.groups.NEW_PERSPECTIVE = Group('new_perspective', 1109100, {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.ACHIEVEMENT,
     achievement = 16634
+})
+
+ns.groups.NOKHUD_DO_IT = Group('nokhud_do_it', 1103068, {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT,
+    achievement = 16583
 })
 
 ns.groups.PRETTY_NEAT = Group('pretty_neat', 133707, {
@@ -589,7 +594,7 @@ ns.DRAGON_CUSTOMIZATIONS = {
         SweptSpikedHead = Item({item = 197113, quest = 69314}),
         TanHorns = Item({item = 197121, quest = 69322}),
         TaperedChin = Item({item = 197104, quest = 69305}),
-        TapereredNose = Item({item = 197136, quest = 69337}),
+        TaperedNose = Item({item = 197136, quest = 69337}),
         ThornedJaw = Item({item = 197115, quest = 69324}),
         ThornHorns = Item({item = 197123, quest = 69316}),
         ToothyMouth = Item({item = 197135, quest = 69336}),
@@ -663,6 +668,10 @@ ns.DRAGON_CUSTOMIZATIONS = {
         WideStripesPattern = Item({item = 197007, quest = 69207})
     }
 }
+
+ns.DRAGON_CUSTOMIZATIONS.SetNote = function(dc, note)
+    return Item({item = dc.item, quest = dc.quest, note = note})
+end
 
 -------------------------------------------------------------------------------
 ------------------ DRAGONSCALE EXPEDITION: THE HIGHEST PEAKS ------------------
@@ -1115,7 +1124,7 @@ local function nextSpawn(self, timeYellow, timeGreen)
         SpawnTime = SpawnTime + initial.kr
     elseif region == 3 and initial.eu then
         SpawnTime = SpawnTime + initial.eu
-    elseif region == 4 and initial.tw then
+    elseif region == 2 and initial.tw then
         SpawnTime = SpawnTime + initial.tw
     else
         SpawnTime = SpawnTime + initial.us

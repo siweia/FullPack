@@ -271,112 +271,105 @@ L['mysterious_wand_note'] = 'Поднимите {object:Кристальный �
 ------------------------- FORBIDDEN REACH (MAIN ZONE) -------------------------
 -------------------------------------------------------------------------------
 
--- Locations
-L['in_dragonskull_island'] = nil
-L['in_froststone_vault'] = nil
-L['in_the_high_creche'] = nil
-L['in_the_lost_atheneum'] = nil
-L['in_the_siege_creche'] = nil
-L['in_the_support_creche'] = nil
-L['in_the_war_creche'] = nil
-L['in_zskera_vaults'] = nil
+L['in_dragonskull_island'] = 'В пределах {location:Острова Драконьих Черепов}.'
+L['in_froststone_vault'] = 'В пределах {location:Ледокаменного хранилища}.'
+L['in_the_high_creche'] = 'В пределах {location:Высокой Колыбели}'
+L['in_the_lost_atheneum'] = 'В пределах {location:Затерянной Читальне}.'
+L['in_the_siege_creche'] = 'В пределах {location:Колыбели завоевателей}.'
+L['in_the_support_creche'] = 'В пределах {location:Колыбели целителей}.'
+L['in_the_war_creche'] = 'Глубоко внутри {location:Колыбели воинов}'
+L['in_zskera_vaults'] = 'В пределах {location:Зкерского Хранилища}.'
 
--- Rares
-L['duzalgor_note'] = nil
+L['duzalgor_note'] = 'Возьмите бутылку с {spell:400751}({dot:Green}), чтобы излечиться от ядовитого газа внутри {location:Колыбели целителей}.'
 L['mad_eye_carrey_note'] = '{npc:201181} находится в группе с {npc:201184} и {npc:201182}'
 L['wymslayer_angvardi_note'] = '{npc:201013} является партнером {npc:201310}'
 L['loot_specialist_note'] = '{npc:203353} появляется с двумя {spell:406143} и {spell:132653} и убегает при нападении.\n\n{note:Убейте его быстро, прежде чем он закончит применение {spell:406141}.}'
 
--- Profession Rares
 L['profession_required'] = '{note:Требуется игрок с профессией %s.}'
 L['pr_crafting_note'] = 'Создайте {item:%s} из {item:%s} и взаимодействуйте с {object:%s}, чтобы призвать редкого монстра.'
 L['pr_gathering_note'] = 'Используйте {item:%s}, чтобы взаимодействовать с {object:%s}, чтобы вызвать редкого монстра.'
 L['pr_recipe_note'] = 'Рецепт {item:%s} можно приобрести у {npc:202445} за 10 {item:190456}.'
+L['pr_summoning_note'] = 'Игрок, вызвавший редкого монстра, получит {spell:405161} и дополнительную добычу.'
 
-L['pr_awakened_soil'] = nil
-L['pr_book_of_arcane_entities'] = nil
-L['pr_damaged_buzzspire'] = nil
-L['pr_empty_crab_trap'] = nil
-L['pr_farescale_shrine'] = nil
-L['pr_raw_argali_pelts'] = nil
-L['pr_resonating_crystal'] = nil
-L['pr_rumbling_deposit'] = nil
-L['pr_spellsworn_ward'] = nil
-L['pr_spiceless_stew'] = nil
-L['pr_tuskarr_kite_post'] = nil
-L['pr_tuskarr_tanning_rack'] = nil
-L['pr_volatile_brazier'] = nil
+L['pr_awakened_soil'] = 'Пробужденная почва'
+L['pr_book_of_arcane_entities'] = 'Книга чародейских концепций'
+L['pr_damaged_buzzspire'] = 'Сломанная электроантенна 505'
+L['pr_empty_crab_trap'] = 'Пустая ловушка для крабов'
+L['pr_farescale_shrine'] = 'Алтарь Далекой Чешуи'
+L['pr_raw_argali_pelts'] = 'Сырые шкуры аргали'
+L['pr_resonant_crystal'] = 'Резонирующий кристалл'
+L['pr_rumbling_deposit'] = 'Рокочущие залежи'
+L['pr_spellsworn_ward'] = 'Зачарованный оберег'
+L['pr_spiceless_stew'] = 'Несоленый суп'
+L['pr_tuskarr_kite_post'] = 'Столбик для клыкаррских воздушных змеев'
+L['pr_tuskarr_tanning_rack'] = 'Клыкаррская дубильная стойка'
+L['pr_volatile_brazier'] = 'Раскаленный очаг'
 
--- Treasures
-L['storm_bound_chest_label'] = nil
+L['options_icons_profession_rares'] = 'Редкие монстры профессии'
+L['options_icons_profession_rares_desc'] = 'Показать местонахождение редких монстров профессий.'
 
--- Forbidden Hoard
-L['hoarder_of_the_forbidden_reach_suffix'] = nil
-L['forbidden_spoils_suffix'] = nil
-L['forbidden_hoard_label'] = nil
+L['storm_bound_chest_label'] = 'Запечатанный бурей сундук'
 
-L['options_icons_forbidden_hoard'] = nil
-L['options_icons_forbidden_hoard_desc'] = nil
+L['hoarder_of_the_forbidden_reach_suffix'] = 'маленьких сокровищ открыто'
+L['forbidden_spoils_suffix'] = 'Запретных тайников открыто'
+L['forbidden_hoard_label'] = 'Запретный тайник'
 
--- Froststone Primal Vault Storm
-L['froststone_vault_storm_label'] = nil
-L['gooey_snailemental_note'] = nil
+L['options_icons_forbidden_hoard'] = 'Запретный тайник'
+L['options_icons_forbidden_hoard_desc'] = 'Показать возможные местоположения {object:Запретных тайников}.'
 
-L['options_icons_froststone_vault_storm'] = nil
-L['options_icons_froststone_vault_storm_desc'] = nil
+L['froststone_vault_storm_label'] = 'Изначальная буря в Ледокаменном хранилище'
+L['gooey_snailemental_note'] = 'Объедините x50 {item:204352}, собранных с боссов во время {object:Изначальной бури в Ледокаменном хранилище}, чтобы создать {item:192785}.'
 
--- Small Treasures
-L['small_treasures_label'] = nil
-L['small_treasures_note'] = nil
+L['options_icons_froststone_vault_storm'] = 'Изначальная буря в Ледокаменном хранилище'
+L['options_icons_froststone_vault_storm_desc'] = 'Показать местоположение и награды за {object:Изначальную бурю в Ледокаменном хранилище}'
 
-L['options_icons_small_treasures'] = nil
-L['options_icons_small_treasures_desc'] = nil
+L['small_treasures_label'] = 'Маленькие сундуки'
+L['small_treasures_note'] = 'Маленькие сундуки распределяются между точками возрождения.\n\nКупите {item:204558} у {npc:200566} в {location:деревне моркутов} чтобы получить бафф {spell:405637}, позволяющий видеть маленькие сундуки на мини-карте в течение 60 минут.'
 
--- Zskera Vaults
+L['options_icons_small_treasures'] = 'Маленькие сундуки'
+L['options_icons_small_treasures_desc'] = 'Показать возможные места для маленьких сундуков.'
+
 L['zskera_vaults_label'] = 'Зкерское Хранилище'
-L['zskera_vaults_note'] = nil
-L['door_buster_suffix'] = nil
+L['zskera_vaults_note'] = 'Соберите {item:202196} из различных редких монстров и сундуков, чтобы открыть двери в {location:Зкерское Хранилище}.'
+L['door_buster_suffix'] = 'Двери открываются с помощью Ключей от Зкерского хранилища'
 
-L['recipe_rat_note_1'] = nil
-L['recipe_rat_note_2'] = nil
-L['recipe_rat_note_3'] = nil
-L['recipe_rat_note_4'] = nil
+L['recipe_rat_note_1'] = 'Поговорите с {npc:202982} в {location:Зкерском Хранилище}, после этого {item:202252} упадет в вашу сумку.'
+L['recipe_rat_note_2'] = 'Взаимодействуйте с {item:202252}, чтобы получить {item:204340}. {note:(перезарядка 5 минут)}'
+L['recipe_rat_note_3'] = 'Как только вы соберете 30x {item:204340}, объедините обрывки, чтобы получить рецепт.'
+L['recipe_rat_note_4'] = '{note:Эта крыса любит сыр и съедает один {item:3927} примерно каждые три минуты. Планируйте соответственно!}'
 
-L['mm_start_note'] = nil
-L['mm_status_note'] = nil
+L['mm_start_note'] = 'Собирайте и комбинируйте различные предметы, найденные внутри {location:Зкерского Хранилища}.'
+L['mm_status_note'] = 'Объедините следующие предметы:\n{item:%s}\n{item:%s}'
 
 L['options_icons_zskera_vaults'] = 'Зкерское Хранилище'
 L['options_icons_zskera_vaults_desc'] = 'Показать награды из {location:Зкерского Хранилища}.'
 
--- Librarian of the Reach
-L['confiscated_journal_label'] = nil
-L['farscale_manifesto_label'] = nil
-L['lost_expeditions_notes_label'] = nil
-L['pirate_proclamation_label'] = nil
-L['spellsworn_missive_label'] = nil
-L['vrykul_tome_label'] = nil
+L['confiscated_journal_label'] = 'Конфискованный дневник'
+L['farscale_manifesto_label'] = 'Манифест клана Далекой Чешуи'
+L['lost_expeditions_notes_label'] = 'Записки из экспедиции'
+L['pirate_proclamation_label'] = 'Заявление пиратов'
+L['spellsworn_missive_label'] = 'Послание Зачарованных'
+L['vrykul_tome_label'] = 'Врайкульский том'
 
-L['library_note'] = nil
+L['library_note'] = 'Откройте {object:%s} и соберите {item:%s}.'
 
-L['options_icons_librarian_of_the_reach'] = nil
-L['options_icons_librarian_of_the_reach_desc'] = nil
+L['options_icons_librarian_of_the_reach'] = '{achievement:17530}'
+L['options_icons_librarian_of_the_reach_desc'] = 'Показать расположение книг для {achievement:17530}. {note:Некоторые книги находятся в {location:Зкерском Хранилище}}.'
 
--- Scroll Hunter
-L['scroll_hunter_suffix'] = nil
-L['scroll_hunter_note'] = nil
+L['dracthyr_runestone_label'] = 'Рунический камень драктиров'
+L['scroll_hunter_suffix'] = 'сокровища найденные из запечатанных свитках'
+L['scroll_hunter_note'] = 'Собирайте запечатанные свитки из различных редких монстров и сундуков в {location:Запретном краю}.\n\nИспользование {item:%s} покажет красный крестик на карте, в котором вам будет ждать {item:%s}, для повышения репутации с {faction:%s}.'
 
-L['options_icons_scroll_hunter'] = nil
-L['options_icons_scroll_hunter_desc'] = nil
+L['options_icons_scroll_hunter'] = '{achievement:17532}'
+L['options_icons_scroll_hunter_desc'] = 'Отображение мест вознаграждения за свитки для {achievement:17532}.'
 
--- While We Were Sleeping
-L['options_icons_scalecommander_item'] = nil
-L['options_icons_scalecommander_item_desc'] = nil
+L['options_icons_scalecommander_item'] = '{achievement:17315}'
+L['options_icons_scalecommander_item_desc'] = 'Показать расположение предметов для {achievement:17315}. {note:Некоторые предметы находятся в {location:Зкерском Хранилище}}.'
 
--- Misc
-L['spellsworn_gateway'] = nil
-L['gemstone_of_return'] = nil
+L['spellsworn_gateway'] = 'Врата Зачарованных'
+L['gemstone_of_return'] = 'Самоцвет возвращения'
 
-L['morqut_village_vendor_note'] = nil
+L['morqut_village_vendor_note'] = 'Обменяйте {currency:2118} или золото на средства передвижения, питомцев, трансмогрификацию, манускрипты для дракона, рецепты и другие полезные предметы.'
 
 -------------------------------------------------------------------------------
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
