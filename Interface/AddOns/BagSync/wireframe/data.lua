@@ -100,6 +100,9 @@ local trackingDefaults = {
 Data.__cache = {}
 Data.__cache.items = {}
 Data.__cache.tooltip = {}
+Data.__cache.ignore = {}
+
+local ignoreChk, ignoreTotal = 0, 0
 
 ----------------------
 --   DB Functions   --
@@ -157,7 +160,6 @@ function Data:OnEnable()
 	BSYC.db.player.faction = player.faction
 	BSYC.db.player.realmKey = player.realmKey
 	BSYC.db.player.rwsKey = player.rwsKey
-	BSYC.db.player.lowerKey = player.lowerKey
 
 	--we cannot store guild as on login the guild name returns nil
 	--https://wow.gamepedia.com/API_GetGuildInfo
@@ -440,12 +442,13 @@ function Data:PopulateItemCache(errorList, errorCount)
 		for i=1, #data do
 			if data[i] then
 				local link = BSYC:Split(data[i], true)
-				if link and not tmpList[link] then
+				if link and not tmpList[link] and not Data.__cache.ignore[link] then
 					local cacheObj = Data:CacheLink(link)
 					if cacheObj then
-						tmpList[link] = cacheObj
+						tmpList[link] = true --lets not check the same item twice in same pass
 					else
 						table.insert(tmpError, link)
+						tmpList[link] = true --lets not check the same item twice in same pass
 					end
 				end
 			end
@@ -474,6 +477,8 @@ function Data:PopulateItemCache(errorList, errorCount)
 
 	--do initial grab before we do a timed loop
 	if not errorList then
+		ignoreChk, ignoreTotal = 0, 0 --reset our ignore counts
+
 		for unitObj in Data:IterateUnits(true) do
 			if not unitObj.isGuild then
 				for k, v in pairs(allowList) do
@@ -490,7 +495,8 @@ function Data:PopulateItemCache(errorList, errorCount)
 		return
 	end
 
-	if #errorList > 0 and errorCount < 10 then
+	--we don't want to do these checks more than 20 times, otherwise endless loop
+	if #errorList > 0 and errorCount < 20 then
 		errorCount = errorCount + 1
 
 		--iterate backwards since we are using table.remove
@@ -503,6 +509,24 @@ function Data:PopulateItemCache(errorList, errorCount)
 		end
 
 		if #errorList > 0 then
+			--check our ignore list in case we repeatedly process invalid or broken itemIDs
+			if ignoreChk ~= #errorList then
+				ignoreChk = #errorList
+				ignoreTotal = 0
+			else
+				ignoreTotal = ignoreTotal + 1
+			end
+
+			--if we have ignored the same list of items on more than 5 separate occasions then it's probably invalid, add them to ignore
+			if ignoreTotal > 4 then
+				for i=1, #errorList do
+					Data.__cache.ignore[errorList[i]] = errorList[i]
+					Debug(BSYC_DL.WARN, "DataDumpCache-Ignore", errorList[i])
+				end
+				errorList = {}
+				errorCount = -1
+			end
+
 			--loop again if we still have something
 			BSYC:StartTimer("DataDumpCache-"..errorCount, 0.3, Data, "PopulateItemCache", errorList, errorCount)
 		end
@@ -545,7 +569,7 @@ end
 function Data:CheckGuildDB()
 	if not IsInGuild() then return end
 	local unit = Unit:GetPlayerInfo(true)
-	Debug(BSYC_DL.INFO, "CheckGuildDB", unit.name, unit.realm, unit.guild, unit.guildrealm)
+	Debug(BSYC_DL.INFO, "CheckGuildDB", unit.name, unit.realm, unit.guild, unit.guildrealm, unit.realmKey)
 
 	if not unit.guild or not unit.guildrealm then return end
 	if not BagSyncDB[unit.guildrealm] then BagSyncDB[unit.guildrealm] = {} end
