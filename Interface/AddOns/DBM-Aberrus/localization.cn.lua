@@ -1,8 +1,10 @@
-if GetLocale() ~= "koKR" then return end
+--Mini Dragon <流浪者酒馆-Brilla@金色平原(The Golden Plains-CN)> 20230329
+
+if GetLocale() ~= "zhCN" then return end
 local L
 
 ---------------------------
---  Kazzara --
+--  Kazzara -- 卡扎拉
 ---------------------------
 --L= DBM:GetModLocalization(2522)
 
@@ -24,11 +26,11 @@ local L
 L= DBM:GetModLocalization(2529)
 
 L:SetOptionLocalization({
-	AdvancedBossFiltering	= "1페이즈에서 각 보스간 거리 검사를 적극적으로 해서 근처에 없는 보스의 특정 경고와 타이머 자동으로 숨김 (43미터 이상)"
+	AdvancedBossFiltering	= "在1阶段中动态扫描与每个Boss的距离，并自动隐藏大于43码的部分警告和计时条"
 })
 
 ---------------------------
---  The Forgotten Experiments --
+--  The Forgotten Experiments --龙希尔的实验
 ---------------------------
 --L= DBM:GetModLocalization(2530)
 
@@ -38,29 +40,29 @@ L:SetOptionLocalization({
 --L= DBM:GetModLocalization(2524)
 
 ---------------------------
---  Rashok --
+--  Rashok --莱修克
 ---------------------------
 L= DBM:GetModLocalization(2525)
 
 L:SetOptionLocalization({
-	TankSwapBehavior	= "탱커 교대시 모드 작동 방식 설정",
-	OnlyIfDanger		= "다른 탱커가 위험한 공격을 받을 때 도발 경고 보기",
-	MinMaxSoak			= "연계 공격에서 첫번째 공격 직후 또는 다른 탱커가 위험한 공격을 받을때  도발 경고 보기",
-	DoubleSoak			= "연계 공격이 끝난 후 또는 다른 탱커가 위험한 공격을 받을 때 도발 경고 보기"--Default
+	TankSwapBehavior	= "设置换坦行为",
+	OnlyIfDanger		= "只在其他坦克将要被unsafe hit时才提示换坦嘲讽",
+	MinMaxSoak			= "在一次连续攻击或者其他坦克将要被unsafe hit时提示换坦嘲讽",
+	DoubleSoak			= "在一次连续攻击之后或者其他坦克将要被unsafe hit时提示换坦嘲讽"--Default
 })
 
 ---------------------------
---  The Vigilant Steward, Zskarn --
+--  The Vigilant Steward, Zskarn --兹斯卡恩
 ---------------------------
 --L= DBM:GetModLocalization(2532)
 
 ---------------------------
---  Magmorax --
+--  Magmorax --玛格莫莱克斯
 ---------------------------
 --L= DBM:GetModLocalization(2527)
 
 ---------------------------
---  Echo of Neltharion --
+--  Echo of Neltharion --奈萨里奥的回响
 ---------------------------
 --L= DBM:GetModLocalization(2523)
 
@@ -75,5 +77,5 @@ L:SetOptionLocalization({
 L = DBM:GetModLocalization("AberrusTrash")
 
 L:SetGeneralLocalization({
-	name =	"에베루스 일반몹"
+	name =	"亚贝鲁斯小怪"
 })
