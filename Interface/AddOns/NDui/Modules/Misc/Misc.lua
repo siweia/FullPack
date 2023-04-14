@@ -70,6 +70,7 @@ function M:OnLogin()
 	M:EnhancedPicker()
 	M:UpdateMaxZoomLevel()
 	M:MoveBlizzFrames()
+	M:HandleNDuiTitle()
 
 	-- Auto chatBubbles
 	if NDuiADB["AutoBubbles"] then
@@ -217,6 +218,8 @@ end
 
 -- Reanchor MawBuffsBelowMinimapFrame
 function M:MoveMawBuffsFrame()
+	if DB.isPatch10_1 then return end
+
 	local frame = CreateFrame("Frame", "NDuiMawBuffsMover", UIParent)
 	frame:SetSize(235, 28)
 	local mover = B.Mover(frame, MAW_POWER_DESCRIPTION, "MawBuffs", {"TOPRIGHT", UIParent, -90, -225})
@@ -329,6 +332,18 @@ function M:BlockStrangerInvite()
 		if C.db["Misc"]["BlockInvite"] and not (C_BattleNet_GetGameAccountInfoByGUID(guid) or C_FriendList_IsFriend(guid) or IsGuildMember(guid)) then
 			DeclineGroup()
 			StaticPopup_Hide("PARTY_INVITE")
+		end
+	end)
+
+	B:RegisterEvent("GROUP_INVITE_CONFIRMATION", function()
+		if not C.db["Misc"]["BlockRequest"] then return end
+
+		local guid = GetNextPendingInviteConfirmation()
+		if not guid then return end
+
+		if not (C_BattleNet_GetGameAccountInfoByGUID(guid) or C_FriendList_IsFriend(guid) or IsGuildMember(guid)) then
+			RespondToInviteConfirmation(guid, false)
+			StaticPopup_Hide("GROUP_INVITE_CONFIRMATION")
 		end
 	end)
 end
