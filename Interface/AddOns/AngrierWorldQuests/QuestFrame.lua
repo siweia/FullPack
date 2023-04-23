@@ -732,7 +732,12 @@ local function TaskPOI_IsFilteredReward(selectedFilters, questID)
 		local itemName, itemTexture, quantity, quality, isUsable, itemID = GetQuestLogRewardInfo(1, questID)
 		if itemName and itemTexture then
 			local iLevel = Addon.Data:RewardItemLevel(itemID, questID)
-			if C_Item.IsAnimaItemByID(itemID) then
+
+			if itemID == 199192 or itemID == 204359 then -- money bag in DF
+				if selectedFilters.GOLD then
+					positiveMatch = true
+				end
+			elseif C_Item.IsAnimaItemByID(itemID) then
 				if selectedFilters.ANIMA then
 					positiveMatch = true
 				end
