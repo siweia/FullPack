@@ -6,7 +6,8 @@ tinsert(C.defaultThemes, function()
 
 	local r, g, b = DB.r, DB.g, DB.b
 
-	local LootHistoryFrame = LootHistoryFrame
+	local LootHistoryFrame = GroupLootHistoryFrame or LootHistoryFrame
+	if not LootHistoryFrame then return end
 
 	if not DB.isPatch10_1 then
 		LootHistoryFrame.Label:ClearAllPoints()
