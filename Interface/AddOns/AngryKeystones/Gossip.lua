@@ -83,7 +83,7 @@ function Mod:GOSSIP_SHOW()
 				C_GossipInfo.CloseGossip()
 			end
 		end
-	end
+	end	
 end
 
 local function PlayCurrent()
