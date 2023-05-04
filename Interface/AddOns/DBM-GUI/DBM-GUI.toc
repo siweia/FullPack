@@ -1,4 +1,4 @@
-## Interface: 100007
+## Interface: 100100
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFOptions GUI|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFGUI für Einstellungen|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF设置界面|r
@@ -22,10 +22,11 @@
 ## Notes-ptBR: IU para o Deadly Boss Mods
 ## Notes-itIT: Interfaccia Grafica per Deadly Boss Mods
 ## Dependencies: DBM-Core
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: c09c51c
+## Version: 35c800b
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua

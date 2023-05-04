@@ -1,52 +1,47 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.0.35](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.0.35) (2023-04-11)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.34...10.0.35) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.1.0](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.0) (2023-05-02)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.0.35...10.1.0) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Prep new tags  
-- Update Memorex for normal mode and fix small bug on heroic til i figure out what to do with maws cast inconsistency  
-- fix error  
-- Fix count not showing in teleport timer on razageth after first one  
-- Fix corruption timer on last  
-- Fix missing spelllId  
-- Fixup neltharion off mythic, with working P3 stuff, but heroic stuff dicey since unknown what's changed since that buggy test  
-- UnitPower, UnitPoweer, same thing.  
-- Fix errors  
-- Update Rashok for normal mode  
-- Forgotten experiment updates, needs more review though cause it's a buggy fight.  
-- Fix last with a kinda hacky behavior for accuracy for now until conditionals more known  
-- Enable experimental entanglled affix timer  
-- create new group combat object for cleaner affix features in M+  
-- Mythic Rashok update  
-- Add infoframe option for overcharged stacks on Rashok  
-- Icons: fix icon target announce (#206) SetIconByTable and SetIconBySortedTable was bumping icon index before firing the returnFunc, causing all icon announces to be shifted by one index.  
-- Push post testing Assault of Zaqali update  
-- Fix typo  
-- Amalgamation Mythic update  
-- preliminary mythic tweaks to rahsok and chamber  
-    Also removed all the class call things from neltharion  
-- Revert Rashok back to detecting searing slam debuff since it's unhidden again.  
-    Fuly updated The Forgotten Experiments, post heroic testing  
-- Add gossip show debug to core  
-- Update zhCN (#880)  
-- Update koKR (#205)  
-- Update localization.ru.lua (#203)  
-- missed spellId  
-- Push Zaqali drycode ahead of this weeks testing  
-- Mythic testing update for Zskarn  
-    Bugfix on Forgotten Experiments  
-- Fix last, and add to luacheck.  
-- Update rashok with new object in anticipation of detection nerfs  
-- Missed an object  
-- Add new alert type for incoming debuffs, basically a pre warning for incoming private aura debuffs since the actual warning for those won't be possible. This is basically a pre warning to look out.  
-- switch these events back to debug for now  
-- Drycode new season 2 affixes  
-- removed 1 too many spelids  
-- Push P1 and P2 of neltharion at least. P3 will come later when p2 isn't broken during testing.  
-- Post testing Memorex update  
-- Fix rushing shadows lua error and event ID  
-- Tweak tank swaps ands fix a bug where KR locale was overriding english  
-- Forgot a change  
-- Added detection of molten spittle target debuffs to Magmorax  
-- Fix forgotten experiments for mythic, mutilate doesn't expire there so icon strat doesn't quite work for yells/etc  
+- should be 10.1, not 0.36  
+- remove load block here  
+- bump tocs  
+- bump tocs  
+- Update localization.cn.lua (#884)  
+- fix missed spellIds  
+- Full giga Sarkareth drycode  
+- Add afflicted timer  
+- fix other typo  
+- fix typo  
+- nerf nealth mod from latest hotfixes  
+- fix lua error  
+- Change core name from to to match other modules.  
+- kill off volcanic alert since it's not very useful, it doesn't warn you to avoid, only that you already failed. that isn't helpful  
+- fix regression that broke a lot of boss mods with new stage api  
+- Fix alert text for Charged smash  
+- Fix bug with 100100 load checks  
+- Update koKR (Retail) (#883)  
+- Assault Update  
+     - Fixed detection of fixate and shield using UNIT\_AURA scanning.  
+     - Slight tweaks to adds timer values  
+     - Big add timer now says which cliff next set is climbing up.  
+     - Birb timers now enabled on mythic  
+- Completely scrap usefr front end reporting of invalid spellids to cull in bug reports on valid spellids from test realm. Actual invalid spellids will just be on me to find and me alone through better testing.  
 - bump alpha  
+- prep wrath tag  
+- prep new wrath tag  
+- Significant work on assault of Zaqali  
+     - Got all the adds timers/alerts up and running (which is like 50% of fight)  
+     - Improved stage 2 detection to fire on cast finish instead of start so it doesn't cancel adds timer prematurely  
+- Minor zskarn tweaks and that's that for him  
+- Fix a few invalid option keys for aberrus  
+    Fix magmorax pool say object  
+- Some mythic updates to memorex.  
+- Move to stage apis that have more robust safety checks built into core for aberrus and vault  
+- add another check type  
+- invert last  
+- rework last  
+- create a more robust getstage api that will auto handle nil checks in combat, as well as simplify checks in mod code  
+- Add IconTexture  
+- Icon and font bugfixes (Closes #207) - Update default font values to match LibSharedMedia. - Fix occurance where some fonts were being force overwritten to standardFont on options load. - Add addon icon for 10.1.0.  
+- Bump alphas  
