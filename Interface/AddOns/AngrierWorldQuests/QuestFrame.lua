@@ -595,10 +595,10 @@ local function QuestFrame_AddQuestButton(questInfo)
 	elseif ( questTagInfo.worldQuestType == Enum.QuestTagType.Profession and WORLD_QUEST_ICONS_BY_PROFESSION[tradeskillLineID] ) then
 		button.TaskIcon:SetAtlas(WORLD_QUEST_ICONS_BY_PROFESSION[tradeskillLineID], true)
 	elseif questTagInfo.isElite then
-		local tagCoords = QUEST_TAG_TCOORDS[Enum.QuestTag.Heroic]
+		local tagCoords = QUEST_TAG_ATLAS[Enum.QuestTag.Heroic]
 		button.TaskIcon:SetSize(16, 16)
 		button.TaskIcon:SetTexture(QUEST_ICONS_FILE)
-		button.TaskIcon:SetTexCoord( unpack(tagCoords) )
+		button.TaskIcon:SetAtlas(tagCoords)
 	elseif ( questTagInfo.worldQuestType == Enum.QuestTagType.Invasion ) then
 		button.TaskIcon:SetAtlas("worldquest-icon-burninglegion", true)
 	else
@@ -942,6 +942,8 @@ local function TaskPOI_Sorter(a, b)
 end
 
 local function QuestFrame_Update()
+	DebugLogging("QuestFrame_Update", "Triggered")
+
 	titleFramePool:ReleaseAll()
 
 	local mapID = QuestMapFrame:GetParent():GetMapID()
@@ -1248,10 +1250,12 @@ function Mod:Startup()
 	hooksecurefunc("QuestLogQuests_Update", QuestFrame_Update)
 
 	Config:RegisterCallback('showAtTop', function()
+		DebugLogging("showAtTop Callback", "Triggered")
 		QuestMapFrame_UpdateAll()
 	end)
 
 	Config:RegisterCallback({'hideUntrackedPOI', 'hideFilteredPOI', 'showContinentPOI', 'onlyCurrentZone', 'sortMethod', 'selectedFilters', 'disabledFilters', 'filterEmissary', 'filterLoot', 'filterFaction', 'filterZone', 'filterTime', 'lootFilterUpgrades', 'lootUpgradesLevel', 'timeFilterDuration'}, function() 
+		DebugLogging("Full list of callbacks", "Triggered")
 		QuestMapFrame_UpdateAll()
 		dataProvder:RefreshAllData()
 	end)
