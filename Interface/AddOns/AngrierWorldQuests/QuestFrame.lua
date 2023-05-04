@@ -704,6 +704,12 @@ local function QuestFrame_AddQuestButton(questInfo)
 	return button
 end
 
+local isGoldReward = {
+	[199192] = true,
+	[204359] = true,
+	[205226] = true,
+}
+
 local function TaskPOI_IsFilteredReward(selectedFilters, questID)
 	local positiveMatch = false
 	local hasCurrencyFilter = false
@@ -733,7 +739,7 @@ local function TaskPOI_IsFilteredReward(selectedFilters, questID)
 		if itemName and itemTexture then
 			local iLevel = Addon.Data:RewardItemLevel(itemID, questID)
 
-			if itemID == 199192 or itemID == 204359 then -- money bag in DF
+			if isGoldReward[itemID] then -- money bag in DF
 				if selectedFilters.GOLD then
 					positiveMatch = true
 				end
