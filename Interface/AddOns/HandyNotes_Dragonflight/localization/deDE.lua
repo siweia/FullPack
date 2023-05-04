@@ -17,7 +17,7 @@ L['options_icons_profession_treasures_desc'] = 'Zeigt die Positionen der Schätz
 
 L['dragon_glyph'] = 'Drachenglyphe'
 L['options_icons_dragon_glyph'] = 'Drachenglyphen'
-L['options_icons_dragon_glyph_desc'] = 'Zeigt die Positionen aller 56 Drachenglyphen an.'
+L['options_icons_dragon_glyph_desc'] = 'Zeigt die Positionen aller 64 Drachenglyphen an.'
 
 L['dragonscale_expedition_flag'] = 'Flagge der Drachenschuppenexpedition'
 L['flags_placed'] = 'Flaggen platziert'
@@ -135,6 +135,10 @@ L['the_best_at_what_i_do_suffix'] = 'Bosse getötet'
 L['options_icons_grand_hunts'] = 'Große Jagden'
 L['options_icons_grand_hunts_desc'] = 'Zeigt die möglichen Positionen und Belohnungen der {location:Großen Jagd} an.'
 
+L['ancient_stone_label'] = 'Uralter Stein'
+L['options_icons_ancient_stones'] = '{achievement:17560}'
+L['options_icons_ancient_stones_desc'] = 'Zeigt die Positionen der {object:Uralten Steine} für den Erfolg {achievement:17560} an.'
+
 L['reed_chest'] = 'Schilfkiste'
 L['options_icons_reed_chest'] = 'Schilfkiste'
 L['options_icons_reed_chest_desc'] = 'Zeigt die möglichen Positionen der {object:Schilfkisten} an.'
@@ -201,7 +205,14 @@ L['snowman_note'] = 'Es liegen 3 Schneebälle in der Nähe (möglicherweise wurd
 L['snowclaw_cub_note_start'] = 'Du musst zunächst die Questreihe {quest:67094} von {npc:192522} in {location:Valdrakken} abschließen, um den Titel {title:Ehrendryade} zu erhalten.\n\nBesorge die folgenden Gegenstände:'
 L['snowclaw_cub_note_item1'] = 'Sammle 3x {item:197744} von verschiedenen {npc:182559n} in {location:Die Küste des Erwachens}.'
 L['snowclaw_cub_note_item2'] = 'Kaufe 1x {item:198356} von {npc:193310} in {location:Die Küste des Erwachens}.'
-L['snowclaw_cub_note_end'] = ns.color.Orange('Alle Gegenstände können im Auktionshaus ersteigert werden. Das ist besonders hilfreich, da du bei {npc:193310} den {item:198356} nur mit einer {item:199215} kaufen kannst.') .. '\n\nSobald du den Titel {title:Ehrendryade} angelegt hast, biete {npc:196768} die Gegenstände an, um dein Haustier zu erhalten.\n\n{bug:BUG: Der Titel könnte verschwinden.}'
+L['snowclaw_cub_note_end'] = [[
+{note:Alle Gegenstände können im Auktionshaus ersteigert werden. Das ist besonders hilfreich, da du bei {npc:193310} den {item:198356} nur mit einer {item:199215} kaufen kannst.}
+
+Sobald du den Titel {title:Ehrendryade} angelegt hast, biete {npc:196768} die Gegenstände an, um dein Haustier zu erhalten.
+
+{note:Sollte der Titel verschwinden, kannst du die Quest wiederholen, um ihn erneut zu erhalten.
+Versuche es morgen oder nach dem nächsten wöchentlichen Reset erneut.}
+]]
 
 L['tome_of_polymoph_duck'] = 'Benutze {spell:1953}, um in die Höhle zu gelangen und interagiere dann mit dem {object:Manastürmen für Anfänger} Buch, um die Quest abzuschließen.'
 
@@ -277,7 +288,7 @@ L['in_the_lost_atheneum'] = 'Im {location:Verlorenen Athenäum}.'
 L['in_the_siege_creche'] = 'Im {location:Belagerungshort}.'
 L['in_the_support_creche'] = 'Im {location:Unterstützungshort}.'
 L['in_the_war_creche'] = 'Tief im {location:Kriegshort}.'
-L['in_zskera_vaults'] = 'In den {location:Gewölben von Zskera}.'
+L['in_zskera_vaults'] = 'Im {location:Gewölbe von Zskera}.'
 
 L['duzalgor_note'] = 'Sammel eine Flasche {spell:400751}({dot:Green}), um dich von den giftigen Gasen in der Höhle zu heilen.'
 L['mad_eye_carrey_note'] = '{npc:201181} ist in einer Gruppe mit {npc:201184} und {npc:201182}'
@@ -288,6 +299,7 @@ L['profession_required'] = '{note:Benötigt einen Spieler mit dem Beruf \'%s\'.}
 L['pr_crafting_note'] = 'Stellt {item:%s} mit {item:%s} her und interagiere mit {object:%s}, um den seltenen Gegner erscheinen zu lassen.'
 L['pr_gathering_note'] = 'Benutze {item:%s}, um mit {object:%s} zu interagieren, um den seltenen Gegner erscheinen zu lassen.'
 L['pr_recipe_note'] = 'Das Rezept {item:%s} kann von {npc:202445} für 10 {item:190456} gekauft werden.'
+
 L['pr_summoning_note'] = 'Der Spieler, der den seltenen Gegner beschwört, erhält den Stärkungszauber {spell:405161} und Bonusbeute.'
 
 L['pr_awakened_soil'] = 'Erweckter Boden'
@@ -328,15 +340,26 @@ L['options_icons_small_treasures'] = 'Kleine Schätze'
 L['options_icons_small_treasures_desc'] = 'Zeigt mögliche Positionen von kleinen Schätzen an.'
 
 L['zskera_vaults_label'] = 'Gewölbe von Zskera'
-L['zskera_vaults_note'] = 'Sammle {item:202196} von seltenen Gegnern und Schätzen, um Türen in den {location:Gewölben von Zskera} zu öffnen.'
+L['zskera_vaults_note'] = 'Sammle {item:202196} von seltenen Gegnern und Schätzen, um Türen im {location:Gewölbe von Zskera} zu öffnen.'
 L['door_buster_suffix'] = 'Türen geöffnet'
 
-L['recipe_rat_note_1'] = 'Sprich mit {npc:202982} in den {location:Gewölben von Zskera} und du erhältst {item:202252}.'
+L['broken_waygate_label'] = 'Defektes Portal'
+L['neltharions_toolkit_note'] = [[
+1. Sammel {item:204278}, welches zufällig im {location:Gewölbe von Zskera} erscheint.
+
+2. Reise zum {location:Schwelender Horst} in {location:Die Küste des Erwachens}.
+
+3. Repariere {object:Defektes Portal} in der Höhle neben {npc:193310}.
+
+4. Teleportiere dich damit in einen geheimen Raum im {location:Gewölbe von Zskera}. Töte dort {npc:200375} und {npc:203639}, um die {object:Obsidian Grand Cache} für deine Beute öffnen zu können.
+]] -- TODO Obsidian Grand Cache
+
+L['recipe_rat_note_1'] = 'Sprich mit {npc:202982} im {location:Gewölbe von Zskera} und du erhältst {item:202252}.'
 L['recipe_rat_note_2'] = 'Interagiere mit {item:202252}, um {item:204340} zu erhalten. {note:(5 Minute Abklingzeit)}'
 L['recipe_rat_note_3'] = 'Wenn du 30x {item:204340} hast, kombiniere diese, um das Rattzept zu erhalten.'
 L['recipe_rat_note_4'] = '{note:Diese Ratte liebt Käse und wird etwa alle 3 Minuten einen {item:3927} verzehren. Plane entsprechend!}'
 
-L['mm_start_note'] = 'Sammle und kombiniere verschiedene Gegenstände aus den {location:Gewölben von Zskera}.'
+L['mm_start_note'] = 'Sammle und kombiniere verschiedene Gegenstände aus dem {location:Gewölbe von Zskera}.'
 L['mm_status_note'] = 'Kombiniere die folgenden Gegenstände:\n{item:%s}\n{item:%s}'
 
 L['options_icons_zskera_vaults'] = 'Gewölbe von Zskera'
@@ -352,7 +375,7 @@ L['vrykul_tome_label'] = 'Vrykulfoliant'
 L['library_note'] = 'Öffne {object:%s} und erhalte das Buch {item:%s}.'
 
 L['options_icons_librarian_of_the_reach'] = '{achievement:17530}'
-L['options_icons_librarian_of_the_reach_desc'] = 'Zeigt die Positionen der Bücher für den Erfolg {achievement:17530} an. {note:Einige Bücher befinden sich in den {location:Gewölben von Zskera}}.'
+L['options_icons_librarian_of_the_reach_desc'] = 'Zeigt die Positionen der Bücher für den Erfolg {achievement:17530} an. {note:Einige Bücher befinden sich im {location:Gewölbe von Zskera}}.'
 
 L['dracthyr_runestone_label'] = 'Runenstein der Dracthyr'
 L['scroll_hunter_suffix'] = 'Schätze mithilfe von versiegelten Schriftrollen gefunden'
@@ -367,7 +390,10 @@ L['options_icons_scalecommander_item_desc'] = 'Zeigt die Positionen der Gegenst�
 L['spellsworn_gateway'] = 'Tor der Zauberverschworenen'
 L['gemstone_of_return'] = 'Edelstein der Rückkehr'
 
-L['morqut_village_vendor_note'] = 'Tausche {currency:2118} oder Gold gegen Reittiere, Haustiere, Ausrüstungsvorlagen, Drachenanpassungen, Rezepte und andere nützliche Gegenstände ein.'
+L['treysh_note'] = 'Tausche {currency:2118} oder Gold gegen Ausrüstungsvorlagen und Reittiere ein.'
+L['renown_envoy_label'] = 'Rufabgesandte'
+L['renown_envoy_note'] = 'Tausche {currency:2118} oder Gold gegen Reittiere, Haustiere, Ausrüstungsvorlagen, Drachenanpassungen, Rezepte und andere nützliche Gegenstände ein.'
+L['trader_hagarth_note'] = 'Tausche {item:190456} gegen Rezepte ein.'
 
 -------------------------------------------------------------------------------
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
@@ -672,3 +698,75 @@ L['options_icons_djaradin_cache_desc'] = 'Zeigt die möglichen Positionen für {
 L['dragonbane_siege_label'] = '{spell:388945}'
 L['options_icons_dragonbane_siege'] = '{spell:388945}'
 L['options_icons_dragonbane_siege_desc'] = 'Zeigt die Position und Belohnungen der {spell:388945} an.'
+
+L['phoenix_wishwing_note'] = [[
+Nachdem du den {item:199203} besorgt hast, bietet dir {npc:196214} eine Quest an, durch die du {item:193373} erhältst.
+Um die Quest abzuschließen, benötigst du die folgenden Gegenstände (du kannst sie in beliebiger Reihenfolge sammeln):
+]]
+L['phoenix_wishwing_talisman'] = [[
+%s {item:199203}
+
+Dieser wird von {npc:88045} {dot:Gold} in den {location:Spitzen von Arak} verkauft. Wenn {npc:88045} nicht anwesend ist, schließe die Quest {quest:35010} ab, um ihn zu sehen.
+Du brauchst folgende Gegenstände, um den Talisman zu kaufen:
+]]
+L['phoenix_wishwing_phoenix_ember'] = '%s {item:199099}\nWird von {npc:52530} in den {location:Feuerlanden} während des Zeitwanderungsevents fallen gelassen.'
+L['phoenix_wishwing_sacred_ash'] = '%s {item:199097}\nKann in {object:Kochtöpfen}, in den {location:Spitzen von Arak}, gefunden werden.'
+L['phoenix_wishwing_inert_ash'] = '%s {item:199092}\nWird selten von {npc:6520} in der mitte des {location:Un\'Goro Kraters} {dot:Gray} falle gelassen. Sie teilen sich den Spawnpunkt mit {npc:6521}, welche aber keine {item:199092} fallen lassen, also töte unbedingt beide.'
+L['phoenix_wishwing_smoldering_ash'] = [[
+%s {item:199080}
+
+Töte die verschiedenen Phönixe wie {npc:181764} oder {npc:195448} auf den {location:Dracheninseln}.
+Diese findet man meist in der Nähe der {location:Obsidianzitadelle} in {location:Küste des Erwachens}.
+]]
+L['phoenix_wishwing_ash_feather'] = [[
+%s {item:202062}
+
+Um die {object:Federn} zu sehen, musst du das {item:199177} von {npc:189207} am {location:Obsidianthron} kaufen {dot:Green}.
+Benutze die Halskette und sammle {item:202062} {dot:Red} die sich in der Umgebung der {location:Obsidianzitadelle} befinden.
+]]
+L['phoenix_wishwing_info'] = 'Dies ist teil des {item:193373} in {location:Küste des Erwachens} auf den {location:Dracheninseln}.'
+
+-------------------------------------------------------------------------------
+------------------------------- Zaralek Cavern --------------------------------
+-------------------------------------------------------------------------------
+
+L['in_deepflayer_nest'] = 'Im {location:Tiefenschindernest}.'
+
+L['brulsef_the_stronk_note'] = 'Du erhältst deine Belohnung aus der {object:Chest of Massive Gains}.' -- todo: translate chest name
+
+L['ancient_zaqali_chest_note'] = 'Benutze das {object:Abgefüllte Magma} in der Nähe, um die Kiste zu öffnen.'
+L['blazing_shadowflame_chest_note'] = nil
+L['crystal_encased_chest_note'] = 'Interagiere mit dem Blauen {object:Abstimmungskristall} ({dot:Blue}) und dem Roten {object:Abstimmungskristall} ({dot:Red}), um den Schatz zu öffnen.'
+L['old_trunk_note'] = 'Sammle und kombiniere 5 {item:204325} um einen {item:204323} herzustellen.'
+L['well_chewed_chest_note'] = 'Der {item:202869}({dot:Green}) ist unter {npc:199962} in einer Höhle versteckt.'
+
+L['molten_hoard_label'] = 'Geschmolzener Schatz'
+L['fealtys_reward_label'] = 'Belohnung der Treue'
+L['fealtys_reward_note'] = nil
+L['dreamers_bounty_label'] = 'Belohnung des Träumers'
+L['dreamers_bounty_note'] = nil
+L['moth_pilfered_pouch_label'] = 'Von Motten geplünderte Tasche'
+L['moth_pilfered_pouch_note'] = 'Hilf {npc:203225} zu fliegen indem du sie wiederholt "jonglierst", bis sie 5 Stapel {spell:405358} erlangt.\n\nSie fliegt dann zum Schatz und enthüllt ihn.'
+L['waterlogged_bundle_label'] = 'Durchnässtes Bündel'
+
+L['stolen_stash_label'] = 'Gestohlenes Lager'
+L['ritual_offering_label'] = 'Ritualopfergaben'
+L['nal_kskol_reliquary_label'] = 'Reliquiar von Nal ks\'kol'
+L['nal_kskol_reliquary_note'] = 'Benutze die {object:Reliquary Access Console} und löse das Rätsel um das {object:Reliquiar von Nal ks\'kol} zu öffnen.' -- todo: translate object name
+
+L['molten_scoutbot_note'] = 'Öffne das {object:Molten Scoutbot} und plündere {item:204855}.' -- todo: translate chest name
+L['bolts_and_brass_note'] = 'Öffne {object:Bolts and Brass} und plündere {item:204850}.' -- todo: translate chest name
+
+L['sniffen_sage_suffix'] = 'Spezialgegenstände erschnüffelt'
+
+L['big_slick_note_1'] = '{npc:48182} kann in der alten Welt an der {location:Dunkelküste} gefunden werden. Sprich mit {npc:141489} um in die Zeit vor dem {location:Krieg der Dornen} zurückzureisen.'
+
+L['saccratos_note'] = 'Tausche {item:204727} gegen ein Reittier, ein Haustier und mehr ein.'
+L['ponzo_note'] = 'Tausche {item:204985} gegen Drachenanpassungen, ein Reittier, ein Haustier und mehr ein.'
+
+L['smelly_trash_pile_label'] = 'Stinkender Müllhaufen'
+L['options_icons_smelly_trash_pile'] = 'Stinkender Müllhaufen'
+L['options_icons_smelly_trash_pile_desc'] = 'Zeigt die möglichen Positionen der {object:Stinkenden Müllhaufen} an.'
+
+L['seething_cache_treasure_note'] = nil
+L['chest_of_the_flights_treasure_note'] = nil

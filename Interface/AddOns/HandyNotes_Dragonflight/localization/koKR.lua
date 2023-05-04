@@ -17,7 +17,7 @@ L['options_icons_profession_treasures_desc'] = '전문기술 관련 지식을 �
 
 L['dragon_glyph'] = '용 문양'
 L['options_icons_dragon_glyph'] = '용 문양'
-L['options_icons_dragon_glyph_desc'] = '56개의 전체 용 문양 위치를 표시합니다.'
+L['options_icons_dragon_glyph_desc'] = '64개의 전체 용 문양 위치를 표시합니다.'
 
 L['dragonscale_expedition_flag'] = '용비늘 원정대 깃발'
 L['flags_placed'] = '깃발 꽂기 완료'
@@ -134,6 +134,10 @@ L['the_best_at_what_i_do_suffix'] = nil
 
 L['options_icons_grand_hunts'] = nil
 L['options_icons_grand_hunts_desc'] = nil
+
+L['ancient_stone_label'] = nil
+L['options_icons_ancient_stones'] = '{achievement:17560}'
+L['options_icons_ancient_stones_desc'] = nil
 
 L['reed_chest'] = '갈대 보관함'
 L['options_icons_reed_chest'] = '갈대 보관함'
@@ -319,6 +323,9 @@ L['zskera_vaults_label'] = nil
 L['zskera_vaults_note'] = nil
 L['door_buster_suffix'] = nil
 
+L['broken_waygate_label'] = nil
+L['neltharions_toolkit_note'] = nil
+
 L['recipe_rat_note_1'] = nil
 L['recipe_rat_note_2'] = nil
 L['recipe_rat_note_3'] = nil
@@ -355,7 +362,10 @@ L['options_icons_scalecommander_item_desc'] = nil
 L['spellsworn_gateway'] = nil
 L['gemstone_of_return'] = nil
 
-L['morqut_village_vendor_note'] = nil
+L['treysh_note'] = nil
+L['renown_envoy_label'] = nil
+L['renown_envoy_note'] = nil
+L['trader_hagarth_note'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
@@ -652,3 +662,57 @@ L['options_icons_djaradin_cache_desc'] = nil
 L['dragonbane_siege_label'] = nil
 L['options_icons_dragonbane_siege'] = nil
 L['options_icons_dragonbane_siege_desc'] = nil
+
+L['phoenix_wishwing_note'] = nil
+L['phoenix_wishwing_talisman'] = nil
+L['phoenix_wishwing_phoenix_ember'] = nil
+L['phoenix_wishwing_sacred_ash'] = nil
+L['phoenix_wishwing_inert_ash'] = nil
+L['phoenix_wishwing_smoldering_ash'] = nil
+L['phoenix_wishwing_ash_feather'] = nil
+L['phoenix_wishwing_info'] = nil
+
+-------------------------------------------------------------------------------
+------------------------------- Zaralek Cavern --------------------------------
+-------------------------------------------------------------------------------
+
+L['in_deepflayer_nest'] = nil
+
+L['brulsef_the_stronk_note'] = nil
+
+L['ancient_zaqali_chest_note'] = nil
+L['blazing_shadowflame_chest_note'] = nil
+L['crystal_encased_chest_note'] = nil
+L['old_trunk_note'] = nil
+L['well_chewed_chest_note'] = nil
+
+L['molten_hoard_label'] = nil
+L['fealtys_reward_label'] = nil
+L['fealtys_reward_note'] = nil
+L['dreamers_bounty_label'] = nil
+L['dreamers_bounty_note'] = nil
+L['moth_pilfered_pouch_label'] = nil
+L['moth_pilfered_pouch_note'] = nil
+L['waterlogged_bundle_label'] = nil
+
+L['stolen_stash_label'] = nil
+L['ritual_offering_label'] = nil
+L['nal_kskol_reliquary_label'] = nil
+L['nal_kskol_reliquary_note'] = nil
+
+L['molten_scoutbot_note'] = nil
+L['bolts_and_brass_note'] = nil
+
+L['sniffen_sage_suffix'] = nil
+
+L['big_slick_note_1'] = nil
+
+L['saccratos_note'] = nil
+L['ponzo_note'] = nil
+
+L['smelly_trash_pile_label'] = nil
+L['options_icons_smelly_trash_pile'] = nil
+L['options_icons_smelly_trash_pile_desc'] = nil
+
+L['seething_cache_treasure_note'] = nil
+L['chest_of_the_flights_treasure_note'] = nil
