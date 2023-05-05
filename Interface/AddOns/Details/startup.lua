@@ -15,6 +15,8 @@ function Details:StartMeUp()
 	end
 	Details.AndIWillNeverStop = true
 
+	--note: this runs after profile loaded
+
 	--set default time for arena and bg to be the Details! load time in case the client loads mid event
 	Details.lastArenaStartTime = GetTime()
 	Details.lastBattlegroundStartTime = GetTime()
@@ -77,6 +79,8 @@ function Details:StartMeUp()
 	Details:InitializePlaterIntegrationWindow()
 	Details:InitializeMacrosWindow()
 
+	Details.InitializeSpellBreakdownTab()
+
 	if (Details.ocd_tracker.show_options) then
 		Details:InitializeCDTrackerWindow()
 	end
@@ -92,7 +96,7 @@ function Details:StartMeUp()
 	Details.MicroButtonAlert:Hide()
 
 	--actor details window
-	Details.playerDetailWindow = Details.gump:CriaJanelaInfo()
+	Details.playerDetailWindow = Details:CreateBreakdownWindow()
 	Details.FadeHandler.Fader(Details.playerDetailWindow, 1)
 
 	--copy and paste window
@@ -442,7 +446,8 @@ function Details:StartMeUp()
 	Details:LoadFramesForBroadcastTools()
 	Details:BrokerTick()
 
-	--build trinket data
+	---return the table where the trinket data is stored
+	---@return table<spellid, trinketdata>
 	function Details:GetTrinketData()
 		return Details.trinket_data
 	end
@@ -452,6 +457,7 @@ function Details:StartMeUp()
 	for spellId, trinketTable in pairs(customSpellList) do
 		if (trinketTable.isPassive) then
 			if (not trinketData[spellId]) then
+				---@type trinketdata
 				local thisTrinketData = {
 					itemName = C_Item.GetItemNameByID(trinketTable.itemId),
 					spellName = GetSpellInfo(spellId) or "spell not found",
@@ -597,7 +603,7 @@ function Details:StartMeUp()
 	end
 
 	if (DetailsFramework:IsNearlyEqual(Details.class_coords.ROGUE[4], 0.25)) then
-		DetailsFramework.table.copy(Details.class_coords, _detalhes.default_profile.class_coords)
+		DetailsFramework.table.copy(Details.class_coords, Details.default_profile.class_coords)
 	end
 
 	--shutdown the old OnDeathMenu
