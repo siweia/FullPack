@@ -74,6 +74,8 @@ function UF:SetupCVars()
 	UF:UpdateClickableSize()
 	hooksecurefunc(NamePlateDriverFrame, "UpdateNamePlateOptions", UF.UpdateClickableSize)
 	UF:UpdatePlateClickThru()
+	-- fix blizz friendly plate visibility
+	SetCVar("nameplatePlayerMaxDistance", 60)
 end
 
 function UF:BlockAddons()
@@ -454,47 +456,22 @@ function UF:UpdateQuestUnit(_, unit)
 
 	local data = C_TooltipInfo.GetUnit(unit)
 	if data then
-		if DB.isPatch10_1 then
-			for i = 1, #data.lines do
-				local lineData = data.lines[i]
-				if lineData.type == 8 then
-					local text = lineData.leftText -- progress string
-					if text then
-						local current, goal = strmatch(text, "(%d+)/(%d+)")
-						local progress = strmatch(text, "(%d+)%%")
-						if current and goal then
-							local diff = floor(goal - current)
-							if diff > prevDiff then
-								questProgress = diff
-								prevDiff = diff
-							end
-						elseif progress and prevDiff == 0 then
-							if floor(100 - progress) > 0 then
-								questProgress = progress.."%" -- lower priority on progress, keep looking
-							end
+		for i = 1, #data.lines do
+			local lineData = data.lines[i]
+			if lineData.type == 8 then
+				local text = lineData.leftText -- progress string
+				if text then
+					local current, goal = strmatch(text, "(%d+)/(%d+)")
+					local progress = strmatch(text, "(%d+)%%")
+					if current and goal then
+						local diff = floor(goal - current)
+						if diff > prevDiff then
+							questProgress = diff
+							prevDiff = diff
 						end
-					end
-				end
-			end
-		else
-			for i = 1, #data.lines do
-				local lineData = data.lines[i]
-				local argVal = lineData and lineData.args
-				if argVal[1] and argVal[1].intVal == 8 then
-					local text = argVal[2] and argVal[2].stringVal -- progress string
-					if text then
-						local current, goal = strmatch(text, "(%d+)/(%d+)")
-						local progress = strmatch(text, "(%d+)%%")
-						if current and goal then
-							local diff = floor(goal - current)
-							if diff > prevDiff then
-								questProgress = diff
-								prevDiff = diff
-							end
-						elseif progress and prevDiff == 0 then
-							if floor(100 - progress) > 0 then
-								questProgress = progress.."%" -- lower priority on progress, keep looking
-							end
+					elseif progress and prevDiff == 0 then
+						if floor(100 - progress) > 0 then
+							questProgress = progress.."%" -- lower priority on progress, keep looking
 						end
 					end
 				end
@@ -615,37 +592,6 @@ function UF:UpdateUnitClassify(unit)
 			self.ClassifyIndicator:Show()
 		end
 	end
-end
-
--- Scale plates for explosives
-local hasExplosives
-local EXPLOSIVE_ID = 120651
-function UF:UpdateExplosives(event, unit)
-	if not hasExplosives or unit ~= self.unit then return end
-
-	local npcID = self.npcID
-	if event == "NAME_PLATE_UNIT_ADDED" and npcID == EXPLOSIVE_ID then
-		self:SetScale(NDuiADB["UIScale"]*1.5)
-	elseif event == "NAME_PLATE_UNIT_REMOVED" then
-		self:SetScale(NDuiADB["UIScale"])
-	end
-end
-
-local function checkAffixes(event)
-	local _, affixes = C_ChallengeMode_GetActiveKeystoneInfo()
-	if affixes[3] and affixes[3] == 13 then
-		hasExplosives = true
-	else
-		hasExplosives = false
-	end
-end
-
-function UF:CheckExplosives()
-	if not C.db["Nameplate"]["ExplosivesScale"] then return end
-
-	checkAffixes()
-	B:RegisterEvent("ZONE_CHANGED_NEW_AREA", checkAffixes)
-	B:RegisterEvent("CHALLENGE_MODE_START", checkAffixes)
 end
 
 -- Mouseover indicator
@@ -1076,13 +1022,13 @@ function UF:PostUpdatePlates(event, unit)
 		if blizzPlate then
 			self.widgetContainer = blizzPlate.WidgetContainer
 			if self.widgetContainer then
-				self.widgetContainer:SetParent(self)
+				--self.widgetContainer:SetParent(self)
 				self.widgetContainer:SetScale(1/NDuiADB["UIScale"])
 			end
 
 			self.softTargetFrame = blizzPlate.SoftTargetFrame
 			if self.softTargetFrame then
-				self.softTargetFrame:SetParent(self)
+				--self.softTargetFrame:SetParent(self)
 				self.softTargetFrame:SetScale(1/NDuiADB["UIScale"])
 			end
 		end
@@ -1104,7 +1050,6 @@ function UF:PostUpdatePlates(event, unit)
 
 		self.tarName:SetShown(C.ShowTargetNPCs[self.npcID])
 	end
-	UF.UpdateExplosives(self, event, unit)
 end
 
 -- Player Nameplate

@@ -6,7 +6,6 @@ local unpack, strfind, gsub = unpack, strfind, gsub
 local tonumber, pairs, ipairs, next, type, tinsert = tonumber, pairs, ipairs, next, type, tinsert
 local cr, cg, cb = DB.r, DB.g, DB.b
 local guiTab, guiPage, f = {}, {}
-local GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata -- isPatch10_1
 
 -- Default Settings
 G.DefaultSettings = {
@@ -388,7 +387,6 @@ G.DefaultSettings = {
 		InsecureColor = {r=1, g=0, b=0},
 		OffTankColor = {r=.2, g=.7, b=.5},
 		DPSRevertThreat = false,
-		ExplosivesScale = false,
 		AKSProgress = false,
 		PPFadeout = true,
 		PPFadeoutAlpha = 0,
@@ -523,8 +521,6 @@ G.DefaultSettings = {
 		QuestNotification = false,
 		QuestProgress = false,
 		OnlyCompleteRing = false,
-		ExplosiveCount = false,
-		ExplosiveCache = {},
 		SpellItemAlert = false,
 		RareAlertInWild = false,
 		ParagonRep = true,
@@ -1027,10 +1023,6 @@ local function updateInterruptAlert()
 	B:GetModule("Misc"):InterruptAlert()
 end
 
-local function updateExplosiveAlert()
-	B:GetModule("Misc"):ExplosiveAlert()
-end
-
 local function updateRareAlert()
 	B:GetModule("Misc"):RareAlert()
 end
@@ -1130,7 +1122,7 @@ G.TabList = {
 	L["Maps"],
 	L["Skins"],
 	L["Tooltip"],
-	NewTag..L["Misc"],
+	L["Misc"],
 	L["UI Settings"],
 	L["Profile"],
 }
@@ -1267,9 +1259,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Nameplate", "InsideView", L["Nameplate InsideView"].."*", nil, nil, UpdatePlateCVars},
 		{1, "Nameplate", "Interruptor", L["ShowInterruptor"].."*", true},
 		{1, "Nameplate", "QuestIndicator", L["QuestIndicator"]},
-		{1, "Nameplate", "ExplosivesScale", L["ExplosivesScale"], true, nil, nil, L["ExplosivesScaleTip"]},
-		{1, "Nameplate", "BlockDBM", L["BlockDBM"], nil, nil, nil, L["BlockDBMTip"]},
 		{1, "Nameplate", "AKSProgress", L["AngryKeystones Progress"], true},
+		{1, "Nameplate", "BlockDBM", L["BlockDBM"], nil, nil, nil, L["BlockDBMTip"]},
 		{},--blank
 		{1, "Nameplate", "ColoredTarget", HeaderTag..L["ColoredTarget"].."*", nil, nil, nil, L["ColoredTargetTip"]},
 		{1, "Nameplate", "ColoredFocus", HeaderTag..L["ColoredFocus"].."*", true, nil, nil, L["ColoredFocusTip"]},
@@ -1345,10 +1336,9 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "BrokenAlert", HeaderTag..L["BrokenAlert"].."*", nil, nil, updateInterruptAlert, L["BrokenAlertTip"]},
 		{1, "Misc", "InstAlertOnly", L["InstAlertOnly"].."*", true, nil, updateInterruptAlert, L["InstAlertOnlyTip"]},
 		{},--blank
-		{1, "Misc", "ExplosiveCount", L["Explosive Alert"].."*", nil, nil, updateExplosiveAlert, L["ExplosiveAlertTip"]},
-		{1, "Misc", "SpellItemAlert", L["SpellItemAlert"].."*", true, nil, updateSpellItemAlert, L["SpellItemAlertTip"]},
-		{1, "Misc", "SoloInfo", L["SoloInfo"].."*", nil, nil, updateSoloInfo},
-		{1, "Misc", "NzothVision", L["NzothVision"], true},
+		{1, "Misc", "SpellItemAlert", L["SpellItemAlert"].."*", nil, nil, updateSpellItemAlert, L["SpellItemAlertTip"]},
+		{1, "Misc", "SoloInfo", L["SoloInfo"].."*", true, nil, updateSoloInfo},
+		{1, "Misc", "NzothVision", L["NzothVision"]},
 		{},--blank
 		{1, "Misc", "RareAlerter", HeaderTag..L["Rare Alert"].."*", nil, nil, updateRareAlert},
 		{1, "Misc", "RarePrint", L["Alert In Chat"].."*"},
@@ -1465,7 +1455,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "FasterLoot", L["Faster Loot"].."*", true, nil, updateFasterLoot},
 		{1, "Misc", "BlockInvite", "|cffff0000"..L["BlockInvite"].."*", nil, nil, nil, L["BlockInviteTip"]},
 		{1, "Misc", "FasterSkip", L["FasterMovieSkip"].."*", true, nil, nil, L["FasterMovieSkipTip"]},
-		{1, "Misc", "BlockRequest", NewTag.."|cffff0000"..L["BlockRequest"].."*", nil, nil, nil, L["BlockRequestTip"]},
+		{1, "Misc", "BlockRequest", "|cffff0000"..L["BlockRequest"].."*", nil, nil, nil, L["BlockRequestTip"]},
 		{1, "Misc", "ParagonRep", L["ParagonRep"], true},
 		{1, "Misc", "Mail", L["Mail Tool"]},
 		{1, "Misc", "TradeTabs", L["TradeTabs"], true},
@@ -1899,7 +1889,7 @@ local function OpenGUI()
 	credit.Icon:SetTexture(DB.creditTex)
 	credit:SetHighlightTexture(DB.creditTex)
 	credit.title = "Credits"
-	B.AddTooltip(credit, "ANCHOR_BOTTOMLEFT", "|n"..GetAddOnMetadata("NDui", "X-Credits"), "info")
+	B.AddTooltip(credit, "ANCHOR_BOTTOMLEFT", "|n"..C_AddOns.GetAddOnMetadata("NDui", "X-Credits"), "info")
 
 	local function showLater(event)
 		if event == "PLAYER_REGEN_DISABLED" then
