@@ -1,13 +1,14 @@
 local mod	= DBM:NewMod(2472, "DBM-Party-Dragonflight", 1, 1196)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230114200950")
+mod:SetRevision("20230504231118")
 mod:SetCreatureID(186116)--194745 for Rotfang Hyena
 mod:SetEncounterID(2567)
 --mod:SetUsedIcons(1, 2, 3)
 mod:SetHotfixNoticeRev(20230114000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
+mod.sendMainBossGUID = true
 
 mod:RegisterCombat("combat")
 

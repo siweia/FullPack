@@ -1,18 +1,18 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.1.1](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.1) (2023-05-04)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.0...10.1.1) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.1.2](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.2) (2023-05-07)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.1...10.1.2) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new tag  
-- and another one  
+- prep new core tag, for final round of pre season 2 testing  
+- not inverted  
+- fix some option keys invalidly assigned  
+- another fix  
 - fix error  
-- Completely rework Amalgamation chamber to be "easier" to update later with how all over the place and buggy timers are. This updates timers a bit for LFR and normal, and mythic and heroic are iffy til reviewed on live.  
-- Fix Mythic Plus affixes so they function for final week of season 1, and still auto switch to season 2 mode next week  
-- Fixed detection of tank combo casts on easy difficulty Rashok  
-    Fixed detection of Drag traps for all difficulties on Zskarn due to cast becoming instant.  
-    Fixed several timers on Zskarn for normal and LFR difficulty (needs more review for heroic and mythic again)  
-- Force sort core modules to top  
-- core should be using blue text  
-- Fix Lua error.  
-- Update koKR (Retail) (#885)  
-- bump alpha  
+- tweaks for Aberrus  
+- Fix a bug that caused \"keep\" timers not to correctly stop if that timer received calls to :Update mid fight, such as SLG, or if a countdown was enabled on that timer  
+- make passing guid on stop also pass boss1 guid when enabled  
+- Update localization.ru.lua (#208)  
+- scope last so it's only cooldown type timers and not injecting a bunch fo random target or debuff or cast timers  
+- establish a default option  
+- Add tech to auto populate timer callback with GUID for boss timers on a case by case basis  
+- Bump alpha  
