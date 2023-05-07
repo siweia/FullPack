@@ -15,8 +15,8 @@
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		Details.build_counter = 10986
-		Details.alpha_build_counter = 10986 --if this is higher than the regular counter, use it instead
+		Details.build_counter = 10990
+		Details.alpha_build_counter = 10990 --if this is higher than the regular counter, use it instead
 		Details.dont_open_news = true
 		Details.game_version = version
 		Details.userversion = version .. " " .. Details.build_counter
@@ -40,11 +40,7 @@
 
 		Details = Details
 
-		local gameVersionPrefix = "Unknown Game Version - You're probably using a Details! not compatible with this version of the Game"
-		--these are the game versions currently compatible with this Details! versions
-		if (DetailsFramework.IsWotLKWow() or DetailsFramework.IsShadowlandsWow() or DetailsFramework.IsDragonflight()) then
-			gameVersionPrefix = "WD"
-		end
+		local gameVersionPrefix = "VWD" --vanilla, wrath, dragonflight
 
 		Details.gameVersionPrefix = gameVersionPrefix
 
@@ -1192,4 +1188,16 @@ end
 ---@return any
 function Details222.PlayerStats:GetStat(statName, value)
 	return Details.player_stats[statName]
+end
+
+---destroy a table and remove it from the object, if the key isn't passed, the object itself is destroyed
+---@param object any
+---@param key string|nil
+function Details:Destroy(object, key)
+	if (key) then
+		table.wipe(object[key])
+		object[key] = nil
+	else
+		table.wipe(object)
+	end
 end

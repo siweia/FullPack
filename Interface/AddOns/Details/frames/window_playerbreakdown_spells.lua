@@ -237,7 +237,20 @@ function spellsTab.UpdateHeadersSettings(containerType)
 
 	if (containerType == "spells") then
 		spellsTab.spellsHeaderData = spellsTab.BuildHeaderTable("spells")
-		spellsTab.GetSpellScrollFrame().Header:SetHeaderTable(spellsTab.spellsHeaderData)
+
+		local spellContainer = spellsTab.GetSpellScrollContainer()
+		local spellScrollFrame = spellsTab.GetSpellScrollFrame()
+		local headerFrame = spellScrollFrame.Header
+
+		headerFrame:SetHeaderTable(spellsTab.spellsHeaderData)
+
+		local width = headerFrame:GetWidth()
+
+		--SetHeaderTable() calls Header:Refresh() which reset its width
+		--if the spell container get a resize to be as big as the sum of all columns width, the option to resize the container's width is useless
+		spellContainer:SetWidth(width)
+		--save the width of the spell container in Details settings
+		Details.breakdown_spell_tab.spellcontainer_width = width
 
 	elseif (containerType == "targets") then
 		spellsTab.targetsHeaderData = spellsTab.BuildHeaderTable("targets")
@@ -274,6 +287,10 @@ function spellsTab.BuildHeaderTable(containerType)
 		containerColumnData = targetContainerColumnData
 	end
 
+	---result of the sum of all columns width
+	---@type number
+	local totalWidth = 0
+
 	for i = 1, #containerColumnData do
 		local columnData = containerColumnData[i]
 		---@type {enabled: boolean, width: number, align: string}
@@ -304,6 +321,7 @@ function spellsTab.BuildHeaderTable(containerType)
 					key = columnData.key,
 				}
 
+				totalWidth = totalWidth + headerColumnData.width
 				headerTable[#headerTable+1] = headerColumnData
 			end
 		end
@@ -719,7 +737,11 @@ local onEnterSpellBar = function(spellBar, motion) --parei aqui: precisa por nom
 			blockLine1.leftText:SetText("Trinket Info")
 
 			blockLine1.rightText:SetText("PPM: " .. string.format("%.2f", average / 60))
-			blockLine2.leftText:SetText("Min Time: " .. math.floor(minTime))
+			if (minTime == 9999999) then
+				blockLine2.leftText:SetText("Min Time: " .. _G["UNKNOWN"])
+			else
+				blockLine2.leftText:SetText("Min Time: " .. math.floor(minTime))
+			end
 			blockLine2.rightText:SetText("Max Time: " .. math.floor(maxTime))
 		end
 
@@ -1106,7 +1128,7 @@ local spellBlockContainerMixin = {
 ---create the spell blocks which shows the critical hits, normal hits, etc
 ---@param tabFrame tabframe
 ---@return breakdownspellblockframe
-function spellsTab.CreateSpellBlockContainer(tabFrame) --~create
+function spellsTab.CreateSpellBlockContainer(tabFrame) --~create ~createblock ~spellblock ~block ~container
 	--create a container for the scrollframe
 	local options = {
 		width = Details.breakdown_spell_tab.blockcontainer_width,
@@ -1432,7 +1454,7 @@ function spellsTab.CreateTargetContainer(tabFrame) --~create ~target
 	spellsTab.TargetScrollFrame = targetScrollFrame
 
 	---@param data breakdowntargettablelist
-	function targetScrollFrame:RefreshMe(data) --~refreshme (targets) ~refreshmetargets
+	function targetScrollFrame:RefreshMe(data) --~refreshme (targets) ~refreshmet
 		--get which column is currently selected and the sort order
 		local columnIndex, order, key = targetScrollFrame.Header:GetSelectedColumn()
 		targetScrollFrame.SortKey = key
@@ -1591,12 +1613,12 @@ local updateSpellBar = function(spellBar, index, actorName, combatObject, scroll
 			spellTable = bkSpellData
 			value = bkSpellData.total
 			spellId = bkSpellData.id
-			petName = bkSpellData.petNames[spellTableIndex]
+			petName = bkSpellData.nestedData[spellTableIndex].petName
 		else
-			spellTable = bkSpellData.spellTables[spellTableIndex]
+			spellTable = bkSpellData.nestedData[spellTableIndex].spellTable
 			value = spellTable.total
 			spellId = spellTable.id
-			petName = bkSpellData.petNames[spellTableIndex]
+			petName = bkSpellData.nestedData[spellTableIndex].petName
 			spellBar.bIsExpandedSpell = true
 		end
 
@@ -1822,7 +1844,8 @@ local refreshFunc = function(scrollFrame, scrollData, offset, totalLines) --~ref
 	---@type instance
 	local instanceObject = spellsTab.GetInstance()
 
-	local sortKey = scrollFrame.SortKey
+	local keyToSort = scrollFrame.SortKey
+	local orderToSort = scrollFrame.SortKey
 	local headerTable = spellsTab.spellsHeaderData
 
 	--todo: when swapping sort orders, close already expanded spells
@@ -1835,20 +1858,8 @@ local refreshFunc = function(scrollFrame, scrollData, offset, totalLines) --~ref
 		local bkSpellData = scrollData[index]
 
 		if (bkSpellData) then
-			--before getting a line, check if the data for the line is a expanded line and if the spell is expanded
-			local expandedIndex = bkSpellData.expandedIndex
-			local spellId = bkSpellData.id
-			local value = math.floor(bkSpellData.total)
-
-			---@type number[]
-			local spellIds = bkSpellData.spellIds --array with spellIds
-			---@type spelltable[]
-			local spellTables = bkSpellData.spellTables --array with spellTables
 			---@type number
-			local spellTablesAmount = #spellTables
-			---@type string[]
-			local petNames = bkSpellData.petNames --array with pet names
-			---@type boolean
+			local spellTablesAmount = #bkSpellData.nestedData
 
 			---called mainSpellBar because it is the line that shows the sum of all spells merged (if any)
 			---@type breakdownspellbar
@@ -1858,26 +1869,51 @@ local refreshFunc = function(scrollFrame, scrollData, offset, totalLines) --~ref
 				if (mainSpellBar) then
 					lineIndex = lineIndex + 1
 					local bIsMainLine = true
-					updateSpellBar(mainSpellBar, index, actorName, combatObject, scrollFrame, headerTable, bkSpellData, 1, totalValue, topValue, bIsMainLine, sortKey, spellTablesAmount)
+					updateSpellBar(mainSpellBar, index, actorName, combatObject, scrollFrame, headerTable, bkSpellData, 1, totalValue, topValue, bIsMainLine, keyToSort, spellTablesAmount)
 				end
 			end
 
 			--then it adds the lines for each spell merged, but it cannot use the bkSpellData, it needs the spellTable, it's kinda using bkSpellData, need to debug
 			if (bkSpellData.bIsExpanded and spellTablesAmount > 1) then
-				---@type number spellTableIndex is the same counter as bkSpellStableIndex
-				--as the nested actors or spells never get sorted, it might be required to sort the data here
+				--filling necessary information to sort the data by the selected header column
+				for spellTableIndex = 1, spellTablesAmount do
+					---@type bknesteddata
+					local nestedBkSpellData = bkSpellData.nestedData[spellTableIndex]
+					---@type spelltable
+					local spellTable = nestedBkSpellData.spellTable
+					nestedBkSpellData.value = spellTable[keyToSort] or getValueForHeaderSortKey(combatObject, spellTable, keyToSort)
+				end
+
+				--sort the nested data
+				if (orderToSort == "DESC") then
+					table.sort(bkSpellData.nestedData,
+					function(t1, t2)
+						return t1.value < t2.value
+					end)
+				else
+					table.sort(bkSpellData.nestedData,
+					function(t1, t2)
+						return t1.value > t2.value
+					end)
+				end
+
 				for spellTableIndex = 1, spellTablesAmount do
 					---@type breakdownspellbar
 					local spellBar = getSpellBar(scrollFrame, lineIndex)
 					if (spellBar) then
+						---@type bknesteddata
+						local nestedBkSpellData = bkSpellData.nestedData[spellTableIndex]
+
 						lineIndex = lineIndex + 1
 						---@type string
-						local petName = petNames[spellTableIndex]
+						local petName = nestedBkSpellData.petName
 						---@type string
 						local nameToUse = petName ~= "" and petName or actorName
 						local bIsMainLine = false
 
-						updateSpellBar(spellBar, index, nameToUse, combatObject, scrollFrame, headerTable, bkSpellData, spellTableIndex, totalValue, topValue, bIsMainLine, sortKey, spellTablesAmount)
+						bkSpellData[keyToSort] = nestedBkSpellData.value
+
+						updateSpellBar(spellBar, index, nameToUse, combatObject, scrollFrame, headerTable, bkSpellData, spellTableIndex, totalValue, topValue, bIsMainLine, keyToSort, spellTablesAmount)
 						mainSpellBar.ExpandedChildren[#mainSpellBar.ExpandedChildren + 1] = spellBar
 					end
 				end
@@ -1893,13 +1929,12 @@ end
 ---creates a scrollframe which show breakdownspellbar to show the spells used by an actor
 ---@param tabFrame tabframe
 ---@return breakdownspellscrollframe
-function spellsTab.CreateSpellScrollContainer(tabFrame) --~scroll ~create
+function spellsTab.CreateSpellScrollContainer(tabFrame) --~scroll ~create ~spell ~container
 	---@type width
 	local width = Details.breakdown_spell_tab.spellcontainer_width
 	---@type height
 	local height = Details.breakdown_spell_tab.spellcontainer_height
 
-	--create a container for the scrollframe
 	local options = {
 		width = Details.breakdown_spell_tab.spellcontainer_width,
 		height = Details.breakdown_spell_tab.spellcontainer_height,
@@ -1907,16 +1942,17 @@ function spellsTab.CreateSpellScrollContainer(tabFrame) --~scroll ~create
 		can_move = false,
 		can_move_children = false,
 		use_bottom_resizer = true,
-		use_right_resizer = true,
-
+		use_right_resizer = false,
 	}
 
+	---create a container for the scrollframe
 	---@type df_framecontainer
 	local container = DF:CreateFrameContainer(tabFrame, options, tabFrame:GetName() .. "SpellScrollContainer")
 	container:SetPoint("topleft", tabFrame, "topleft", 5, -5)
 	container:SetFrameLevel(tabFrame:GetFrameLevel() + 10)
 	spellsTab.SpellContainerFrame = container
 
+	--when a setting is changed in the container, it will call this function, it is registered below with SetSettingChangedCallback()
 	local settingChangedCallbackFunction = function(frameContainer, settingName, settingValue) --doing here the callback for thge settings changed in the container
 		if (frameContainer:IsShown()) then
 			if (settingName == "height") then
@@ -1935,8 +1971,10 @@ function spellsTab.CreateSpellScrollContainer(tabFrame) --~scroll ~create
 			spellsTab.GetSpellBlockContainer():SendSettingChangedCallback("UpdateSize", -1)
 		end
 	end
-	local defaultAmountOfLines = 50
 	container:SetSettingChangedCallback(settingChangedCallbackFunction)
+
+	--amount of lines which will be created for the scrollframe
+	local defaultAmountOfLines = 50
 
     --replace this with a framework scrollframe
 	---@type breakdownspellscrollframe
@@ -1967,13 +2005,14 @@ function spellsTab.CreateSpellScrollContainer(tabFrame) --~scroll ~create
 
 	local headerTable = {}
 
+	---create the header frame, the header frame is the frame which shows the columns names to describe the data shown in the scrollframe
 	---@type df_headerframe
 	local header = DetailsFramework:CreateHeader(container, headerTable, headerOptions)
 	scrollFrame.Header = header
 	scrollFrame.Header:SetPoint("topleft", scrollFrame, "topleft", 0, 1)
 	scrollFrame.Header:SetColumnSettingChangedCallback(onHeaderColumnOptionChanged)
 
-	--cache the type of this container
+	--cache the containerType which this header is used for
 	headerContainerType[scrollFrame.Header] = "spells"
 
 	--create the scroll lines
@@ -1982,12 +2021,13 @@ function spellsTab.CreateSpellScrollContainer(tabFrame) --~scroll ~create
 	end
 
 	---set the data and refresh the scrollframe
-	---@param self any
+	---@param self breakdownspellscrollframe
 	---@param data breakdownspelldatalist
-	function scrollFrame:RefreshMe(data) --~refreshme (spells)
+	function scrollFrame:RefreshMe(data) --~refreshme (spells) ~refreshmes
 		--get which column is currently selected and the sort order
 		local columnIndex, order, key = scrollFrame.Header:GetSelectedColumn()
 		scrollFrame.SortKey = key
+		scrollFrame.SortOrder = order
 
 		---@type string
 		local keyToSort = key
