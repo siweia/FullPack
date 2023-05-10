@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("HallsofInfusionTrash", "DBM-Party-Dragonflight", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230429094135")
+mod:SetRevision("20230508211117")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -277,12 +277,11 @@ function mod:UNIT_DIED(args)
 	end
 end
 
---TODO, actually get correct IDs, these are in guide but haven't collected Ids yet
 function mod:GOSSIP_SHOW()
---	local gossipOptionID = self:GetGossipID()
---	if gossipOptionID then
---		if self.Options.AGBuffs and (gossipOptionID == 107192 or gossipOptionID == 107205) then -- Engineer/Herb Buff
---			self:SelectGossip(gossipOptionID)
---		end
---	end
+	local gossipOptionID = self:GetGossipID()
+	if gossipOptionID then
+		if self.Options.AGBuffs and (gossipOptionID == 107192 or gossipOptionID == 107206) then -- Engineer/Herb Buff
+			self:SelectGossip(gossipOptionID)
+		end
+	end
 end

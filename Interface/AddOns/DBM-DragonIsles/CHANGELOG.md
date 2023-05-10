@@ -1,18 +1,26 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.1.2](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.2) (2023-05-07)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.1...10.1.2) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.1.3](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.3) (2023-05-10)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.2...10.1.3) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new core tag, for final round of pre season 2 testing  
-- not inverted  
-- fix some option keys invalidly assigned  
-- another fix  
-- fix error  
-- tweaks for Aberrus  
-- Fix a bug that caused \"keep\" timers not to correctly stop if that timer received calls to :Update mid fight, such as SLG, or if a countdown was enabled on that timer  
-- make passing guid on stop also pass boss1 guid when enabled  
-- Update localization.ru.lua (#208)  
-- scope last so it's only cooldown type timers and not injecting a bunch fo random target or debuff or cast timers  
-- establish a default option  
-- Add tech to auto populate timer callback with GUID for boss timers on a case by case basis  
-- Bump alpha  
+- prep day 1 fixes tag for all the raid fix goodies.  
+- add missing p2 to p3 transition timer  
+- remove unused  
+- Significant updates and bugfixes to Scalecommander Sarkareth. it's nearly release ready, just needs more heroic data  
+- add temp work around to slam on rashok  
+- Echo of Neltharion update  
+     - Updated timers to new slower rates  
+     - Fixed even spellId for non mythic  
+     - Fixed lua error in infoframe closes #886  
+- Memorex CD rom firmware update (magmorax updated with live data)  
+- Zskarn update for normal and heroic  
+- Rashok updates from live data  
+- Assault updates with latest normal/heroic changes  
+- fix extra bracket  
+- oops didnt mean to leave that there  
+- Experiments upddated for LFR, normal, and heroic  
+- Only miner tweaks to Kazzara  
+- Fix LFR and normal Amalgamation chamber as well  
+- Disable old heroic timers for chamber, and swap to using mythic ones for heroic and mythic, will tweak them in a bit but this for most part fixes heroic timers  
+- fix world boss loading  
+- bump alpha  

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230504231118")
+mod:SetRevision("20230509011041")
 mod:SetCreatureID(190484, 190485)
 mod:SetEncounterID(2623)
 --mod:SetUsedIcons(1, 2, 3)
@@ -79,7 +79,6 @@ local directions = {
 }
 
 local function scanBosses(self, delay)
-	local foundOne, foundTwo, foundThree
 	for i = 1, 2 do
 		local unitID = "boss"..i
 		if UnitExists(unitID) then
