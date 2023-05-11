@@ -6,7 +6,7 @@
 --
 
 local DBICON10 = "LibDBIcon-1.0"
-local DBICON10_MINOR = 50 -- Bump on changes
+local DBICON10_MINOR = 51 -- Bump on changes
 if not LibStub then error(DBICON10 .. " requires LibStub.") end
 local ldb = LibStub("LibDataBroker-1.1", true)
 if not ldb then error(DBICON10 .. " requires LibDataBroker-1.1.") end
@@ -481,6 +481,12 @@ end
 --------------------------------------------------------------------------------
 -- Addon Compartment API
 --
+
+function lib:IsButtonCompartmentAvailable()
+	if AddonCompartmentFrame then
+		return true
+	end
+end
 
 function lib:IsButtonInCompartment(buttonName)
 	local object = lib.objects[buttonName]
