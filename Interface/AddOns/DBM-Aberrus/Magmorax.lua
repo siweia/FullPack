@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2527, "DBM-Aberrus", nil, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230510044459")
+mod:SetRevision("20230510215538")
 mod:SetCreatureID(201579)
 mod:SetEncounterID(2683)
 mod:SetUsedIcons(1, 2, 3, 8)
@@ -243,7 +243,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnHeatStacks:Show(amount)
 				specWarnHeatStacks:Play("stackhigh")
 			elseif amount % 4 == 3 then--(3, 7, 11, 15) Otherwise, don't spam elevated warning
-				warnHeatStacks(amount)
+				warnHeatStacks:Show(amount)
 			end
 		end
 		if self.Options.InfoFrame then
