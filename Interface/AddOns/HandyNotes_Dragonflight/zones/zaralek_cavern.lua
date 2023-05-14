@@ -48,7 +48,7 @@ local deepflayerNest = Map({id = 2184, settings = false}) -- Deepflayer Nest
 -- Interval ID 4 -> Aberrus Zone
 
 local ZaralekRotation = Class('ZaralekRotation', ns.Interval, {
-    initial = {eu = 1683259200, us = 1683298800},
+    initial = {eu = 1683259200, us = 1683298800, tw = 1683414000},
     offset = 86400,
     interval = 86400
 })
@@ -308,7 +308,7 @@ map.nodes[55841899] = Rare({
     pois = {POI({52921886})} -- Entrance
 }) -- Professor Gastrinax
 
-map.nodes[65875082] = Rare({
+map.nodes[36205300] = Rare({
     id = 203643,
     vignette = 5659,
     quest = 75348,
@@ -317,7 +317,7 @@ map.nodes[65875082] = Rare({
         Achievement({id = 17783, criteria = 59205}), -- Adventurer of Zaralek Cavern
         Achievement({id = 18100, criteria = 59507}), -- Cavern Clawbbering
         Transmog({item = 205294, slot = L['cloth']}), -- Sandals of Molten Scorn
-        Transmog({item = 205301, slot = L['cloth']}), -- Hardened Lava Handwraps
+        Transmog({item = 205301, slot = L['leather']}), -- Hardened Lava Handwraps
         DC.WindingSlitherdrake.CurledCheekHorn, --
         Item({item = 204075}), -- Whelpling's Shadowflame Crest Fragment
         Currency({id = 2245}) -- Flightstones
@@ -949,6 +949,39 @@ map.nodes[51264667] = Dragonrace({
         Achievement({id = 17491, criteria = 6, oneline = true}) -- reverse gold
     }
 }) -- Sulfur Sprint
+
+-------------------------------------------------------------------------------
+--------------------------------- ZONE EVENTS ---------------------------------
+-------------------------------------------------------------------------------
+
+local ZoneEvent = Class('ZoneEvent', ns.node.Node, {
+    group = ns.groups.ZONE_EVENT,
+    icon = 'peg_rd',
+    scale = 1.3
+})
+
+function ZoneEvent.getters:label()
+    return C_QuestLog.GetTitleForQuestID(self.quest[1]) or UNKNOWN
+end
+
+map.nodes[44507490] = ZoneEvent({quest = 75612}) -- Cascades Calling
+map.nodes[63004720] = ZoneEvent({quest = 75471}) -- Crystalline Survey
+map.nodes[32104360] = ZoneEvent({quest = 75455}) -- Conspiracy of Flame
+map.nodes[56606540] = ZoneEvent({quest = 75664}) -- Discordant Crystals
+map.nodes[45008450] = ZoneEvent({quest = 75611}) -- Glimmerfish Before It's Gone
+map.nodes[48102020] = ZoneEvent({quest = 75478}) -- Hungry Hungry Hydra
+map.nodes[35405230] = ZoneEvent({quest = 75451}) -- Imperfect Balance
+map.nodes[46602570] = ZoneEvent({quest = 75461}) -- Magmaclaw Matriarch
+map.nodes[61707210] = ZoneEvent({quest = 75705}) -- Monument Maintenance
+map.nodes[40204350] = ZoneEvent({quest = 75454}) -- Mortar Warfare
+map.nodes[34304770] = ZoneEvent({quest = 75450}) -- Seismic Ceremony
+map.nodes[57504890] = ZoneEvent({quest = 75222}) -- Shellfire
+map.nodes[60605310] = ZoneEvent({quest = 75370}) -- Smellincense
+map.nodes[44902080] = ZoneEvent({quest = 75494}) -- Strike the Colors
+map.nodes[57705690] = ZoneEvent({quest = 75441}) -- Smelly Scramble
+map.nodes[63905070] = ZoneEvent({quest = 75156}) -- Stress Express
+map.nodes[45308320] = ZoneEvent({quest = 75624}) -- The Champion's Challenge
+map.nodes[58206740] = ZoneEvent({quest = 74352}) -- Whirling Zephyr
 
 -------------------------------------------------------------------------------
 ---------------------- ANCIENT STONES OF ZARALEK CAVERN -----------------------
