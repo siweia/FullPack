@@ -1,12 +1,7 @@
 # Premade Groups Filter
 
-## [3.8.0](https://github.com/0xbs/premade-groups-filter/tree/3.8.0) (2023-05-06)
-[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/3.7.4...3.8.0) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
+## [3.8.2](https://github.com/0xbs/premade-groups-filter/tree/3.8.2) (2023-05-14)
+[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/3.8.0...3.8.2) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
 
-- Add optional second parameter to macro function for sorting expression (fixes #165)  
-- Add keywords asc (Aberrus), vp (Vortex Pinnacle), dfs2  
-    asc = Aberrus, the Shadowed Crucible  
-    vp = Vortex Pinnacle  
-    dfs2 = Dragonflight Mythic+ Season 2  
-- Define addon icon (green LFG eye)  
-- Bumped TOC  
+- Add rio aliases `nelt` for Neltharus and `uld` for Uldaman: Legacy of Tyr; show rio keywords in help tooltip (#172, #173)  
+- Implement keywords blfit and brfit (fixes #168)  
