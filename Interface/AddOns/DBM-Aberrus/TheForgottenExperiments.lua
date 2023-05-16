@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2530, "DBM-Aberrus", nil, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230515080130")
+mod:SetRevision("20230516042654")
 mod:SetCreatureID(200912, 200913, 200918)
 mod:SetEncounterID(2693)
 mod:SetUsedIcons(1, 2, 3)
@@ -16,8 +16,8 @@ mod:SetWipeTime(25)
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 406358 404472 407733 404713 405042 405492 405375 406227 407552 405391 407775 412117",
 --	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED 406313 407302 407327 407617 405392",
-	"SPELL_AURA_APPLIED_DOSE 406313 407302 407327",
+	"SPELL_AURA_APPLIED 406311 407302 407327 407617 405392",
+	"SPELL_AURA_APPLIED_DOSE 406311 407302 407327",
 	"SPELL_AURA_REMOVED 407327",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
@@ -39,7 +39,7 @@ local timerInfusedStrikes							= mod:NewBuffFadesTimer(20, 407302, nil, nil, ni
 --local berserkTimer								= mod:NewBerserkTimer(600)
 --Neldris
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(26001))
-local warnInfusedStrikes							= mod:NewStackAnnounce(406313, 2, nil, "Tank|Healer")
+local warnInfusedStrikes							= mod:NewStackAnnounce(406311, 2, nil, "Tank|Healer")
 local warnRendingCharge								= mod:NewIncomingCountAnnounce(406358, 3)
 
 local specWarnMassiveSlam							= mod:NewSpecialWarningDodgeCount(404472, nil, nil, nil, 2, 2)
@@ -303,7 +303,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 406313 and not args:IsPlayer() then
+	if spellId == 406311 and not args:IsPlayer() then
 		local amount = args.amount or 1
 		if amount % 3 == 0 then--Guessed, Filler
 			warnInfusedStrikes:Show(args.destName, amount)

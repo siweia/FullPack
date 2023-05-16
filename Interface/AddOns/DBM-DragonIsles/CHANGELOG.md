@@ -1,8 +1,18 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.1.6](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.6) (2023-05-15)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.5...10.1.6) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.1.7](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.7) (2023-05-16)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.5...10.1.7) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
+- prep tag to fix couple bugs that were missed in last weeks pass  
+- Update koKR (#215)  
+- Update koKR (Retail) (#891)  
+- Fix lua error on echo of neltharion  
+- Merge branch 'master' of https://github.com/DeadlyBossMods/DBM-Retail  
+    * 'master' of https://github.com/DeadlyBossMods/DBM-Retail:  
+      bump alpha  
+      prep tag  
+- Fix infused strikes alert  
+- bump alpha  
 - prep tag  
 - More fixes  
 - missed an "ore"  
