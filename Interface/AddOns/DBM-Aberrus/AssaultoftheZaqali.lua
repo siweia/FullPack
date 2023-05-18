@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2524, "DBM-Aberrus", nil, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230515080130")
+mod:SetRevision("20230517021217")
 mod:SetCreatureID(199659)--Warlord Kagni
 mod:SetEncounterID(2682)
 --mod:SetUsedIcons(1, 2, 3)
@@ -341,21 +341,24 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 409275 then
 		warnMagmaFlow:CombinedShow(0.3, args.destName)
 	elseif spellId == 408873 then
-		local amount = args.amount or 1
-		if amount >= 2 then--And you pretty much swap every other cast
-			if args:IsPlayer() then
-				specWarnHeavyCudgelStack:Show(amount)
-				specWarnHeavyCudgelStack:Play("stackhigh")
-			else
-				if not DBM:UnitDebuff("player", spellId) and not UnitIsDeadOrGhost("player") and not self:IsHealer() then
-					specWarnHeavyCudgelSwap:Show(args.destName)
-					specWarnHeavyCudgelSwap:Play("tauntboss")
+		local uId = DBM:GetRaidUnitId(args.destName)
+		if self:IsTanking(uId) then
+			local amount = args.amount or 1
+			if amount >= 2 then--And you pretty much swap every other cast
+				if args:IsPlayer() then
+					specWarnHeavyCudgelStack:Show(amount)
+					specWarnHeavyCudgelStack:Play("stackhigh")
 				else
-					warnHeavyCudgel:Show(args.destName, amount)
+					if not DBM:UnitDebuff("player", spellId) and not UnitIsDeadOrGhost("player") and not self:IsHealer() then
+						specWarnHeavyCudgelSwap:Show(args.destName)
+						specWarnHeavyCudgelSwap:Play("tauntboss")
+					else
+						warnHeavyCudgel:Show(args.destName, amount)
+					end
 				end
+			else
+				warnHeavyCudgel:Show(args.destName, amount)
 			end
-		else
-			warnHeavyCudgel:Show(args.destName, amount)
 		end
 	elseif spellId == 410353 then
 		local amount = args.amount or 1
