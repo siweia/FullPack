@@ -25,7 +25,7 @@ function MDT:HideMinimapButton()
   db.minimap.hide = true
   minimapIcon:Hide("MythicDungeonTools")
   -- update the checkbox in settings
-  MDT.main_frame.minimapCheckbox:SetValue(false)
+  if MDT.main_frame and MDT.main_frame.minimapCheckbox then MDT.main_frame.minimapCheckbox:SetValue(false) end
   print(L["MDT: Use /mdt minimap to show the minimap icon again"])
 end
 
@@ -33,7 +33,7 @@ function MDT:ShowMinimapButton()
   db.minimap.hide = false
   minimapIcon:Show("MythicDungeonTools")
   -- update the checkbox in settings
-  MDT.main_frame.minimapCheckbox:SetValue(true)
+  if MDT.main_frame and MDT.main_frame.minimapCheckbox then MDT.main_frame.minimapCheckbox:SetValue(true) end
 end
 
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("MythicDungeonTools", {
@@ -266,7 +266,7 @@ end
 --lvl 4 affix, lvl 7 affix, tyrannical/fortified, seasonal affix
 local affixWeeks = {
   [1] = { 6, 124, 9},
-  [2] = { 0, 0, 10},
+  [2] = { 134, 7, 10},
   [3] = { 0, 0, 9},
   [4] = { 0, 0, 10},
   [5] = { 0, 0, 9},
