@@ -22,6 +22,7 @@ function A:HideBlizBuff()
 		if isLogin or isReload then
 			B.HideObject(_G.BuffFrame)
 			B.HideObject(_G.DebuffFrame)
+			BuffFrame.numHideableBuffs = 0 -- fix error when on editmode
 		end
 	end)
 end
@@ -88,15 +89,17 @@ function A:UpdateTimer(elapsed)
 		return
 	end
 
-	if self.expiration then
-		self.timeLeft = self.expiration / 1e3
-	elseif self.timeLeft then
+	if self.timeLeft then
 		self.timeLeft = self.timeLeft - elapsed
 	end
 
 	if self.nextUpdate > 0 then
 		self.nextUpdate = self.nextUpdate - elapsed
 		return
+	end
+
+	if self.expiration then
+		self.timeLeft = self.expiration / 1e3 - (GetTime() - self.oldTime)
 	end
 
 	if self.timeLeft and self.timeLeft >= 0 then
@@ -126,7 +129,6 @@ function A:UpdateAuras(button, index)
 		else
 			button.timeLeft = timeLeft
 		end
-		button.nextUpdate = -1
 		A.UpdateTimer(button, 0)
 	else
 		button.timeLeft = nil
@@ -165,6 +167,7 @@ function A:UpdateTempEnchant(button, index)
 		button.icon:SetTexture(GetInventoryItemTexture("player", index))
 
 		button.expiration = expirationTime
+		button.oldTime = GetTime()
 		button:SetScript("OnUpdate", A.UpdateTimer)
 		button.nextUpdate = -1
 		A.UpdateTimer(button, 0)
