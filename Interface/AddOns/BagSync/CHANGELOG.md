@@ -1,10 +1,15 @@
 # BagSync
 
-## [v19.13](https://github.com/Xruptor/BagSync/tree/v19.13) (2023-05-03)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.12...v19.13) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.14](https://github.com/Xruptor/BagSync/tree/v19.14) (2023-05-19)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.13...v19.14) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- LibItemScout Search Update  
-    * Added a new type slot qualifier to search for battlepets (or petcages).  This will include any vanilla "Companion Pets" as well.  To utilize this new search use t:battlepet or t:petcage as a search command. (Fixes #304)  
-- Merge pull request #303 from nanjuekaien1/patch-53  
+- New vs Old Addon Settings Panel  
+    * Fixed an issue where there was conflicts with blizzards new addons settings panel vs the older one.  In some situations it would generate an error because the older settings panel is being depreciated.  BagSync will now properly compensate for this and display the config screen based on which is being used. (Fixes #308)  
+- License Update and Minor Wording  
+    * Updated the License to reflect the additional libraries.  
+    * Added more information to the Help Window for the new battlepet and petcage qualifiers.  
+- Merge pull request #305 from nanjuekaien1/patch-54  
     Update BagSync.toc  
 - Update BagSync.toc  
+- Update BagSync.toc  
+    Add IconTexture support for the toc files  
