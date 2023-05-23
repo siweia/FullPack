@@ -2307,10 +2307,15 @@ function MDT:EnsureDBTables()
     db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.pulls[1] = {}
   end
 
+  --ensure the pulls table is not fully corrupted
+  if not preset.value.pulls or (type(preset.value.pulls) ~= "table") then
+    preset.value.pulls = {}
+  else
   --detect gaps in pull list and delete invalid pulls
-  for k, v in pairs(preset.value.pulls) do
-    if k == 0 or k > #preset.value.pulls then
-      preset.value.pulls[k] = nil
+    for k, v in pairs(preset.value.pulls) do
+      if k == 0 or k > #preset.value.pulls then
+        preset.value.pulls[k] = nil
+      end
     end
   end
 
@@ -2561,6 +2566,16 @@ MDT.zoneIdToDungeonIdx = {
   [608] = 40,  --grimrail depot
   [609] = 40,  --grimrail depot
   [595] = 41,  --iron docks
+  [2082] = 49,  --halls of infusion
+  [2083] = 49,  --halls of infusion
+  [2096] = 48,  --brackenhide hollow
+  [2106] = 48,  --brackenhide hollow
+  [2071] = 51,  --uldaman
+  [2072] = 51,  --uldaman
+  [2080] = 50,  --neltharus
+  [2081] = 50,  --neltharus
+  [731] = 8,  --neltharion's lair
+  [325] = 77,  --vortex pinnacle
   --https://wowpedia.fandom.com/wiki/UiMapID
 }
 local lastUpdatedDungeonIdx
