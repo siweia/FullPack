@@ -267,7 +267,7 @@ end
 local affixWeeks = {
   [1] = { 6, 124, 9},
   [2] = { 134, 7, 10},
-  [3] = { 0, 0, 9},
+  [3] = { 136, 123, 9},
   [4] = { 0, 0, 10},
   [5] = { 0, 0, 9},
   [6] = { 0, 0, 10},
@@ -2490,6 +2490,7 @@ function MDT:UpdateToDungeon(dungeonIdx, ignoreUpdateMap, init)
   MDT:ZoomMapToDefault()
   --Colors the first pull in "Default" presets
   if db.currentPreset[db.currentDungeonIdx] == 1 then MDT:ColorPull() end
+  MDT:UpdateProgressbar()
 end
 
 function MDT:DeletePreset(index)
