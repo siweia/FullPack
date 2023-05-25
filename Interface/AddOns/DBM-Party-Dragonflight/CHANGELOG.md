@@ -1,13 +1,14 @@
 # <DBM> Dungeons (Dragonflight)
 
-## [r82](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r82) (2023-05-20)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r81...r82) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r83](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r83) (2023-05-22)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r82...r83) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Don't start oily blade CD unless cast finishes.  
-    ALso fixed a bug where blade barrage alert would show for mobs you are not engaged with  
-- clarify gutshut tank alert to be knockback alert  
-- Switch downburst audio and text to be more clear about mechanic.  
-    Fixed count on downburst timer as well  
-- Fixed a bug where the timer for Blazing Aegis wasn't efficiently started and resulte in bad debug events  
-- Add frost blast off internet alert and CD timer to freehold trash  
-- since rearm really isn't dodgable, downgrade alert to be less annoying.  
+- Update localization.ru.lua (#120)  
+- tweak thunderous clap into it's own antispam ID  
+- fixed a bug that caused double warning on magma wave and timer clipping on Dargrul  
+- Add combat checks to 3 old dungeon bosses that actually need to restrict syncs to combat. the rest all require out of combat syncs and change in core should make them all FAR more reliable now.  
+- .  
+- Fix last  
+- Improve sporecaller Zancha timers  
+- have a habit of not hitting save  
+- Template Dawn of the Infinite dungeon  

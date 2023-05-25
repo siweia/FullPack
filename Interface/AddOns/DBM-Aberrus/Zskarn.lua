@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2532, "DBM-Aberrus", nil, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230514171922")
+mod:SetRevision("20230523221421")
 mod:SetCreatureID(202375)
 mod:SetEncounterID(2689)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -100,9 +100,9 @@ function mod:OnCombatStart(delay)
 		timerAnimateGolemsCD:Start(35-delay, 1)
 		timerShrapnalBombCD:Start(45.1-delay, 1)
 		timerTacticalDestructionCD:Start(70-delay, 1)
-	else--Recheck
+	else--Validated
 		self.vb.expectedBombs = 2
-		timerDragonDeezTrapsCD:Start(20.5-delay, 1)
+		timerDragonDeezTrapsCD:Start(20.3-delay, 1)
 		timerAnimateGolemsCD:Start(35-delay, 1)
 		timerTacticalDestructionCD:Start(70-delay, 1)
 	end
