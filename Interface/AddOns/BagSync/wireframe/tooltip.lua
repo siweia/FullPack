@@ -997,6 +997,8 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	currencyID = tonumber(currencyID) --make sure it's a number we are working with and not a string
 	if not currencyID then return end
 
+	Tooltip.objTooltip = objTooltip
+
 	--loop through our characters
 	local usrData = {}
 
@@ -1126,7 +1128,6 @@ function Tooltip:HookTooltip(objTooltip)
 		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
 
 		local function OnTooltipSetCurrency(tooltip, data)
-
 			if (tooltip == GameTooltip or tooltip == EmbeddedItemTooltip or tooltip == ItemRefTooltip) then
 				if tooltip.__tooltipUpdated then return end
 
