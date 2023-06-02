@@ -2,26 +2,28 @@ local ADDON, Addon = ...
 local Mod = Addon:NewModule('Schedule')
 
 local rowCount = 3
-local SEASON_AFFIX_ID = 130
+
 local requestPartyKeystones
 
 -- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
+-- Dragonflight Season 2
+-- 134:Entangling, 135：Afflicted, 136:Incorporeal
 local affixSchedule = {
-	-- Dragonflight Season 1
-	[1]  = { [1]=6,   [2]=14,  [3]=10, }, -- Fortified | Raging | Quaking
-	[2]  = { [1]=11,  [2]=12,  [3]=9,  }, -- Tyrannical | Bursting | Grievous
-	[3]  = { [1]=8,   [2]=3,   [3]=10, }, -- Fortified | Sanguine | Volcanic
-	[4]  = { [1]=6,   [2]=124, [3]=9,  }, -- Tyrannical | Raging | Storming
-	[5]  = { [1]=123, [2]=12,  [3]=10, }, -- Fortified | Spiteful | Grievous
-	[6]  = { [1]=8,   [2]=13,  [3]=9,  }, -- Tyrannical | Sanguine | Explosive
-	[7]  = { [1]=7,   [2]=124, [3]=10, }, -- Fortified | Bolstering | Storming
-	[8]  = { [1]=123, [2]=14,  [3]=9,  }, -- Tyrannical | Spiteful | Quaking
-	[9]  = { [1]=11,  [2]=13,  [3]=10, }, -- Fortified | Bursting | Explosive
-	[10] = { [1]=7,   [2]=3,   [3]=9,  }, -- Tyrannical | Bolstering | Volcanic
+	-- Dragonflight Season 2
+	[1]  = { [1]=6,   [2]=124, [3]=9, }, -- Tyrannical | Raging      | Storming
+	[2]  = { [1]=134, [2]=7,   [3]=10,}, -- Fortified  | Entangling  | Bolstering
+	[3]  = { [1]=136, [2]=123, [3]=9, }, -- Tyrannical | Incorporeal | Spiteful
+	[4]  = { [1]=135, [2]=6,   [3]=10,}, -- Fortified  | Afflicted   | Raging
+	[5]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
+	[6]  = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
+	[7]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
+	[8]  = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
+	[9]  = { [1]=0,   [2]=0,   [3]=9, }, -- Tyrannical |  | 
+	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
 }
 
 local scheduleEnabled = true
-local affixScheduleUnknown = not next(affixSchedule) -- unknown affix if empty schedule
+local affixScheduleUnknown = false
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
@@ -31,10 +33,12 @@ local hookedIconTooltips = false
 local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 	local keystoneMapName = keystoneMapID and C_ChallengeMode.GetMapUIInfo(keystoneMapID)
 	if keystoneMapID and keystoneMapName then
+		if Addon.Locale:Local("dungeon_"..keystoneMapName) then
+			keystoneMapName = Addon.Locale:Get("dungeon_"..keystoneMapName)
+		end
 		keystoneMapName = gsub(keystoneMapName, ".-%-", "") -- Mechagon
-		keystoneMapName = gsub(keystoneMapName, ".-"..HEADER_COLON, "") -- Tezavesh
-		keystoneMapName = gsub(keystoneMapName, ".-（(.-)）", "%1") -- Karazan
-		return string.format("%s (%d)", keystoneMapName, keystoneLevel)
+		keystoneMapName = gsub(keystoneMapName, ".-"..HEADER_COLON, "") -- Tazavesh
+		return string.format("(%d) %s", keystoneLevel, keystoneMapName)
 	end
 end
 
@@ -47,17 +51,7 @@ local function UpdatePartyKeystones()
 	if not scheduleEnabled then return end
 	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
 
-	local playerRealm = GetRealmName()
-
-	local buggyName
-	do
-		for name in pairs(unitKeystones) do
-			if not strmatch(name, "%-") then
-				buggyName = true
-				break
-			end
-		end
-	end
+	local playerRealm = select(2, UnitFullName("player")) or ""
 
 	local e = 1
 	for i = 1, 4 do
@@ -71,8 +65,6 @@ local function UpdatePartyKeystones()
 			else
 				fullName = name.."-"..realm
 			end
-
-			if buggyName then fullName = name end
 
 			if unitKeystones[fullName] ~= nil then
 				local keystoneName
@@ -95,11 +87,11 @@ local function UpdatePartyKeystones()
 	end
 	if e == 1 then
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", 130, -25)
+		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", 130, 0)
 		Mod.PartyFrame:Hide()
 	else
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 130, 40)
+		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 130, 55)
 		Mod.PartyFrame:Show()
 	end
 	while e <= 4 do
@@ -110,7 +102,7 @@ end
 
 local function UpdateFrame()
 	if not scheduleEnabled then return end
-
+	
 	Mod:CheckAffixes()
 	Mod.AffixFrame:Show()
 	Mod.PartyFrame:Show()
@@ -118,12 +110,12 @@ local function UpdateFrame()
 
 	local weeklyChest = ChallengesFrame.WeeklyInfo.Child.WeeklyChest
 	weeklyChest:ClearAllPoints()
-	weeklyChest:SetPoint("LEFT", 105, -5)
+	weeklyChest:SetPoint("LEFT", 100, 0)
 
-	local description = ChallengesFrame.WeeklyInfo.Child.Description
-	description:SetWidth(240)
-	description:ClearAllPoints()
-	description:SetPoint("TOP", weeklyChest, "TOP", 0, 75)
+	-- Wordwrap and size of the original frame
+	local description = ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus
+	description:SetWordWrap(true)
+	description:SetSize(200, 90)
 
 	local currentKeystoneName = GetNameForKeystone(C_MythicPlus.GetOwnedKeystoneChallengeMapID(), C_MythicPlus.GetOwnedKeystoneLevel())
 	if currentKeystoneName then
@@ -142,10 +134,13 @@ local function UpdateFrame()
 			local affixes = affixSchedule[scheduleWeek]
 			for j = 1, #affixes do
 				local affix = entry.Affixes[j]
-				affix:SetUp(affixes[j])
+				if affix == 0 then
+					affix:Hide()
+				else
+					affix:SetUp(affixes[j])
+					affix:Show()
+				end
 			end
-			-- Update season affix
-			entry.Affixes[4]:SetUp(SEASON_AFFIX_ID)
 		end
 		Mod.AffixFrame.Label:Hide()
 	else
@@ -158,12 +153,12 @@ local function UpdateFrame()
 
 	if not hookedIconTooltips then
 		hookedIconTooltips = true
+		local timeLimitFormat = Addon.Locale:Get("timeLimit")
 		for _, icon in next, ChallengesFrame.DungeonIcons do
 			icon:HookScript("OnEnter", function(self)
 				local _, _, timeLimit = C_ChallengeMode.GetMapUIInfo(self.mapID)
 				GameTooltip_AddBlankLineToTooltip(GameTooltip)
-				GameTooltip:AddLine(GROUP_FINDER_PVE_PLAYSTYLE3)
-				GameTooltip:AddLine(SecondsToClock(timeLimit), 1, 1, 1)
+				GameTooltip_AddColoredLine(GameTooltip, timeLimitFormat:format(SecondsToClock(timeLimit)), HIGHLIGHT_FONT_COLOR)
 				GameTooltip:Show()
 			end)
 		end
@@ -193,10 +188,10 @@ end
 
 function Mod:Blizzard_ChallengesUI()
 	if not scheduleEnabled then return end
-
+	
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
 	frame:SetSize(246, 92)
-	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 30, 30)
+	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", -20, 30)
 	Mod.AffixFrame = frame
 
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
@@ -228,7 +223,7 @@ function Mod:Blizzard_ChallengesUI()
 
 		local affixes = {}
 		local prevAffix
-		for j = 4, 1, -1 do
+		for j = 3, 1, -1 do
 			local affix = makeAffix(entry)
 			if prevAffix then
 				affix:SetPoint("RIGHT", prevAffix, "LEFT", -4, 0)
@@ -257,7 +252,11 @@ function Mod:Blizzard_ChallengesUI()
 	label:SetJustifyV("MIDDLE")
 	label:SetHeight(72)
 	label:SetWordWrap(true)
-	label:SetText(Addon.Locale.scheduleUnknown)
+	if affixScheduleUnknown then
+		label:SetText(Addon.Locale.scheduleUnknown)
+	else
+		label:SetText(Addon.Locale.scheduleMissingKeystone)
+	end
 	frame.Label = label
 
 	local frame2 = CreateFrame("Frame", nil, ChallengesFrame)
@@ -293,7 +292,7 @@ function Mod:Blizzard_ChallengesUI()
 		entry.Text = text
 
 		local text2 = entry:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-		text2:SetWidth(180)
+		text2:SetWidth(140)
 		text2:SetJustifyH("RIGHT")
 		text2:SetWordWrap(false)
 		text2:SetText()
@@ -311,8 +310,8 @@ function Mod:Blizzard_ChallengesUI()
 	frame2.Entries = entries2
 
 	local keystoneText = ChallengesFrame.WeeklyInfo.Child:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
-	keystoneText:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -15)
-	keystoneText:SetWidth(220)
+	keystoneText:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -80)
+	keystoneText:SetWidth(300)
 	Mod.KeystoneText = keystoneText
 
 	hooksecurefunc(ChallengesFrame, "Update", UpdateFrame)
@@ -322,7 +321,7 @@ function Mod:GetInventoryKeystone()
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
 		local slots = C_Container.GetContainerNumSlots(container)
 		for slot=1, slots do
-			local slotLink = C_Container.GetContainerItemLink(container, slot)
+			local _, _, _, _, _, _, slotLink = C_Container.GetContainerItemInfo(container, slot)
 			local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
 			if itemString then
 				return slotLink, itemString
@@ -334,9 +333,6 @@ end
 function Mod:CheckAffixes()
 	currentWeek = nil
 	local currentAffixes = C_MythicPlus.GetCurrentAffixes()
-	if currentAffixes and currentAffixes[4] then
-		SEASON_AFFIX_ID = currentAffixes[4].id
-	end
 
 	if currentAffixes then
 		for index, affixes in ipairs(affixSchedule) do
@@ -460,7 +456,7 @@ end
 
 function Mod:Startup()
 	scheduleEnabled = Addon.Config.schedule
-
+	
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "SetPartyKeystoneRequest")
 	self:RegisterEvent("BAG_UPDATE")
