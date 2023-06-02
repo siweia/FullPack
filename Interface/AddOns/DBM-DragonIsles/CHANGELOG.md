@@ -1,28 +1,41 @@
 # <DBM> World Bosses (Dragonflight)
 
-## [10.1.10](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.10) (2023-05-23)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.9...10.1.10) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.1.11](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.11) (2023-05-30)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.10...10.1.11) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- prep new tags for wrath classic and retail  
-- LFR timers reviewed and verified are unchanged. just minor tweaks  
-- Ooh, fix a bug where vanilla onyxia is rejected on classic era. this culling only applies to wrath for now.  
-- banned mods update  
-- Add astral formation bar  
-- Update koKR (#221)  
-- Update core for wrath culling  
-- Prep core for culling phase 1  
-- Default filter timers when using plater nameplate CD icon auras Add additional filter control for regular global timer disables for those not using plater who stll want to shut off specifically boss or trash timers only.  
-- Add combat check to onsync handlers for event bosses  
-- Merge branch 'master' of https://github.com/DeadlyBossMods/DBM-Retail  
-- Don't load M+ affixes in S1 dungeons anymore  
-- Update localization.ru.lua (#219)  
-- Sync Bugfixes: - Fixed a bug where combat rules were applied globally to syncs, causing many trash mods, and boss RP syncs to never actually sync in first place, defeating entire purpose in many cases of why syncs exist in first place. This should fix MANY rp timers. caveat, it might also cause mods that aren't correctly checking IsInCombat in their OnSync handlers to start showing stuff out of combat (this has to be fixed on a per mod level) - Fixed a bug where player syncs were given no restriction on whether or not they should be trusted. There is a reason minsyncrevision exists and an out of date players DBM shouldn't be allowed to ignore that. This code originally existed so a player in a solo raid wouldn't have broken comms entirely, but that's now handled correctly in the sendSync function which automatically passes player comms to sync handler without check if there is no one else in group with them, so all the hacky exclusion checks in RecieveSync are no longer needed.  
-- Add dawn of the infinite to instace ID table  
-- Update koKR (#218)  
-- Forgot to hookup reset button  
-- Entangled timer will now only play countdown sounds in combat, timer will continue out of combat but it'll be silent unless in combat  
-- support in legacy object too  
-- Add tech to auto disable countdowns based on combat status, if the object calls for it  
-- Fix private auras without voicepack + minor voicepack selection issues (#217)  
-- Fix VPVersion and forceDisable handling in version sync (#216)  
-- bump alpha  
+- prep new tag  
+- Update koKR (Retail) (#901)  
+- minor tweak  
+- Deemphasize fixate warnings so they're less crowded  
+- expects count arg  
+- fix duplicate object name  
+- Detect skipped incorp casts and start timer for next cast when it happens. this solves one of two issues it had. unfortunately the pause/unpause code is pretty much hosed if incorp overlaps with vengeful  
+    Enable Zskarn berserk on all difficulties instead of just mythic  
+    Added wall breaker mythic strat yells to echo of neltharian  
+- change option default to reduce spam  
+- Don't set skull mark on "Null Glimmer" adds in p3 (Aberrus - Sarkareth Mythic) (#899)  
+- small tweak  
+- Fix mythic ability timers on assault since the abilities are actually happening again.  
+- Add couple high priority trash warnings to Aberrus  
+- Update localization.ru.lua (#224)  
+- Update zhTW (GUI) (#225)  
+- Update zhTW (Core) (#226)  
+- Update koKR (#223)  
+- Update localization.ru.lua (#222)  
+- Update banned mods  
+- Fixed couple bugs  
+- Updaet zskarn for may 25th hotfixes  
+- prepare localizers for some future options that won't be deployed just yet  
+- update banned list  
+- Comment these out too.  
+- add experimental Incorporeal timer for testing  
+- update banned mods for latest culling/migrations  
+- timer tweak  
+- slide timer adjustment  
+- Fixed logic bug that caused one invalid timer on normal and LFR magmorax  
+    Updated Phase 3 darkness timers on echo of neltharian for May 23rd hotfixes that were undocumented that seem to have added an extra darkness cast to boss in between stage change and original first darkness cast  
+- Fixed a bug wehre void fracture alert went off during P1 to P2 transition. that ID seems to be applied to whole raid  
+- Fixed a bug where the respawn timer fallback never actually started a respawn timer. Now it should start the default 29-30 second respawn timer on all bosses and then if it's wrong it'll be easier to get reports about it and fix.  
+- Fixed a bug where Blazing spear could show multiple alerts/yells if multiple mobs target you with it at once on Assault  
+    Turned interrupt Cd for stream off by default on Sarkareth due to spam  
+    Fixed a bug wehre volatile spew played no voice pack alert on Forgotten Experiments.  
