@@ -1683,10 +1683,8 @@ L["Necrotic Spiderling"] = "Aranita Necrótica"
 L["Neesa Nox"] = "Nisa Nox"
 L["Nefarious Darkspeaker"] = "Orador Sombrio Nefasto"
 L["Nekthara the Mangler"] = "Nekthara, o Mutilador"
-L["Neltharion's Lair"] = [=[Covil de Neltharian 
-]=]
-L["Neltharion's Lair Sublevel"] = [=[Covil de Neltharian Subnível 1
- ]=]
+L["Neltharion's Lair"] = "Covil de Neltharian"
+L["Neltharion's Lair Sublevel"] = "Covil de Neltharian Subnível 1"
 --[[Translation missing --]]
 L["Neltharus"] = "Neltharus"
 --[[Translation missing --]]

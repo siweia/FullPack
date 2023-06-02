@@ -268,7 +268,7 @@ local affixWeeks = {
   [1] = { 6, 124, 9},
   [2] = { 134, 7, 10},
   [3] = { 136, 123, 9},
-  [4] = { 0, 0, 10},
+  [4] = { 135, 6, 10},
   [5] = { 0, 0, 9},
   [6] = { 0, 0, 10},
   [7] = { 0, 0, 9},
@@ -2431,7 +2431,7 @@ function MDT:UpdateMap(ignoreSetSelection, ignoreReloadPullButtons, ignoreUpdate
   if not framesInitialized then coroutine.yield() end
   MDT:DungeonEnemies_UpdateInspiring()
   if not framesInitialized then coroutine.yield() end
-
+  MDT:POI_UpdateAll()
   if not ignoreReloadPullButtons then
     MDT:ReloadPullButtons()
   end
