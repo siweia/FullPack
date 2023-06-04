@@ -454,6 +454,8 @@ L["ConnectedTip"] = "Les connexions de groupe dans MDT ne reflètent pas si les 
 L["Containment Apparatus"] = "Containment Apparatus"
 L["Control Undead"] = "Asservir un mort-vivant "
 L["Copy"] = "Copier "
+--[[Translation missing --]]
+L["Copy error"] = "Copy error"
 L["Cordana Felsong"] = "Cordana Gangrechant"
 L["Corpse Collector"] = "Collecteur de corps"
 L["Corpse Harvester"] = "Moissonneur de cadavres"
@@ -864,6 +866,14 @@ L["Erekem"] = "Erekem"
 L["Eric \"The Swift\""] = "Eric \"The Swift\""
 --[[Translation missing --]]
 L["Erkhart Stormvein"] = "Erkhart Stormvein"
+--[[Translation missing --]]
+L["Error Message:"] = "Error Message:"
+--[[Translation missing --]]
+L["errorLabel1"] = "MDT has encountered errors."
+--[[Translation missing --]]
+L["errorLabel2"] = "Please visist either GitHub or Discord and report the error message below."
+--[[Translation missing --]]
+L["errorLabel3"] = "Press CTRL + C to copy!"
 L["Erudite Slayer"] = "Tueuse érudite"
 L["Etherdiver"] = "Plonge-éther"
 --[[Translation missing --]]
@@ -1539,6 +1549,8 @@ L["MausoleumOfLegends"] = "Mausoleum Of Legends"
 L["Maw of Souls"] = "Gueule des âmes "
 L["Mchimba the Embalmer"] = "Mchimba l'Embaumeur"
 L["MDI Mode"] = "Mode MDI "
+--[[Translation missing --]]
+L["MDT Error"] = "MDT Error"
 L["MDT: Error importing preset"] = "MDT : une erreur est survenue dans l'import de la route "
 L["MDT: Spells for %s:"] = "MDT : Sorts pour %s : "
 --[[Translation missing --]]

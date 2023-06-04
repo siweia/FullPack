@@ -334,6 +334,8 @@ L["ConnectedTip"] = "Группы, обведенные в MDT, не соотв�
 L["Containment Apparatus"] = "Аппарат сдерживания"
 L["Control Undead"] = "Порабощение нежити"
 L["Copy"] = "Копировать"
+--[[Translation missing --]]
+L["Copy error"] = "Copy error"
 L["Cordana Felsong"] = "Кордана Оскверненная Песнь"
 L["Corpse Collector"] = "Собиратель трупов"
 L["Corpse Harvester"] = "Сборщик трупов"
@@ -621,6 +623,14 @@ L["Eredar Chaosbringer"] = "Эредарский вестник хаоса"
 L["Erekem"] = "Эрекем"
 L["Eric \"The Swift\""] = "Эрик \"Быстрый\""
 L["Erkhart Stormvein"] = "Эркхарт Кровь Бури"
+--[[Translation missing --]]
+L["Error Message:"] = "Error Message:"
+--[[Translation missing --]]
+L["errorLabel1"] = "MDT has encountered errors."
+--[[Translation missing --]]
+L["errorLabel2"] = "Please visist either GitHub or Discord and report the error message below."
+--[[Translation missing --]]
+L["errorLabel3"] = "Press CTRL + C to copy!"
 L["Erudite Slayer"] = "Убийца эрудитов"
 L["Etherdiver"] = "Эфирный Ныряльщик"
 L["Ethereal Restorer"] = "Алгет'арский целитель"
@@ -1144,6 +1154,8 @@ L["MausoleumOfLegends"] = "Мавзолей Легенд"
 L["Maw of Souls"] = "Утесы Адской Пасти"
 L["Mchimba the Embalmer"] = "Мчимба Бальзамировщик"
 L["MDI Mode"] = "Режим MDI"
+--[[Translation missing --]]
+L["MDT Error"] = "MDT Error"
 L["MDT: Error importing preset"] = "MDT: Ошибка импорта маршрута"
 L["MDT: Spells for %s:"] = "MDT: Заклинания для %s:"
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: используйте /mdt minimap, чтобы снова отобразить значок миникарты"

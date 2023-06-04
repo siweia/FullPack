@@ -408,6 +408,8 @@ L["ConnectedTip"] = "MDT中的组连接没有反映出游戏世界中NPC是否�
 L["Containment Apparatus"] = "Containment Apparatus"
 L["Control Undead"] = "控制亡灵"
 L["Copy"] = "复制"
+--[[Translation missing --]]
+L["Copy error"] = "Copy error"
 L["Cordana Felsong"] = "科达娜·邪歌"
 L["Corpse Collector"] = "尸体采集者"
 L["Corpse Harvester"] = "尸体收割者"
@@ -782,6 +784,14 @@ L["Erekem"] = "Erekem"
 --[[Translation missing --]]
 L["Eric \"The Swift\""] = "Eric \"The Swift\""
 L["Erkhart Stormvein"] = "厄克哈特·风脉"
+--[[Translation missing --]]
+L["Error Message:"] = "Error Message:"
+--[[Translation missing --]]
+L["errorLabel1"] = "MDT has encountered errors."
+--[[Translation missing --]]
+L["errorLabel2"] = "Please visist either GitHub or Discord and report the error message below."
+--[[Translation missing --]]
+L["errorLabel3"] = "Press CTRL + C to copy!"
 L["Erudite Slayer"] = "艾瑞迪特屠杀者"
 L["Etherdiver"] = "以太俯冲者"
 L["Ethereal Restorer"] = "虚无修复者"
@@ -1400,6 +1410,8 @@ L["MausoleumOfLegends"] = "传奇陵墓"
 L["Maw of Souls"] = "噬魂之喉"
 L["Mchimba the Embalmer"] = "殓尸者姆沁巴"
 L["MDI Mode"] = "MDI模式"
+--[[Translation missing --]]
+L["MDT Error"] = "MDT Error"
 L["MDT: Error importing preset"] = "MDT: 导入路线时发生错误"
 L["MDT: Spells for %s:"] = "MDT: %s 的法术:"
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: 输入 /mdt minimap 再次显示小地图按钮"
