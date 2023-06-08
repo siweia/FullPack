@@ -453,6 +453,8 @@ L["ConnectedTip"] = "Les connexions de groupe dans MDT ne reflètent pas si les 
 --[[Translation missing --]]
 L["Containment Apparatus"] = "Containment Apparatus"
 L["Control Undead"] = "Asservir un mort-vivant "
+--[[Translation missing --]]
+L["copiedToClipboard"] = "copied!"
 L["Copy"] = "Copier "
 --[[Translation missing --]]
 L["Copy error"] = "Copy error"
@@ -2146,6 +2148,8 @@ L["Seaspray Crab"] = "Crabe écumeux"
 L["Seat of the Archon"] = "Siège de l’Archonte"
 L["Seat of the Triumvirate"] = "Siège du triumvirat "
 L["Seat of the Triumvirate Sublevel"] = "Sous niveau du Siège du triumvirat "
+--[[Translation missing --]]
+L["Select all"] = "Select all"
 L["Select the dungeon level"] = "Sélectionnez le niveau du donjon "
 L["Sending: %.1f"] = "Envoi : %.1f "
 L["Seneschal M'bara"] = "Sénéchal M'bara"

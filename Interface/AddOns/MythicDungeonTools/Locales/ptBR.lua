@@ -457,6 +457,8 @@ L["ConnectedTip"] = "Group connections in MDT do not reflect if NPCs are linked 
 --[[Translation missing --]]
 L["Containment Apparatus"] = "Containment Apparatus"
 L["Control Undead"] = "Controlar Mortos-vivos"
+--[[Translation missing --]]
+L["copiedToClipboard"] = "copied!"
 L["Copy"] = "Copiar"
 --[[Translation missing --]]
 L["Copy error"] = "Copy error"
@@ -2244,6 +2246,8 @@ L["Seat of the Archon"] = "Seat of the Archon"
 L["Seat of the Triumvirate"] = "Seat of the Triumvirate"
 --[[Translation missing --]]
 L["Seat of the Triumvirate Sublevel"] = "Seat of the Triumvirate"
+--[[Translation missing --]]
+L["Select all"] = "Select all"
 --[[Translation missing --]]
 L["Select the dungeon level"] = "Select the dungeon level"
 --[[Translation missing --]]

@@ -442,6 +442,8 @@ L["ConnectedTip"] = "MDT 中連在一起的群組不代表遊戲內的 NPC 也�
 --[[Translation missing --]]
 L["Containment Apparatus"] = "Containment Apparatus"
 L["Control Undead"] = "控制不死生物"
+--[[Translation missing --]]
+L["copiedToClipboard"] = "copied!"
 L["Copy"] = "複製"
 --[[Translation missing --]]
 L["Copy error"] = "Copy error"
@@ -2119,6 +2121,8 @@ L["Seaspray Crab"] = "逐潮蟹"
 L["Seat of the Archon"] = "御靈者之座"
 L["Seat of the Triumvirate"] = "三傑議會之座"
 L["Seat of the Triumvirate Sublevel"] = "三傑議會之座"
+--[[Translation missing --]]
+L["Select all"] = "Select all"
 L["Select the dungeon level"] = "選擇地城層數"
 L["Sending: %.1f"] = "正在傳送: %.1f"
 L["Seneschal M'bara"] = "总管姆巴拉"

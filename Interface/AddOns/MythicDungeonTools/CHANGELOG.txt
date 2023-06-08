@@ -1,3 +1,17 @@
+- v4.0.4.5
+  - bugfix
+- v4.0.4.4
+  - mapping updates Neltharus, cosmetic updates Neltharus+Brackenhide
+  - affix week update
+- v4.0.4.3
+  - bugfix
+  - minor mapping updates freehold + uldaman
+- v4.0.4.2
+  - bugfix
+- v4.0.4.1
+  - bugfixes + cosmetic change to route export
+  - fix nil errors
+  - better default route naming
 - v4.0.4.0
   - internal error handling
   - mapping updates

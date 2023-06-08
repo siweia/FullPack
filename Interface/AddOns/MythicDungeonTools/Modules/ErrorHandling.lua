@@ -22,12 +22,12 @@ function MDT:DisplayErrors()
       editBox:HighlightText(0, slen(text))
       editBox:SetFocus()
       copyButton:SetDisabled(true)
-      MDT.errorFrame.copyHelperLabel.label:Show()
+      MDT.copyHelper:SmartShow(MDT.errorFrame.frame,0,0)
   end
 
   local function stopCopyAction(copyButton)
     copyButton:SetDisabled(false)
-    MDT.errorFrame.copyHelperLabel.label:Hide()
+    MDT.copyHelper:SmartHide()
   end
 
   local errorBoxText = ""
@@ -63,15 +63,16 @@ function MDT:DisplayErrors()
       end)
 
       editBox:SetWidth(400)
-      editBox.frame.obj.editbox:HookScript('OnEditFocusLost', function()
+      editBox.editbox:HookScript('OnEditFocusLost', function()
         stopCopyAction(copyButton)
       end);
-      editBox.frame.obj.editbox:SetScript('OnKeyUp', function(_, key)
-          --dont interfere with user manually ctrl+a selecting
-          if (IsControlKeyDown() and (key == 'A')) or key == "LCTRL" then
-              return
-          end
+      editBox.editbox:SetScript('OnKeyUp', function(_, key)
+        if (MDT.copyHelper:WasControlKeyDown() and key == 'C') then
+          MDT.copyHelper:SmartFadeOut()
           editBox:ClearFocus();
+        else
+          MDT.copyHelper:SmartHide()
+        end
       end);
       errorFrame[dest.name.."CopyButton"] = AceGUI:Create("Button")
       copyButton = errorFrame[dest.name.."CopyButton"]
@@ -98,11 +99,12 @@ function MDT:DisplayErrors()
       stopCopyAction(errorBoxCopyButton)
     end);
     errorBox.editBox:SetScript('OnKeyUp', function(_, key)
-        --dont interfere with user manually ctrl+a selecting
-        if (IsControlKeyDown() and (key == 'A')) or key == "LCTRL" then
-            return
-        end
+      if (MDT.copyHelper:WasControlKeyDown() and key == 'C') then
+        MDT.copyHelper:SmartFadeOut()
         errorBox:ClearFocus();
+      else
+        MDT.copyHelper:SmartHide()
+      end
     end);
 
     errorFrame.errorBoxCopyButton = AceGUI:Create("Button")
@@ -115,17 +117,10 @@ function MDT:DisplayErrors()
 
     errorFrame:AddChild(errorFrame.errorBox)
     errorFrame:AddChild(errorFrame.errorBoxCopyButton)
-
-    errorFrame.copyHelperLabel = AceGUI:Create("Label")
-    errorFrame.copyHelperLabel:SetFontObject("GameFontNormalLarge")
-    errorFrame.copyHelperLabel.label:SetTextColor(1,1,0)
-    errorFrame.copyHelperLabel:SetText(L["errorLabel3"])
-    errorFrame.copyHelperLabel.label:Hide()
-    errorFrame:AddChild(errorFrame.copyHelperLabel)
   end
 
-  for _, errorText in ipairs(caughtErrors) do
-    errorBoxText = errorBoxText..errorText.."\n"
+  for _, error in ipairs(caughtErrors) do
+    errorBoxText = errorBoxText..error.message.."\n"
   end
   --add diagnostics
   local presetExport = MDT:TableToString(MDT:GetCurrentPreset(), true, 5)
@@ -144,23 +139,32 @@ function MDT:DisplayErrors()
   }
   local region = regions[regionId]
   errorBoxText = errorBoxText .."\n"..dateString.."\nMDT: "..addonVersion.."\nClient: "..gameVersion.." "..locale.."\nCharacter: "..name.."-"..realm.." ("..region..")".."\n\nRoute:\n"..presetExport
-  MDT.errorFrame.errorBox:SetText(errorBoxText)
+  errorBoxText = errorBoxText .."\n\nStacktraces\n\n"
+  for _, error in ipairs(caughtErrors) do
+    errorBoxText = errorBoxText..error.stackTrace.."\n"
+  end
 
+  MDT.errorFrame.errorBox:SetText(errorBoxText)
   MDT.errorFrame:Show()
 end
 
 local numError = 0
 local currentFunc = ""
-local function onError(s)
+local addTrace = false
+local function onError(msg, stackTrace, name)
   numError = numError + 1
-  local e = currentFunc..": "..s
+  local funcName = name or currentFunc
+  local e = funcName..": "..msg
   -- return early on duplicate errors
-  for _,errorText in pairs(caughtErrors) do
-    if errorText == e then
+  for _,error in pairs(caughtErrors) do
+    if error.message == e then
+      addTrace = false
       return false
     end
   end
-  tinsert(caughtErrors,e)
+  local stackTraceValue = stackTrace and name.. ":\n"..stackTrace
+  tinsert(caughtErrors,{message = e, stackTrace = stackTraceValue})
+  addTrace = true
   if MDT.errorTimer then MDT.errorTimer:Cancel() end
   MDT.errorTimer  = C_Timer.NewTimer(0.5, function()
     MDT:DisplayErrors()
@@ -172,301 +176,46 @@ local function onError(s)
   return false
 end
 
+--accessible function for errors in coroutines
+function MDT:OnError(msg,stackTrace,name)
+  onError(msg, stackTrace, name)
+end
+
 function MDT:RegisterErrorHandledFunctions()
-  local functionsToHandle = {
-    "DeleteAllPresets",
-    "LiveSession_RequestSession",
-    "GetDungeonSublevels",
-    "DungeonEnemies_UpdateSeasonalAffix",
-    "HideInterface",
-    "GetBlip",
-    "RestoreScrollframeScripts",
-    "RegisterModule",
-    "ADDON_LOADED",
-    "UpdateDungeonEnemies",
-    "IsFrameOffScreen",
-    "IsCurrentPresetTyrannical",
-    "POI_CreateFramePools",
-    "CreateDevPanel",
-    "StartEraserDrawing",
-    "SetLivePreset",
-    "GetDungeonName",
-    "LiveSession_SendPreset",
-    "UpdateEnemyInfoData",
-    "CopyPullOptions",
-    "CleanEnemyData",
-    "GetHighestFrameLevelAtCursor",
-    "DisplayBlipTooltip",
-    "StringToTable",
-    "SkinProgressBar",
-    "MakeRenameFrame",
-    "DungeonEnemies_UpdateBoralusFaction",
-    "initToolbar",
-    "POI_UpdateAll",
-    "OpenCustomColorsDialog",
-    "LiveSession_SendCommand",
-    "MakeCustomColorFrame",
-    "UpdatePresetDropDown",
-    "RegisterErrorHandledFunctions",
-    "HSVtoRGB",
-    "RequestDataCollectionUpdate",
-    "GetSeasonList",
-    "DungeonEnemies_GetPullColor",
-    "GetEfficiencyScoreString",
-    "ResetDataCache",
-    "SetThrottleValues",
-    "EnableBrushPreview",
-    "GetCurrentSubLevel",
-    "RenamePreset",
-    "ZoomMapToDefault",
-    "LiveSession_NotifyEnabled",
-    "AddCloneFromData",
-    "RGBToHex",
-    "Progressbar_SetValue",
-    "ClearPullButtonPicks",
-    "EnsureDBTables",
-    "UpdatePresetDropdownTextColor",
-    "ZoomMap",
-    "CheckCurrentZone",
-    "MovePullDown",
-    "CreateBrushPreview",
-    "LiveSession_SendAffixWeek",
-    "CopyObject",
-    "DrawPresetObject",
-    "ReverseCalcEnemyHealth",
-    "ExportNPCIdsWithoutDisplayIds",
-    "GetPatrolBlips",
-    "SetAutomaticColor",
-    "UpdatePullButtonColor",
-    "DungeonEnemies_UpdateEnemies",
-    "DrawLine",
-    "GetDefaultMapPanelSize",
-    "GetScrollingAmount",
-    "DungeonEnemies_AddOrRemoveBlipToCurrentPull",
-    "OnPan",
-    "GetSelection",
-    "Show_DropIndicator",
-    "ReturnToLivePreset",
-    "OnMouseUp",
-    "PresetsAddPull",
-    "MouseDownHook",
-    "HideAnimatedLine",
-    "SetMapSublevel",
-    "PrintCurrentAffixes",
-    "LiveSession_SendBoralusSelector",
-    "GetLocaleIndex",
-    "LiveSession_SendPing",
-    "GetCurrentPreset",
-    "GetCurrentDevmodeBlip",
-    "DungeonEnemies_CreateFramePools",
-    "ToggleToolbarTooltip",
-    "GetSchema",
-    "AddCloneAtCursorPosition",
-    "UpdateBoralusSelector",
-    "HideAllDialogs",
-    "OpenConfirmationFrame",
-    "PLAYER_ENTERING_WORLD",
-    "OpenClearPresetDialog",
-    "PresetsDeletePull",
-    "GetDB",
-    "OpenSettingsDialog",
-    "MakeSidePanel",
-    "Minimize",
-    "GROUP_ROSTER_UPDATE",
-    "GetEffectivePresetWeek",
-    "OpenChatImportPresetDialog",
-    "GetEnemyInfoSpellBlacklist",
-    "FindConnectedDoor",
-    "POI_CreateDropDown",
-    "StopLineDrawing",
-    "FormatEnemyForces",
-    "MakeTopBottomTextures",
-    "CreateCoroutineHandler",
-    "GetEnemyForces",
-    "PresetObjectStepBack",
-    "LiveSession_SendUpdatedObjects",
-    "CreateTutorialButton",
-    "CreateDungeonSelectDropdown",
-    "LiveSession_SendObjectOffsets",
-    "UpdateAffixWeeks",
-    "POI_GetPOIAssignment",
-    "MakePresetCreationFrame",
-    "DungeonEnemies_UpdateInfested",
-    "ReleaseAllActiveTextures",
-    "ColorPull",
-    "POI_HideAllPoints",
-    "IsPresetTeeming",
-    "DungeonEnemies_UpdateReaping",
-    "GetCurrentAffixWeek",
-    "AddNPCFromUnit",
-    "ReleaseHullFontStrings",
-    "PresetObjectStepForward",
-    "CountPresets",
-    "UpdateProgressbar",
-    "DungeonEnemies_HideAllBlips",
-    "MakePullSelectionButtons",
-    "StorePresetObject",
-    "StopEraserDrawing",
-    "TableToString",
-    "GetPullButton",
-    "ShowEnemyInfoFrame",
-    "UpdatePullTooltip",
-    "POI_SetPOIAssignment",
-    "StartNoteDrawing",
-    "GetEffectivePresetSeason",
-    "SkinMenuButtons",
-    "FindPullOfBlip",
-    "POI_GetFrameForPOI",
-    "GetDungeonEnemyBlips",
-    "DoFramesOverlap",
-    "ActivatePullTooltip",
-    "IsDragonflight",
-    "SetPresetColorPaletteInfo",
-    "FormatEnemyHealth",
-    "StartMovingObject",
-    "Hide_DropIndicator",
-    "CheckAddonConflicts",
-    "StartPencilDrawing",
-    "ShowConflictFrame",
-    "IsCloneInPulls",
-    "LiveSession_SendCorruptedPositions",
-    "UpdateEnemyInfoFrame",
-    "MakeExportFrame",
-    "TestExport",
-    "StartLineDrawing",
-    "DeletePresetObjects",
-    "ReleaseHullTextures",
-    "GetNumDungeons",
-    "OnPanFadeOut",
-    "ValidateImportPreset",
-    "IsCurrentPresetThundering",
-    "ToggleBoralusSelector",
-    "CreateMenu",
-    "GetRiftOffsets",
-    "ExportLuaTable",
-    "IsWrath",
-    "MakeSettingsFrame",
-    "CleanEnemyInfoSpells",
-    "MakeClearConfirmationFrame",
-    "DeepCopy",
-    "IsShown_DropIndicator",
-    "AddPatrolWaypointAtCursorPosition",
-    "ToggleDevMode",
-    "StartArrowDrawing",
-    "UpdateDungeonDropDown",
-    "LiveSession_SendObject",
-    "LiveSession_SendPulls",
-    "IsWeekTeeming",
-    "UpdatePresetObjectOffsets",
-    "Maximize",
-    "DrawHullCircle",
-    "LiveSession_SendPOIAssignment",
-    "GetPulls",
-    "PickPullButton",
-    "GetFullScreenSizes",
-    "ScrollToNextDungeon",
-    "LiveSession_SendNoteCommand",
-    "FixDungeonDropDownList",
-    "LiveSession_RequestPreset",
-    "CalculateEnemyHealth",
-    "UpdatePullButtonNPCData",
-    "IsOnBetaServer",
-    "LiveSession_SessionFound",
-    "DeletePreset",
-    "IsPlayerInGroup",
-    "GetPresetColorPaletteInfo",
-    "LiveSession_SendDifficulty",
-    "IsCurrentPresetTeeming",
-    "LiveSession_Enable",
-    "GetSublevelName",
-    "MakeChatPresetImportFrame",
-    "SendToGroup",
-    "SetUniqueID",
-    "MakeDeleteConfirmationFrame",
-    "MakeSendingStatusBar",
-    "DrawNote",
-    "IsNPCInPulls",
-    "SanitizePresetName",
-    "DrawTriangle",
-    "DrawCircle",
-    "DisableBrushPreview",
-    "GetHighestPresetObjectIndexAtCursor",
-    "UpdateAutomaticColors",
-    "GetCurrentPull",
-    "StopMovingObject",
-    "GetCurrentLivePreset",
-    "HideAllPresetObjects",
-    "GetTileFormat",
-    "IsWeekInspiring",
-    "PingMap",
-    "LiveSession_Disable",
-    "StopPencilDrawing",
-    "DungeonEnemies_SetPullColor",
-    "SetCurrentSubLevel",
-    "ReloadPullButtons",
-    "DrawAllPresetObjects",
-    "StopArrowDrawing",
-    "DisplayErrors",
-    "DungeonEnemies_UpdateInspiring",
-    "FixAceGUIShowHide",
-    "SetPingOffsets",
-    "LiveSession_QueueColorUpdate",
-    "DrawHullFontString",
-    "GetCursorPosition",
-    "ExportCurrentZoomPanSettings",
-    "DungeonEnemies_UpdateTeeming",
-    "OverrideScrollframeScripts",
-    "UpdateSelectedToolbarTool",
-    "DropIndicator",
-    "ScrollToPull",
-    "ColorAllPulls",
-    "ShowMinimapButton",
-    "PresetsSwapPulls",
-    "FindClosestPull",
-    "DrawAllAnimatedLines",
-    "KillAllAnimatedLines",
-    "HexToRGB",
-    "ShowAnimatedLine",
-    "StartScaling",
-    "GetEnemyInfoEnemyIdx",
-    "DrawHull",
-    "DrawHullLine",
-    "IsCloneIncluded",
-    "MakePresetImportFrame",
-    "HideMinimapButton",
-    "DungeonEnemies_IsAnyBlipMoving",
-    "UpdateDungeonData",
-    "GetNPCNameById",
-    "GetScale",
-    "ToggleDataCollection",
-    "SetSelectionToPull",
-    "OpenNewPresetDialog",
-    "ResetMainFramePos",
-    "OnMouseDown",
-    "CountForces",
-    "OpenImportPresetDialog",
-    "IsCurrentPresetFortified",
-    "GetPullsNum",
-    "SetScale",
-    "GetFirstNotSelectedPullButton",
-    "DungeonEnemies_UpdateBlipColors",
-    "GetPresetSize",
-    "ClearPreset",
-    "UpdateBottomText",
-    "HardReset",
-    "CreateNewPreset",
-    "MakeMapTexture",
-    "Round",
-    "SetViewPortPosition",
-    "SumCurrentPullHealth",
-    "PresetsMergePulls",
-    "ImportPreset",
+  --register all functions except the ones that have to run as coroutines
+  local blacklisted = {
+    ["DungeonEnemies_UpdateSelected"] = true,
+    ["AddPull"] = true,
+    ["ClearPull"] = true,
+    ["ShowInterfaceInternal"] = true,
+    ["UpdateToDungeon"] = true,
+    ["UpdateMap"] = true,
+    ["MovePullUp"] = true,
+    ["ShowInterface"] = true,
+    ["DeletePull"] = true,
+    ["ExportDungeonDataIncrementally"] = true,
+    ["DrawAllHulls"] = true,
+    ["ExportString"] = true,
+    ["Async"] = true,
+    ["RegisterErrorHandledFunctions"] = true,
+    ["OnError"] = true,
+    ["DeepCopy"] = true,
   }
-  for _,funcName in pairs(functionsToHandle) do
-    local func = MDT[funcName]
-    MDT[funcName] = function(...)
-      currentFunc = funcName
-      return select(2,xpcall(func, onError , ...))
+  for funcName,func in pairs(MDT) do
+    if type(func) == "function" and not blacklisted[funcName] then
+      MDT[funcName] = function(...)
+        currentFunc = funcName
+        local results = {xpcall(func, onError , ...)}
+        local ok = select(1,unpack(results))
+        if not ok then
+          if addTrace then
+            --add stackTrace to the latest error
+            caughtErrors[#caughtErrors].stackTrace = currentFunc.. ":\n"..debugstack()
+          end
+          return
+        end
+        return select(2,unpack(results))
+      end
     end
   end
 end

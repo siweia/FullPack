@@ -470,6 +470,8 @@ L["ConnectedTip"] = "Group connections in MDT do not reflect if NPCs are linked 
 --[[Translation missing --]]
 L["Containment Apparatus"] = "Containment Apparatus"
 L["Control Undead"] = "언데드 지배"
+--[[Translation missing --]]
+L["copiedToClipboard"] = "copied!"
 L["Copy"] = "복사"
 --[[Translation missing --]]
 L["Copy error"] = "Copy error"
@@ -2181,6 +2183,8 @@ L["Seaspray Crab"] = "바다안개 게"
 L["Seat of the Archon"] = "집정관의 권좌"
 L["Seat of the Triumvirate"] = "삼두정의 권좌"
 L["Seat of the Triumvirate Sublevel"] = "삼두정의 권좌"
+--[[Translation missing --]]
+L["Select all"] = "Select all"
 L["Select the dungeon level"] = "던전 레벨을 고르기"
 L["Sending: %.1f"] = "보내는중: %.1f"
 L["Seneschal M'bara"] = "사무장 음바라"
