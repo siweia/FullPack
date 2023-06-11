@@ -1575,7 +1575,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 186124;
     ["count"] = 0;
     ["health"] = 3556818;
-    ["scale"] = 1.2;
+    ["scale"] = 1;
     ["displayId"] = 105695;
     ["creatureType"] = "Humanoid";
     ["level"] = 70;
@@ -1613,8 +1613,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     };
     ["clones"] = {
       [1] = {
-        ["x"] = 307.98105253792;
-        ["y"] = -223.12432295944;
+        ["x"] = 310.89135905405;
+        ["y"] = -222.85976753143;
         ["g"] = 30;
         ["sublevel"] = 1;
       };
@@ -1625,7 +1625,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 186122;
     ["count"] = 0;
     ["health"] = 3556818;
-    ["scale"] = 1.2;
+    ["scale"] = 1;
     ["displayId"] = 105696;
     ["creatureType"] = "Humanoid";
     ["level"] = 70;
@@ -1670,7 +1670,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 186125;
     ["count"] = 0;
     ["health"] = 3556818;
-    ["scale"] = 1.2;
+    ["scale"] = 1;
     ["displayId"] = 105697;
     ["creatureType"] = "Humanoid";
     ["level"] = 70;
@@ -1693,8 +1693,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     };
     ["clones"] = {
       [1] = {
-        ["x"] = 300.2;
-        ["y"] = -238.4;
+        ["x"] = 305.8334939861;
+        ["y"] = -238.21280162506;
         ["g"] = 30;
         ["sublevel"] = 1;
       };
@@ -1956,19 +1956,19 @@ MDT.dungeonEnemies[dungeonIndex] = {
       };
       [12] = {
         ["x"] = 352.3;
-        ["y"] = -388.2;
+        ["y"] = -392.76211798867;
         ["g"] = 40;
         ["sublevel"] = 1;
       };
       [13] = {
-        ["x"] = 403.9;
-        ["y"] = -371.1;
+        ["x"] = 403.27075103761;
+        ["y"] = -373.93166533885;
         ["g"] = 45;
         ["sublevel"] = 1;
       };
       [14] = {
-        ["x"] = 406.8;
-        ["y"] = -371.4;
+        ["x"] = 409.7889505746;
+        ["y"] = -375.17554778406;
         ["g"] = 45;
         ["sublevel"] = 1;
       };
@@ -2076,8 +2076,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1;
       };
       [6] = {
-        ["x"] = 429.4;
-        ["y"] = -403.2;
+        ["x"] = 429.19212311781;
+        ["y"] = -402.78422244564;
         ["g"] = 53;
         ["sublevel"] = 1;
         ["patrol"] = {
@@ -2104,8 +2104,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         };
       };
       [7] = {
-        ["x"] = 434.6;
-        ["y"] = -403.5;
+        ["x"] = 436.26306263746;
+        ["y"] = -403.7078530922;
         ["g"] = 53;
         ["sublevel"] = 1;
       };
@@ -2122,8 +2122,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1;
       };
       [10] = {
-        ["x"] = 341.1;
-        ["y"] = -352.7;
+        ["x"] = 339.84147507036;
+        ["y"] = -352.8573122406;
         ["g"] = 37;
         ["sublevel"] = 1;
       };
@@ -2134,14 +2134,14 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1;
       };
       [12] = {
-        ["x"] = 356.8;
-        ["y"] = -387.8;
+        ["x"] = 355.69879631258;
+        ["y"] = -386.06952034534;
         ["g"] = 40;
         ["sublevel"] = 1;
       };
       [13] = {
-        ["x"] = 405.7;
-        ["y"] = -368.2;
+        ["x"] = 406.80120368742;
+        ["y"] = -367.09881431581;
         ["g"] = 45;
         ["sublevel"] = 1;
       };
@@ -2231,14 +2231,14 @@ MDT.dungeonEnemies[dungeonIndex] = {
         };
       };
       [3] = {
-        ["x"] = 432.6;
-        ["y"] = -400.3;
+        ["x"] = 432.8078530922;
+        ["y"] = -395.3108477726;
         ["g"] = 53;
         ["sublevel"] = 1;
       };
       [4] = {
-        ["x"] = 350.6;
-        ["y"] = -384.4;
+        ["x"] = 350.12804527497;
+        ["y"] = -379.20861504571;
         ["g"] = 40;
         ["sublevel"] = 1;
         ["patrol"] = {
@@ -2849,7 +2849,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 186120;
     ["count"] = 0;
     ["health"] = 6224432;
-    ["scale"] = 1.6;
+    ["scale"] = 1.2;
     ["displayId"] = 106294;
     ["creatureType"] = "Elemental";
     ["level"] = 70;
@@ -2902,7 +2902,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 187033;
     ["count"] = 25;
     ["health"] = 2372119;
-    ["scale"] = 1;
+    ["scale"] = 1.4;
     ["stealthDetect"] = true;
     ["displayId"] = 106038;
     ["creatureType"] = "Humanoid";
@@ -3505,7 +3505,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 186116;
     ["count"] = 0;
     ["health"] = 5532828;
-    ["scale"] = 1.6;
+    ["scale"] = 1.2;
     ["displayId"] = 109135;
     ["creatureType"] = "Humanoid";
     ["level"] = 70;
@@ -3549,8 +3549,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     };
     ["clones"] = {
       [1] = {
-        ["x"] = 484.5;
-        ["y"] = -164.9;
+        ["x"] = 480.79598178261;
+        ["y"] = -163.55881192029;
         ["g"] = 75;
         ["sublevel"] = 1;
       };
@@ -3590,14 +3590,14 @@ MDT.dungeonEnemies[dungeonIndex] = {
     };
     ["clones"] = {
       [1] = {
-        ["x"] = 482.8;
-        ["y"] = -160.6;
+        ["x"] = 492.01680895208;
+        ["y"] = -156.36684064843;
         ["g"] = 75;
         ["sublevel"] = 1;
       };
       [2] = {
-        ["x"] = 481.9;
-        ["y"] = -169.3;
+        ["x"] = 490.89552039363;
+        ["y"] = -170.09377225758;
         ["g"] = 75;
         ["sublevel"] = 1;
       };
@@ -3952,6 +3952,133 @@ MDT.dungeonEnemies[dungeonIndex] = {
     };
   };
   [36] = {
+    ["name"] = "Vile Rothexer";
+    ["id"] = 187224;
+    ["count"] = 15;
+    ["health"] = 1383207;
+    ["scale"] = 1;
+    ["displayId"] = 106068;
+    ["creatureType"] = "Humanoid";
+    ["level"] = 70;
+    ["spells"] = {
+      [382802] = {
+      };
+      [383087] = {
+      };
+    };
+    ["clones"] = {
+      [2] = {
+        ["x"] = 554.6;
+        ["y"] = -230.2;
+        ["sublevel"] = 1;
+      };
+      [3] = {
+        ["x"] = 561.3;
+        ["y"] = -233.5;
+        ["sublevel"] = 1;
+      };
+      [4] = {
+        ["x"] = 554.1;
+        ["y"] = -237.1;
+        ["sublevel"] = 1;
+      };
+      [5] = {
+        ["x"] = 560.9;
+        ["y"] = -241.2;
+        ["sublevel"] = 1;
+      };
+      [6] = {
+        ["x"] = 620.1;
+        ["y"] = -273.3;
+        ["sublevel"] = 1;
+        ["patrol"] = {
+          [1] = {
+            ["x"] = 607.6;
+            ["y"] = -269.6;
+          };
+          [2] = {
+            ["x"] = 624.4;
+            ["y"] = -272.9;
+          };
+          [3] = {
+            ["x"] = 634.5;
+            ["y"] = -271.6;
+          };
+          [4] = {
+            ["x"] = 634.7;
+            ["y"] = -273.4;
+          };
+          [5] = {
+            ["x"] = 624.2;
+            ["y"] = -275;
+          };
+          [6] = {
+            ["x"] = 607.1;
+            ["y"] = -271.6;
+          };
+          [7] = {
+            ["x"] = 607.6;
+            ["y"] = -269.6;
+          };
+        };
+      };
+    };
+  };
+  [37] = {
+    ["name"] = "Disease Slasher";
+    ["id"] = 187315;
+    ["count"] = 5;
+    ["health"] = 889205;
+    ["scale"] = 1;
+    ["displayId"] = 106099;
+    ["creatureType"] = "Humanoid";
+    ["level"] = 70;
+    ["clones"] = {
+      [6] = {
+        ["x"] = 546;
+        ["y"] = -418.2;
+        ["g"] = 84;
+        ["sublevel"] = 1;
+      };
+      [7] = {
+        ["x"] = 554.8;
+        ["y"] = -424.2;
+        ["g"] = 84;
+        ["sublevel"] = 1;
+      };
+      [8] = {
+        ["x"] = 607.2;
+        ["y"] = -356.2;
+        ["g"] = 87;
+        ["sublevel"] = 1;
+      };
+      [9] = {
+        ["x"] = 599.2;
+        ["y"] = -354.7;
+        ["g"] = 87;
+        ["sublevel"] = 1;
+      };
+      [10] = {
+        ["x"] = 635.4;
+        ["y"] = -293.7;
+        ["g"] = 88;
+        ["sublevel"] = 1;
+      };
+      [11] = {
+        ["x"] = 618.33169555216;
+        ["y"] = -236.61314460191;
+        ["g"] = 91;
+        ["sublevel"] = 1;
+      };
+      [12] = {
+        ["x"] = 625.82087235229;
+        ["y"] = -243.79896029454;
+        ["g"] = 91;
+        ["sublevel"] = 1;
+      };
+    };
+  };
+  [38] = {
     ["name"] = "Witherling";
     ["id"] = 194273;
     ["count"] = 0;
@@ -4027,7 +4154,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       };
     };
   };
-  [37] = {
+  [39] = {
     ["name"] = "Vile Rothexer";
     ["id"] = 194241;
     ["count"] = 15;
@@ -4054,7 +4181,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       };
     };
   };
-  [38] = {
+  [40] = {
     ["name"] = "Bloodthirsty Cub";
     ["id"] = 194256;
     ["count"] = 0;
@@ -4071,7 +4198,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       };
     };
   };
-  [39] = {
+  [41] = {
     ["name"] = "Wither Slasher";
     ["id"] = 194469;
     ["count"] = 0;
@@ -4109,7 +4236,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       };
     };
   };
-  [40] = {
+  [42] = {
     ["name"] = "Vile Rothexer";
     ["id"] = 194487;
     ["count"] = 15;
@@ -4137,12 +4264,12 @@ MDT.dungeonEnemies[dungeonIndex] = {
       };
     };
   };
-  [41] = {
+  [43] = {
     ["name"] = "Decatriarch Wratheye";
     ["id"] = 186121;
     ["count"] = 0;
     ["health"] = 7904040;
-    ["scale"] = 1.6;
+    ["scale"] = 1.2;
     ["displayId"] = 106069;
     ["creatureType"] = "Humanoid";
     ["level"] = 70;
