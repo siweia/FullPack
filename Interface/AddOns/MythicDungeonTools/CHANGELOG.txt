@@ -1,3 +1,7 @@
+- v4.0.4.10
+  - affix week update
+- v4.0.4.9
+  - mapping updates
 - v4.0.4.8
   - bugfixes
 - v4.0.4.7
