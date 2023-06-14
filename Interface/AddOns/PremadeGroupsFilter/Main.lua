@@ -22,6 +22,7 @@ local PGF = select(2, ...)
 local L = PGF.L
 local C = PGF.C
 
+PGF.currentSearchResults = {}
 PGF.lastSearchEntryReset = time()
 PGF.previousSearchExpression = ""
 PGF.currentSearchExpression = ""
@@ -44,88 +45,14 @@ function PGF.ResetSearchEntries()
     end
 end
 
-function PGF.GetExpressionFromMinMaxModel(model, key)
-    local exp = ""
-    if model[key].act then
-        if PGF.NotEmpty(model[key].min) then exp = exp .. " and " .. key .. ">=" .. model[key].min end
-        if PGF.NotEmpty(model[key].max) then exp = exp .. " and " .. key .. "<=" .. model[key].max end
-    end
-    return exp
-end
-
-function PGF.GetExpressionFromDifficultyModel(model)
-    if model.difficulty.act then
-        return " and " .. C.DIFFICULTY_STRING[model.difficulty.val]
-    end
-    return ""
-end
-
-function PGF.GetExpressionFromAdvancedExpression(model)
-    if model.expression then
-        local exp = PGF.String_TrimWhitespace(PGF.RemoveCommentLines(model.expression))
-        if exp ~= "" then
-            return " and ( " .. PGF.RemoveCommentLines(model.expression) .. " ) "
-        end
-    end
-    return ""
-end
-
-function PGF.RemoveCommentLines(exp)
-    local result = ""
-    for line in exp:gmatch("([^\n]+)") do -- split by newline and skip empty lines
-        if not line:match("^%s*%-%-") then -- if not comment line
-            result = result .. " " .. line
-        end
-    end
-    return result
-end
-
-function PGF.GetModel()
-    local tab = PVEFrame.activeTabIndex
-    local category = LFGListFrame.SearchPanel.categoryID or LFGListFrame.CategorySelection.selectedCategory
-    local filters = LFGListFrame.SearchPanel.filters or LFGListFrame.CategorySelection.selectedFilters or 0
-    if not tab then return nil end
-    if not category then return nil end
-    if filters < 0 then filters = "n" .. filters end
-    local modelKey = "t" .. tab .. "c" .. category .. "f" .. filters
-    if PremadeGroupsFilterState[modelKey] == nil then
-        local defaultState = {}
-        -- if we have an old v1.10 state, take it instead of the default one
-        local oldGlobalState = PremadeGroupsFilterState["v110"]
-        if oldGlobalState ~= nil then
-            defaultState = PGF.Table_Copy_Rec(oldGlobalState)
-        end
-        PGF.Table_UpdateWithDefaults(defaultState, C.MODEL_DEFAULT)
-        PremadeGroupsFilterState[modelKey] = defaultState
-    end
-    return PremadeGroupsFilterState[modelKey]
-end
-
-function PGF.GetExpressionFromModel()
-    local model = PGF.GetModel()
-    if not model then return "true" end
-    local exp = "true" -- start with neutral element
-    exp = exp .. PGF.GetExpressionFromDifficultyModel(model)
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "mprating")
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "pvprating")
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "members")
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "tanks")
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "heals")
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "dps")
-    exp = exp .. PGF.GetExpressionFromMinMaxModel(model, "defeated")
-    exp = exp .. PGF.GetExpressionFromAdvancedExpression(model)
-    exp = exp:gsub("^true and ", "")
-    return exp
-end
-
-function PGF.GetSortTableFromModel()
-    local model = PGF.GetModel()
-    if not model or not model.sorting then return 0, {} end
+function PGF.GetUserSortingTable()
+    local sorting = PGF.Dialog:GetSortingExpression()
+    if PGF.Empty(sorting) then return 0, {} end
     -- example string:  "friends asc, age desc , foo asc, bar   desc , x"
     -- resulting table: { ["friends"] = "asc", ["age"] = "desc", ["foo"] = "asc", ["bar"] = "desc" }
     local c = 0
     local t = {}
-    for k, v in string.gmatch(model.sorting, "(%w+)%s+(%w+),?") do
+    for k, v in string.gmatch(sorting, "(%w+)%s+(%w+),?") do
         c = c + 1
         t[k] = v
     end
@@ -133,7 +60,7 @@ function PGF.GetSortTableFromModel()
 end
 
 function PGF.SortByExpression(searchResultID1, searchResultID2)
-    local sortTableSize, sortTable = PGF.GetSortTableFromModel()
+    local sortTableSize, sortTable = PGF.GetUserSortingTable()
     local info1 = PGF.searchResultIDInfo[searchResultID1]
     local info2 = PGF.searchResultIDInfo[searchResultID2]
     if sortTableSize == 0 or not info1 or not info2 then
@@ -298,13 +225,11 @@ function PGF.DoFilterSearchResults(results)
     --print(debugstack())
     --print("filtering, size is "..#results)
 
-    PGF.ResetSearchEntries()
-    local model = PGF.GetModel()
-    if not model or not model.enabled then return false end
-    if not results or #results == 0 then return false end
+    if not PGF.Dialog:GetEnabled() then return results end
+    if not results or #results == 0 then return results end
 
-    local sortTableSize, _ = PGF.GetSortTableFromModel()
-    local exp = PGF.GetExpressionFromModel()
+    local exp = PGF.Dialog:GetFilterExpression()
+    PGF.Logger:Debug("Main: exp = "..exp)
     PGF.currentSearchExpression = exp
 
     local playerInfo = PGF.GetPlayerInfo()
@@ -575,8 +500,7 @@ function PGF.DoFilterSearchResults(results)
     PGF.numResultsAfterFilter = #results
 
     table.sort(results, PGF.SortByExpression)
-    LFGListFrame.SearchPanel.totalResults = #results
-    return true
+    return results
 end
 
 function PGF. PutRaiderIOAliases(env)
@@ -646,5 +570,22 @@ function PGF.OnLFGListSearchEntryUpdate(self)
     PGF.AddRatingInfo(self, searchResultInfo)
 end
 
+function PGF.OnLFGListSearchPanelUpdateResultList(self)
+    PGF.Logger:Debug("PGF.OnLFGListSearchPanelUpdateResultList")
+    PGF.currentSearchResults = self.results
+    PGF.ResetSearchEntries()
+    PGF.FilterSearchResults()
+end
+
+function PGF.FilterSearchResults()
+    PGF.Logger:Debug("PGF.FilterSearchResults")
+    local copy = PGF.Table_Copy_Shallow(PGF.currentSearchResults)
+    local results = PGF.DoFilterSearchResults(copy)
+    -- publish
+    LFGListFrame.SearchPanel.results = results
+    LFGListFrame.SearchPanel.totalResults = #results
+    LFGListSearchPanel_UpdateResults(LFGListFrame.SearchPanel)
+end
+
 hooksecurefunc("LFGListSearchEntry_Update", PGF.OnLFGListSearchEntryUpdate)
-hooksecurefunc("LFGListUtil_SortSearchResults", PGF.DoFilterSearchResults)
+hooksecurefunc("LFGListSearchPanel_UpdateResultList", PGF.OnLFGListSearchPanelUpdateResultList)

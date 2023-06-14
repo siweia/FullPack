@@ -22,11 +22,48 @@ local PGF = select(2, ...)
 local L = PGF.L
 local C = PGF.C
 
-function PGF.Macro(expression, sorting)
-    if PGF.Dialog and PGF.Dialog:IsVisible() then
-        PGF.Dialog:UpdateExpression(expression, sorting)
-        PGF.Dialog.RefreshButton:Click()
+C.LOG_LEVEL = {
+    DEBUG = 1,
+    INFO = 2,
+    WARN = 3,
+    ERROR = 4,
+}
+
+local Logger = {
+    level = C.LOG_LEVEL.ERROR
+}
+
+function Logger:Log(level, str)
+    local timestamp = date('%H:%M:%S')
+    print(string.format("%s PGF [%s] %s", timestamp, level, str))
+end
+
+function Logger:Debug(str)
+    if self.level <= C.LOG_LEVEL.DEBUG then
+        self:Log("D", str)
     end
 end
 
-PremadeGroupsFilter.Macro = PGF.Macro
+function Logger:Info(str)
+    if self.level <= C.LOG_LEVEL.INFO then
+        self:Log("I", str)
+    end
+end
+
+function Logger:Warn(str)
+    if self.level <= C.LOG_LEVEL.WARN then
+        self:Log("W", str)
+    end
+end
+
+function Logger:Error(str)
+    if self.level <= C.LOG_LEVEL.ERROR then
+        self:Log("E", str)
+    end
+end
+
+PGF.Logger = Logger
+
+PremadeGroupsFilter.EnableDebugLogging = function ()
+    Logger.level = C.LOG_LEVEL.DEBUG
+end

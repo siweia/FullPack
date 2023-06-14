@@ -1,14 +1,8 @@
 # Premade Groups Filter
 
-## [3.8.3](https://github.com/0xbs/premade-groups-filter/tree/3.8.3) (2023-05-14)
-[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/3.8.2...3.8.3) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
+## [4.0.2](https://github.com/0xbs/premade-groups-filter/tree/4.0.2) (2023-06-14)
+[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/4.0.1...4.0.2) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
 
-- Sort dungeon groups by mprating and rated PvP by pvprating by default (fixes #170)  
-    PGF is now always active even if there is no filter or sorting expression.  
-    Default sorting is now:  
-    1. isApplication desc  
-    2. partyfit desc  
-    3. friends desc  
-    4. mprating or pvprating desc  
-    5. warmode  
-- Allow sorting by booleans (false < true)  
+- Locale fine-tuning  
+- Fix dialog not properly attached when movable disabled  
+- Use better dungeon names without keystone suffix  

@@ -1,6 +1,6 @@
 ## Interface: 100100
 ## Title: Premade Groups Filter
-## Version: 3.8.3
+## Version: 4.0.2
 ## IconTexture: 397907
 ## Notes: Allows filtering of premade groups using an UI or advanced filter expressions.
 ## Notes-deDE: Ermöglicht das Filtern organisierter Gruppen mithilfe der Benutzeroberfläche oder erweiterter Filterausdrücke.
@@ -23,10 +23,11 @@ Localization\zhCN.lua
 Localization\zhTW.lua
 Localization\ruRU.lua
 Localization\esES.lua
+Modules\Logger.lua
 Fixes\FixGetPlaystyleString.lua
 Fixes\FixReportAdvertisement.lua
-StaticPopup\StaticPopup.xml
-StaticPopup\StaticPopup.lua
+UI\StaticPopup.xml
+UI\StaticPopup.lua
 Modules\Util.lua
 Modules\MemberInfo.lua
 Modules\RemainingSlots.lua
@@ -48,9 +49,21 @@ Plugins\PremadeRegions.lua
 Plugins\RaiderIO.lua
 Settings\Settings.xml
 Settings\Settings.lua
-Dialog\PopupMenu.xml
-Dialog\PopupMenu.lua
-Dialog\Help.lua
-Dialog\Setup.lua
-Dialog\Dialog.lua
-Dialog\Dialog.xml
+UI\Common.lua
+UI\PopupMenu.xml
+UI\PopupMenu.lua
+UI\Help.lua
+UI\Templates.xml
+UI\Dialog.xml
+UI\Dialog.lua
+UI\DungeonPanel.xml
+UI\DungeonPanel.lua
+UI\ArenaPanel.xml
+UI\ArenaPanel.lua
+UI\RBGPanel.xml
+UI\RBGPanel.lua
+UI\RaidPanel.xml
+UI\RaidPanel.lua
+UI\ExpressionPanel.xml
+UI\ExpressionPanel.lua
+UI\UsePGFButton.lua
