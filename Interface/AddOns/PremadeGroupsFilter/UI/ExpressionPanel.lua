@@ -62,6 +62,7 @@ function ExpressionPanel:OnReset()
     PGF.Logger:Debug("ExpressionPanel:OnReset")
     self.state.expression = ""
     self.state.sorting = ""
+    self:TriggerFilterExpressionChange()
     self:Init(self.state)
 end
 
@@ -74,9 +75,12 @@ end
 
 function ExpressionPanel:GetFilterExpression()
     PGF.Logger:Debug("ExpressionPanel:GetFilterExpression")
-    local userExp = PGF.RemoveCommentLines(self.state.expression)
-    if PGF.Empty(userExp) then return "true" end
-    return userExp
+    local userExp = PGF.UI_NormalizeExpression(self.state.expression)
+    if userExp == "" then
+        return "true"
+    else
+        return userExp
+    end
 end
 
 function ExpressionPanel:GetSortingExpression()

@@ -1,6 +1,6 @@
 ## Interface: 100100
 ## Title: Premade Groups Filter
-## Version: 4.0.2
+## Version: 4.0.3
 ## IconTexture: 397907
 ## Notes: Allows filtering of premade groups using an UI or advanced filter expressions.
 ## Notes-deDE: Ermöglicht das Filtern organisierter Gruppen mithilfe der Benutzeroberfläche oder erweiterter Filterausdrücke.
