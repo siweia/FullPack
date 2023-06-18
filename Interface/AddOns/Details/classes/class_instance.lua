@@ -16,6 +16,9 @@ local _UnitName = UnitName --wow api locals
 local _UnitIsPlayer = UnitIsPlayer --wow api locals
 local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned --wow api locals
 
+local segmentClass = Details.historico
+local combatClass = Details.combate
+
 local _detalhes = 		_G.Details
 local _
 local addonName, Details222 = ...
@@ -97,9 +100,10 @@ end
 ---@param func function
 ---@vararg any
 function Details:InstanciaCallFunction(func, ...)
-	for index, instancia in ipairs(Details.tabela_instancias) do
-		if (instancia:IsAtiva()) then
-			func(_, instancia, ...)
+	for index, instance in ipairs(Details.tabela_instancias) do
+		---@cast instance instance
+		if (instance:IsEnabled()) then
+			func(_, instance, ...)
 		end
 	end
 end
@@ -216,11 +220,30 @@ local instanceMixins = {
 		---@type segmentid
 		local segmentId = instance:GetSegmentId()
 		if (segmentId == DETAILS_SEGMENTID_OVERALL) then
-			instance.showing = Details:GetOverallCombat()
+			---@type combat
+			local combatObject = Details:GetOverallCombat()
+			if (combatObject.__destroyed) then
+				combatObject = combatClass:NovaTabela()
+			end
+			instance.showing = combatObject
+
 		elseif (segmentId == DETAILS_SEGMENTID_CURRENT) then
-			instance.showing = Details:GetCurrentCombat()
+			---@type combat
+			local combatObject = Details:GetCurrentCombat()
+			if (combatObject.__destroyed) then
+				combatObject = combatClass:NovaTabela(nil, Details.tabela_overall)
+			end
+			instance.showing = combatObject
+
 		else
-			instance.showing = Details:GetCombat(segmentId)
+			---@type combat
+			local combatObject = Details:GetCombat(segmentId)
+			if (combatObject.__destroyed) then
+				table.remove(Details:GetCombatSegments(), segmentId)
+				combatObject = combatClass:NovaTabela()
+				table.insert(Details:GetCombatSegments(), segmentId, combatObject)
+			end
+			instance.showing = combatObject
 		end
 
 		---@type combat
@@ -270,6 +293,7 @@ local instanceMixins = {
 	end,
 
 	---call a refresh in the data shown in the instance
+	---@param instance instance
 	---@param bForceRefresh boolean|nil
 	RefreshData = function(instance, bForceRefresh) --deprecates Details:RefreshAllMainWindows()
 		local combatObject = instance:GetCombat()
@@ -282,9 +306,20 @@ local instanceMixins = {
 			return
 		end
 
+		--debug: check if the if combatObject has been destroyed
+		if (combatObject.__destroyed) then
+			Details:Msg("a deleted combat object was found refreshing a window, please report this bug on discord:")
+			Details:Msg("combat destroyed by:", combatObject.__destroyedBy)
+			local bForceChange = true
+			instance:SetSegment(DETAILS_SEGMENTID_CURRENT, bForceChange)
+			return
+		end
+
 		local mainAttribute, subAttribute = instance:GetDisplay()
 
-		local needRefresh = combatObject:GetContainer(mainAttribute).need_refresh
+		---@type actorcontainer
+		local actorContainer = combatObject:GetContainer(mainAttribute)
+		local needRefresh = actorContainer.need_refresh
 		if (not needRefresh and not bForceRefresh) then
 			return
 		end
@@ -513,7 +548,7 @@ local instanceMixins = {
 			Details:SendEvent("DETAILS_INSTANCE_CHANGEATTRIBUTE", nil, instance, attributeId, subAttributeId)
 		end
 
-		if (Details.playerDetailWindow:IsShown() and instance == Details.playerDetailWindow.instancia) then
+		if (Details.BreakdownWindowFrame:IsShown() and instance == Details.BreakdownWindowFrame.instancia) then
 			---@type combat
 			local combatObject = instance:GetCombat()
 			if (not combatObject or instance.atributo > 4) then
@@ -547,7 +582,7 @@ local instanceMixins = {
 }
 
 ---get the table with all instances, these instance could be not initialized yet, some might be open, some not in use
----@return table
+---@return instance[]
 function Details:GetAllInstances()
 	return Details.tabela_instancias
 end
@@ -2288,7 +2323,7 @@ function _detalhes:InstanceReset(instance)
 	end
 
 	Details.FadeHandler.Fader(self, "in", nil, "barras")
-	self:AtualizaSegmentos(self)
+	self:UpdateCombatObjectInUse(self)
 	self:AtualizaSoloMode_AfertReset()
 	self:ResetaGump()
 
@@ -2393,7 +2428,7 @@ function Details:PostponeSwitchToCurrent(instance)
 			(instance.ativa) and
 			(instance.last_interaction+3 < Details._tempo) and
 			(not DetailsReportWindow or not DetailsReportWindow:IsShown()) and
-			(not Details.playerDetailWindow:IsShown())
+			(not Details.BreakdownWindowFrame:IsShown())
 		)
 	) then
 		instance._postponing_switch = nil
@@ -2419,7 +2454,7 @@ function Details:CheckSwitchToCurrent()
 				instance.last_interaction = Details._tempo
 			end
 
-			if ((instance.last_interaction and (instance.last_interaction+3 > Details._tempo)) or (DetailsReportWindow and DetailsReportWindow:IsShown()) or (Details.playerDetailWindow:IsShown())) then
+			if ((instance.last_interaction and (instance.last_interaction+3 > Details._tempo)) or (DetailsReportWindow and DetailsReportWindow:IsShown()) or (Details.BreakdownWindowFrame:IsShown())) then
 				--postpone
 				--instance._postponing_switch = Details:ScheduleTimer("PostponeSwitchToCurrent", 1, instance)
 				instance._postponing_switch = Details.Schedules.NewTimer(1, Details.PostponeSwitchToCurrent, Details, instance)
@@ -2469,18 +2504,20 @@ function _detalhes:UnFreeze(instancia)
 	end
 end
 
-function _detalhes:AtualizaSegmentos (instancia)
-	if (instancia.iniciada) then
-		if (instancia.segmento == -1) then
-			--instancia.baseframe.rodape.segmento:SetText(segmentos.overall) --localiza-me
-			instancia.showing = _detalhes.tabela_overall
-		elseif (instancia.segmento == 0) then
-			--instancia.baseframe.rodape.segmento:SetText(segmentos.current) --localiza-me
-			instancia.showing = _detalhes.tabela_vigente
-			--print("==> Changing the Segment now! - classe_instancia.lua 1922")
+--handle internal details! events
+local eventListener = Details:CreateEventListener()
+eventListener:RegisterEvent("DETAILS_DATA_SEGMENTREMOVED", function()
+	Details:InstanciaCallFunction(Details.UpdateCombatObjectInUse)
+end)
+
+function Details:UpdateCombatObjectInUse(instance)
+	if (instance.iniciada) then
+		if (instance.segmento == -1) then
+			instance.showing = Details.tabela_overall
+		elseif (instance.segmento == 0) then
+			instance.showing = Details.tabela_vigente
 		else
-			instancia.showing = _detalhes.tabela_historico.tabelas [instancia.segmento]
-			--instancia.baseframe.rodape.segmento:SetText(segmentos.past..instancia.segmento) --localiza-me
+			instance.showing = Details.tabela_historico.tabelas[instance.segmento]
 		end
 	end
 end
@@ -2831,11 +2868,11 @@ function _detalhes:TrocaTabela(instance, segmentId, attributeId, subAttributeId,
 		instance:ChangeIcon()
 	end
 
-	if (Details.playerDetailWindow:IsShown() and instance == Details.playerDetailWindow.instancia) then
+	if (Details.BreakdownWindowFrame:IsShown() and instance == Details.BreakdownWindowFrame.instancia) then
 		if (not instance.showing or instance.atributo > 4) then
 			Details:CloseBreakdownWindow()
 		else
-			local actorObject = instance.showing (instance.atributo, Details.playerDetailWindow.jogador.nome)
+			local actorObject = instance.showing (instance.atributo, Details.BreakdownWindowFrame.jogador.nome)
 			if (actorObject) then
 				Details:OpenBreakdownWindow(instance, actorObject, true)
 			else
@@ -3387,13 +3424,13 @@ function _detalhes:monta_relatorio (este_relatorio, custom)
 			--push it to  front
 			local t = tremove(_detalhes.latest_report_table, already_exists)
 			t [4] = amt
-			tinsert(_detalhes.latest_report_table, 1, t)
+			table.insert(_detalhes.latest_report_table, 1, t)
 		else
 			if (self.atributo == 5) then
 				local custom_name = self:GetCustomObject():GetName()
-				tinsert(_detalhes.latest_report_table, 1, {self.meu_id, self.atributo, self.sub_atributo, amt, _detalhes.report_where, custom_name})
+				table.insert(_detalhes.latest_report_table, 1, {self.meu_id, self.atributo, self.sub_atributo, amt, _detalhes.report_where, custom_name})
 			else
-				tinsert(_detalhes.latest_report_table, 1, {self.meu_id, self.atributo, self.sub_atributo, amt, _detalhes.report_where})
+				table.insert(_detalhes.latest_report_table, 1, {self.meu_id, self.atributo, self.sub_atributo, amt, _detalhes.report_where})
 			end
 		end
 
@@ -3532,7 +3569,7 @@ function _detalhes:monta_relatorio (este_relatorio, custom)
 		if (is_reverse) then
 			local t = {}
 			for i = #raw_data_to_report, 1, -1 do
-				tinsert(t, raw_data_to_report [i])
+				table.insert(t, raw_data_to_report [i])
 				if (#t >= amt) then
 					break
 				end
@@ -3733,7 +3770,7 @@ function _detalhes:envia_relatorio (linhas, custom)
 
 	end
 
-	--adicionar o tempo de luta
+	--add the combat time
 	local segmentTime = ""
 	if (combatObject) then
 		local combatTime = combatObject:GetCombatTime()

@@ -12,7 +12,6 @@
 	local _math_max = math.max --lua local
 	local ipairs = ipairs --lua local
 	local pairs = pairs --lua local
-	local wipe = table.wipe --lua local
 	local bitBand = bit.band --lua local
 
 	local GetInstanceInfo = GetInstanceInfo --wow api local
@@ -29,7 +28,7 @@
 	local atributo_energy = Details.atributo_energy --details local
 	local atributo_misc = Details.atributo_misc --details local
 	local atributo_custom = Details.atributo_custom --details local
-	local info = Details.playerDetailWindow --details local
+	local breakdownWindowFrame = Details.BreakdownWindowFrame --details local
 
 	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 
@@ -329,26 +328,25 @@
 
 				Details:InstanciaCallFunction(Details.ResetaGump, nil, -1) --reseta scrollbar, iterators, rodap�, etc
 				Details:InstanciaCallFunction(Details.InstanciaFadeBarras, -1) --esconde todas as barras
-				Details:InstanciaCallFunction(Details.AtualizaSegmentos) --atualiza o showing
+				Details:InstanciaCallFunction(Details.UpdateCombatObjectInUse) --atualiza o showing
 			end
 
 			--re-lock nos tempos da tabela passada -- lock again last table times
 			Details.tabela_vigente:TravarTempos()
 
-			local n_combate = Details:NumeroCombate (1) --aumenta o contador de combates -- combat number up
+			---@type number
+			local combatCounter = Details:GetOrSetCombatId(1) --increate the combat counter by 1
 
 			--cria a nova tabela de combates -- create new table
 			local ultimo_combate = Details.tabela_vigente
-			Details.tabela_vigente = Details.combate:NovaTabela (true, Details.tabela_overall, n_combate, ...) --cria uma nova tabela de combate
+			Details.tabela_vigente = Details.combate:NovaTabela (true, Details.tabela_overall, combatCounter, ...) --cria uma nova tabela de combate
 
 			--flag this combat as being created
 			Details.tabela_vigente.IsBeingCreated = true
 
-			Details.tabela_vigente.previous_combat = ultimo_combate
-
 			Details.tabela_vigente:seta_data (Details._detalhes_props.DATA_TYPE_START) --seta na tabela do combate a data do inicio do combate -- setup time data
 			Details.in_combat = true --sinaliza ao addon que h� um combate em andamento -- in combat flag up
-			Details.tabela_vigente.combat_id = n_combate --grava o n�mero deste combate na tabela atual -- setup combat id on new table
+			Details.tabela_vigente.combat_id = combatCounter --grava o n�mero deste combate na tabela atual -- setup combat id on new table
 			Details.last_combat_pre_pot_used = nil
 
 			Details:FlagCurrentCombat()
@@ -358,14 +356,14 @@
 
 			Details:ClearCCPetsBlackList()
 
-			wipe(Details.encounter_end_table)
+			Details:Destroy(Details.encounter_end_table)
 
-			wipe(Details.pets_ignored)
-			wipe(Details.pets_no_owner)
+			Details:Destroy(Details.pets_ignored)
+			Details:Destroy(Details.pets_no_owner)
 			Details.container_pets:BuscarPets()
 
-			wipe(Details.cache_damage_group)
-			wipe(Details.cache_healing_group)
+			Details:Destroy(Details.cache_damage_group)
+			Details:Destroy(Details.cache_healing_group)
 			Details:UpdateParserGears()
 
 			--get all buff already applied before the combat start
@@ -373,7 +371,7 @@
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_IN")
 			Details:UptadeRaidMembersCache()
 
-			Details222.TimeCapture.StartCombatTimer(Details.tabela_vigente)
+			--Details222.TimeCapture.StartCombatTimer(Details.tabela_vigente)
 
 			--we already have boss information? build .is_boss table
 			if (Details.encounter_table.id and Details.encounter_table ["start"] >= GetTime() - 3 and not Details.encounter_table ["end"]) then
@@ -490,7 +488,7 @@
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_OUT")
 			Details:CloseEnemyDebuffsUptime()
 
-			Details222.TimeCapture.StopCombat()
+			--Details222.TimeCapture.StopCombat()
 
 			--check if this isn't a boss and try to find a boss in the segment
 			if (not Details.tabela_vigente.is_boss) then
@@ -756,14 +754,14 @@
 			end
 
 			local tempo_do_combate = Details.tabela_vigente:GetCombatTime()
-			local invalid_combat
+
+			---@type combat
+			local invalidCombat
 
 			local zoneName, zoneType = GetInstanceInfo()
 			if (not Details.tabela_vigente.discard_segment and (zoneType == "none" or tempo_do_combate >= Details.minimum_combat_time or not Details.tabela_historico.tabelas[1])) then
-				Details.tabela_historico:adicionar (Details.tabela_vigente) --move a tabela atual para dentro do hist�rico
-				--8.0.1 miss data isn't required at the moment, spells like akari's soul has been removed from the game
-				--Details:CanSendMissData()
-
+				--combat accepted
+				Details.tabela_historico:AddCombat(Details.tabela_vigente) --move a tabela atual para dentro do hist�rico
 				if (Details.tabela_vigente.is_boss) then
 					if (IsInRaid()) then
 						local cleuID = Details.tabela_vigente.is_boss.id
@@ -790,13 +788,13 @@
 							if (Details.tabela_vigente.is_boss.killed) then
 								cleuIDData.kills = cleuIDData.kills + 1
 								cleuIDData.best_try = 0
-								tinsert(cleuIDData.try_history, {0, Details.tabela_vigente:GetCombatTime()})
+								table.insert(cleuIDData.try_history, {0, Details.tabela_vigente:GetCombatTime()})
 								--print("KILL", "best try", cleuIDData.best_try, "amt kills", cleuIDData.kills, "wipes", cleuIDData.wipes, "longest", cleuIDData.longest)
 							else
 								cleuIDData.wipes = cleuIDData.wipes + 1
 								if (Details.boss1_health_percent and Details.boss1_health_percent < cleuIDData.best_try) then
 									cleuIDData.best_try = Details.boss1_health_percent
-									tinsert(cleuIDData.try_history, {Details.boss1_health_percent, Details.tabela_vigente:GetCombatTime()})
+									table.insert(cleuIDData.try_history, {Details.boss1_health_percent, Details.tabela_vigente:GetCombatTime()})
 								end
 								--print("WIPE", "best try", cleuIDData.best_try, "amt kills", cleuIDData.kills, "wipes", cleuIDData.wipes, "longest", cleuIDData.longest)
 							end
@@ -814,17 +812,19 @@
 				end
 
 			else
-				invalid_combat = Details.tabela_vigente
+				--combat did not pass the filter and cannot be added into the segment history
+				invalidCombat = Details.tabela_vigente
 
 				--tutorial about the combat time < then 'minimum_combat_time'
 				local hasSeenTutorial = Details:GetTutorialCVar("MIN_COMBAT_TIME")
 				if (not hasSeenTutorial) then
-					local lower_instance = Details:GetLowerInstanceNumber()
-					if (lower_instance) then
-						lower_instance = Details:GetInstance(lower_instance)
-						if (lower_instance) then
-							lower_instance:InstanceAlert ("combat ignored: less than 5 seconds.", {[[Interface\BUTTONS\UI-GROUPLOOT-PASS-DOWN]], 18, 18, false, 0, 1, 0, 1}, 20, {function() Details:Msg("combat ignored: elapsed time less than 5 seconds."); Details:Msg("add '|cFFFFFF00Details.minimum_combat_time = 2;|r' on Auto Run Code to change the minimum time.") end})
-							Details:SetTutorialCVar ("MIN_COMBAT_TIME", true)
+					local lowerInstanceId = Details:GetLowerInstanceNumber()
+					if (lowerInstanceId) then
+						---@type instance
+						local lowerInstanceObject = Details:GetInstance(lowerInstanceId)
+						if (lowerInstanceObject) then
+							lowerInstanceObject:InstanceAlert("combat ignored: less than 5 seconds.", {[[Interface\BUTTONS\UI-GROUPLOOT-PASS-DOWN]], 18, 18, false, 0, 1, 0, 1}, 20, {function() Details:Msg("combat ignored: elapsed time less than 5 seconds."); Details:Msg("add '|cFFFFFF00Details.minimum_combat_time = 2;|r' on Auto Run Code to change the minimum time.") end})
+							Details:SetTutorialCVar("MIN_COMBAT_TIME", true)
 						end
 					end
 				end
@@ -833,28 +833,21 @@
 				if (not Details.tabela_historico.tabelas[1]) then
 					Details.tabela_vigente = Details.tabela_vigente
 				else
-					Details.tabela_vigente = Details.tabela_historico.tabelas[1] --pega a tabela do ultimo combate
+					Details.tabela_vigente = Details.tabela_historico.tabelas[1] --get the latest combat available in the segment history
 				end
 
 				if (Details.tabela_vigente:GetStartTime() == 0) then
-					--Details.tabela_vigente.start_time = Details._tempo
-					Details.tabela_vigente:SetStartTime (GetTime())
-					--Details.tabela_vigente.end_time = Details._tempo
-					Details.tabela_vigente:SetEndTime (GetTime())
+					Details.tabela_vigente:SetStartTime(GetTime())
+					Details.tabela_vigente:SetEndTime(GetTime())
 				end
 
 				Details.tabela_vigente.resincked = true
-
-				--tabela foi descartada, precisa atualizar os baseframes // precisa atualizer todos ou apenas o overall?
 				Details:InstanciaCallFunction(Details.AtualizarJanela)
 
 				if (Details.solo) then
-					local esta_instancia = Details.tabela_instancias[Details.solo]
-					if (Details.SoloTables.CombatID == Details:NumeroCombate()) then --significa que o solo mode validou o combate, como matar um bixo muito low level com uma s� porrada
+					if (Details.SoloTables.CombatID == Details:GetOrSetCombatId()) then --significa que o solo mode validou o combate, como matar um bixo muito low level com uma s� porrada
 						if (Details.SoloTables.CombatIDLast and Details.SoloTables.CombatIDLast ~= 0) then --volta os dados da luta anterior
-
 							Details.SoloTables.CombatID = Details.SoloTables.CombatIDLast
-
 						else
 							if (Details.RefreshSolo) then
 								Details:RefreshSolo()
@@ -864,7 +857,7 @@
 					end
 				end
 
-				Details:NumeroCombate (-1)
+				Details:GetOrSetCombatId(-1)
 			end
 
 			Details.host_of = nil
@@ -878,19 +871,19 @@
 			Details.leaving_combat = false
 
 			Details:OnCombatPhaseChanged()
-			wipe(Details.tabela_vigente.PhaseData.damage_section)
-			wipe(Details.tabela_vigente.PhaseData.heal_section)
 
-			wipe(Details.cache_damage_group)
-			wipe(Details.cache_healing_group)
+			Details:Destroy(Details.tabela_vigente.PhaseData.damage_section)
+			Details:Destroy(Details.tabela_vigente.PhaseData.heal_section)
+			Details:Destroy(Details.cache_damage_group)
+			Details:Destroy(Details.cache_healing_group)
 
 			Details:UpdateParserGears()
 
 			--hide / alpha in combat
-			for index, instancia in ipairs(Details.tabela_instancias) do
-				if (instancia.ativa) then
-					if (instancia.auto_switch_to_old) then
-						instancia:CheckSwitchOnCombatEnd()
+			for index, instance in ipairs(Details.tabela_instancias) do
+				if (instance.ativa) then
+					if (instance.auto_switch_to_old) then
+						instance:CheckSwitchOnCombatEnd()
 					end
 				end
 			end
@@ -899,7 +892,7 @@
 
 			--do not wipe the encounter table if is in the argus encounter ~REMOVE on 8.0
 			if (Details.encounter_table and Details.encounter_table.id ~= 2092) then
-				wipe(Details.encounter_table)
+				Details:Destroy(Details.encounter_table)
 			else
 				if (Details.debug) then
 					Details:Msg("(debug) in argus encounter, cannot wipe the encounter table.")
@@ -908,9 +901,9 @@
 
 			Details:InstanceCall(Details.CheckPsUpdate)
 
-			if (invalid_combat) then
+			if (invalidCombat) then
 				Details:SendEvent("COMBAT_INVALID")
-				Details:SendEvent("COMBAT_PLAYER_LEAVE", nil, invalid_combat)
+				Details:SendEvent("COMBAT_PLAYER_LEAVE", nil, invalidCombat)
 			else
 				Details:SendEvent("COMBAT_PLAYER_LEAVE", nil, Details.tabela_vigente)
 			end
@@ -918,7 +911,9 @@
 			Details:CheckForTextTimeCounter()
 			Details.StoreSpells()
 			Details:RunScheduledEventsAfterCombat()
-		end
+
+			--issue: invalidCombat will be just floating around in memory if not destroyed
+		end --end of leaving combat function
 
 		function Details:GetPlayersInArena()
 			local aliados = GetNumGroupMembers() -- LE_PARTY_CATEGORY_HOME
@@ -938,7 +933,7 @@
 
 			--enemies
 			local enemiesAmount = GetNumArenaOpponentSpecs and GetNumArenaOpponentSpecs() or 5
-			table.wipe(_detalhes.arena_enemies)
+			Details:Destroy(_detalhes.arena_enemies)
 
 			for i = 1, enemiesAmount do
 				local enemyName = _G.GetUnitName("arena" .. i, true)
@@ -1330,7 +1325,7 @@
 			--store pets sent through 'needpetowner'
 			Details.sent_pets = Details.sent_pets or {n = time()}
 			if (Details.sent_pets.n+20 < time()) then
-				wipe(Details.sent_pets)
+				Details:Destroy(Details.sent_pets)
 				Details.sent_pets.n = time()
 			end
 
@@ -1494,7 +1489,7 @@
 					(instance.ativa) and
 					(instance.last_interaction+3 < _tempo) and
 					(not DetailsReportWindow or not DetailsReportWindow:IsShown()) and
-					(not Details.playerDetailWindow:IsShown())
+					(not Details.BreakdownWindowFrame:IsShown())
 				)
 			) then
 				instance._postponing_current = nil
@@ -1520,7 +1515,7 @@
 						end
 					end
 
-					if ((instancia.last_interaction and (instancia.last_interaction+3 > Details._tempo)) or (DetailsReportWindow and DetailsReportWindow:IsShown()) or (Details.playerDetailWindow:IsShown())) then
+					if ((instancia.last_interaction and (instancia.last_interaction+3 > Details._tempo)) or (DetailsReportWindow and DetailsReportWindow:IsShown()) or (Details.BreakdownWindowFrame:IsShown())) then
 						--postpone
 						instancia._postponing_current = Details:ScheduleTimer("PostponeInstanceToCurrent", 1, instancia)
 						return
@@ -1567,15 +1562,18 @@
 			end
 		end
 
-	--internal GetCombatId() version
-		function Details:NumeroCombate (flag)
-			if (flag == 0) then
-				Details.combat_id = 0
-			elseif (flag) then
-				Details.combat_id = Details.combat_id + flag
-			end
-			return Details.combat_id
+	---internal GetCombatId() version
+	---@param self details
+	---@param numberId number|nil if nil, return the current combat id, if 0 resets the id, if a number will add it to the current combat id
+	---@return number
+	function Details:GetOrSetCombatId(numberId)
+		if (numberId == 0) then
+			Details.combat_id = 0
+		elseif (numberId) then
+			Details.combat_id = Details.combat_id + numberId
 		end
+		return Details.combat_id
+	end
 
 	--tooltip fork / search key: ~tooltip
 		local avatarPoint = {"bottomleft", "topleft", -3, -4}
@@ -1791,7 +1789,7 @@
 		end
 
 	--call update functions
-		function Details:RefreshAllMainWindows(bForceRefresh)
+		function Details:RefreshAllMainWindows(bForceRefresh) --getting deprecated soon
 			local combatObject = self.showing
 
 			--the the segment does not have a valid combat, freeze the window
@@ -1802,7 +1800,7 @@
 				return
 			end
 
-			local needRefresh = combatObject[self.atributo].need_refresh
+			local needRefresh = combatObject[self.atributo].need_refresh --erro de index nil value
 			if (not needRefresh and not bForceRefresh) then
 				return
 			end
@@ -1848,7 +1846,7 @@
 			self:RefreshMainWindow(true)
 		end
 
-		function Details:RefreshMainWindow(instanceObject, bForceRefresh)
+		function Details:RefreshMainWindow(instanceObject, bForceRefresh) --getting deprecated soon
 			if (not instanceObject or type(instanceObject) == "boolean") then
 				bForceRefresh = instanceObject
 				instanceObject = self
@@ -1861,17 +1859,18 @@
 			if (instanceObject == -1) then
 				--update
 				for index, thisInstance in ipairs(Details.tabela_instancias) do
-					if (thisInstance.ativa) then
-						if (thisInstance.modo == modo_GROUP or thisInstance.modo == modo_ALL) then
-							thisInstance:RefreshAllMainWindows(bForceRefresh)
+					---@cast thisInstance instance
+					if (thisInstance:IsEnabled()) then
+						if (thisInstance:GetMode() == DETAILS_MODE_GROUP or thisInstance:GetMode() == DETAILS_MODE_ALL) then
+							thisInstance:RefreshData(bForceRefresh)
 						end
 					end
 				end
 
 				--flag windows as no need update next tick
 				for index, thisInstance in ipairs(Details.tabela_instancias) do
-					if (thisInstance.ativa and thisInstance.showing) then
-						if (thisInstance.modo == modo_GROUP or thisInstance.modo == modo_ALL) then
+					if (thisInstance:IsEnabled() and thisInstance.showing) then
+						if (thisInstance:GetMode() == DETAILS_MODE_GROUP or thisInstance:GetMode() == DETAILS_MODE_ALL) then
 							if (thisInstance.atributo <= 4) then
 								thisInstance.showing[thisInstance.atributo].need_refresh = false
 							end
@@ -1880,8 +1879,8 @@
 				end
 
 				if (not bForceRefresh) then --update player details window if opened
-					if (info.ativo) then
-						return info.jogador:MontaInfo()
+					if (breakdownWindowFrame.ativo) then
+						return breakdownWindowFrame.jogador:MontaInfo()
 					end
 				end
 				return
@@ -1935,7 +1934,7 @@
 			no:SetPoint("bottomleft", panel, "bottomleft", 30, 10)
 			no:InstallCustomTexture (nil, nil, nil, nil, true)
 
-			local yes = Details.gump:CreateButton(panel, function() panel:Hide(); Details.tabela_historico:resetar() end, 90, 20, Loc ["STRING_YES"])
+			local yes = Details.gump:CreateButton(panel, function() panel:Hide(); Details.tabela_historico:ResetAllCombatData() end, 90, 20, Loc ["STRING_YES"])
 			yes:SetPoint("bottomright", panel, "bottomright", -30, 10)
 			yes:InstallCustomTexture (nil, nil, nil, nil, true)
 		end
@@ -1945,14 +1944,14 @@
 
 	function Details:CheckForAutoErase (mapid)
 		if (Details.last_instance_id ~= mapid) then
-			Details.tabela_historico:resetar_overall()
+			Details.tabela_historico:ResetOverallData()
 
 			if (Details.segments_auto_erase == 2) then
 				--ask
 				Details:ScheduleTimer("AutoEraseConfirm", 1)
 			elseif (Details.segments_auto_erase == 3) then
 				--erase
-				Details.tabela_historico:resetar()
+				Details.tabela_historico:ResetAllCombatData()
 			end
 		else
 			if (_tempo > Details.last_instance_time + 21600) then --6 hours
@@ -1961,7 +1960,7 @@
 					Details:ScheduleTimer("AutoEraseConfirm", 1)
 				elseif (Details.segments_auto_erase == 3) then
 					--erase
-					Details.tabela_historico:resetar()
+					Details.tabela_historico:ResetAllCombatData()
 				end
 			end
 		end

@@ -159,7 +159,7 @@ function DetailsMythicPlusFrame.MergeSegmentsOnEnd()
 
     --update all windows
     Details:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
-    Details:InstanciaCallFunction(Details.AtualizaSegmentos)
+    Details:InstanciaCallFunction(Details.UpdateCombatObjectInUse)
     Details:InstanciaCallFunction(Details.AtualizaSoloMode_AfertReset)
     Details:InstanciaCallFunction(Details.ResetaGump)
     Details:RefreshMainWindow(-1, true)
@@ -272,7 +272,7 @@ function DetailsMythicPlusFrame.MergeTrashCleanup (isFromSchedule)
 
         --update all windows
         Details:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
-        Details:InstanciaCallFunction(Details.AtualizaSegmentos)
+        Details:InstanciaCallFunction(Details.UpdateCombatObjectInUse)
         Details:InstanciaCallFunction(Details.AtualizaSoloMode_AfertReset)
         Details:InstanciaCallFunction(Details.ResetaGump)
         Details:RefreshMainWindow(-1, true)
@@ -374,7 +374,7 @@ function DetailsMythicPlusFrame.MergeRemainingTrashAfterAllBossesDone()
 
         --update all windows
         Details:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
-        Details:InstanciaCallFunction(Details.AtualizaSegmentos)
+        Details:InstanciaCallFunction(Details.UpdateCombatObjectInUse)
         Details:InstanciaCallFunction(Details.AtualizaSoloMode_AfertReset)
         Details:InstanciaCallFunction(Details.ResetaGump)
         Details:RefreshMainWindow(-1, true)
@@ -673,7 +673,7 @@ function DetailsMythicPlusFrame.MythicDungeonStarted()
 
     local name, groupType, difficultyID, difficult = GetInstanceInfo()
     if (groupType == "party" and Details.overall_clear_newchallenge) then
-        Details.historico:resetar_overall()
+        Details.historico:ResetOverallData()
         Details:Msg("overall data are now reset.")
 
         if (Details.debug) then
@@ -809,7 +809,7 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
 
         --reset spec cache if broadcaster requested
         if (Details.streamer_config.reset_spec_cache) then
-            wipe (Details.cached_specs)
+            Details:Destroy(Details.cached_specs)
         end
 
         C_Timer.After(0.5, DetailsMythicPlusFrame.OnChallengeModeStart)
