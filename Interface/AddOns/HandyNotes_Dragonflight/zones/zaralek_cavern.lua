@@ -55,8 +55,12 @@ local ZaralekRotation = Class('ZaralekRotation', ns.Interval, {
 
 function ZaralekRotation:GetText()
     local isInactive = math.floor(self:Next() / self.interval) % 4 + 1
-    local text = L['zaralek_rotation_active']
-    if self.id == isInactive then text = L['zaralek_rotation_inactive'] end
+    local text = self.event and L['zaralek_event_active'] or
+                     L['zaralek_rare_active']
+    if self.id == isInactive then
+        text = self.event and L['zaralek_event_inactive'] or
+                   L['zaralek_rare_inactive']
+    end
     ns.PrepareLinks(text)
     return text
 end
@@ -191,9 +195,10 @@ map.nodes[45673327] = Rare({
         Achievement({id = 17783, criteria = 59200}), -- Adventurer of Zaralek Cavern
         Achievement({id = 18100, criteria = 59499}), -- Cavern Clawbbering
         Transmog({item = 205297, slot = L['cloth']}), -- Flamewielder's Trousers
+        Toy({item = 205796}), -- Molten Lava Pack
         DC.WindingSlitherdrake.WhiteHorns
     }
-}) -- Invohq
+}) -- Invoq
 
 map.nodes[28515115] = Rare({
     id = 203646,
@@ -413,14 +418,13 @@ map.nodes[28544791] = Treasure({
 map.nodes[42976040] = Treasure({
     quest = 75231, -- 75232
     requires = {
-        ns.requirement.Quest(75145) -- In the Wake of the Ashes
+        ns.requirement.Quest(73047) -- Terrestrial Tunneling
     },
     rewards = {
         Achievement({id = 17786, criteria = 59225}) -- Treasures of Zaralek Cavern
-    }
+    },
+    pois = {POI({40136835})}
 }) -- Bloody Body
--- coords and required quest from wowhead comments.
--- i completed the questline until "In the Wake of the Ashes" but the body is not there
 
 map.nodes[30044193] = Treasure({
     quest = 73706,
@@ -663,6 +667,7 @@ map.nodes[37056988] = SmellyTrashPile()
 map.nodes[37403969] = SmellyTrashPile()
 map.nodes[37458125] = SmellyTrashPile()
 map.nodes[39377663] = SmellyTrashPile()
+map.nodes[39438318] = SmellyTrashPile()
 map.nodes[40155751] = SmellyTrashPile()
 map.nodes[40415197] = SmellyTrashPile()
 map.nodes[40613568] = SmellyTrashPile()
@@ -670,7 +675,6 @@ map.nodes[42014541] = SmellyTrashPile()
 map.nodes[43163817] = SmellyTrashPile()
 map.nodes[43552886] = SmellyTrashPile()
 map.nodes[43618578] = SmellyTrashPile()
-map.nodes[39438318] = SmellyTrashPile()
 map.nodes[44686196] = SmellyTrashPile()
 map.nodes[45177786] = SmellyTrashPile()
 map.nodes[45384348] = SmellyTrashPile()
@@ -690,6 +694,7 @@ map.nodes[57047087] = SmellyTrashPile()
 map.nodes[57476456] = SmellyTrashPile()
 map.nodes[59225178] = SmellyTrashPile()
 map.nodes[60195755] = SmellyTrashPile()
+map.nodes[61146860] = SmellyTrashPile()
 map.nodes[62325600] = SmellyTrashPile()
 
 -------------------------------------------------------------------------------
@@ -954,34 +959,100 @@ map.nodes[51264667] = Dragonrace({
 --------------------------------- ZONE EVENTS ---------------------------------
 -------------------------------------------------------------------------------
 
+local EventRotation = Class('EventRotation', ZaralekRotation, {event = true})
+
 local ZoneEvent = Class('ZoneEvent', ns.node.Node, {
     group = ns.groups.ZONE_EVENT,
     icon = 'peg_rd',
-    scale = 1.3
+    scale = 1.3,
+    rewards = {
+        Item({item = 205248}), -- Clanging Dirt-Covered Pouch
+        Item({item = 205247}) -- Clinking Dirt-Covered Pouch
+    }
 })
 
 function ZoneEvent.getters:label()
     return C_QuestLog.GetTitleForQuestID(self.quest[1]) or UNKNOWN
 end
 
-map.nodes[44507490] = ZoneEvent({quest = 75612}) -- Cascades Calling
-map.nodes[63004720] = ZoneEvent({quest = 75471}) -- Crystalline Survey
-map.nodes[32104360] = ZoneEvent({quest = 75455}) -- Conspiracy of Flame
-map.nodes[56606540] = ZoneEvent({quest = 75664}) -- Discordant Crystals
-map.nodes[45008450] = ZoneEvent({quest = 75611}) -- Glimmerfish Before It's Gone
-map.nodes[48102020] = ZoneEvent({quest = 75478}) -- Hungry Hungry Hydra
-map.nodes[35405230] = ZoneEvent({quest = 75451}) -- Imperfect Balance
-map.nodes[46602570] = ZoneEvent({quest = 75461}) -- Magmaclaw Matriarch
-map.nodes[61707210] = ZoneEvent({quest = 75705}) -- Monument Maintenance
-map.nodes[40204350] = ZoneEvent({quest = 75454}) -- Mortar Warfare
-map.nodes[34304770] = ZoneEvent({quest = 75450}) -- Seismic Ceremony
-map.nodes[57504890] = ZoneEvent({quest = 75222}) -- Shellfire
-map.nodes[60605310] = ZoneEvent({quest = 75370}) -- Smellincense
-map.nodes[44902080] = ZoneEvent({quest = 75494}) -- Strike the Colors
-map.nodes[57705690] = ZoneEvent({quest = 75441}) -- Smelly Scramble
-map.nodes[63905070] = ZoneEvent({quest = 75156}) -- Stress Express
-map.nodes[45308320] = ZoneEvent({quest = 75624}) -- The Champion's Challenge
-map.nodes[58206740] = ZoneEvent({quest = 74352}) -- Whirling Zephyr
+function ZoneEvent.getters:rlabel()
+    local completed = C_QuestLog.IsQuestFlaggedCompleted(self.quest[1])
+    local color = completed and ns.status.Green or ns.status.Gray
+    return color(L['weekly'])
+end
+
+map.nodes[44507490] = ZoneEvent({
+    quest = 75612,
+    interval = EventRotation({id = 1})
+}) -- Cascades Calling
+map.nodes[63004720] = ZoneEvent({
+    quest = 75471,
+    interval = EventRotation({id = 3})
+}) -- Crystalline Survey
+map.nodes[32104360] = ZoneEvent({
+    quest = 75455,
+    interval = EventRotation({id = 0})
+}) -- Conspiracy of Flame
+map.nodes[56606540] = ZoneEvent({
+    quest = 75664,
+    interval = EventRotation({id = 2})
+}) -- Discordant Crystals
+map.nodes[45008450] = ZoneEvent({
+    quest = 75611,
+    interval = EventRotation({id = 1})
+}) -- Glimmerfish Before It's Gone
+map.nodes[48102020] = ZoneEvent({
+    quest = 75478,
+    interval = EventRotation({id = 4})
+}) -- Hungry Hungry Hydra
+map.nodes[35405230] = ZoneEvent({
+    quest = 75451,
+    interval = EventRotation({id = 0})
+}) -- Imperfect Balance
+map.nodes[46602570] = ZoneEvent({
+    quest = 75461,
+    interval = EventRotation({id = 4})
+}) -- Magmaclaw Matriarch
+map.nodes[61707210] = ZoneEvent({
+    quest = 75705,
+    interval = EventRotation({id = 2})
+}) -- Monument Maintenance
+map.nodes[40204350] = ZoneEvent({
+    quest = 75454,
+    interval = EventRotation({id = 0})
+}) -- Mortar Warfare
+map.nodes[34304770] = ZoneEvent({
+    quest = 75450,
+    interval = EventRotation({id = 0})
+}) -- Seismic Ceremony
+map.nodes[57504890] = ZoneEvent({
+    quest = 75222,
+    interval = EventRotation({id = 3})
+}) -- Shellfire
+map.nodes[60605310] = ZoneEvent({
+    quest = 75370,
+    interval = EventRotation({id = 3})
+}) -- Smellincense
+map.nodes[44902080] = ZoneEvent({
+    quest = 75494,
+    interval = EventRotation({id = 4})
+}) -- Strike the Colors
+map.nodes[57705690] = ZoneEvent({
+    quest = 75441,
+    interval = EventRotation({id = 3})
+}) -- Smelly Scramble
+map.nodes[63905070] = ZoneEvent({
+    quest = 75156,
+    interval = EventRotation({id = 3})
+}) -- Stress Express
+map.nodes[45308320] = ZoneEvent({
+    quest = 75624,
+    interval = EventRotation({id = 1})
+}) -- The Champion's Challenge
+map.nodes[58206740] = ZoneEvent({
+    quest = 74352,
+    interval = EventRotation({id = 2})
+}) -- Whirling Zephyr
 
 -------------------------------------------------------------------------------
 ---------------------- ANCIENT STONES OF ZARALEK CAVERN -----------------------
@@ -1007,20 +1078,34 @@ map.nodes[55625745] = Collectible({
     id = 203773,
     icon = 5140835,
     requires = {
-        ns.requirement.Quest(74876), -- The Buddy System
-        -- TODO: These quests are stored just in case and we probably won't
-        -- use then. I pulled them from the the PTR Wowhead page while I could.
-        ns.requirement.Quest(75765), ns.requirement.Quest(75766),
-        ns.requirement.Quest(75767), ns.requirement.Quest(75768),
-        ns.requirement.Quest(75769), ns.requirement.Quest(75770),
-        ns.requirement.Quest(75771), ns.requirement.Quest(75772),
-        ns.requirement.Quest(75774)
+        ns.requirement.Quest(74876) -- The Buddy System
+        -- Are part of the Sniffen Sage Achievement:
+        -- ns.requirement.Quest(75765), -- Liquid Art
+        -- ns.requirement.Quest(75766), -- Ruby in the Rough
+        -- ns.requirement.Quest(75767), -- Good Time Boy
+        -- ns.requirement.Quest(75768), -- Lucky Ducky
+        -- ns.requirement.Quest(75769), -- Drawing a Blank
+        -- ns.requirement.Quest(75770), -- A Glass of Bubbly
+        -- ns.requirement.Quest(75771), -- Incense Replay
+        -- ns.requirement.Quest(75772), -- Flask Manager
+        -- ns.requirement.Quest(75774) --- doesnt exist or is a hidden tracking quest
     },
     rewards = {
         Achievement({
+            id = 18257,
+            criteria = {id = 1, qty = true, suffix = L['sniffen_digs_suffix']}
+        }), -- Can You Dig It?
+        Achievement({
             id = 17833,
             criteria = {id = 1, qty = true, suffix = L['sniffen_sage_suffix']}
-        }) -- Sniffen Sage
+        }), -- Sniffen Sage
+        Achievement({
+            id = 18255,
+            criteria = {
+                59744, 59745, 59746, 59747, 59749, 59750, 59751, 59752, 59753,
+                59754, 59755, 59756, 59757, 59758, 59759, 59760
+            }
+        }) -- Proof of Myrrit
     }
 }) -- Myrrit <Sniffenseeker>
 
