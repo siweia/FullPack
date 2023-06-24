@@ -49,6 +49,10 @@ function Bar:MicroButton_Create(parent, data)
 		button:SetNormalTexture(0)
 		button:SetPushedTexture(0)
 		button:SetDisabledTexture(0)
+		if DB.isNewPatch then
+		button:SetHighlightTexture(0)
+		button.SetHighlightAtlas = B.Dummy
+		end
 		if tooltip then B.AddTooltip(button, "ANCHOR_RIGHT", tooltip) end
 
 		local hl = button:GetHighlightTexture()
@@ -61,6 +65,9 @@ function Bar:MicroButton_Create(parent, data)
 			if not C.db["Skins"]["ClassLine"] then flash:SetVertexColor(1, 1, 1) end
 		end
 		if button.FlashContent then button.FlashContent:SetTexture(nil) end
+		if button.Portrait then button.Portrait:Hide() end
+		if button.Background then button.Background:SetAlpha(0) end
+		if button.PushedBackground then button.PushedBackground:SetAlpha(0) end
 	else
 		bu:SetScript("OnMouseUp", method)
 		B.AddTooltip(bu, "ANCHOR_RIGHT", tooltip)
