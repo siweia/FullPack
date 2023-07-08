@@ -380,6 +380,12 @@ do
 		--attempt to get from the spells the actor used in the current combat
 		if (not actorSpec) then
 			local currentCombatObject = Details:GetCurrentCombat()
+
+			if (currentCombatObject.__destroyed) then
+				--schedule made before a destroy combat call, but not cancelled
+				return
+			end
+
 			for containerId = 1, DETAILS_COMBAT_AMOUNT_CONTAINERS do
 				if (actorSpec) then
 					break
@@ -449,7 +455,6 @@ do
 
 		if (actorSpec) then
 			Details.cached_specs[actorObject.serial] = actorSpec
-
 			actorObject:SetSpecId(actorSpec)
 			actorObject.classe = Details.SpecIDToClass[actorSpec] or actorObject.classe
 			actorObject.guessing_spec = nil

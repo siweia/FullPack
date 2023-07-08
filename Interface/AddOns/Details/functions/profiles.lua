@@ -600,6 +600,7 @@ local default_profile = {
 
 		[1467] = {256/512, 320/512, 256/512, 320/512}, -- Devastation
 		[1468] = {320/512, 384/512, 256/512, 320/512}, -- Preservation
+		[1473] = {384/512, 448/512, 256/512, 320/512}, -- Augmentation
 	},
 
 	--class icons and colors
@@ -1375,6 +1376,9 @@ local default_global_data = {
 
 		played_class_time = true,
 		check_stuttering = true,
+
+		--[bossname] = texture
+		boss_icon_cache = {},
 
 	--spell category feedback
 		spell_category_savedtable = {},

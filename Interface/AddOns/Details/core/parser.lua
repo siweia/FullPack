@@ -404,7 +404,7 @@
 		[282449] = true, --akaari's soul rogue
 		[196917] = true, --light of the martyr
 		[388009] = true, --blessing of spring
-		[388012] = true, --blessing of summer		
+		[388012] = true, --blessing of summer
 	}
 
 	--damage spells to ignore
@@ -768,7 +768,7 @@
 					(not Details.in_group and sourceFlags and bitBand(sourceFlags, AFFILIATION_GROUP) ~= 0)
 				)
 			) then
-				--avoid Fel Armor and Undulating Maneuvers to start a combat
+				--avoid Fel Armor and Undulating Maneuvers from starting a combat.
 				if ((spellId == 387846 or spellId == 352561) and sourceName == Details.playername) then
 					return
 				end
@@ -798,7 +798,8 @@
 					--111400 warlock's burning rush
 					--368637 is buff from trinket "Scars of Fraternal Strife" which make the player bleed even out-of-combat
 					--371070 is "Iced Phial of Corrupting Rage" effect triggers randomly, even out-of-combat
-					if (spellId == 111400 or spellId == 371070 or spellId == 368637) then
+					--401394 is "Vessel of Seared Shadows" trinket
+					if (spellId == 111400 or spellId == 371070 or spellId == 368637 or spellId == 401394) then
 						return
 					end
 
@@ -1062,10 +1063,10 @@
 	--~activity time
 		if (not sourceActor.dps_started) then
 			--register on time machine
-			sourceActor:Iniciar(true)
+			sourceActor:GetOrChangeActivityStatus(true)
 
 			if (ownerActor and not ownerActor.dps_started) then
-				ownerActor:Iniciar(true)
+				ownerActor:GetOrChangeActivityStatus(true)
 				if (ownerActor.end_time) then
 					ownerActor.end_time = nil
 				else
@@ -1860,7 +1861,7 @@
 	--parser.spell_empower
 	--10/30 15:32:11.515  SPELL_EMPOWER_START,Player-4184-00242A35,"Isodrak-Valdrakken",0x514,0x0,Player-4184-00242A35,"Isodrak-Valdrakken",0x514,0x0,382266,"Fire Breath",0x4
 	--10/30 15:32:12.433  SPELL_EMPOWER_END,Player-4184-00242A35,"Isodrak-Valdrakken",0x514,0x0,0000000000000000,nil,0x80000000,0x80000000,382266,"Fire Breath",0x4,1
-	--10/30 15:33:45.970  SPELL_EMPOWER_INTERRUPT,Player-4184-00218B4F,"Minng-Valdrakken",0x512,0x0,0000000000000000,nil,0x80000000,0x80000000,382266,"Fire Breath",0x4,1			
+	--10/30 15:33:45.970  SPELL_EMPOWER_INTERRUPT,Player-4184-00218B4F,"Minng-Valdrakken",0x512,0x0,0000000000000000,nil,0x80000000,0x80000000,382266,"Fire Breath",0x4,1
 
 	--10/30 15:34:47.249  SPELL_EMPOWER_START,Player-4184-0048EE5B,"Nezaland-Valdrakken",0x514,0x0,Player-4184-0048EE5B,"Nezaland-Valdrakken",0x514,0x0,382266,"Fire Breath",0x4
 	--357209 damage spell is different from the spell cast
@@ -1983,7 +1984,7 @@
 		local jogador_alvo, alvo_dono = healing_cache [alvo_serial]
 		if (not jogador_alvo) then
 			jogador_alvo, alvo_dono, alvo_name = _current_heal_container:PegarCombatente (alvo_serial, alvo_name, alvo_flags, true)
-			if (not alvo_dono and alvo_flags and also_serial ~= "") then
+			if (not alvo_dono and alvo_flags and alvo_serial ~= "") then
 				healing_cache [alvo_serial] = jogador_alvo
 			end
 		end
@@ -2261,10 +2262,10 @@
 	------------------------------------------------------------------------------------------------
 	--~activity time
 		if (not sourceActor.iniciar_hps) then
-			sourceActor:Iniciar (true) --inicia o hps do jogador
+			sourceActor:GetOrChangeActivityStatus (true) --inicia o hps do jogador
 
 			if (ownerActor and not ownerActor.iniciar_hps) then
-				ownerActor:Iniciar (true)
+				ownerActor:GetOrChangeActivityStatus (true)
 				if (ownerActor.end_time) then
 					ownerActor.end_time = nil
 				else
@@ -3576,7 +3577,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			sourceActor.interrupt_spells = container_habilidades:NovoContainer(container_misc)
 			sourceActor.interrompeu_oque = {}
 		end
-		
+
 	------------------------------------------------------------------------------------------------
 	--add amount
 
@@ -3764,107 +3765,115 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	end
 
 
-	--serach key: ~dispell
-	function parser:dispell (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool, auraType)
-
-	------------------------------------------------------------------------------------------------
-	--early checks and fixes
-
-		--esta dando erro onde o nome � NIL, fazendo um fix para isso
-		if (not who_name) then
-			who_name = "[*] "..extraSpellName
+	--serach key: ~dispel
+	---@param token string
+	---@param time unixtime
+	---@param sourceSerial string
+	---@param sourceName string
+	---@param sourceFlags number
+	---@param targetSerial string
+	---@param targetName string
+	---@param targetFlags number
+	---@param targetFlags2 number
+	---@param spellId number
+	---@param spellName string
+	---@param spellType number
+	---@param extraSpellID number
+	---@param extraSpellName string
+	---@param extraSchool number
+	function parser:dispell(token, time, sourceSerial, sourceName, sourceFlags, targetSerial, targetName, targetFlags, targetFlags2, spellId, spellName, spellType, extraSpellID, extraSpellName, extraSchool, auraType)
+		if (not sourceName) then
+			sourceName = "[*] " .. extraSpellName
 		end
-		if (not alvo_name) then
-			alvo_name = "[*] "..spellid
+		if (not targetName) then
+			targetName = "[*] " .. spellId
 		end
 
 		_current_misc_container.need_refresh = true
 
-	------------------------------------------------------------------------------------------------
-	--get actors]
-		local este_jogador, meu_dono = misc_cache [who_name]
-		if (not este_jogador) then --pode ser um desconhecido ou um pet
-			este_jogador, meu_dono, who_name = _current_misc_container:PegarCombatente (who_serial, who_name, who_flags, true)
-			if (not meu_dono) then --se n�o for um pet, add no cache
-				misc_cache [who_name] = este_jogador
+		---@type actor, actor
+		local sourceActor, ownerActor = misc_cache[sourceName]
+		if (not sourceActor) then
+			sourceActor, ownerActor, sourceName = _current_misc_container:PegarCombatente(sourceSerial, sourceName, sourceFlags, true)
+			if (not ownerActor) then
+				misc_cache[sourceName] = sourceActor
 			end
 		end
 
-	------------------------------------------------------------------------------------------------
-	--build containers on the fly
+		--build containers on the fly
+		if (not sourceActor.dispell) then
+			---@type number
+			sourceActor.dispell = Details:GetOrderNumber(sourceName)
 
-		if (not este_jogador.dispell) then
-			--constr�i aqui a tabela dele
-			este_jogador.dispell = Details:GetOrderNumber(who_name)
-			este_jogador.dispell_targets = {}
-			este_jogador.dispell_spells = container_habilidades:NovoContainer (container_misc)
-			este_jogador.dispell_oque = {}
+			---@type table<actorname, number>
+			sourceActor.dispell_targets = {}
+
+			---@type spellcontainer
+			sourceActor.dispell_spells = container_habilidades:NovoContainer(container_misc)
+
+			---@type table<spellid, number>
+			sourceActor.dispell_oque = {}
 		end
 
-	------------------------------------------------------------------------------------------------
-	--spell reflection
-		if (reflection_dispelid[spellid]) then
+		--spell reflection
+		if (reflection_dispelid[spellId]) then
 			--this aura could've been reflected to the caster after the dispel
 			--save data about whom was dispelled by who and what spell it was
-			reflection_dispels[alvo_serial] = reflection_dispels[alvo_serial] or {}
-			reflection_dispels[alvo_serial][extraSpellID] = {
-				who_serial = who_serial,
-				who_name = who_name,
-				who_flags = who_flags,
-				spellid = spellid,
-				spellname = spellname,
-				spelltype = spelltype,
+			reflection_dispels[targetSerial] = reflection_dispels[targetSerial] or {}
+			reflection_dispels[targetSerial][extraSpellID] = {
+				who_serial = sourceSerial,
+				who_name = sourceName,
+				who_flags = sourceFlags,
+				spellid = spellId,
+				spellname = spellName,
+				spelltype = spellType,
 			}
 		end
 
-	------------------------------------------------------------------------------------------------
-	--add amount
-
 		--last event update
-		este_jogador.last_event = _tempo
+		sourceActor.last_event = _tempo
 
 		--total dispells in combat
-		_current_total [4].dispell = _current_total [4].dispell + 1
+		_current_total[4].dispell = _current_total[4].dispell + 1
 
-		if (este_jogador.grupo) then
-			_current_gtotal [4].dispell = _current_gtotal [4].dispell + 1
+		if (sourceActor.grupo) then
+			_current_gtotal[4].dispell = _current_gtotal[4].dispell + 1
 		end
 
 		--actor dispell amount
-		este_jogador.dispell = este_jogador.dispell + 1
+		sourceActor.dispell = sourceActor.dispell + 1
 
-		--dispell what
+		--dispelled what
 		if (extraSpellID) then
-			este_jogador.dispell_oque [extraSpellID] = (este_jogador.dispell_oque [extraSpellID] or 0) + 1
+			sourceActor.dispell_oque[extraSpellID] = (sourceActor.dispell_oque[extraSpellID] or 0) + 1
 		end
 
 		--actor targets
-		este_jogador.dispell_targets [alvo_name] = (este_jogador.dispell_targets [alvo_name] or 0) + 1
+		sourceActor.dispell_targets[targetName] = (sourceActor.dispell_targets[targetName] or 0) + 1
 
 		--actor spells table
-		local spell = este_jogador.dispell_spells._ActorTable [spellid]
-		if (not spell) then
-			spell = este_jogador.dispell_spells:PegaHabilidade (spellid, true, token)
+		---@type spelltable
+		local spellTable = sourceActor.dispell_spells._ActorTable[spellId]
+		if (not spellTable) then
+			spellTable = sourceActor.dispell_spells:PegaHabilidade(spellId, true, token)
 		end
-		_spell_utility_func (spell, alvo_serial, alvo_name, alvo_flags, who_name, token, extraSpellID, extraSpellName)
+		_spell_utility_func(spellTable, targetSerial, targetName, targetFlags, sourceName, token, extraSpellID, extraSpellName)
 
-		--verifica se tem dono e adiciona o interrupt para o dono
-		if (meu_dono) then
-			if (not meu_dono.dispell) then
-				meu_dono.dispell = Details:GetOrderNumber(who_name)
-				meu_dono.dispell_targets = {}
-				meu_dono.dispell_spells = container_habilidades:NovoContainer (container_misc)
-				meu_dono.dispell_oque = {}
+		--is has an owner, add the dispel to the owner as well
+		if (ownerActor) then
+			if (not ownerActor.dispell) then
+				ownerActor.dispell = Details:GetOrderNumber(sourceName)
+				ownerActor.dispell_targets = {}
+				ownerActor.dispell_spells = container_habilidades:NovoContainer(container_misc)
+				ownerActor.dispell_oque = {}
 			end
 
-			meu_dono.dispell = meu_dono.dispell + 1
-
-			meu_dono.dispell_targets [alvo_name] = (meu_dono.dispell_targets [alvo_name] or 0) + 1
-
-			meu_dono.last_event = _tempo
+			ownerActor.dispell = ownerActor.dispell + 1
+			ownerActor.dispell_targets[targetName] = (ownerActor.dispell_targets[targetName] or 0) + 1
+			ownerActor.last_event = _tempo
 
 			if (extraSpellID) then
-				meu_dono.dispell_oque [extraSpellID] = (meu_dono.dispell_oque [extraSpellID] or 0) + 1
+				ownerActor.dispell_oque[extraSpellID] = (ownerActor.dispell_oque[extraSpellID] or 0) + 1
 			end
 		end
 	end
@@ -4262,12 +4271,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				else
 					--no last cooldown found so just add a last cooldown used event with no spellId and time 0
 					local eventTable = {}
-					eventTable [1] = 3 --true if this is a damage || false for healing || 1 for cooldown usage || 2 for last cooldown
-					eventTable [2] = 0 --spellId
-					eventTable [3] = 0 --amount of damage or healing but in this case is 0
-					eventTable [4] = 0 --when the event happened using unix time
-					eventTable [5] = 0 --player health when the event happened
-					eventTable [6] = targetName --source name
+					eventTable[1] = 3 --event type
+					eventTable[2] = 0 --spellId
+					eventTable[3] = 0 --amount of damage or healing but in this case is 0
+					eventTable[4] = 0 --when the event happened using unix time
+					eventTable[5] = 0 --player health when the event happened
+					eventTable[6] = targetName --source name
 					eventsBeforePlayerDeath[#eventsBeforePlayerDeath+1] = eventTable
 				end
 
@@ -4305,6 +4314,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 						["dead"] = true,
 						["last_cooldown"] = thisPlayer.last_cooldown,
 						["dead_at"] = combatElapsedTime,
+						["spec"] = thisPlayer.spec,
 					}
 				end
 
@@ -4392,7 +4402,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		--["SPELL_CAST_FAILED"] = parser.spell_fail
 	}
 
-	--[==[@debug@ 
+	--[==[@debug@
 	Details.token_list = token_list
 	--@end-debug@]==]
 
@@ -4751,7 +4761,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	-- PARSER
 	--serach key: ~parser ~events ~start ~inicio
-	function Details:FlagCurrentCombat()
+	function Details:FlagNewCombat_PVPState()
 		if (Details.is_in_battleground) then
 			Details.tabela_vigente.pvp = true
 			Details.tabela_vigente.is_pvp = {name = Details.zone_name, mapid = Details.zone_id}
@@ -4898,7 +4908,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			--end
 		end
 
-		Details:DispatchAutoRunCode("on_zonechanged")
+		Details222.AutoRunCode.DispatchAutoRunCode("on_zonechanged")
 		Details:SchedulePetUpdate(7)
 		Details:CheckForPerformanceProfile()
 	end
@@ -5062,6 +5072,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		local _, _, _, _, _, _, _, zoneMapID = GetInstanceInfo()
 
+		local bossIcon = Details:GetBossEncounterTexture(encounterName)
+		_current_combat.bossIcon = bossIcon
+
 		if (_in_combat) then
 			if (endStatus == 1) then
 				Details.encounter_table.kill = true
@@ -5183,7 +5196,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			end
 		end
 
-		Details:DispatchAutoRunCode("on_entercombat")
+		Details222.AutoRunCode.DispatchAutoRunCode("on_entercombat")
 
 		Details.tabela_vigente.CombatStartedAt = GetTime()
 	end
@@ -5284,7 +5297,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (not OnRegenEnabled) then
 			Details:Destroy(bitfield_swap_cache)
 			Details:Destroy(empower_cache)
-			Details:DispatchAutoRunCode("on_leavecombat")
+			Details222.AutoRunCode.DispatchAutoRunCode("on_leavecombat")
 		end
 
 		if (Details.solo and Details.PluginCount.SOLO > 0) then --code too old and I don't have documentation for it
@@ -5292,71 +5305,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				Details.SoloTables.Plugins [Details.SoloTables.Mode].Stop()
 			end
 		end
-
-		--[=[ code maintenance: disabled deprecated code Feb 2022
-
-		--deprecated shcedules
-		do
-			if (_detalhes.schedule_add_to_overall and #_detalhes.schedule_add_to_overall > 0) then --deprecated (combat are now added immediatelly since there's no script run too long)
-				if (_detalhes.debug) then
-					_detalhes:Msg("(debug) adding ", #_detalhes.schedule_add_to_overall, "combats in queue to overall data.")
-				end
-
-				for i = #_detalhes.schedule_add_to_overall, 1, -1 do
-					local CombatToAdd = tremove(_detalhes.schedule_add_to_overall, i)
-					if (CombatToAdd) then
-						_detalhes.historico:AddToOverallData (CombatToAdd)
-					end
-				end
-			end
-
-			if (_detalhes.schedule_mythicdungeon_trash_merge) then --deprecated (combat are now added immediatelly since there's no script run too long)
-				_detalhes.schedule_mythicdungeon_trash_merge = nil
-				DetailsMythicPlusFrame.MergeTrashCleanup (true)
-			end
-
-			if (_detalhes.schedule_mythicdungeon_endtrash_merge) then --deprecated (combat are now added immediatelly since there's no script run too long)
-				_detalhes.schedule_mythicdungeon_endtrash_merge = nil
-				DetailsMythicPlusFrame.MergeRemainingTrashAfterAllBossesDone()
-			end
-
-			if (_detalhes.schedule_mythicdungeon_overallrun_merge) then --deprecated (combat are now added immediatelly since there's no script run too long)
-				_detalhes.schedule_mythicdungeon_overallrun_merge = nil
-				DetailsMythicPlusFrame.MergeSegmentsOnEnd()
-			end
-
-			if (_detalhes.schedule_flag_boss_components) then --deprecated (combat are now added immediatelly since there's no script run too long)
-				_detalhes.schedule_flag_boss_components = false
-				_detalhes:FlagActorsOnBossFight()
-			end
-
-			if (_detalhes.schedule_remove_overall) then --deprecated (combat are now added immediatelly since there's no script run too long)
-				if (_detalhes.debug) then
-					_detalhes:Msg("(debug) found schedule overall data clean up.")
-				end
-				_detalhes.schedule_remove_overall = false
-				_detalhes.tabela_historico:ResetOverallData()
-			end
-
-			if (_detalhes.wipe_called and false) then --disabled
-				_detalhes.wipe_called = nil
-				_detalhes:CaptureSet (nil, "damage", true)
-				_detalhes:CaptureSet (nil, "energy", true)
-				_detalhes:CaptureSet (nil, "aura", true)
-				_detalhes:CaptureSet (nil, "energy", true)
-				_detalhes:CaptureSet (nil, "spellcast", true)
-
-				_detalhes:CaptureSet (false, "damage", false, 10)
-				_detalhes:CaptureSet (false, "energy", false, 10)
-				_detalhes:CaptureSet (false, "aura", false, 10)
-				_detalhes:CaptureSet (false, "energy", false, 10)
-				_detalhes:CaptureSet (false, "spellcast", false, 10)
-			end
-		end
-
-		--]=]
-
-
 	end
 
 	function Details.parser_functions:CHALLENGE_MODE_START(...)
@@ -5596,7 +5544,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				Details:CheckVersion()
 				Details:SendEvent("GROUP_ONENTER")
 
-				Details:DispatchAutoRunCode("on_groupchange")
+				Details222.AutoRunCode.DispatchAutoRunCode("on_groupchange")
 
 				Details:Destroy(Details.trusted_characters)
 				C_Timer.After(5, Details.ScheduleSyncPlayerActorData)
@@ -5614,7 +5562,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				Details:InstanceCall(Details.AdjustAlphaByContext)
 				Details:CheckSwitchOnLogon()
 				Details:SendEvent("GROUP_ONLEAVE")
-				Details:DispatchAutoRunCode("on_groupchange")
+				Details222.AutoRunCode.DispatchAutoRunCode("on_groupchange")
 				Details:Destroy(Details.trusted_characters)
 			else
 				--player is still in a group
@@ -5670,7 +5618,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	function Details:CreateBattlegroundSegment()
 		if (_in_combat) then
-			Details.tabela_vigente.discard_segment = true
+			Details222.discardSegment = true
 			Details:EndCombat()
 		end
 
@@ -5692,6 +5640,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			Details.instance_load_failed.text:SetText("Framework for Details! isn't loaded.\nIf you just updated the addon, please reboot the game client.\nWe apologize for the inconvenience and thank you for your comprehension.")
 			return
 		end
+
+		Details222.AutoRunCode.Code = {}
 
 		Details.popup = _G.GameCooltip
 		Details.in_group = IsInGroup() or IsInRaid()
@@ -5731,7 +5681,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		Details:UpdateParserGears()
 
 		--load auto run code
-		Details:StartAutoRun()
+		Details222.AutoRunCode.StartAutoRun()
 
 		Details.isLoaded = true
 	end
@@ -5849,8 +5799,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		---@param text string the error to be logged
 		local addToExitErrors = function(text)
-			table.insert(exitErrors, 1, Details222.Date.GetDateForLogs() .. "|" .. text)
-			table.remove(exitErrors, 10)
+			table.insert(exitErrors, 1, Details222.Date.GetDateForLogs() .. " | " .. text)
+			table.remove(exitErrors, 11)
 		end
 
 		---@type string current step of the logout process, used to log which is the current step when an error happens
@@ -5874,16 +5824,16 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (not Details.gump) then
 			--failed to load the framework
 			tinsert(_detalhes_global.exit_log, "The framework wasn't in Details member 'gump'.")
-			tinsert(_detalhes_global.exit_errors, 1, currentStep .. "|" .. Details222.Date.GetDateForLogs() .. "|" .. Details.userversion .. "|Framework wasn't loaded|")
+			tinsert(_detalhes_global.exit_errors, 1, currentStep .. " | " .. Details222.Date.GetDateForLogs() .. " | " .. Details.GetVersionString() .. " | Framework wasn't loaded |")
 			return
 		end
 
 		local logSaverError = function(errortext)
 			local writeLog = function()
 				_detalhes_global = _detalhes_global or {}
-				tinsert(_detalhes_global.exit_errors, 1, currentStep .. "|" .. Details222.Date.GetDateForLogs() .. "|" .. Details.userversion .. "|" .. errortext .. "|" .. debugstack())
+				tinsert(_detalhes_global.exit_errors, 1, currentStep .. " | " .. Details222.Date.GetDateForLogs() .. " | " .. Details.GetVersionString() .. " | " .. errortext .. " | " .. debugstack())
 				tremove(_detalhes_global.exit_errors, exitErrorsMaxSize)
-				addToExitErrors(currentStep .. "|" .. Details222.Date.GetDateForLogs() .. "|" .. Details.userversion .. "|" .. errortext .. "|" .. debugstack())
+				addToExitErrors(currentStep .. " | " .. Details222.Date.GetDateForLogs() .. " | " .. Details.GetVersionString() .. " | " .. errortext .. " | " .. debugstack())
 			end
 			xpcall(writeLog, addToExitErrors)
 		end
@@ -5917,7 +5867,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		else
 			tinsert(_detalhes_global.exit_errors, 1, "not _detalhes.tabela_instancias")
 			tremove(_detalhes_global.exit_errors, exitErrorsMaxSize)
-			addToExitErrors("not _detalhes.tabela_instancias")
+			addToExitErrors("not _detalhes.tabela_instancias | " .. Details.GetVersionString())
 		end
 
 		--if is in combat during the logout, stop the combat
@@ -5938,7 +5888,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		--user requested a wipe of the full configuration
 		if (Details.wipe_full_config) then
 			tinsert(_detalhes_global.exit_log, "5 - Is a full config wipe.")
-			addToExitErrors("true: _detalhes.wipe_full_config")
+			addToExitErrors("true: _detalhes.wipe_full_config | " .. Details.GetVersionString())
 			_detalhes_global = nil
 			_detalhes_database = nil
 			return
@@ -5960,6 +5910,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes_database.nick_tag_cache = Details.CopyTable(_detalhes_database.nick_tag_cache)
 		end
 		xpcall(saveNicktabCache, logSaverError)
+
+		--save auto run code data
+		tinsert(_detalhes_global.exit_log, "9 - Saving Auto Run Code.")
+		local saveAutoRunCode = function()
+			Details222.AutoRunCode.OnLogout()
+		end
+		xpcall(saveAutoRunCode, logSaverError)
 	end) --end of saving data
 
 
@@ -5974,6 +5931,94 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (func) then
 			return func(nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
 		end
+	end
+
+	local parserDebug = {}
+	function Details.OnParserEventDebug()
+		local time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, spellName, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, unknown1, unknown2, unknown3, unknown4, unknown5 = CombatLogGetCurrentEventInfo()
+
+		if (not parserDebug[token]) then
+			parserDebug[token] = true
+			print(token)
+		end
+
+		if (token == "SPELL_DAMAGE") then
+			if (A13 ~= nil or unknown1 ~= nil or unknown2 ~= nil or unknown3 ~= nil or unknown4 ~= nil or unknown5) then
+				--print(time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18)	
+			end
+			--print(time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18)
+
+			if (spellName == "Fate Mirror") then
+				--print(time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18)
+			end
+		end
+
+		if (token == "SPELL_AURA_APPLIED") then
+			--print(spellName)
+		end
+
+		--local func = token_list[token]
+		--if (func) then
+		--	return func(nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, spellId, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
+		--end
+
+		--[=[ getspellinfo
+			["1"] = "Spatial Paradox", buff
+			["3"] = 5199645,
+			["4"] = 0,
+			["5"] = 0,
+			["6"] = 100,
+			["7"] = 406789,
+			["8"] = 5199645,
+
+			["1"] = "Spatial Paradox", buff
+			["3"] = 5199645,
+			["4"] = 0,
+			["5"] = 0,
+			["6"] = 60,
+			["7"] = 406732,
+			["8"] = 5199645,
+
+			["1"] = "Ebon Might", --spell cast start
+			["3"] = 5061347,
+			["4"] = 1473,
+			["5"] = 0,
+			["6"] = 0,
+			["7"] = 395152,
+			["8"] = 5061347,			
+		--]=]
+
+		if (who_serial == UnitGUID("player")) then
+			GLOB = GLOB or {}
+			--table.insert(GLOB, {time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, spellName, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18})
+			--print(time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, spellName, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18)	
+		end
+
+		--two spells triggering _support
+		--404908,"Fate Mirror"
+		--395152,"Ebon Might"
+
+		--SPELL_DAMAGE_SUPPORT on spellId 395152 spellname "Ebon Might", only seens to exists in the offline version of the combat log
+
+		if (spellId == 395152) then --Ebon Might "cast start" and "buff applyed"
+			--print(time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, spellId, spellName, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, unknown1, unknown2, unknown3, unknown4, unknown5)
+		end
+
+		if (spellName== "Ebon Might") then 
+			--print(token, spellName, spellId)
+		end
+
+		if (token == "SPELL_CAST_START") then
+			if (who_serial == UnitGUID("player")) then
+			--print(token, spellName, spellId)
+			end
+		end
+
+		--Prescience, Fate Mirror, Ebon Might, Breath of Eons, Shifting Sands
+
+		--offline cleu:
+		--6/30 14:25:28.988  SPELL_DAMAGE,Player-5764-0001609B,"Mikito-Fyrakk",0x518,0x0,Creature-0-5770-2444-8-198594-00009DF6EF,"Cleave Training Dummy",0x30a28,0x0,44425,"Arcane Barrage",0x40,0000000000000000,0000000000000000,0,0,0,0,0,0,-1,0,0,0,0.00,0.00,2112,0.0000,0,18252,18251,-1,64,0,0,0,nil,nil,nil
+		--6/30 14:25:28.988  SPELL_DAMAGE_SUPPORT,Player-5764-0001609B,"Mikito-Fyrakk",0x518,0x0,Creature-0-5770-2444-8-198594-00009DF6EF,"Cleave Training Dummy",0x30a28,0x0,395152,"Ebon Might",0xc,0000000000000000,0000000000000000,0,0,0,0,0,0,-1,0,0,0,0.00,0.00,2112,0.0000,0,2572,2571,-1,64,0,0,0,nil,nil,nil,Player-5764-0001FACE
 	end
 
 	function Details.OnParserEventClassicEra()
@@ -6022,7 +6067,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		}
 		Details.parser_frame:SetScript("OnEvent", Details.OnParserEventClassicEra)
 	else
-		Details.parser_frame:SetScript("OnEvent", Details.OnParserEvent)
+		if (false and "I'm debugging something") then
+			Details.parser_frame:SetScript("OnEvent", Details.OnParserEventDebug)
+		else
+			Details.parser_frame:SetScript("OnEvent", Details.OnParserEvent)
+		end
 	end
 
 	function Details:UpdateParser()
@@ -6035,6 +6084,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	function Details:GetActorFromCache(value)
 		return damage_cache[value] or damage_cache_pets[value] or damage_cache_petsOwners[value]
+	end
+
+	---return tables containing the cache of actors
+	---@return table damageCache, table damageCachePets, table damageCachePetOwners, table healingCache
+	function Details222.Cache.GetParserCacheTables()
+		return damage_cache, damage_cache_pets, damage_cache_petsOwners, healing_cache
 	end
 
 	function Details:PrintParserCacheIndexes()
@@ -6436,7 +6491,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		return Details.combat_id
 	end
 
-	--if in combat
+	---return true if in combat
+	---@return boolean bIsInCombat
 	function Details:IsInCombat()
 		return _in_combat
 	end
@@ -6455,9 +6511,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	end
 
 	--get an actor
-	function Details:GetActor(combat, attribute, actorName)
-		if (not combat) then
-			combat = "current" --current combat
+	function Details:GetActor(combatId, attribute, actorName)
+		if (not combatId) then
+			combatId = "current" --current combat
 		end
 
 		if (not attribute) then
@@ -6468,7 +6524,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			actorName = Details.playername
 		end
 
-		if (combat == 0 or combat == "current") then
+		if (combatId == 0 or combatId == "current") then
 			local actor = Details.tabela_vigente(attribute, actorName)
 			if (actor) then
 				return actor
@@ -6476,7 +6532,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				return nil
 			end
 
-		elseif (combat == -1 or combat == "overall") then
+		elseif (combatId == -1 or combatId == "overall") then
 			local actor = Details.tabela_overall(attribute, actorName)
 			if (actor) then
 				return actor
@@ -6484,12 +6540,16 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				return nil
 			end
 
-		elseif (type(combat) == "number") then
-			local combatTables = Details.tabela_historico.tabelas[combat]
-			if (combatTables) then
-				local actor = combatTables(attribute, actorName)
-				if (actor) then
-					return actor
+		elseif (type(combatId) == "number") then
+			local segmentsTable = Details:GetCombatSegments()
+			---@type combat
+			local combatObject = segmentsTable[combatId]
+
+			if (combatObject) then
+				---@type actor
+				local actorObject = combatObject(attribute, actorName)
+				if (actorObject) then
+					return actorObject
 				else
 					return nil
 				end

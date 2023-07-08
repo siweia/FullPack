@@ -692,20 +692,6 @@ local movement_onupdate = function(self, elapsed)
 							end
 						end
 					end
-
-					if (tem_livre) then
-						if (not Details.snap_alert.playing) then
-							instancia_alvo:SnapAlert()
-							Details.snap_alert.playing = true
-
-							if (not DetailsFramework.IsTimewalkWoW()) then
-								Details.MicroButtonAlert.Text:SetText(string.format(Loc["STRING_ATACH_DESC"], self.instance.meu_id, instancia_alvo.meu_id))
-								Details.MicroButtonAlert:SetPoint("bottom", instancia_alvo.baseframe.cabecalho.modo_selecao.widget, "top", 0, 18)
-								Details.MicroButtonAlert:SetHeight(200)
-								Details.MicroButtonAlert:Show()
-							end
-						end
-					end
 				end
 
 				tempo_movendo = 1
@@ -964,10 +950,6 @@ local function move_janela(baseframe, iniciando, instancia, just_updating)
 		for _, this_instance in ipairs(group) do
 			this_instance.isMoving = false
 		end
-
-		Details.snap_alert.playing = false
-		Details.snap_alert.animIn:Stop()
-		Details.snap_alert.animOut:Play()
 
 		if (not DetailsFramework.IsTimewalkWoW()) then
 			Details.MicroButtonAlert:Hide()
@@ -3299,18 +3281,6 @@ local function show_anti_overlap (instance, host, side)
 	anti_menu_overlap:Show()
 end
 
-Details.snap_alert = CreateFrame("frame", "DetailsSnapAlertFrame", UIParent, "ActionBarButtonSpellActivationAlert")
-Details.snap_alert:Hide()
-Details.snap_alert:SetFrameStrata("FULLSCREEN")
-
-function Details:SnapAlert()
-	print("alert started")
-	Details.snap_alert:ClearAllPoints()
-	Details.snap_alert:SetPoint("topleft", self.baseframe.cabecalho.modo_selecao.widget, "topleft", -8, 6)
-	Details.snap_alert:SetPoint("bottomright", self.baseframe.cabecalho.modo_selecao.widget, "bottomright", 8, -6)
-	Details.snap_alert.animOut:Stop()
-	Details.snap_alert.animIn:Play()
-end
 
 do
 
@@ -5926,13 +5896,13 @@ function Details:ToolbarMenuSetButtons(_mode, _segment, _attributes, _report, _r
 
 end
 
-function Details:ToolbarMenuButtons (_mode, _segment, _attributes, _report)
-	return self:ToolbarMenuSetButtons (_mode, _segment, _attributes, _report)
+function Details:ToolbarMenuButtons(_mode, _segment, _attributes, _report)
+	return self:ToolbarMenuSetButtons(_mode, _segment, _attributes, _report)
 end
 
 local parameters_table = {}
 
-local on_leave_menu = function(self, elapsed)
+local onLeaveMenuFunc = function(self, elapsed)
 	parameters_table[2] = parameters_table[2] + elapsed
 	if (parameters_table[2] > 0.3) then
 		if (not _G.GameCooltip.mouseOver and not _G.GameCooltip.buttonOver and (not _G.GameCooltip:GetOwner() or _G.GameCooltip:GetOwner() == self)) then
@@ -5943,7 +5913,6 @@ local on_leave_menu = function(self, elapsed)
 end
 
 local OnClickNovoMenu = function(_, _, id, instance)
-
 	local is_new
 	if (not Details.tabela_instancias [id]) then
 		--esta criando uma nova
@@ -6206,7 +6175,8 @@ function Details:GetSegmentInfo(index)
 	elseif (index == 0 or index == "current") then
 		combat = Details.tabela_vigente
 	else
-		combat = Details.tabela_historico.tabelas[index]
+		local segmentsTable = Details:GetCombatSegments()
+		combat = segmentsTable[index]
 	end
 
 	if (combat) then
@@ -6319,8 +6289,10 @@ local buildSegmentTooltip = function(self, deltaTime)
 		local amountOfSegments = 0
 		local segmentsWithACombat = 0
 
+		local segmentsTable = Details:GetCombatSegments()
+
 		for i = 1, Details.segments_amount do
-			if (Details.tabela_historico.tabelas[i]) then
+			if (segmentsTable[i]) then
 				segmentsWithACombat = segmentsWithACombat + 1
 			else
 				break
@@ -6339,7 +6311,7 @@ local buildSegmentTooltip = function(self, deltaTime)
 		local isMythicDungeon = false
 		for i = Details.segments_amount, 1, -1 do
 			if (i <= fill) then
-				local thisCombat = Details.tabela_historico.tabelas[i]
+				local thisCombat = segmentsTable[i]
 				if (thisCombat and not thisCombat.__destroyed) then
 					local enemy = thisCombat.is_boss and thisCombat.is_boss.name
 					local segmentInfoAdded = false
@@ -6619,7 +6591,7 @@ local buildSegmentTooltip = function(self, deltaTime)
 						end
 					end
 
-					gameCooltip:AddMenu(1, instance.TrocaTabela, i)
+					gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, i)
 
 					if (not segmentInfoAdded) then
 						gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", enemy, 2, "white", "white")
@@ -6638,7 +6610,7 @@ local buildSegmentTooltip = function(self, deltaTime)
 						Details:Msg("combat destroyed by:", thisCombat.__destroyedBy)
 					else
 						gameCooltip:AddLine(Loc["STRING_SEGMENT_LOWER"] .. " #" .. i, _, 1, "gray")
-						gameCooltip:AddMenu(1, instance.TrocaTabela, i)
+						gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, i)
 						gameCooltip:AddIcon([[Interface\QUESTFRAME\UI-Quest-BulletPoint]], "main", "left", 16, 16, nil, nil, nil, nil, empty_segment_color)
 						gameCooltip:AddLine(Loc["STRING_SEGMENT_EMPTY"], _, 2)
 						gameCooltip:AddIcon([[Interface\CHARACTERFRAME\Disconnect-Icon]], 2, 1, 12, 12, 0.3125, 0.65625, 0.265625, 0.671875)
@@ -6666,7 +6638,7 @@ local buildSegmentTooltip = function(self, deltaTime)
 
 			--add the new line
 			gameCooltip:AddLine(segmentos.current_standard, _, 1, "white")
-			gameCooltip:AddMenu(1, instance.TrocaTabela, 0)
+			gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, 0)
 			gameCooltip:AddIcon([[Interface\QUESTFRAME\UI-Quest-BulletPoint]], "main", "left", 16, 16, nil, nil, nil, nil, "orange")
 
 			--current segment is a dungeon mythic+?
@@ -6883,7 +6855,7 @@ local buildSegmentTooltip = function(self, deltaTime)
 		----------- overall
 		--CoolTip:AddLine(segmentos.overall_standard, _, 1, "white") Loc["STRING_REPORT_LAST"] .. " " .. fight_amount .. " " .. Loc["STRING_REPORT_FIGHTS"]
 		gameCooltip:AddLine(Loc["STRING_SEGMENT_OVERALL"], _, 1, "white")
-		gameCooltip:AddMenu(1, instance.TrocaTabela, -1)
+		gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, -1)
 		gameCooltip:AddIcon([[Interface\QUESTFRAME\UI-Quest-BulletPoint]], "main", "left", 16, 16, nil, nil, nil, nil, "orange")
 
 			local enemy_name = Details.tabela_overall.overall_enemy_name
@@ -9010,7 +8982,7 @@ end
 
 		if (GameCooltip.active) then
 			parameters_table [2] = 0
-			self:SetScript("OnUpdate", on_leave_menu)
+			self:SetScript("OnUpdate", onLeaveMenuFunc)
 		else
 			self:SetScript("OnUpdate", nil)
 		end
@@ -9112,7 +9084,7 @@ end
 
 		if (GameCooltip.active) then
 			parameters_table [2] = 0
-			self:SetScript("OnUpdate", on_leave_menu)
+			self:SetScript("OnUpdate", onLeaveMenuFunc)
 		else
 			self:SetScript("OnUpdate", nil)
 		end
@@ -9199,7 +9171,7 @@ local reportButton_OnLeave = function(self, motion, forced, from_click)
 
 	if (GameCooltip.active) then
 		parameters_table[2] = from_click and 1 or 0
-		self:SetScript("OnUpdate", on_leave_menu)
+		self:SetScript("OnUpdate", onLeaveMenuFunc)
 	else
 		self:SetScript("OnUpdate", nil)
 	end
@@ -9270,7 +9242,7 @@ local attributeButton_OnLeave = function(self, motion, forced, from_click)
 
 	if (GameCooltip.active) then
 		parameters_table[2] = 0
-		self:SetScript("OnUpdate", on_leave_menu)
+		self:SetScript("OnUpdate", onLeaveMenuFunc)
 	else
 		self:SetScript("OnUpdate", nil)
 	end
@@ -9319,7 +9291,7 @@ local segmentButton_OnLeave = function(self, motion, forced, fromClick)
 
 	if (GameCooltip.active) then
 		parameters_table[2] = 0
-		self:SetScript("OnUpdate", on_leave_menu)
+		self:SetScript("OnUpdate", onLeaveMenuFunc)
 	else
 		self:SetScript("OnUpdate", nil)
 	end
@@ -9381,7 +9353,7 @@ local modeSelector_OnLeave = function(self)
 
 	if (GameCooltip.active) then
 		parameters_table[2] = 0
-		self:SetScript("OnUpdate", on_leave_menu)
+		self:SetScript("OnUpdate", onLeaveMenuFunc)
 	else
 		self:SetScript("OnUpdate", nil)
 	end
@@ -9404,7 +9376,7 @@ local changeSegmentOnClick = function(instancia, buttontype)
 		GameCooltip:Select(1, segmentIndex)
 
 		--change the segment
-		instancia:TrocaTabela(previousSegment) --todo: use new api
+		instancia:SetSegment(previousSegment) --todo: use new api
 		segmentButton_OnEnter(instancia.baseframe.cabecalho.segmento.widget, _, true, true)
 
 	elseif (buttontype == "RightButton") then
@@ -9420,7 +9392,7 @@ local changeSegmentOnClick = function(instancia, buttontype)
 		local segmentIndex = math.abs(targetSegment - maxSegments)
 		GameCooltip:Select(1, segmentIndex)
 
-		instancia:TrocaTabela(nextSegment)
+		instancia:SetSegment(nextSegment)
 		segmentButton_OnEnter(instancia.baseframe.cabecalho.segmento.widget, _, true, true)
 
 	elseif (buttontype == "MiddleButton") then
@@ -9432,7 +9404,7 @@ local changeSegmentOnClick = function(instancia, buttontype)
 		local select_ = math.abs(goal - total_shown)
 		GameCooltip:Select(1, select_)
 
-		instancia:TrocaTabela(segmento_goal)
+		instancia:SetSegment(segmento_goal)
 		segmentButton_OnEnter (instancia.baseframe.cabecalho.segmento.widget, _, true, true)
 
 	end

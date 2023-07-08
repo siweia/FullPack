@@ -13,6 +13,7 @@ local unpack = table.unpack or unpack --lua local
 local type = type --lua local
 local floor = math.floor --lua local
 local loadstring = loadstring --lua local
+local CreateFrame = CreateFrame
 
 local IS_WOW_PROJECT_MAINLINE = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local IS_WOW_PROJECT_NOT_MAINLINE = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
@@ -1879,7 +1880,10 @@ local SimplePanel_frame_backdrop_border_color = {0, 0, 0, 1}
 
 --with_label was making the frame stay in place while its parent moves
 --the slider was anchoring to with_label and here here were anchoring the slider again
+---@class df_scalebar : slider
+---@field thumb texture
 function detailsFramework:CreateScaleBar(frame, config) --~scale
+	---@type df_scalebar
 	local scaleBar, text = detailsFramework:CreateSlider(frame, 120, 14, 0.6, 1.6, 0.1, config.scale, true, "ScaleBar", nil, "Scale:", detailsFramework:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE"), detailsFramework:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
 	scaleBar.thumb:SetWidth(24)
 	scaleBar:SetValueStep(0.1)
@@ -2058,6 +2062,7 @@ function detailsFramework:CreateSimplePanel(parent, width, height, title, frameN
 	close:SetAlpha(0.7)
 	close:SetScript("OnClick", simple_panel_close_click)
 	simplePanel.Close = close
+	simplePanel.closeButton = close
 
 	local titleText = titleBar:CreateFontString(frameName and frameName .. "Title", "overlay", "GameFontNormal")
 	titleText:SetTextColor(.8, .8, .8, 1)
@@ -4358,7 +4363,7 @@ function detailsFramework:ApplyStandardBackdrop(frame, bUseSolidColor, alphaScal
 	end
 
 	if (not frame.__background) then
-		frame.__background = frame:CreateTexture(nil, "background")
+		frame.__background = frame:CreateTexture(nil, "border", nil, -6)
 		frame.__background:SetColorTexture(red, green, blue)
 		frame.__background:SetAllPoints()
 	end
@@ -4370,32 +4375,40 @@ end
 -- ~title bar
 
 detailsFramework.TitleFunctions = {
-
 	SetTitle = function(self, titleText, titleColor, font, size)
-		self.TitleLabel:SetText(titleText or self.TitleLabel:GetText())
+		local titleLabel = self.TitleLabel or self.Text
+
+		titleLabel:SetText(titleText or titleLabel:GetText())
 
 		if (titleColor) then
 			local r, g, b, a = detailsFramework:ParseColors(titleColor)
-			self.TitleLabel:SetTextColor(r, g, b, a)
+			titleLabel:SetTextColor(r, g, b, a)
 		end
 
 		if (font) then
-			detailsFramework:SetFontFace (self.TitleLabel, font)
+			detailsFramework:SetFontFace (titleLabel, font)
 		end
 
 		if (size) then
-			detailsFramework:SetFontSize(self.TitleLabel, size)
+			detailsFramework:SetFontSize(titleLabel, size)
 		end
 	end
-
-
 }
 
-function detailsFramework:CreateTitleBar (f, titleText)
+---@class df_titlebar : frame
+---@field TitleBar frame
+---@field TitleLabel fontstring
+---@field CloseButton button
+---@field SetTitle fun(self:df_titlebar, titleText:string, titleColor:any, font:string, size:number)
 
-	local titleBar = CreateFrame("frame", f:GetName() and f:GetName() .. "TitleBar" or nil, f,"BackdropTemplate")
-	titleBar:SetPoint("topleft", f, "topleft", 2, -3)
-	titleBar:SetPoint("topright", f, "topright", -2, -3)
+---create a title bar with a font string in the center and a close button in the right side
+---@param parent frame
+---@param titleText string
+---@return df_titlebar
+function detailsFramework:CreateTitleBar(parent, titleText)
+	local titleBar = CreateFrame("frame", parent:GetName() and parent:GetName() .. "TitleBar" or nil, parent, "BackdropTemplate")
+	titleBar:SetPoint("topleft", parent, "topleft", 2, -3)
+	titleBar:SetPoint("topright", parent, "topright", -2, -3)
 	titleBar:SetHeight(20)
 	titleBar:SetBackdrop(SimplePanel_frame_backdrop) --it's an upload from this file
 	titleBar:SetBackdropColor(.2, .2, .2, 1)
@@ -4415,7 +4428,7 @@ function detailsFramework:CreateTitleBar (f, titleText)
 	closeButton:SetScript("OnClick", simple_panel_close_click) --upvalue from this file
 
 	local titleLabel = titleBar:CreateFontString(titleBar:GetName() and titleBar:GetName() .. "TitleText" or nil, "overlay", "GameFontNormal")
-	titleLabel:SetTextColor(.8, .8, .8, 1)
+	titleLabel:SetTextColor(detailsFramework:ParseColors("gold"))
 	titleLabel:SetText(titleText or "")
 
 	--anchors
@@ -4423,14 +4436,16 @@ function detailsFramework:CreateTitleBar (f, titleText)
 	titleLabel:SetPoint("center", titleBar, "center")
 
 	--members
-	f.TitleBar = titleBar
-	f.CloseButton = closeButton
-	f.TitleLabel = titleLabel
+	parent.TitleBar = titleBar
+	parent.CloseButton = closeButton
+	parent.TitleLabel = titleLabel
+	parent.SetTitle = titleBar.SetTitle
 
+	titleBar.TitleBar = titleBar --to fit documentation
 	titleBar.CloseButton = closeButton
 	titleBar.Text = titleLabel
 
-	detailsFramework:Mixin(f, detailsFramework.TitleFunctions)
+	detailsFramework:Mixin(parent, detailsFramework.TitleFunctions)
 
 	return titleBar
 end
@@ -5315,7 +5330,7 @@ function detailsFramework:OpenLoadConditionsPanel(optionsTable, callback, frameO
 
 		function loadConditionsFrame.Refresh (self)
 			if IS_WOW_PROJECT_MAINLINE then
-				--update the talents (might have changed if the player changed its specialization)
+				--update the talents (might have changed if the player changed its specializationid)
 				local talentList = {}
 				for _, talentTable in ipairs(detailsFramework:GetCharacterTalents()) do
 					if talentTable.ID then

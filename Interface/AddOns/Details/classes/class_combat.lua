@@ -21,6 +21,7 @@
 --[[global]] DETAILS_SEGMENTTYPE_RAID_TRASH = 7
 --[[global]] DETAILS_SEGMENTTYPE_RAID_BOSS = 8
 
+--[[global]] DETAILS_SEGMENTTYPE_MYTHICDUNGEON = 100
 --[[global]] DETAILS_SEGMENTTYPE_MYTHICDUNGEON_GENERIC = 10
 --[[global]] DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH = 11
 --[[global]] DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL = 12
@@ -75,6 +76,13 @@
 	end
 	classCombat.__call = Details.call_combate
 
+	---get the unique combat identifier
+	---@param self combat
+	---@return number
+	function classCombat:GetCombatUID()
+		return self.combat_counter
+	end
+
 	--get the start date and end date
 	function classCombat:GetDate()
 		return self.data_inicio, self.data_fim
@@ -90,9 +98,24 @@
 		end
 	end
 
-	--return data for charts
+	---return a table representing a chart data
+	---@param name string
+	---@return number[]
 	function classCombat:GetTimeData(name)
-		return self.TimeData[name]
+		if (self.TimeData) then
+			return self.TimeData[name]
+		end
+		return {max_value = 0}
+	end
+
+	---erase a time data if exists
+	---@param name string
+	function classCombat:EraseTimeData(name)
+		if (self.TimeData[name]) then
+			self.TimeData[name] = nil
+			return true
+		end
+		return false
 	end
 
 	function classCombat:GetContainer(attribute)
@@ -295,22 +318,22 @@
 		if (isMythicDungeon) then
 			local isMythicDungeonTrash = self.is_mythic_dungeon_trash
 			if (isMythicDungeonTrash) then
-				return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH
+				return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH, DETAILS_SEGMENTTYPE_MYTHICDUNGEON
 			else
 				local isMythicDungeonOverall = self.is_mythic_dungeon and self.is_mythic_dungeon.OverallSegment
 				local isMythicDungeonTrashOverall = self.is_mythic_dungeon and self.is_mythic_dungeon.TrashOverallSegment
 				if (isMythicDungeonOverall) then
-					return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL
+					return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL, DETAILS_SEGMENTTYPE_MYTHICDUNGEON
 				elseif (isMythicDungeonTrashOverall) then
-					return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASHOVERALL
+					return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASHOVERALL, DETAILS_SEGMENTTYPE_MYTHICDUNGEON
 				end
 
 				local bossEncounter =  self.is_boss
 				if (bossEncounter) then
-					return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS
+					return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS, DETAILS_SEGMENTTYPE_MYTHICDUNGEON
 				end
 
-				return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_GENERIC
+				return DETAILS_SEGMENTTYPE_MYTHICDUNGEON_GENERIC, DETAILS_SEGMENTTYPE_MYTHICDUNGEON
 			end
 		end
 
@@ -407,7 +430,7 @@
 
 	---copy deaths from combat2 into combat1
 	---if bMythicPlus is true it'll check if the death has mythic plus death time and use it instead of the normal death time
-	---@param combat1 combat 
+	---@param combat1 combat
 	---@param combat2 combat
 	---@param bMythicPlus boolean
 	function classCombat.CopyDeathsFrom(combat1, combat2, bMythicPlus)
@@ -603,6 +626,8 @@ function classCombat:NovaTabela(bTimeStarted, overallCombatObject, combatId, ...
 	combatObject.data_inicio = 0
 	combatObject.tempo_start = _tempo
 
+	combatObject.bossTimers = {}
+
 	---store trinket procs
 	combatObject.trinketProcs = {}
 
@@ -719,43 +744,52 @@ end
 	---@return table
 	function classCombat:CreateLastEventsTable(playerName)
 		local lastEventsTable = {}
+
 		for i = 1, Details.deadlog_events do
-			lastEventsTable [i] = {}
+			lastEventsTable[i] = {}
 		end
+
 		lastEventsTable.n = 1
 		self.player_last_events[playerName] = lastEventsTable
 		return lastEventsTable
 	end
 
-	--trava o tempo dos jogadores ap�s o t�rmino do combate.
-	function classCombat:TravarTempos()
-		if (self [1]) then
-			for _, jogador in ipairs(self [1]._ActorTable) do --damage
-				if (jogador:Iniciar()) then -- retorna se ele esta com o dps ativo
-					Details222.TimeMachine.StopTime(jogador)
-					jogador:Iniciar(false) --lock the actor timer
-				else
-					if (jogador.start_time == 0) then
-						jogador.start_time = _tempo
-					end
-					if (not jogador.end_time) then
-						jogador.end_time = _tempo
-					end
+	---pass through all actors and check if the activity time is unlocked, if it is, lock it
+	---@param self combat
+	function classCombat:LockActivityTime()
+		---@cast self combat
+		---@type actorcontainer
+		local containerDamage = self:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+		---@type actorcontainer
+		local containerHeal = self:GetContainer(DETAILS_ATTRIBUTE_HEAL)
+
+		for _, actorObject in containerDamage:ListActors() do
+			if (actorObject:GetOrChangeActivityStatus()) then --check if the timer is unlocked
+				Details222.TimeMachine.StopTime(actorObject)
+				actorObject:GetOrChangeActivityStatus(false) --lock the actor timer
+			else
+				if (actorObject.start_time == 0) then
+					actorObject.start_time = _tempo
+				end
+				if (not actorObject.end_time) then
+					actorObject.end_time = _tempo
 				end
 			end
 		end
-		if (self [2]) then
-			for _, jogador in ipairs(self [2]._ActorTable) do --healing
-				if (jogador:Iniciar()) then -- retorna se ele esta com o dps ativo
-					Details222.TimeMachine.StopTime(jogador)
-					jogador:Iniciar(false) --lock the actor timer
-				else
-					if (jogador.start_time == 0) then
-						jogador.start_time = _tempo
-					end
-					if (not jogador.end_time) then
-						jogador.end_time = _tempo
-					end
+
+		for _, actorObject in containerHeal:ListActors() do
+			--check if the timer is unlocked
+			if (actorObject:GetOrChangeActivityStatus()) then
+				--lock the actor timer
+				Details222.TimeMachine.StopTime(actorObject)
+				--remove the actor from the time machine
+				actorObject:GetOrChangeActivityStatus(false)
+			else
+				if (actorObject.start_time == 0) then
+					actorObject.start_time = _tempo
+				end
+				if (not actorObject.end_time) then
+					actorObject.end_time = _tempo
 				end
 			end
 		end

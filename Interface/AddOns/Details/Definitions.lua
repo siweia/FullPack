@@ -6,7 +6,63 @@
 ---| "TOOLBAR"
 ---| "STATUSBAR"
 
+---@alias detailsevent
+---| "DETAILS_INSTANCE_OPEN"
+---| "DETAILS_INSTANCE_CLOSE"
+---| "DETAILS_INSTANCE_SIZECHANGED"
+---| "DETAILS_INSTANCE_STARTRESIZE"
+---| "DETAILS_INSTANCE_ENDRESIZE"
+---| "DETAILS_INSTANCE_STARTSTRETCH"
+---| "DETAILS_INSTANCE_ENDSTRETCH"
+---| "DETAILS_INSTANCE_CHANGESEGMENT"
+---| "DETAILS_INSTANCE_CHANGEATTRIBUTE"
+---| "DETAILS_INSTANCE_CHANGEMODE"
+---| "DETAILS_INSTANCE_NEWROW"
+---| "DETAILS_OPTIONS_MODIFIED"
+---| "DETAILS_DATA_RESET"
+---| "DETAILS_DATA_SEGMENTREMOVED"
+---| "COMBAT_ENCOUNTER_START"
+---| "COMBAT_ENCOUNTER_END"
+---| "COMBAT_PLAYER_ENTER"
+---| "COMBAT_PLAYER_LEAVE"
+---| "COMBAT_PLAYER_TIMESTARTED"
+---| "COMBAT_BOSS_WIPE"
+---| "COMBAT_BOSS_DEFEATED"
+---| "COMBAT_BOSS_FOUND"
+---| "COMBAT_INVALID"
+---| "COMBAT_PREPOTION_UPDATED"
+---| "COMBAT_CHARTTABLES_CREATING"
+---| "COMBAT_CHARTTABLES_CREATED"
+---| "COMBAT_ENCOUNTER_PHASE_CHANGED"
+---| "COMBAT_ARENA_START"
+---| "COMBAT_ARENA_END"
+---| "COMBAT_MYTHICDUNGEON_START"
+---| "COMBAT_MYTHICDUNGEON_END"
+---| "GROUP_ONENTER"
+---| "GROUP_ONLEAVE"
+---| "ZONE_TYPE_CHANGED"
+---| "REALM_CHANNEL_ENTER"
+---| "REALM_CHANNEL_LEAVE"
+---| "COMM_EVENT_RECEIVED"
+---| "COMM_EVENT_SENT"
+---| "UNIT_SPEC"
+---| "UNIT_TALENTS"
+---| "PLAYER_TARGET"
+---| "DETAILS_PROFILE_APPLYED"
+
 ---@alias containertype number this container type is the number used to identify the actorcontainer type when using combat:GetContainer(containertype), can be 1, 2, 3, or 4.
+
+---@alias actorclass string this is the class of the actor, can be "WARRIOR", "PALADIN", "HUNTER", "ROGUE", "PRIEST", "DEATHKNIGHT", "SHAMAN", "MAGE", "WARLOCK", "MONK", "DRUID", "DEMONHUNTER"
+---@alias actorspec number this is the specID of the actor
+---@alias uniquecombatid number a unique ID to point to a single combat, each character has its ID counter, use with Details:DoesCombatWithUIDExists(); Details:GetCombatByUID(); retrive with combat:GetCombatUID()
+
+---@class petinfo : table
+---@field key1 ownername
+---@field key2 guid
+---@field key3 unixtime
+---@field key4 boolean
+---@field key5 petname
+---@field key6 guid
 
 ---@class details
 ---@field SpellTableMixin spelltablemixin
@@ -18,8 +74,20 @@
 ---@field CreateEventListener fun(self: details) : table
 
 ---@class detailseventlistener : table
----@field RegisterEvent fun(self: detailseventlistener, event: "DETAILS_INSTANCE_OPEN"|"DETAILS_INSTANCE_CLOSE"|"DETAILS_INSTANCE_SIZECHANGED"|"DETAILS_INSTANCE_STARTRESIZE"|"DETAILS_INSTANCE_ENDRESIZE"|"DETAILS_INSTANCE_STARTSTRETCH"|"DETAILS_INSTANCE_ENDSTRETCH"|"DETAILS_INSTANCE_CHANGESEGMENT"|"DETAILS_INSTANCE_CHANGEATTRIBUTE"|"DETAILS_INSTANCE_CHANGEMODE"|"DETAILS_INSTANCE_NEWROW"|"DETAILS_OPTIONS_MODIFIED"|"DETAILS_DATA_RESET"|"DETAILS_DATA_SEGMENTREMOVED"|"COMBAT_ENCOUNTER_START"|"COMBAT_ENCOUNTER_END"|"COMBAT_PLAYER_ENTER"|"COMBAT_PLAYER_LEAVE"|"COMBAT_PLAYER_TIMESTARTED"|"COMBAT_BOSS_WIPE"|"COMBAT_BOSS_DEFEATED"|"COMBAT_BOSS_FOUND"|"COMBAT_INVALID"|"COMBAT_PREPOTION_UPDATED"|"COMBAT_CHARTTABLES_CREATING"|"COMBAT_CHARTTABLES_CREATED"|"COMBAT_ENCOUNTER_PHASE_CHANGED"|"COMBAT_ARENA_START"|"COMBAT_ARENA_END"|"COMBAT_MYTHICDUNGEON_START"|"COMBAT_MYTHICDUNGEON_END"|"GROUP_ONENTER"|"GROUP_ONLEAVE"|"ZONE_TYPE_CHANGED"|"REALM_CHANNEL_ENTER"|"REALM_CHANNEL_LEAVE"|"COMM_EVENT_RECEIVED"|"COMM_EVENT_SENT"|"UNIT_SPEC"|"UNIT_TALENTS"|"PLAYER_TARGET"|"DETAILS_PROFILE_APPLYED", callback: function)
----@field UnregisterEvent fun(self: detailseventlistener, event: "DETAILS_INSTANCE_OPEN"|"DETAILS_INSTANCE_CLOSE"|"DETAILS_INSTANCE_SIZECHANGED"|"DETAILS_INSTANCE_STARTRESIZE"|"DETAILS_INSTANCE_ENDRESIZE"|"DETAILS_INSTANCE_STARTSTRETCH"|"DETAILS_INSTANCE_ENDSTRETCH"|"DETAILS_INSTANCE_CHANGESEGMENT"|"DETAILS_INSTANCE_CHANGEATTRIBUTE"|"DETAILS_INSTANCE_CHANGEMODE"|"DETAILS_INSTANCE_NEWROW"|"DETAILS_OPTIONS_MODIFIED"|"DETAILS_DATA_RESET"|"DETAILS_DATA_SEGMENTREMOVED"|"COMBAT_ENCOUNTER_START"|"COMBAT_ENCOUNTER_END"|"COMBAT_PLAYER_ENTER"|"COMBAT_PLAYER_LEAVE"|"COMBAT_PLAYER_TIMESTARTED"|"COMBAT_BOSS_WIPE"|"COMBAT_BOSS_DEFEATED"|"COMBAT_BOSS_FOUND"|"COMBAT_INVALID"|"COMBAT_PREPOTION_UPDATED"|"COMBAT_CHARTTABLES_CREATING"|"COMBAT_CHARTTABLES_CREATED"|"COMBAT_ENCOUNTER_PHASE_CHANGED"|"COMBAT_ARENA_START"|"COMBAT_ARENA_END"|"COMBAT_MYTHICDUNGEON_START"|"COMBAT_MYTHICDUNGEON_END"|"GROUP_ONENTER"|"GROUP_ONLEAVE"|"ZONE_TYPE_CHANGED"|"REALM_CHANNEL_ENTER"|"REALM_CHANNEL_LEAVE"|"COMM_EVENT_RECEIVED"|"COMM_EVENT_SENT"|"UNIT_SPEC"|"UNIT_TALENTS"|"PLAYER_TARGET"|"DETAILS_PROFILE_APPLYED")
+---@field RegisterEvent fun(self: detailseventlistener, event: detailsevent, callback: function)
+---@field UnregisterEvent fun(self: detailseventlistener, event: detailsevent)
+
+---@class deathtable : table
+---@field key1 any[] what happened to the player before death
+---@field key2 number unix time
+---@field key3 string player name
+---@field key4 string player class
+---@field key5 number max health
+---@field key6 string time of death as string
+---@field dead boolean just a boolean to indicate this is a death table
+---@field last_cooldown {key1: unixtime, key2: spellid}
+---@field dead_at combattime
+---@field spec specializationid
 
 ---@class customspellinfo : {name: string, isPassive: boolean, itemId: number, icon: string|number}
 ---@class customiteminfo: {itemId: number, isPassive: boolean}
@@ -27,11 +95,13 @@
 ---@class alternatepowertable : {last: number, total: number}
 
 ---@class combat : table
+---@field bIsClosed boolean if true the combat is closed (passed by the EndCombat() function)
 ---@field __destroyedBy string
 ---@field amountCasts {[string]: table<string, number>}
----@field instance_type string "raid" or "party" or "pvp" or "arena" or "none"
+---@field instance_type instancetype "raid" or "party" or "pvp" or "arena" or "none" or "scenario"
 ---@field end_time number
 ---@field start_time number
+---@field combat_counter number
 ---@field is_trash boolean while in raid this is set to true if the combat isn't raid boss, in dungeon this is set to true if the combat isn't a boss or if the dungeon isn't a mythic+
 ---@field raid_roster table<string, string> [unitName] = unitGUID
 ---@field overall_added boolean is true when the combat got added into the overall combat
@@ -43,7 +113,12 @@
 ---@field totals {key1: table, key2: table, key3: table, key3: table}
 ---@field totals_grupo {key1: table, key2: table, key3: table, key3: table}
 ---@field __destroyed boolean
----@field GetTimeData fun(dataName: string) : table
+---@field PhaseData table
+---@field is_boss table
+---@field is_world_trash_combat boolean when true this combat is a regular combat done in the world, not in a dungeon, raid, battleground, arena, ...
+---@field player_last_events table<string, table[]> record the latest events of each player, latter used to build the death log
+---@field GetCombatUID fun(combat: combat) : uniquecombatid
+---@field GetTimeData fun(combat: combat, dataName: string) : table
 ---@field GetPhases fun(combat: combat) : table
 ---@field GetCombatTime fun(combat) : number
 ---@field GetDeaths fun(combat) : table --get the table which contains the deaths of the combat

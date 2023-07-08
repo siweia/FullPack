@@ -6,10 +6,11 @@
 --alpha: corresponds to the transparency of an object, the bigger is the value less transparent is the object, it is measure in percentage, must be between 0 and 1, zero is fully transparent and one is fully opaque.
 --controller: abstract term to define who's in control of an entity, can be the server or a player.
 --npc: an entity shown in the 3d world with a name and a health bar, can be friendly or hostile, can be interacted with, always controlled by the server.
---player: is an entity that represents a player character, the controller is always player.
+--player: is an entity that represents a player character, the controller is always player, player is always a human.
 --pet: represents a npc controlled by the server and can accept commands from the player.
 --guadians: represents a npc, the server has the possess of the controller, don't accept commands like pets, helps attacking the enemies of the npc or player.
 --role: is a string that represents the role of a unit, such as tank, healer, or damage dealer. only players can have a role.
+
 
 ---@alias role
 ---| "TANK"
@@ -77,6 +78,43 @@
 ---| "Button5Up"
 ---| "Button5Down"
 
+---@alias justifyh
+---| "left"
+---| "right"
+---| "center"
+
+---@alias justifyv
+---| "top"
+---| "bottom"
+---| "middle"
+
+---@alias orientation
+---| "HORIZONTAL"
+---| "VERTICAL"
+
+---@alias class
+---| "WARRIOR"
+---| "PALADIN"
+---| "HUNTER"
+---| "ROGUE"
+---| "PRIEST"
+---| "DEATHKNIGHT"
+---| "SHAMAN"
+---| "MAGE"
+---| "WARLOCK"
+---| "MONK"
+---| "DRUID"
+---| "DEMONHUNTER"
+---| "EVOKER"
+
+---@alias instancetype
+---| "none"
+---| "party"
+---| "raid"
+---| "arena"
+---| "pvp"
+---| "scenario"
+
 ---@alias width number property that represents the horizontal size of a UI element, such as a frame or a texture. Gotten from the first result of GetWidth() or from the first result of GetSize(). It is expected a GetWidth() or GetSize() when the type 'height' is used.
 ---@alias height number property that represents the vertical size of a UI element, such as a frame or a texture. Gotten from the first result of GetHeight() or from the second result of GetSize(). It is expected a GetHeight() or GetSize() when the type 'height' is used.
 ---@alias red number color value representing the red component of a color, the value must be between 0 and 1. To retrieve a color from a string or table use: local red, green, blue, alpha = DetailsFramework:ParseColors(color)
@@ -85,12 +123,20 @@
 ---@alias alpha number @number(0-1.0) value representing the alpha (transparency) of a UIObject, the value must be between 0 and 1. 0 is fully transparent, 1 is fully opaque.
 ---@alias unit string string that represents a unit in the game, such as the player, a party member, or a raid member.
 ---@alias health number amount of hit points (health) of a unit. This value can be changed by taking damage or healing.
+---@alias encounterid number encounter ID number received by the event ENCOUNTER_START and ENCOUNTER_END
+---@alias encounterejid number encounter ID number used by the encounter journal
+---@alias encountername string encounter name received by the event ENCOUNTER_START and ENCOUNTER_END also used by the encounter journal
 ---@alias spellid number each spell in the game has a unique spell id, this id can be used to identify a spell.
 ---@alias actorname string name of a unit
+---@alias petname string refers to a pet's name
+---@alias ownername string refers to the pet's owner name
 ---@alias spellname string name of a spell
 ---@alias spellschool number each spell in the game has a school, such as fire, frost, shadow and many others. This value can be used to identify the school of a spell.
 ---@alias actorid string unique id of a unit (GUID)
 ---@alias serial string unique id of a unit (GUID)
+---@alias guid string unique id of a unit (GUID)
+---@alias specializationid number the ID of a class specialization
+---@alias controlflags number flags telling what unit type the is (player, npc, pet, etc); it's relatiotionship to the player (friendly, hostile, etc); who controls the unit (controlled by the player, controlled by the server, etc)
 ---@alias color table, string @table(r: red|number, g: green|number, b: blue|number, a: alpha|number) @string(color name) @hex (000000-ffffff) value representing a color, the value must be a table with the following fields: r, g, b, a. r, g, b are numbers between 0 and 1, a is a number between 0 and 1. To retrieve a color from a string or table use: local red, green, blue, alpha = DetailsFramework:ParseColors(color)
 ---@alias scale number @number(0.65-2.40) value representing the scale factor of the UIObject, the value must be between 0.65 and 2.40, the width and height of the UIObject will be multiplied by this value.
 ---@alias script string, function is a piece of code that is executed in response to a specific event, such as a button click or a frame update. Scripts can be used to implement behavior and logic for UI elements.
@@ -99,7 +145,14 @@
 ---@alias npcid number a number that identifies a specific npc in the game.
 ---@alias textureid number each texture from the game client has an id.
 ---@alias texturepath string access textures from addons.
-
+---@alias unixtime number
+---@alias valueamount number used to represent a value, such as a damage amount, a healing amount, or a resource amount.
+---@alias timestring string refers to a string showing a time value, such as "1:23" or "1:23:45".
+---@alias combattime number elapsed time of a combat or time in seconds that a unit has been in combat.
+---@alias coordleft number
+---@alias coordright number
+---@alias coordtop number
+---@alias coordbottom number
 
 ---@class _G
 ---@field RegisterAttributeDriver fun(statedriver: frame, attribute: string, conditional: string)
@@ -108,8 +161,6 @@
 ---@field UnitName fun(unit: string): string
 ---@field GetCursorPosition fun(): number, number return the position of the cursor on the screen, in pixels, relative to the bottom left corner of the screen.
 ---@field C_Timer C_Timer
-
----@class unixtime : number const
 
 ---@class timer : table
 ---@field Cancel fun(self: timer)
@@ -238,12 +289,13 @@
 ---@field GetRegions fun(self: frame) : region[]
 ---@field CreateTexture fun(self: frame, name: string|nil, layer: drawlayer, inherits: string|nil, subLayer: number|nil) : texture
 ---@field CreateFontString fun(self: frame, name: string|nil, layer: drawlayer, inherits: string|nil, subLayer: number|nil) : fontstring
----@field EnableMouse fun(self: frame, enable: boolean)
----@field SetResizable fun(self: frame, enable: boolean)
----@field EnableMouseWheel fun(self: frame, enable: boolean)
----@field RegisterForDrag fun(self: frame, button: string)
----@field SetResizeBounds fun(self: frame, minWidth: number, minHeight: number, maxWidth: number, maxHeight: number)
----@field RegisterEvent fun(self: frame, event: string)
+---@field EnableMouse fun(self: frame, enable: boolean) enable mouse interaction
+---@field SetResizable fun(self: frame, enable: boolean) enable resizing of the frame
+---@field EnableMouseWheel fun(self: frame, enable: boolean) enable mouse wheel scrolling
+---@field RegisterForDrag fun(self: frame, button: string) register the frame for drag events, allowing it to be dragged by the mouse
+---@field SetResizeBounds fun(self: frame, minWidth: number, minHeight: number, maxWidth: number, maxHeight: number) set the minimum and maximum size of the frame
+---@field RegisterEvent fun(self: frame, event: string) register for an event, trigers "OnEvent" script when the event is fired
+---@field HookScript fun(self: frame, event: string, handler: function) run a function after the frame's script has been executed, carrying the same arguments
 
 ---@class button : frame
 ---@field Click fun(self: button)
@@ -278,12 +330,12 @@
 ---@field SetMinMaxValues fun(self: statusbar, minValue: number, maxValue: number)
 ---@field SetValue fun(self: statusbar, value: number)
 ---@field SetValueStep fun(self: statusbar, valueStep: number)
----@field SetOrientation fun(self: statusbar, orientation: string)
+---@field SetOrientation fun(self: statusbar, orientation: orientation)
 ---@field SetReverseFill fun(self: statusbar, reverseFill: boolean)
 ---@field GetMinMaxValues fun(self: statusbar) : number, number
 ---@field GetValue fun(self: statusbar) : number
 ---@field GetValueStep fun(self: statusbar) : number
----@field GetOrientation fun(self: statusbar) : string
+---@field GetOrientation fun(self: statusbar) : orientation
 ---@field GetReverseFill fun(self: statusbar) : boolean
 
 ---@class scrollframe : frame
@@ -311,9 +363,9 @@
 ---@field GetShadowOffset fun(self: fontstring) : number, number
 ---@field SetTextColor fun(self: fontstring, r: red|number, g: green|number, b: blue|number, a: alpha|number)
 ---@field GetTextColor fun(self: fontstring) : number, number, number, number
----@field SetJustifyH fun(self: fontstring, justifyH: string)
+---@field SetJustifyH fun(self: fontstring, justifyH: justifyh)
 ---@field GetJustifyH fun(self: fontstring) : string
----@field SetJustifyV fun(self: fontstring, justifyV: string)
+---@field SetJustifyV fun(self: fontstring, justifyV: justifyv)
 ---@field GetJustifyV fun(self: fontstring) : string
 ---@field SetNonSpaceWrap fun(self: fontstring, nonSpaceWrap: boolean)
 ---@field GetNonSpaceWrap fun(self: fontstring) : boolean

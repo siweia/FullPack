@@ -82,7 +82,12 @@
 		Details222.Textures = {}
 		--namespace for pet
 		Details222.Pets = {}
+		--auto run code
+		Details222.AutoRunCode = {}
+		--options panel
+		Details222.OptionsPanel = {}
 		Details222.Instances = {}
+		Details222.Combat = {}
 		Details222.MythicPlus = {}
 		Details222.EJCache = {}
 		Details222.Segments = {}
@@ -96,7 +101,9 @@
 		Details222.PlayerStats = {}
 		Details222.LoadSavedVariables = {}
 		Details222.SaveVariables = {}
-
+		Details222.GuessSpecSchedules = {
+			Schedules = {},
+		}
 		Details222.TimeMachine = {}
 
 		Details222.Date = {
@@ -683,6 +690,7 @@ do
 				_detalhes.StatusBar.NameTable = {}
 
 		--constants
+
 		if(DetailsFramework.IsWotLKWow()) then
 			--[[global]] DETAILS_HEALTH_POTION_ID = 33447 -- Runic Healing Potion
 			--[[global]] DETAILS_HEALTH_POTION2_ID = 41166 -- Runic Healing Injector
@@ -1085,7 +1093,7 @@ do
 				_detalhes.tabela_overall = _detalhes.combate:NovaTabela()
 				_detalhes.tabela_vigente = _detalhes.combate:NovaTabela (_, _detalhes.tabela_overall)
 				_detalhes.tabela_pets = _detalhes.container_pets:NovoContainer()
-				_detalhes:UpdateContainerCombatentes()
+				_detalhes:UpdatePetCache()
 
 				_detalhes_database.tabela_overall = nil
 				_detalhes_database.tabela_historico = nil
@@ -1162,7 +1170,8 @@ end
 
 function Details222.ClassCache.MakeCache()
 	--iterage among all segments in the container history, get the damage container and get the actor list, check if the actor is a player and if it is, get the class and store it in the cache
-	for _, combatObject in ipairs(Details.tabela_historico.tabelas) do
+	local segmentsTable = Details:GetCombatSegments()
+	for _, combatObject in ipairs(segmentsTable) do
 		for _, actorObject in combatObject:GetContainer(DETAILS_ATTRIBUTE_DAMAGE):ListActors() do
 			if (actorObject:IsPlayer()) then
 				local actorName = actorObject.nome
@@ -1302,6 +1311,13 @@ function Details:DestroyActor(actorObject, actorContainer, combatObject, callSta
 	local containerType = actorContainer:GetType()
 	local combatTotalsTable = combatObject.totals[containerType] --without group
 	local combatTotalsTableInGroup = combatObject.totals_grupo[containerType] --with group
+
+	--remove the actor from the parser cache
+	local c1, c2, c3, c4 = Details222.Cache.GetParserCacheTables()
+	c1[actorObject.serial] = nil
+	c2[actorObject.serial] = nil
+	c3[actorObject.serial] = nil
+	c4[actorObject.serial] = nil
 
 	if (not actorObject.ownerName) then --not a pet
 		if (containerType == 1 or containerType == 2) then --damage|healing done

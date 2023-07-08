@@ -269,6 +269,10 @@ detailsFramework.SetPointMixin = {
 
 ---mixin for options
 ---@class df_optionsmixin
+---@field SetOption fun(self, optionName: string, optionValue: any)
+---@field GetOption fun(self, optionName: string):any
+---@field GetAllOptions fun(self):table
+---@field BuildOptionsTable fun(self, defaultOptions: table, userOptions: table)
 detailsFramework.OptionsFunctions = {
 	SetOption = function(self, optionName, optionValue)
 		if (self.options) then
@@ -730,7 +734,8 @@ detailsFramework.SortFunctions = {
 ---@field GetDataLastValue fun(self: df_data) : any
 ---@field GetDataMinMaxValues fun(self: df_data) : number, number
 ---@field GetDataMinMaxValueFromSubTable fun(self: df_data, key: string) : number, number when data uses sub tables, get the min max values from a specific index or key, if the value stored is number, return the min and max values
----@field SetData fun(self: df_data, data: table)
+---@field SetData fun(self: df_data, data: table, anyValue: any)
+---@field SetDataRaw fun(self: df_data, data: table) set the data without triggering callback
 ---@field GetDataNextValue fun(self: df_data) : any
 ---@field ResetDataIndex fun(self: df_data)
 
@@ -767,17 +772,27 @@ detailsFramework.DataMixin = {
 		allCallbacks[func] = nil
 	end,
 
+	---set the data without callback
+	---@param self table
+	---@param data table
+	SetDataRaw = function(self, data)
+		assert(type(data) == "table", "invalid table for SetData.")
+		self._dataInfo.data = data
+		self:ResetDataIndex()
+	end,
+
 	---set the data table
 	---@param self table
 	---@param data table
-	SetData = function(self, data)
+	---@param anyValue any @any value to pass to the callback functions before the payload is added
+	SetData = function(self, data, anyValue)
 		assert(type(data) == "table", "invalid table for SetData.")
 		self._dataInfo.data = data
 		self:ResetDataIndex()
 
 		local allCallbacks = self._dataInfo.callbacks
 		for	func, payload in pairs(allCallbacks) do
-			xpcall(func, geterrorhandler(), data, unpack(payload))
+			xpcall(func, geterrorhandler(), data, anyValue, unpack(payload))
 		end
 	end,
 
@@ -876,6 +891,7 @@ detailsFramework.DataMixin = {
 ---@field ValueConstructor fun(self: df_value)
 ---@field SetMinMaxValues fun(self: df_value, minValue: number, maxValue: number)
 ---@field GetMinMaxValues fun(self: df_value) : number, number
+---@field ResetMinMaxValues fun(self: df_value)
 ---@field GetMinValue fun(self: df_value) : number
 ---@field GetMaxValue fun(self: df_value) : number
 ---@field SetMinValue fun(self: df_value, minValue: number)
@@ -890,8 +906,7 @@ detailsFramework.ValueMixin = {
 	---initialize the value table
 	---@param self table
 	ValueConstructor = function(self)
-		self.minValue = 0
-		self.maxValue = 1
+		self:ResetMinMaxValues()
 	end,
 
 	---set the min and max values
@@ -908,6 +923,13 @@ detailsFramework.ValueMixin = {
 	---@return number, number
 	GetMinMaxValues = function(self)
 		return self.minValue, self.maxValue
+	end,
+
+	---reset the min and max values
+	---@param self table
+	ResetMinMaxValues = function(self)
+		self.minValue = 0
+		self.maxValue = 1
 	end,
 
 	---get the min value
