@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2494, "DBM-Party-Dragonflight", 4, 1199)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230614234505")
+mod:SetRevision("20230703224816")
 mod:SetCreatureID(181861)
 mod:SetEncounterID(2610)
 --mod:SetUsedIcons(1, 2, 3)
@@ -44,7 +44,7 @@ local specWarnGTFO								= mod:NewSpecialWarningGTFO(375204, nil, nil, nil, 1, 
 
 local timerRP									= mod:NewRPTimer(9.9)
 local timerVolatileMutationCD					= mod:NewCDCountTimer(27.9, 374365, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)--Can get spell queued behind other abilities
---local timerMagmaLobCD							= mod:NewCDTimer(8, 375068, nil, nil, nil, 3)--8 unless delayed by other casts
+--local timerMagmaLobCD							= mod:NewCDTimer(6.5, 375068, nil, nil, nil, 3)--8 unless delayed by other casts
 local timerLavaSrayCD							= mod:NewCDTimer(19.4, 375251, nil, nil, nil, 3)
 local timerBlazingChargeCD						= mod:NewCDTimer(23, 375436, nil, nil, nil, 3)
 

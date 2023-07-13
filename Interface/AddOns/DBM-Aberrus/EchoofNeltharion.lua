@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2523, "DBM-Aberrus", nil, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230620070249")
+mod:SetRevision("20230706053014")
 mod:SetCreatureID(201668)
 mod:SetEncounterID(2684)
 mod:SetUsedIcons(6)
-mod:SetHotfixNoticeRev(20230614000000)
+mod:SetHotfixNoticeRev(20230619000000)
 mod:SetMinSyncRevision(20230614000000)
 --mod.respawnTime = 29
 
@@ -48,20 +48,20 @@ local warnVolcanicHeart							= mod:NewCountAnnounce(410953, 3, nil, nil, 167180
 --local yellVolcanicHeart						= mod:NewShortPosYell(410953)
 --local yellVolcanicHeartFades					= mod:NewIconFadesYell(410953)
 local specWarnTwistedEarth						= mod:NewSpecialWarningDodgeCount(402902, false, nil, 2, 2, 2)--Twisted earth spawn+Dodge for Volcanic Blast
-local specWarnEchoingFissure					= mod:NewSpecialWarningDodgeCount(402116, nil, 381446, nil, 2, 2)
+local specWarnEchoingFissure					= mod:NewSpecialWarningDodgeCount(402115, nil, 381446, nil, 2, 2)
 local specWarnRushingDarkness					= mod:NewSpecialWarningDodgeCount(407221, nil, nil, nil, 2, 2)
 local yellRushingDarkness						= mod:NewYell(407221, L.WallBreaker)
 local yellRushingDarknessFades					= mod:NewIconFadesYell(407221)
-local specWarnCalamitousStrike					= mod:NewSpecialWarningDefensive(406222, nil, nil, nil, 1, 2)
-local specWarnCalamitousStrikeSwap				= mod:NewSpecialWarningTaunt(406222, nil, nil, nil, 1, 2)
+local specWarnCalamitousStrike					= mod:NewSpecialWarningDefensive(401998, nil, nil, nil, 1, 2)
+local specWarnCalamitousStrikeSwap				= mod:NewSpecialWarningTaunt(401998, nil, nil, nil, 1, 2)
 --local specWarnPyroBlast						= mod:NewSpecialWarningInterrupt(396040, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(409058, nil, nil, nil, 1, 8)
 
 local timerVolcanicHeartCD						= mod:NewNextCountTimer(26.2, 410953, 167180, nil, nil, 3)--ShortText "Bombs" (not precise enough as next timer, but next is used to match BW string for weak aura matching)
 local timerTwistedEarthCD						= mod:NewCDCountTimer(26.2, 402902, nil, nil, nil, 3)
-local timerEchoingFissureCD						= mod:NewCDCountTimer(36.3, 402116, 381446, nil, nil, 2)
+local timerEchoingFissureCD						= mod:NewCDCountTimer(36.3, 402115, 381446, nil, nil, 2)
 local timerRushingDarknessCD					= mod:NewCDCountTimer(36.3, 407221, nil, nil, nil, 3)
-local timerCalamitousStrikeCD					= mod:NewCDCountTimer(36.3, 406222, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerCalamitousStrikeCD					= mod:NewCDCountTimer(36.3, 401998, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
 mod:AddPrivateAuraSoundOption(407182, true, 407221, 1)--Rushing Darkness
@@ -82,13 +82,13 @@ local warnHidden								= mod:NewAddsLeftAnnounce(407036, 1)--Announces how many
 local specWarnRazetheEarth						= mod:NewSpecialWarningDodge(409313, nil, nil, nil, 2, 2)
 local specWarnCorruption						= mod:NewSpecialWarningYou(401010, nil, nil, nil, 1, 2)
 local yellCorruption							= mod:NewShortYell(401010)
-local specWarnUmbralAnnihilation				= mod:NewSpecialWarningCount(404038, nil, nil, nil, 2, 2)
+local specWarnUmbralAnnihilation				= mod:NewSpecialWarningCount(405433, nil, nil, nil, 2, 2)
 local specWarnSweepingShadows					= mod:NewSpecialWarningDodgeCount(403846, nil, nil, nil, 2, 2)
 local specWarnSunderShadow						= mod:NewSpecialWarningDefensive(407790, nil, nil, nil, 1, 2)
 local specWarnSunderShadowSwap					= mod:NewSpecialWarningTaunt(407790, nil, nil, nil, 1, 2)
 
 local timerCorruptionCD							= mod:NewCDCountTimer(43.4, 401010, nil, nil, nil, 5)--Parent
-local timerUmbralAnnihilationCD					= mod:NewCDCountTimer(29.1, 404038, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerUmbralAnnihilationCD					= mod:NewCDCountTimer(29.1, 405433, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerSunderShadowCD						= mod:NewCDCountTimer(27.9, 407790, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --Stage Three: Reality Fractures
@@ -123,7 +123,7 @@ local realityName = DBM:GetSpellInfo(407919)
 local playerReality = false
 local mythicTwistedP1Timers = {2, 20.6, 19.4, 18.2, 18.2, 18.2, 19.5, 17.0}
 local mythicTwistedP2Timers = {41.6, 18.2, 12.1, 29.2, 13.4, 14.6}
-local volcanicP2Timers = {21.3, 15.7, 17.0, 17.0, 17.3, 16.7, 18, 14.5}
+local volcanicP2Timers = {21.3, 15.7, 17.0, 14.8, 17.3, 16.7, 18, 14.5}
 local volcanicP2LFRTimers = {21.3, 15.6, 16.9, 17, 12, 16.9, 12, 16.9, 12, 17}
 
 
