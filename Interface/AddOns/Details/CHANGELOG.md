@@ -1,8 +1,25 @@
 # Details! Damage Meter
 
-## [Details.20230520.11023.151-62-gbff23a8](https://github.com/Tercioo/Details-Damage-Meter/tree/bff23a8a0b3d589fd0a8f0207c7663e0b516ddca) (2023-07-08)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20230520.11023.151...bff23a8a0b3d589fd0a8f0207c7663e0b516ddca) 
+## [Details.20230520.11023.151-76-g9a49918](https://github.com/Tercioo/Details-Damage-Meter/tree/9a49918a9d08e3677e402a780f1158c2f22ff894) (2023-07-11)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20230520.11023.151...9a49918a9d08e3677e402a780f1158c2f22ff894) 
 
+- Fixes  
+- ToC Updates  
+- Using effective time when displaying tooltips information  
+- Libs Updates  
+- Merge pull request #569 from Flamanis/Fix-specid-tooltip  
+    Wrap the specid name locatlization cache in a DF+ check  
+- Use Detailsframework not DF  
+- Wrap the specid name locatlization cache in a DF+ check  
+- More fixes for real time dps  
+- update  
+- Merge pull request #567 from Flamanis/Overall-Clear-Logout-fix  
+    Don't populate overall segment on load. and force refresh window on s…  
+- Merge pull request #566 from Flamanis/SpecIdsTooltip  
+    Add spec detection by tooltip.  
+- Don't populate overall segment on load. and force refresh window on segment swap  
+- Add spec detection by tooltip.  
+- Fix icon things, improvements to class detection by using GetPlayerInfoByGUID()  
 - icon updates  
 - removed Breath of Eons from spec detection for augmentation evokers  
 - When DBM/BW send a callback, check if the current combat in details is valid  

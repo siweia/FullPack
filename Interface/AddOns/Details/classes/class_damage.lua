@@ -216,13 +216,13 @@ function Details:GetTimeInCombat(petOwner) --[[exported]]
 	if (petOwner) then
 		if (Details.time_type == 1 or not petOwner.grupo) then
 			return self:Tempo()
-		elseif (Details.time_type == 2) then
+		elseif (Details.time_type == 2 or Details.time_type == 3) then
 			return self:GetCombatTime()
 		end
 	else
 		if (Details.time_type == 1) then
 			return self:Tempo()
-		elseif (Details.time_type == 2) then
+		elseif (Details.time_type == 2 or Details.time_type == 3) then
 			return self:GetCombatTime()
 		end
 	end
@@ -405,6 +405,7 @@ end
 
 			--total: amount of damage done
 			total = alphabetical,
+			extra_bar = 0,
 			--totalabsorbed: amount of damage done absorbed by shields
 			totalabsorbed = alphabetical,
 			--total_without_pet: amount of damage done without pet damage
@@ -462,10 +463,9 @@ end
 
 	-- dps (calculate dps for actors)
 	function damageClass:ContainerRefreshDps (container, combat_time)
-
 		local total = 0
 
-		if (Details.time_type == 2 or not Details:CaptureGet("damage")) then
+		if (Details.time_type == 2 or not Details:CaptureGet("damage") or Details.time_type == 3) then
 			for _, actor in ipairs(container) do
 				if (actor.grupo) then
 					actor.last_dps = actor.total / combat_time
@@ -2125,18 +2125,17 @@ function damageClass:RefreshWindow(instancia, combatObject, forcar, exportar, re
 			instancia.top = actorTableContent[1] and actorTableContent[1][keyName]
 
 		elseif (windowMode == modo_ALL) then --mostrando ALL
-
 			--faz o sort da categoria e retorna o amount corrigido
 			--print(keyName)
 			if (subAttribute == 2) then
 				local combat_time = instancia.showing:GetCombatTime()
-				total = damageClass:ContainerRefreshDps (actorTableContent, combat_time)
+				total = damageClass:ContainerRefreshDps(actorTableContent, combat_time)
 			else
 				--pega o total ja aplicado na tabela do combate
-				total = combatObject.totals [class_type]
+				total = combatObject.totals[class_type]
 			end
 
-			amount = Details:ContainerSort (actorTableContent, amount, keyName)
+			amount = Details:ContainerSort(actorTableContent, amount, keyName)
 
 			--grava o total
 			instancia.top = actorTableContent[1][keyName]
@@ -2589,10 +2588,14 @@ local actor_class_color_r, actor_class_color_g, actor_class_color_b
 	perSecondText = perSecondText or ""
 	percentText = percentText or ""
 
---		local actorSerial = thisLine:GetActor().serial
---		local currentDps = Details.CurrentDps.GetCurrentDps(actorSerial) or perSecondText
---		perSecondText = currentDps
---	end
+	if ((Details.time_type == 3 or (Details.combat_log.evoker_show_realtimedps and Details.playerspecid == 1473)) and Details.in_combat) then --real time
+		local actorSerial = thisLine:GetActor().serial
+		local currentDps = Details.CurrentDps.GetCurrentDps(actorSerial)
+		if (currentDps and currentDps > 0) then
+			currentDps = Details:ToK2(currentDps)
+		end
+		perSecondText = currentDps
+	end
 
 	--check if the instance is showing total, dps and percent
 	local instanceSettings = instance.row_info
@@ -2628,7 +2631,7 @@ local actor_class_color_r, actor_class_color_g, actor_class_color_b
 end
 
 -- ~atualizar ~barra ~update
-function damageClass:RefreshLine(instance, lineContainer, whichRowLine, rank, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
+function damageClass:RefreshLine(instance, lineContainer, whichRowLine, rank, total, sub_atributo, forcar, keyName, combat_time, percentage_type, bUseAnimations, bars_show_data, bars_brackets, bars_separator)
 	local thisLine = lineContainer[whichRowLine]
 
 	if (not thisLine) then
@@ -2659,7 +2662,7 @@ function damageClass:RefreshLine(instance, lineContainer, whichRowLine, rank, to
 	local currentCombat = Details:GetCurrentCombat()
 
 	--calculate the actor dps
-	if ((Details.time_type == 2 and self.grupo) or not Details:CaptureGet("damage") or instance.segmento == -1) then
+	if ((Details.time_type == 2 and self.grupo) or not Details:CaptureGet("damage") or instance.segmento == -1 or Details.time_type == 3) then
 		if (instance.segmento == -1 and combat_time == 0) then
 			local actor = currentCombat(1, self.nome)
 			if (actor) then
@@ -2888,11 +2891,34 @@ function damageClass:RefreshLine(instance, lineContainer, whichRowLine, rank, to
 
 	actor_class_color_r, actor_class_color_g, actor_class_color_b = self:GetBarColor()
 
-	return self:RefreshLineValue(thisLine, instance, previousData, forcar, percentNumber, whichRowLine, lineContainer, use_animations)
+	return self:RefreshLineValue(thisLine, instance, previousData, forcar, percentNumber, whichRowLine, lineContainer, bUseAnimations)
 end
 
+local alignExtraBar = function(thisLine, actorObject, instanceObject, percentAmount)
+	local extraAmount = actorObject.extra_bar
+	if (extraAmount > 0 and Details.combat_log.evoker_calc_damage) then
+		local bIsUsingBarStartAfterIcon = instanceObject.row_info.start_after_icon
+		local initialOffset = 0
+		if (bIsUsingBarStartAfterIcon) then
+			initialOffset = thisLine.icone_classe:GetWidth()
+		end
 
-function Details:RefreshLineValue(thisLine, instance, previousData, isForceRefresh, percent, whichRowLine, lineContainer, useAnimations) --[[ exported]]
+		local whiteBarStartOffset = initialOffset + thisLine:GetWidth() * percentAmount / 100
+		local whiteBarWidth = (extraAmount / actorObject.total) * (percentAmount / 100) * thisLine:GetWidth()
+
+		thisLine.extraTexture:SetPoint("left", thisLine, "left", whiteBarStartOffset - 7, 0)
+		thisLine.extraTexture:SetWidth(whiteBarWidth)
+
+		thisLine.extraTexture:SetHeight(thisLine:GetHeight())
+		thisLine.extraTexture:Show()
+	end
+end
+
+function Details:RefreshLineValue(thisLine, instance, previousData, isForceRefresh, percent, whichRowLine, lineContainer, bUseAnimations) --[[ exported]]
+	if (self.spec ~= 1473) then
+		thisLine.extraTexture:Hide()
+	end
+
 	if (thisLine.colocacao == 1) then
 		thisLine.animacao_ignorar = true
 
@@ -2910,7 +2936,7 @@ function Details:RefreshLineValue(thisLine, instance, previousData, isForceRefre
 	else
 		if (thisLine.hidden or thisLine.fading_in or thisLine.faded) then
 			--setando o valor  mesmo com anima��es pq o barra esta hidada com o value do �ltimo actor que ela mostrou
-			if (useAnimations) then
+			if (bUseAnimations and self.spec ~= 1473) then
 				thisLine.animacao_fim = percent
 				thisLine:SetValue(percent)
 			else
@@ -2920,11 +2946,15 @@ function Details:RefreshLineValue(thisLine, instance, previousData, isForceRefre
 
 			Details.FadeHandler.Fader(thisLine, "out")
 
+			if (self.spec == 1473) then
+				alignExtraBar(thisLine, self, instance, percent)
+			end
+
 			return self:RefreshBarra(thisLine, instance)
 		else
 			--agora esta comparando se a tabela da barra � diferente da tabela na atualiza��o anterior
 			if (not previousData or previousData ~= thisLine.minha_tabela or isForceRefresh) then --aqui diz se a barra do jogador mudou de posi��o ou se ela apenas ser� atualizada
-				if (useAnimations) then
+				if (bUseAnimations and self.spec ~= 1473) then
 					thisLine.animacao_fim = percent
 				else
 					thisLine:SetValue(percent)
@@ -2933,16 +2963,24 @@ function Details:RefreshLineValue(thisLine, instance, previousData, isForceRefre
 
 				thisLine.last_value = percent --reseta o ultimo valor da barra
 
+				if (self.spec == 1473) then
+					alignExtraBar(thisLine, self, instance, percent)
+				end
+
 				return self:RefreshBarra(thisLine, instance)
 
 			elseif (percent ~= thisLine.last_value) then --continua mostrando a mesma tabela ent�o compara a porcentagem
 				--apenas atualizar
-				if (useAnimations) then
+				if (bUseAnimations and self.spec ~= 1473) then
 					thisLine.animacao_fim = percent
 				else
 					thisLine:SetValue(percent)
 				end
 				thisLine.last_value = percent
+
+				if (self.spec == 1473) then
+					alignExtraBar(thisLine, self, instance, percent)
+				end
 
 				return self:RefreshBarra(thisLine, instance)
 			end
@@ -3040,16 +3078,18 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 	setLineTextSize (bar, instance)
 end
 
---[[ exported]] function Details:SetBarColors(bar, instance, r, g, b, a)
+function Details:SetBarColors(bar, instance, r, g, b, a) --[[exported]]
 	a = a or 1
 
 	if (instance.row_info.texture_class_colors) then
-		--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
-		if (instance.bars_inverted) then
-			bar.right_to_left_texture:SetVertexColor(r, g, b, a)
-		else
-			bar.textura:SetVertexColor(r, g, b, a)
-		end]]
+		if (self.classe == "UNGROUPPLAYER") then
+			if (self.spec) then
+				local specId, specName, specDescription, specIcon, specRole, specClass = DetailsFramework.GetSpecializationInfoByID(self.spec)
+				if (specClass) then
+					self.classe = specClass
+				end
+			end
+		end
 		bar.textura:SetVertexColor(r, g, b, a)
 	end
 
@@ -3117,6 +3157,18 @@ function Details:SetClassIcon(texture, instance, class) --[[ exported]]
 			end
 		end
 
+		local localizedClass, englishClass
+		if (self.serial ~= "") then
+			localizedClass, englishClass = GetPlayerInfoByGUID(self.serial)
+		end
+
+		if (englishClass) then
+			texture:SetTexture(instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
+			texture:SetTexCoord(unpack(Details.class_coords[englishClass]))
+			texture:SetVertexColor(1, 1, 1)
+			return
+		end
+
 		if (self.enemy) then
 			if (Details.faction_against == "Horde") then
 				texture:SetTexture("Interface\\ICONS\\Achievement_Character_Troll_Male")
@@ -3144,22 +3196,20 @@ function Details:SetClassIcon(texture, instance, class) --[[ exported]]
 		texture:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 
 	else
-		if (self.spec == 1473) then
-			if (instance and instance.row_info.use_spec_icons) then
-				if (self.spec and Details.class_specs_coords[self.spec]) then
-					texture:SetTexture(instance.row_info.spec_file)
-					texture:SetTexCoord(unpack(Details.class_specs_coords[self.spec]))
-					texture:SetVertexColor(1, 1, 1)
-				else
-					texture:SetTexture(instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
-					texture:SetTexCoord(unpack(Details.class_coords[class]))
-					texture:SetVertexColor(1, 1, 1)
-				end
+		if (instance and instance.row_info.use_spec_icons) then
+			if (self.spec and Details.class_specs_coords[self.spec]) then
+				texture:SetTexture(instance.row_info.spec_file)
+				texture:SetTexCoord(unpack(Details.class_specs_coords[self.spec]))
+				texture:SetVertexColor(1, 1, 1)
 			else
-				texture:SetTexture(instance and instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
+				texture:SetTexture(instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
 				texture:SetTexCoord(unpack(Details.class_coords[class]))
 				texture:SetVertexColor(1, 1, 1)
 			end
+		else
+			texture:SetTexture(instance and instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
+			texture:SetTexCoord(unpack(Details.class_coords[class]))
+			texture:SetVertexColor(1, 1, 1)
 		end
 	end
 end
@@ -3177,6 +3227,7 @@ function Details:RefreshBarra(thisLine, instance, fromResize) --[[ exported]]
 	if (fromResize) then
 		actor_class_color_r, actor_class_color_g, actor_class_color_b = self:GetBarColor()
 	end
+
 	--icon
 	self:SetClassIcon(thisLine.icone_classe, instance, class)
 
@@ -3261,7 +3312,7 @@ function damageClass:ToolTip_DamageDone (instancia, numero, barra, keydown)
 			local meu_tempo
 			if (Details.time_type == 1 or not self.grupo) then
 				meu_tempo = self:Tempo()
-			elseif (Details.time_type == 2) then
+			elseif (Details.time_type == 2 or Details.time_type == 3) then
 				meu_tempo = instancia.showing:GetCombatTime()
 			end
 
