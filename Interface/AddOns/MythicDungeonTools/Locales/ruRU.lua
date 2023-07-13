@@ -596,6 +596,9 @@ L["Empyrean Assassin"] = "Небесный убийца"
 L["Enable Minimap Button"] = "Включить кнопку миникарты"
 L["Enchanted Broodling"] = "Зачарованный паучонок"
 L["Enchanted Emissary"] = "Зачарованная посланница"
+--[[Translation missing --]]
+L["encounteredErrors"] = [=[MDT has encountered errors.
+Click to view them.]=]
 L["Encrypted"] = "Зашифрованный"
 L["Enemies related to seasonal affixes are currently hidden"] = "Враги, связанные с сезонными аффиксами, в настоящее время скрыты"
 L["Enemy Info"] = "Информация о противнике"
