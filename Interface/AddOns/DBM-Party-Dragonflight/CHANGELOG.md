@@ -1,7 +1,8 @@
 # <DBM> Dungeons (Dragonflight)
 
-## [r93](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r93) (2023-07-12)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r92...r93) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r94](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r94) (2023-07-14)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r93...r94) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Fix chrono faded general alert  
-- Fix lua error that broke timer function for breaths on Deios  
+- fix last  
+- update/extend morchie timers  
+- Enable hotswapping of Ids/names on timelost battle so that the mod can always show correct spell names AND send correct WA callbacks for full parity with LW's current behavior  
