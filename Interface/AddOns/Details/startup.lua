@@ -87,7 +87,7 @@ function Details:StartMeUp()
 	if (Details.ocd_tracker.show_options) then
 		Details:InitializeCDTrackerWindow()
 	end
-
+	--/run Details.ocd_tracker.show_options = true; ReloadUI()
 	--custom window
 	Details.custom = Details.custom or {}
 
@@ -618,6 +618,8 @@ function Details:StartMeUp()
 	pcall(Details222.EJCache.MakeCache)
 
 	pcall(Details222.ClassCache.MakeCache)
+
+	Details:BuildSpecsNameCache()
 
 	Details222.Cache.DoMaintenance()
 

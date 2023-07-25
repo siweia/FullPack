@@ -243,6 +243,7 @@
 ---@field last_event unixtime
 ---@field total_without_pet number
 ---@field total number
+---@field total_extra number
 ---@field targets targettable
 ---@field GetSpell fun(actor: actor, spellId: number) : spelltable
 ---@field BuildSpellTargetFromBreakdownSpellData fun(actor: actor, bkSpellData: spelltableadv) : table
@@ -361,6 +362,7 @@
 ---@field BreakdownPluginSelectionFrame frame frame which has buttons to select a plugin to show in the breakdown window
 ---@field BreakdownTabsFrame frame where the tab buttons are located (parent frame)
 ---@field RegisteredPluginButtons button[] table which contains plugins buttons that are registered to the breakdown window
+---@field RefreshPlayerScroll fun() refresh the player scroll frame (shown in the left side of the breakdown window)
 ---@field RegisterPluginButton fun(button: button, pluginObject: table, pluginAbsolutename: string) register a plugin button to the breakdown window
 ---@field GetShownPluginObject fun() : table get the plugin object that is currently shown in the breakdown window
 
