@@ -1,6 +1,8 @@
-# <DBM> Dungeons (Dragonflight)
+# <DBM Mod> Dungeons (DF)
 
-## [r95](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r95) (2023-07-16)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r94...r95) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r97](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r97) (2023-07-27)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r96...r97) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Fix errors with invalid function name  
+- Fix wrong spell for corrosive infusion  
+    Was using "Mana Bombs" spellID, rather than corrosive infusion.  
+- miner timer fixes for timewalking legion dungeons  

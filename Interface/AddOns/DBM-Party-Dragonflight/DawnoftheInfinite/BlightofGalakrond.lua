@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2535, "DBM-Party-Dragonflight", 9, 1209)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230712012906")
+mod:SetRevision("20230727151019")
 mod.multiIDSingleBoss = true
 mod:SetCreatureID(198997, 201792, 201788, 201790)--It's technically just one creature animated 3 others, but checkbossHp will query all and return highest health for boss health percent
 mod:SetEncounterID(2668)
@@ -52,7 +52,7 @@ local yellNecrofrost						= mod:NewYell(408029, nil, nil, nil, "YELL")
 local specWarnIncinBlightBreath				= mod:NewSpecialWarningDodgeCount(408141, nil, nil, nil, 1, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(407147, nil, nil, nil, 1, 8)
 
-local timerCorrosiveInfusionCD				= mod:NewCDCountTimer(19.4, 386173, nil, nil, nil, 3)
+local timerCorrosiveInfusionCD				= mod:NewCDCountTimer(19.4, 406886, nil, nil, nil, 3)
 local timerBlightReclamationCD				= mod:NewCDCountTimer(19.4, 407159, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerNecroticWindsCD					= mod:NewCDCountTimer(19.4, 407978, nil, nil, nil, 2)
 local timerNecrofrostCD						= mod:NewCDCountTimer(19.4, 408029, nil, nil, nil, 3, nil, DBM_COMMON_L.DAMAGE_ICON)

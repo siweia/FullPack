@@ -1,7 +1,7 @@
-# <DBM> Challenges
+# <DBM Mod> Challenges
 
-## [r157](https://github.com/DeadlyBossMods/DBM-Challenges/tree/r157) (2023-07-11)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Challenges/compare/r156...r157) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Challenges/releases)
+## [r158](https://github.com/DeadlyBossMods/DBM-Challenges/tree/r158) (2023-07-25)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Challenges/compare/r157...r158) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Challenges/releases)
 
-- Bump TOC  
-- adjust mod prio  
+- module -- > Mod due to bad truncating  
+- type and color challenges  

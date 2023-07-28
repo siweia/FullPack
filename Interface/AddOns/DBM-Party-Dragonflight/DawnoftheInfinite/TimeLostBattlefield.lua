@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(2533, "DBM-Party-Dragonflight", 9, 1209)--Alliance ID used, horde is 2534
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230716194506")
+mod:SetRevision("20230725115533")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2672)
 --mod:SetUsedIcons(1, 2, 3)
@@ -72,6 +72,12 @@ local timerTankBusterCD								= mod:NewCDCountTimer(19.6, tankSpellId, nil, nil
 local timerShockwaveCD								= mod:NewCDCountTimer(29, shockwaveSpellId, nil, nil, nil, 3)
 local timerRallyCD									= mod:NewCDCountTimer(21.2, rallySpellId, nil, nil, nil, 5)
 local timerCryCD									= mod:NewCDCountTimer(10, crySpellId, nil, nil, nil, 2)
+
+--Write the custom WA keys into the spell headers
+mod:JustSetCustomKeys(rallySpellId, L.customWAMessage:format(418047, 418046))
+mod:JustSetCustomKeys(crySpellId, L.customWAMessage:format(418062, 410496))
+mod:JustSetCustomKeys(shockwaveSpellId, L.customWAMessage:format(418054, 408227))
+mod:JustSetCustomKeys(tankSpellId, L.customWAMessage:format(418059, 410254))
 
 mod.vb.bladestormCount = 0
 mod.vb.shockwaveSet = 0
