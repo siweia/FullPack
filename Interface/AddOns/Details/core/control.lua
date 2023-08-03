@@ -406,7 +406,9 @@
 
 		Details:Destroy(Details.cache_damage_group)
 		Details:Destroy(Details.cache_healing_group)
-		Details:UpdateParserGears()
+
+		local bFromCombatStart = true
+		Details:UpdateParserGears(bFromCombatStart)
 
 		--get all buff already applied before the combat start
 		Details:CatchRaidBuffUptime("BUFF_UPTIME_IN")
@@ -1795,10 +1797,10 @@
 	end
 
 	function Details:EndRefresh (instancia, total, combatTable, showing)
-		Details:EsconderBarrasNaoUsadas (instancia, showing)
+		Details:HideBarsNotInUse(instancia, showing)
 	end
 
-	function Details:EsconderBarrasNaoUsadas (instancia, showing)
+	function Details:HideBarsNotInUse(instancia, showing)
 		--primeira atualiza��o ap�s uma mudan�a de segmento -- verifica se h� mais barras sendo mostradas do que o necess�rio
 		--------------------
 			if (instancia.v_barras) then

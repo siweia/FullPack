@@ -148,7 +148,7 @@ function Details:RefreshScrollBar(x) --x = amount of bars being refreshed
 	if (self.update) then
 		self.update = false
 		self.v_barras = true
-		return Details:EsconderBarrasNaoUsadas(self)
+		return Details:HideBarsNotInUse(self)
 	end
 end
 
@@ -4020,6 +4020,12 @@ end
 
 local onLeaveExtraStatusbar = function(self)
 	self:SetAlpha(self.defaultAlpha)
+	if (self.OnLeaveCallback) then
+		local okay, errorText = pcall(self.OnLeaveCallback, self)
+		if (not okay) then
+			Details:Msg("Error on extra statusbar OnEnterCallback: ", errorText)
+		end
+	end
 end
 
 --alias

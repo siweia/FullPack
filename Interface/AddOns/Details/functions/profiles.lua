@@ -937,6 +937,11 @@ local default_profile = {
 		update_speed = 0.20,
 		time_type = 2,
 		time_type_original = 2,
+
+		use_realtimedps = false,
+		realtimedps_order_bars = false,
+		realtimedps_always_arena = false,
+
 		memory_threshold = 3,
 		memory_ram = 64,
 		remove_realm_from_name = true,
@@ -1364,6 +1369,8 @@ local default_global_data = {
 		},
 		current_exp_raid_encounters = {},
 		installed_skins_cache = {},
+
+		show_aug_predicted_spell_damage = false,
 
 		show_warning_id1 = true,
 		show_warning_id1_amount = 0,
