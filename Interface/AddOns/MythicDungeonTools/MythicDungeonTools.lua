@@ -36,6 +36,7 @@ function MDT:ShowMinimapButton()
   if MDT.main_frame and MDT.main_frame.minimapCheckbox then MDT.main_frame.minimapCheckbox:SetValue(true) end
 end
 
+---@diagnostic disable: missing-fields
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("MythicDungeonTools", {
   type = "data source",
   text = "Mythic Dungeon Tools",
@@ -4626,6 +4627,9 @@ function MDT:CreateCoroutineHandler()
   function coHandler.AddAction(self, name, func)
     if not name then
       name = string.format("NIL", coHandler.size + 1);
+    end
+    if coHandler.update[name] then
+      name = name..MDT.U.GetUniqueId(11)
     end
     if not coHandler.update[name] then
       coHandler.update[name] = func;

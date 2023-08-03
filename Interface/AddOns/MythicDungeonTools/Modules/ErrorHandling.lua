@@ -10,6 +10,7 @@ local DESTINATIONS = {
   { name = "GitHub",  url = "https://github.com/Nnoggie/MythicDungeonTools/issues" },
   { name = "Discord", url = "https://discord.gg/tdxMPb3" },
 }
+local hasShown = false
 
 function MDT:DisplayErrors(force)
   if not force and hasShown then return end
@@ -122,7 +123,7 @@ function MDT:DisplayErrors(force)
 
     --error button
     local errorButton = AceGUI:Create("Icon")
-    errorButton:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\icons", 0.75, 1, 0.25, 0.5)
+    errorButton:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\icons", 0.76, 1, 0.25, 0.5)
     errorButton:SetCallback("OnClick", function(widget, callbackName)
       MDT:DisplayErrors("true")
     end)
@@ -144,7 +145,7 @@ function MDT:DisplayErrors(force)
     errorButtonGroup.frame:SetBackdropColor(0, 0, 0, 0)
     errorButtonGroup:SetWidth(40)
     errorButtonGroup:SetHeight(40)
-    errorButtonGroup:SetPoint("LEFT", MDTVersion, "RIGHT", -5, -1)
+    errorButtonGroup:SetPoint("LEFT", MDT.main_frame.bottomLeftPanelString, "RIGHT", -5, -1)
     errorButtonGroup:SetLayout("Flow")
     errorButtonGroup.frame:SetFrameStrata("High")
     errorButtonGroup.frame:SetFrameLevel(7)
