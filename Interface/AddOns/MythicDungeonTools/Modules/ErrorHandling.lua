@@ -174,8 +174,13 @@ function MDT:DisplayErrors(force)
     [72] = "PTR"
   }
   local region = regions[regionId]
-  errorBoxText = errorBoxText.."\n"..dateString.."\nMDT: "..addonVersion.."\nClient: "..gameVersion.." "..locale.."\nCharacter: "..name.."-"..realm.." ("..region..")".."\n\nRoute:\n"..presetExport
-  errorBoxText = errorBoxText.."\n\nStacktraces\n\n"
+  local combatState = InCombatLockdown() and "In combat" or "Out of combat"
+  local mapID = C_Map.GetBestMapForUnit("player");
+  local zoneInfo = format("Zone: %s (%d)", C_Map.GetMapInfo(C_Map.GetMapInfo(mapID).parentMapID).name, mapID)
+  errorBoxText = errorBoxText.."\n"..dateString.."\nMDT: "..addonVersion.."\nClient: "..gameVersion.." "..locale.."\nCharacter: "..name.."-"..realm.." ("..region..")"
+  errorBoxText = errorBoxText.."\n"..combatState.."\n"..zoneInfo.."\n"
+  errorBoxText = errorBoxText.."\nRoute:\n"..presetExport
+  errorBoxText = errorBoxText.."\nStacktraces\n\n"
   for _, error in ipairs(caughtErrors) do
     errorBoxText = errorBoxText..error.stackTrace.."\n"
   end
@@ -221,6 +226,9 @@ function MDT:RegisterErrorHandledFunctions()
   --register all functions except the ones that have to run as coroutines
   local blacklisted = {
     ["DungeonEnemies_UpdateSelected"] = true,
+    ["DungeonEnemies_UpdateEnemiesAsync"] = true,
+    ["ReloadPullButtons"] = true,
+    ["DrawAllPresetObjects"] = true,
     ["AddPull"] = true,
     ["ClearPull"] = true,
     ["ShowInterfaceInternal"] = true,
