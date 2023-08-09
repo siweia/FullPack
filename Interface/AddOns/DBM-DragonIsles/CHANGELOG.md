@@ -1,15 +1,21 @@
 # <DBM Mod> World Bosses (DF)
 
-## [10.1.20](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.20) (2023-08-01)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.19...10.1.20) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.1.21](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.1.21) (2023-08-08)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.1.20...10.1.21) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Do a forced update for retail (that'll disable dbm if it's not updated within 24 hours of this tag) to fix a pretty critical bug on echo of neltharian that caused some of the WAs not to work correctly (and if this had been reported weeks ago, would have been fixed weeks ago too, again can't emphasize that reporting bugs is critical)  
-- Fixed a critical bug where volcanic heart had wrong timer all of stage 1 by about exactly half.  
-- Update localization.tw.lua (#256)  
-- Update localization.ru.lua (#258)  
-- Merge branch 'master' of https://github.com/DeadlyBossMods/DBM-Unified  
-- Update localization.tw.lua (#254)  
-- Some basrikron fixes while at it since I had to solo it earlier and had about 15 minutes worth of data to look at.  
-- Removed redundant alert  
-- I thought I pushed this, guess I did'n't. Small nelth timer tweak. sadly the remaining timer issues can't be fixed (initial p3 ones) cause that issue is actually a bug with way blizzard coded the transition.  
-- bump alpha revisions  
+- prep new tag with fixes for m+ affixes and the clickable weak aura spellids plus a behind the scene api that helps WAs addon itself in future  
+- Attempt to fix countdown not being canceled when it should be by ensuring it's ALWAYS canceled on timer manipulationn even if bar ceases to exist mid execution. During M+ I repeatedly got countdowns for stale/dead timers for unknown reason.  
+- Refert changes to M+ affix timers, it made them even worse.  
+- Access options properly.  
+- Expose colorVariables in DBT  
+- Update koKR (#260)  
+- remove unused  
+- Update localization.ru.lua (#259)  
+- furhter cleanup  
+- also kill this too  
+- Merge branch 'master' of https://github.com/DeadlyBossMods/DBM-Retail  
+- Change how pausing logic works on afflicted and incorporeal timers. This will make the timers less accurate in some situations but more accurate in others. However it's a change that favors timer being short versus timer being too long. The pause logic of both of these affixes is extremely inconsistent to properly nail so now basically DBM isn't eve gonna attempt it anymore, just let them count down even out of combat, but pause timers at 1 sec remaining to show a cast is upcoming.  
+- tweak text, so it fits better for more types of copyable content  
+- Weak aura keys are now clickable in GUI for easy copying to clipboard Copy text dialog now has darker background so it's easier to read  
+- Fix typo  
+- bump retail alpha  
