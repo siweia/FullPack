@@ -1,13 +1,14 @@
 # Details! Damage Meter
 
-## [Details.20230731.11774.155](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20230731.11774.155) (2023-07-31)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20230730.11773.155...Details.20230731.11774.155) 
+## [Details.20230812.11855.155](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20230812.11855.155) (2023-08-12)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20230731.11774.155...Details.20230812.11855.155) 
 
-- Version Bump  
-- Merge pull request #575 from Flamanis/Combine-non-combat-starting-spell-lists  
-    Use single table for spell lookup when avoiding starting combat  
-- Merge pull request #581 from Flamanis/Flamanis-patch-1  
-    Add nil check for Time Type in startup  
-- Add nil check for Time Type in startup  
-- Use single table for spell lookup when avoiding starting combat  
-    This is to avoid triggers like SPELL\_PERIODIC\_MISSED triggering a combat when an absorb happens.  
+- Change log, version up, and plugins TOC bumps  
+- Fixes for the latest alpha version  
+- Added augmented buffs in the Auras tab of players which received Ebon Might and Precience  
+    - Forcing update interval to 0.1 on arenas matches using the real-time dps feature.  
+    - Framework Update.  
+    - Lib Open Raid Update.  
+    - More parser cleanups and code improvements.  
+    - Auras tab now ignores regular "world auras" (those weekly buffs of reputation, etc)  
+- Fixed custom displays ignoring actor.customColor  
