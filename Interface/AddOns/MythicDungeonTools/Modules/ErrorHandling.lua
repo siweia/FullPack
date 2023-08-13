@@ -118,8 +118,19 @@ function MDT:DisplayErrors(force)
       startCopyAction(errorFrame.errorBox, errorBoxCopyButton, errorBoxText)
     end)
 
+    errorFrame.hardResetButton = AceGUI:Create("Button")
+    local hardResetButton = errorFrame.hardResetButton
+    hardResetButton:SetText(L["hardResetButton"])
+    hardResetButton:SetHeight(40)
+    hardResetButton:SetCallback("OnClick", function(widget, callbackName, value)
+      MDT:Async(function()
+        MDT:OpenConfirmationFrame(450, 150, L["hardResetPromptTitle"], L["Delete"], L["hardResetPrompt"], MDT.HardReset)
+      end, "hardReset")
+    end)
+
     errorFrame:AddChild(errorFrame.errorBox)
     errorFrame:AddChild(errorFrame.errorBoxCopyButton)
+    errorFrame:AddChild(errorFrame.hardResetButton)
 
     --error button
     local errorButton = AceGUI:Create("Icon")
@@ -155,7 +166,7 @@ function MDT:DisplayErrors(force)
   end
 
   for _, error in ipairs(caughtErrors) do
-    errorBoxText = errorBoxText..error.message.."\n"
+    errorBoxText = errorBoxText..error.count.."x: "..error.message.."\n"
   end
   --add diagnostics
   local presetExport = MDT:TableToString(MDT:GetCurrentPreset(), true, 5)
@@ -199,12 +210,13 @@ local function onError(msg, stackTrace, name)
   -- return early on duplicate errors
   for _, error in pairs(caughtErrors) do
     if error.message == e then
+      error.count = error.count + 1
       addTrace = false
       return false
     end
   end
   local stackTraceValue = stackTrace and name..":\n"..stackTrace
-  tinsert(caughtErrors, { message = e, stackTrace = stackTraceValue })
+  tinsert(caughtErrors, { message = e, stackTrace = stackTraceValue, count = 1 })
   addTrace = true
   if MDT.errorTimer then MDT.errorTimer:Cancel() end
   MDT.errorTimer = C_Timer.NewTimer(0.5, function()
@@ -220,6 +232,10 @@ end
 --accessible function for errors in coroutines
 function MDT:OnError(msg, stackTrace, name)
   onError(msg, stackTrace, name)
+end
+
+function MDT:GetErrors()
+  return caughtErrors
 end
 
 function MDT:RegisterErrorHandledFunctions()

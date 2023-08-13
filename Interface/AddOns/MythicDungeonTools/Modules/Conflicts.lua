@@ -23,13 +23,14 @@ local candidates = {
       ldb.objects["DungeonTools"]:SetScript("OnClick", function() MDT:Async(function() MDT:ShowInterfaceInternal() end, "showInterface") end)
     end
   },
-  -- ["MDTGuide"] = {
-  --   name = "MDTGuide";
-  --   detected = false;
-  --   onDetect = function()
+  ["MDTGuide"] = {
+    name = "MDTGuide",
+    version = 123, --latest version that causes issues
+    detected = false,
+    onDetect = function()
 
-  --   end
-  -- }
+    end
+  }
 }
 
 local conflictCheckFrame = CreateFrame("Frame")
@@ -38,8 +39,15 @@ conflictCheckFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 conflictCheckFrame:SetScript("OnEvent", function(self, event, ...)
   if event == "ADDON_LOADED" then
     local addonName = ...
-    if candidates[addonName] then
-      candidates[addonName].detected = true
+    local candidate = candidates[addonName]
+    if candidate then
+      if candidate.version then
+        local version = GetAddOnMetadata(addonName, "Version"):gsub("%.", "")
+        local versionNum = tonumber(version)
+        candidate.detected = versionNum <= candidate.version
+      else
+        candidate.detected = true
+      end
     end
   end
   if event == "PLAYER_ENTERING_WORLD" then
@@ -77,7 +85,11 @@ function MDT:ShowConflictFrame()
     -- add all conflicting addons to the text in red color
     for _, candidate in pairs(candidates) do
       if candidate.detected then
-        labelText = labelText.."\n|cFFFF0000"..candidate.name.."|r"
+        local updateNote = ""
+        if candidate.version then
+          updateNote = " ("..L["updateNote"]..")"
+        end
+        labelText = labelText.."\n|cFFFF0000"..candidate.name.."|r"..updateNote
       end
     end
 

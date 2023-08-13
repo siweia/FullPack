@@ -82,6 +82,10 @@ L["Alpha Eagle"] = "Alpha Eagle"
 L["Altairus"] = "Altairus"
 --[[Translation missing --]]
 L["AltarOfShadow"] = "Altar of Shadow"
+--[[Translation missing --]]
+L["altKeyDownStatusText"] = "Showing enemy group numbers"
+--[[Translation missing --]]
+L["altKeyGroupsTip"] = "Hold ALT to show enemy group numbers on all enemies"
 L["Amalgam of Souls"] = "영혼의 융합체"
 --[[Translation missing --]]
 L["Amanitar"] = "Amanitar"
@@ -345,6 +349,8 @@ L[ [=[Bounty stacks
 after this pull]=] ] = [=[這波拉怪後
 連帶幾堆]=]
 --[[Translation missing --]]
+L["Bounty stacks after this pull"] = ""
+--[[Translation missing --]]
 L["Bracken Warscourge"] = "Bracken Warscourge"
 --[[Translation missing --]]
 L["Brackenhide Shaper"] = "Brackenhide Shaper"
@@ -536,6 +542,10 @@ L["Crystalline Protector"] = "Crystalline Protector"
 L["Crystalline Shardling"] = "Crystalline Shardling"
 --[[Translation missing --]]
 L["Crystalline Tender"] = "Crystalline Tender"
+--[[Translation missing --]]
+L["ctrlKeyCountTip"] = "Hold CTRL to show enemy forces on all enemies"
+--[[Translation missing --]]
+L["ctrlKeyDownStatusText"] = "Showing enemy forces"
 --[[Translation missing --]]
 L["Curious Swoglet"] = "Curious Swoglet"
 L["Cursed Falke"] = "저주받은 매"
@@ -1211,6 +1221,8 @@ L["Hardened Steel Berserker"] = "Hardened Steel Berserker"
 L["Hardened Steel Reaver"] = "Hardened Steel Reaver"
 --[[Translation missing --]]
 L["Hardened Steel Skycaller"] = "Hardened Steel Skycaller"
+--[[Translation missing --]]
+L["hardResetButton"] = "Reset MDT"
 L["hardResetPrompt"] = [=[정말로 모든 설정을 초기화하시겠습니까?
 초기화 후 UI가 리로드됩니다!]=]
 L["hardResetPromptTitle"] = "모든 설정 삭제"
@@ -2805,6 +2817,8 @@ L["Unyielding Contender"] = "불굴의 경쟁자"
 --[[Translation missing --]]
 L["Unyielding Garrison"] = "Unyielding Garrison"
 L["Update"] = "업데이트하기"
+--[[Translation missing --]]
+L["updateNote"] = "Please update the addon to the latest version."
 L["Upper Broken Stair"] = "부서진 계단 상층"
 L["Upper Library"] = "도서관 상층"
 L["Upper Livery Stables"] = "마구간 상층"
@@ -3001,7 +3015,7 @@ L["Yogg-Saron"] = "Yogg-Saron"
 L["You are using MDT. You rock!"] = "MDT를 사용하셔서 짱이세요!!"
 L["You can always return to the current Live Session preset by clicking the 'Return to Live' button next to the preset-dropdown"] = "길-드롭다운 옆에 있는 '라이브 길에 돌아가기'라는 버튼을 누르시면 현재 라이브 세션 길에 항상 돌아가실 수 있습니다"
 --[[Translation missing --]]
-L["You can choose from different color palettes in the automatic pull coloring settings menu."] = "You can choose from different color palettes in the automatic pull coloring settings menu."
+L["You can choose from different color palettes in the automatic pull coloring settings menu."] = "You can choose from different color palettes in the settings menu."
 L["You can cycle through different floors by holding CTRL and using the mousewheel."] = "CTRL을 누르시면서 마우스 휠을 사용하신다면 다른 층들에 바꾸실 수 있습니다"
 L["You can cycle through dungeons by holding ALT and using the mousewheel."] = "ALT를 누르시면서 마우스 휠을 사용하신다면 다른 던전들에 바꾸실 수 있습니다"
 --[[Translation missing --]]

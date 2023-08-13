@@ -81,6 +81,10 @@ L["Alpha Eagle"] = "Alpha Eagle"
 L["Altairus"] = "Altairus"
 --[[Translation missing --]]
 L["AltarOfShadow"] = "Altar of Shadow"
+--[[Translation missing --]]
+L["altKeyDownStatusText"] = "Showing enemy group numbers"
+--[[Translation missing --]]
+L["altKeyGroupsTip"] = "Hold ALT to show enemy group numbers on all enemies"
 L["Amalgam of Souls"] = "Amálgama de Almas"
 --[[Translation missing --]]
 L["Amanitar"] = "Amanitar"
@@ -345,6 +349,8 @@ L[ [=[Bounty stacks
 after this pull]=] ] = [=[這波拉怪後
 連帶幾堆]=]
 --[[Translation missing --]]
+L["Bounty stacks after this pull"] = ""
+--[[Translation missing --]]
 L["Bracken Warscourge"] = "Bracken Warscourge"
 --[[Translation missing --]]
 L["Brackenhide Shaper"] = "Brackenhide Shaper"
@@ -446,7 +452,7 @@ L["Commerce Enforcer"] = "Impositor do Comércio"
 --[[Translation missing --]]
 L["conflictPrompt"] = [=[MDT has detected that you have certain AddOns installed that are conflicting with MDT.
 
-Please remove the following AddOns:
+Please remove or update the following AddOns:
 
 ]=]
 L["Congealed Slime"] = "Visgo Coagulado"
@@ -525,6 +531,10 @@ L["Crystalline Protector"] = "Crystalline Protector"
 L["Crystalline Shardling"] = "Crystalline Shardling"
 --[[Translation missing --]]
 L["Crystalline Tender"] = "Crystalline Tender"
+--[[Translation missing --]]
+L["ctrlKeyCountTip"] = "Hold CTRL to show enemy forces on all enemies"
+--[[Translation missing --]]
+L["ctrlKeyDownStatusText"] = "Showing enemy forces"
 --[[Translation missing --]]
 L["Curious Swoglet"] = "Curious Swoglet"
 L["Cursed Falke"] = "Falke Amaldiçoado"
@@ -1207,7 +1217,10 @@ L["Hardened Steel Reaver"] = "Hardened Steel Reaver"
 --[[Translation missing --]]
 L["Hardened Steel Skycaller"] = "Hardened Steel Skycaller"
 --[[Translation missing --]]
+L["hardResetButton"] = "Reset MDT"
+--[[Translation missing --]]
 L["hardResetPrompt"] = [=[Do you really want to reset all settings to default?
+|cFFFF0000Only do this if MDT is not loading at all and is in a broken state.|r
 This will reload the UI!]=]
 --[[Translation missing --]]
 L["hardResetPromptTitle"] = "Delete ALL settings"
@@ -2980,6 +2993,8 @@ L["Unyielding Garrison"] = "Unyielding Garrison"
 --[[Translation missing --]]
 L["Update"] = "Update"
 --[[Translation missing --]]
+L["updateNote"] = "Please update the addon to the latest version."
+--[[Translation missing --]]
 L["Upper Broken Stair"] = "Upper Broken Stair"
 --[[Translation missing --]]
 L["Upper Library"] = "Upper Library"
@@ -3191,9 +3206,9 @@ L["You are using MDT. You rock!"] = "You are using MDT. You rock!"
 --[[Translation missing --]]
 L["You can always return to the current Live Session preset by clicking the 'Return to Live' button next to the preset-dropdown"] = "You can always return to the current Live Session route by clicking the 'Return to Live' button next to the route-dropdown"
 --[[Translation missing --]]
-L["You can choose from different color palettes in the automatic pull coloring settings menu."] = "You can choose from different color palettes in the automatic pull coloring settings menu."
+L["You can choose from different color palettes in the automatic pull coloring settings menu."] = "You can choose from different color palettes in the settings menu."
 --[[Translation missing --]]
-L["You can cycle through different floors by holding CTRL and using the mousewheel."] = "You can cycle through different floors by holding CTRL and using the mousewheel."
+L["You can cycle through different floors by holding CTRL and using the mousewheel."] = "You can cycle through different floors by using SHIFT+CTRL+Mousewheel."
 --[[Translation missing --]]
 L["You can cycle through dungeons by holding ALT and using the mousewheel."] = "You can cycle through dungeons by holding ALT and using the mousewheel."
 --[[Translation missing --]]
