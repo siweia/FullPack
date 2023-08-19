@@ -33,7 +33,6 @@ local isBCC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
 local isWrath = WOW_PROJECT_ID == (WOW_PROJECT_WRATH_CLASSIC or 11)
 --local isCata = WOW_PROJECT_ID == (WOW_PROJECT_CATA_CLASSIC or 99)
 
-local DBMOldPrefix = isRetail and "D4" or isClassic and "D4C" or isBCC and "D4BC" or isWrath and "D4WC"
 local DBMPrefix = isRetail and "D5" or isClassic and "D5C" or isBCC and "D5BC" or isWrath and "D5WC"
 local DBMSyncProtocol = 1
 private.DBMPrefix = DBMPrefix
@@ -73,7 +72,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20230808230433"),
+	Revision = parseCurseDate("20230814090538"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -81,24 +80,24 @@ local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.1.21"
-	DBM.ReleaseRevision = releaseDate(2023, 8, 8) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.1.23"
+	DBM.ReleaseRevision = releaseDate(2023, 8, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 6--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 278, "6d6db52"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.43 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 7, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	PForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
+	DBM.DisplayVersion = "1.14.44"
+	DBM.ReleaseRevision = releaseDate(2023, 8, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 2--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 48, "9581348"
 elseif isBCC then
 	DBM.DisplayVersion = "2.6.0 alpha"--When TBC returns (and it will one day). It'll probably be game version 2.6
-	DBM.ReleaseRevision = releaseDate(2023, 6, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	PForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
+	DBM.ReleaseRevision = releaseDate(2023, 8, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 2--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 48, "9581348"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.47 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 7, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	PForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
+	DBM.DisplayVersion = "3.4.48"
+	DBM.ReleaseRevision = releaseDate(2023, 8, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 2--When this is incremented, trigger force disable regardless of major patch
 	fakeBWVersion, fakeBWHash = 48, "9581348"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -467,6 +466,14 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
     "DBM-Coliseum",--Combined into DBM-Raids-WoTLK
     "DBM-EyeOfEternity",--Combined into DBM-Raids-WoTLK
 
+	"DBM-Onyxia",--Combined into DBM-Raids-WoTLK
+	"DBM-Naxx",--Combined into DBM-Raids-WoTLK
+	"DBM-ZG", -- Part of Cataclysm party mods on retail, and part on DBM-Raids-BC on classic
+	"DBM-AQ20",--Combined into DBM-Raids-Vanilla
+	"DBM-AQ40",--Combined into DBM-Raids-Vanilla
+	"DBM-BWL",--Combined into DBM-Raids-Vanilla
+	"DBM-MC",--Combined into DBM-Raids-Vanilla
+
 	"DBM-Karazhan",--Combined into DBM-Raids-BC
 	"DBM-BlackTemple",--Combined into DBM-Raids-BC
 	"DBM-Hyjal",--Combined into DBM-Raids-BC
@@ -513,16 +520,6 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
 if isRetail then
 	--Retail doesn't use this folder, classic era, bc, and wrath still do
 	table.insert(bannedMods, "DBM-Azeroth")--Merged into DBM-Core events mod.
-end
-if not isClassic then
-	--The Culling (classic era still uses split modules, BC and later use unified)
-	table.insert(bannedMods, "DBM-Onyxia")--Combined into DBM-Raids-WoTLK
-	table.insert(bannedMods, "DBM-Naxx")--Combined into DBM-Raids-WoTLK
-	table.insert(bannedMods, "DBM-ZG") -- Part of Cataclysm party mods on retail, and part on DBM-Raids-BC on classic
-	table.insert(bannedMods, "DBM-AQ20")--Combined into DBM-Raids-Vanilla
-	table.insert(bannedMods, "DBM-AQ40")--Combined into DBM-Raids-Vanilla
-	table.insert(bannedMods, "DBM-BWL")--Combined into DBM-Raids-Vanilla
-	table.insert(bannedMods, "DBM-MC")--Combined into DBM-Raids-Vanilla
 end
 
 --[InstanceID]={level,zoneType}
@@ -982,6 +979,23 @@ do
 
 	function argsMT.__index:IsSpellID(...)
 		return tIndexOf({...}, args.spellId) ~= nil
+	end
+
+	--Function exclusively used in classic era to make it a little cleaner to mass unifiy modules to auto check spellid or spellName based on game flavor
+	function argsMT.__index:IsSpell(...)
+		if isClassic then
+			--ugly ass performance wasting checks that have to first convert Ids to names because #nochanges
+			for _, spellId in ipairs({...}) do
+				local spellName = DBM:GetSpellInfo(spellId)
+				if spellName and spellName == args.spellName then
+					return true
+				end
+			end
+			return false
+		else
+			--Just simple table comoparison
+			return tIndexOf({...}, args.spellId) ~= nil
+		end
 	end
 
 	function argsMT.__index:IsPlayer()
@@ -2286,8 +2300,7 @@ do
 				twipe(newerVersionPerson)--Wipe guild syncs on group join so we trigger a new out of date notice on raid join even if one triggered on login
 				twipe(forceDisablePerson)
 				inRaid = true
-				--sendSync(DBMSyncProtocol, "H")
-				SendAddonMessage("D4", "H", IsInGroup(2) and "INSTANCE_CHAT" or "RAID")--Purposely sent on old protocol to get all versions
+				sendSync(DBMSyncProtocol, "H")
 				if dbmIsEnabled then
 					SendAddonMessage("BigWigs", bwVersionQueryString:format(0, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or "RAID")
 				end
@@ -2374,8 +2387,7 @@ do
 				twipe(newerVersionPerson)--Wipe guild syncs on group join so we trigger a new out of date notice on raid join even if one triggered on login
 				twipe(forceDisablePerson)
 				inRaid = true
-				--sendSync(DBMSyncProtocol, "H")
-				SendAddonMessage("D4", "H", IsInGroup(2) and "INSTANCE_CHAT" or "PARTY")
+				sendSync(DBMSyncProtocol, "H")
 				if dbmIsEnabled then
 					SendAddonMessage("BigWigs", bwVersionQueryString:format(0, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or "PARTY")
 				end
@@ -4603,6 +4615,9 @@ do
 
 	handleSync = function(channel, sender, _, protocol, prefix, ...)--dbmSender unused for now
 		protocol = tonumber(protocol)
+		if not protocol then
+			return
+		end
 		if protocol < DBMSyncProtocol then
 			return
 		end
@@ -4652,9 +4667,6 @@ do
 			else
 				handleSync(channel, correctSender, strsplit("\t", msg))
 			end
-		elseif prefix == DBMOldPrefix and msg and (channel == "PARTY" or channel == "RAID" or channel == "INSTANCE_CHAT" or channel == "WHISPER" or channel == "GUILD") then
-			local correctSender = GetCorrectSender(senderOne, senderTwo)
-			handleSync(channel, correctSender, nil, 1, strsplit("\t", msg))
 		elseif prefix == "BigWigs" and msg and (channel == "PARTY" or channel == "RAID" or channel == "INSTANCE_CHAT") then
 			local bwPrefix, bwMsg, extra = strsplit("^", msg)
 			if bwPrefix and bwMsg then
@@ -4708,8 +4720,6 @@ do
 	function DBM:BN_CHAT_MSG_ADDON(prefix, msg, _, sender)
 		if prefix == DBMPrefix and msg then
 			handleSync("BN_WHISPER", sender, nil, strsplit("\t", msg))
-		elseif prefix == DBMOldPrefix and msg then
-			handleSync("BN_WHISPER", sender, nil, 0, strsplit("\t", msg))
 		end
 	end
 end
@@ -6493,9 +6503,6 @@ do
 		if type(C_ChatInfo.RegisterAddonMessagePrefix) == "function" then
 			if not C_ChatInfo.RegisterAddonMessagePrefix(DBMPrefix) then -- main prefix for DBM4
 				self:AddMsg("Error: unable to register DBM addon message prefix (reached client side addon message filter limit), synchronization will be unavailable") -- TODO: confirm that this actually means that the syncs won't show up
-			end
-			if not C_ChatInfo.RegisterAddonMessagePrefix(DBMOldPrefix) then -- old main prefix for DBM4
-				self:AddMsg("Error: unable to register old DBM addon message prefix (reached client side addon message filter limit), synchronization will be unavailable") -- TODO: confirm that this actually means that the syncs won't show up
 			end
 			if not C_ChatInfo.IsAddonMessagePrefixRegistered("BigWigs") then
 				if not C_ChatInfo.RegisterAddonMessagePrefix("BigWigs") then
@@ -10202,6 +10209,7 @@ do
 						end
 					end
 					DBT:CancelBar(self.startedTimers[i])
+					DBM:Unschedule(playCountSound, self.startedTimers[i])
 					fireEvent("DBM_TimerStop", self.startedTimers[i])
 					tremove(self.startedTimers, i)
 				end
@@ -11236,14 +11244,14 @@ end
 --Any time extended icons is used, option must be OFF by default
 --Option must be hidden from GUI if extended icoins not enabled
 --If extended icons are disabled, then on mod load, users option is reset to default (off) to prevent their mod from still executing SetIcon functions (this is because even if it's hidden from GUI, if option was created and enabled, it'd still run)
-function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, iconsUsed, conflictWarning)
+function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, iconsUsed, conflictWarning, groupSpellId)
 	self.DefaultOptions[name] = (default == nil) or default
 	if default and type(default) == "string" then
 		default = self:GetRoleFlagValue(default)
 	end
 	self.Options[name] = (default == nil) or default
-	if spellId and not DBM.Options.GroupOptionsExcludeIcon then
-		self:GroupSpells(spellId, name)
+	if (groupSpellId or spellId) and not DBM.Options.GroupOptionsExcludeIcon then
+		self:GroupSpells(groupSpellId or spellId, name)
 	end
 	self:SetOptionCategory(name, "icon")
 	--Legacy bool and nil support
