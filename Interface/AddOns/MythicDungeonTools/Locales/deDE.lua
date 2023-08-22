@@ -1464,6 +1464,8 @@ L["MDT: Error importing preset"] = "MDT: Fehler beim importieren der Route"
 L["MDT: Spells for %s:"] = "Zauber für %s:"
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: Verwenden Sie /mdt minimap, um das Minimap-Icon wieder anzuzeigen"
 --[[Translation missing --]]
+L["MDTGuideNote"] = "MDTGuide is not affiliated with Mythic Dungeon Tools and is a seperate AddOn."
+--[[Translation missing --]]
 L["Meathook"] = "Meathook"
 L["Mech Jockey"] = "Mechjockey"
 L["Mechagon"] = "Mechagon"
@@ -2558,7 +2560,7 @@ L["Unyielding Contender"] = "Unerschütterlicher Streiter"
 L["Unyielding Garrison"] = "Unyielding Garrison"
 L["Update"] = "Aktualisieren"
 --[[Translation missing --]]
-L["updateNote"] = "Please update the addon to the latest version."
+L["updateNote"] = "Please update this AddOn to the latest version or remove it"
 L["Upper Broken Stair"] = "Obere Eingestürzte Treppe"
 L["Upper Library"] = "Obere Bibliothek"
 L["Upper Livery Stables"] = "Obere Nobelställe"

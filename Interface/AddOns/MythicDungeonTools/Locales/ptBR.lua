@@ -1604,6 +1604,8 @@ L["MDT: Spells for %s:"] = "MDT: Feitiços para %s:"
 --[[Translation missing --]]
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: Use /mdt minimap to show the minimap icon again"
 --[[Translation missing --]]
+L["MDTGuideNote"] = "MDTGuide is not affiliated with Mythic Dungeon Tools and is a seperate AddOn."
+--[[Translation missing --]]
 L["Meathook"] = "Meathook"
 L["Mech Jockey"] = "Jóquei Mecanoide"
 --[[Translation missing --]]
@@ -2993,7 +2995,7 @@ L["Unyielding Garrison"] = "Unyielding Garrison"
 --[[Translation missing --]]
 L["Update"] = "Update"
 --[[Translation missing --]]
-L["updateNote"] = "Please update the addon to the latest version."
+L["updateNote"] = "Please update this AddOn to the latest version or remove it"
 --[[Translation missing --]]
 L["Upper Broken Stair"] = "Upper Broken Stair"
 --[[Translation missing --]]

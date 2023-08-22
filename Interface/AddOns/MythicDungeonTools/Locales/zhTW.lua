@@ -1539,6 +1539,8 @@ L["MDT: Error importing preset"] = "MDT: 匯入路線時發生錯誤"
 L["MDT: Spells for %s:"] = "MDT: %s 的技能:"
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: 輸入 /mdt minimap 再次顯示小地圖按鈕。"
 --[[Translation missing --]]
+L["MDTGuideNote"] = "MDTGuide is not affiliated with Mythic Dungeon Tools and is a seperate AddOn."
+--[[Translation missing --]]
 L["Meathook"] = "Meathook"
 L["Mech Jockey"] = "机甲驾驶员"
 L["Mechagon"] = "機械岡"
@@ -2738,7 +2740,7 @@ L["Unyielding Contender"] = "不屈的参赛者"
 L["Unyielding Garrison"] = "Unyielding Garrison"
 L["Update"] = "更新"
 --[[Translation missing --]]
-L["updateNote"] = "Please update the addon to the latest version."
+L["updateNote"] = "Please update this AddOn to the latest version or remove it"
 L["Upper Broken Stair"] = "破碎樓梯上層"
 L["Upper Library"] = "圖書館上層"
 L["Upper Livery Stables"] = "獸欄上層"

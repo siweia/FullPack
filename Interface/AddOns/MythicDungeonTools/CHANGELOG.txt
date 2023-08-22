@@ -1,3 +1,6 @@
+- v4.1.0.1
+  - bugfixes
+  - use LibAsync
 - v4.0.4.29
   - pulls draggable once again
 - v4.0.4.28

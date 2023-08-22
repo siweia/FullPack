@@ -1155,6 +1155,8 @@ L["MDT Error"] = "MDT 错误"
 L["MDT: Error importing preset"] = "MDT: 导入路线时发生错误"
 L["MDT: Spells for %s:"] = "MDT: %s 的法术:"
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: 输入 /mdt minimap 再次显示小地图按钮"
+--[[Translation missing --]]
+L["MDTGuideNote"] = "MDTGuide is not affiliated with Mythic Dungeon Tools and is a seperate AddOn."
 L["Meathook"] = "肉钩"
 L["Mech Jockey"] = "机甲驾驶员"
 L["Mechagon"] = "麦卡贡"

@@ -1607,6 +1607,8 @@ L["MDT: Error importing preset"] = "MDT: 길을 가져오기 오류 "
 L["MDT: Spells for %s:"] = "MDT: %s의 마법"
 L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: /mdt minimap 명령어로 미니맵 아이콘을 다시 띄울 수 있습니다."
 --[[Translation missing --]]
+L["MDTGuideNote"] = "MDTGuide is not affiliated with Mythic Dungeon Tools and is a seperate AddOn."
+--[[Translation missing --]]
 L["Meathook"] = "Meathook"
 L["Mech Jockey"] = "로봇 조종사"
 L["Mechagon"] = "메카곤"
@@ -2818,7 +2820,7 @@ L["Unyielding Contender"] = "불굴의 경쟁자"
 L["Unyielding Garrison"] = "Unyielding Garrison"
 L["Update"] = "업데이트하기"
 --[[Translation missing --]]
-L["updateNote"] = "Please update the addon to the latest version."
+L["updateNote"] = "Please update this AddOn to the latest version or remove it"
 L["Upper Broken Stair"] = "부서진 계단 상층"
 L["Upper Library"] = "도서관 상층"
 L["Upper Livery Stables"] = "마구간 상층"
