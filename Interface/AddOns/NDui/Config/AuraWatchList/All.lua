@@ -55,6 +55,7 @@ local list = {
 		-- 药水
 		{AuraID = 371124, UnitID = "player"},	-- 沉静西风药水
 		{AuraID = 371024, UnitID = "player"},	-- 元素强能药水
+		{AuraID = 371028, UnitID = "player"},	-- 究极元素强能药水
 		-- 10.0 饰品
 		{AuraID = 381476, UnitID = "player"},	-- 爆发烈焰
 		{AuraID = 383941, UnitID = "player"},	-- 崩坏之力
@@ -70,6 +71,7 @@ local list = {
 		{AuraID = 397400, UnitID = "player"},	-- 骨喉的大脚趾
 		{AuraID = 403380, UnitID = "player"},	-- 统御呼唤
 		{AuraID = 400986, UnitID = "player"},	-- 狱钢装甲
+		{AuraID = 418527, UnitID = "player"},	-- 破碎翌日之镜
 		{AuraID = 408835, UnitID = "player", Flash = true},	-- 沸腾怒火
 		{AuraID = 408770, UnitID = "player", Stack = 55},	-- 灵感闪光
 		{AuraID = 410232, UnitID = "player", Value = true},	-- 孢子披风
@@ -139,7 +141,7 @@ local list = {
 		{AuraID = 32182, UnitID = "player"},	-- 英勇
 		{AuraID = 80353, UnitID = "player"},	-- 时间扭曲
 		{AuraID = 264667, UnitID = "player"},	-- 原始狂怒
-		{AuraID = 390386, UnitID = "player"},	-- 守护之怒，龙希尔
+		{AuraID = 390386, UnitID = "player"},	-- 守护巨龙之怒，龙希尔
 		{AuraID = 363534, UnitID = "player"},	-- 回溯，龙希尔
 		{AuraID = 357170, UnitID = "player"},	-- 时间膨胀，龙希尔
 		{AuraID = 178207, UnitID = "player"},	-- 狂怒战鼓
@@ -230,6 +232,7 @@ local list = {
 		{AuraID = 414496, UnitID = "player", Flash = true},	-- 时间线加速，永恒黎明
 		{AuraID = 406543, UnitID = "player", Flash = true},	-- 窃取时间，永恒黎明
 		{AuraID = 410908, UnitID = "player", Flash = true},	-- 永恒新星，永恒黎明
+		{AuraID = 407406, UnitID = "player", Flash = true},	-- 腐蚀，萨卡雷斯
 
 		{AuraID = 405340, UnitID = "player", Flash = true},	-- 虚无之拥，萨卡雷斯
 		{AuraID = 407576, UnitID = "player"},	-- 星界耀斑，萨卡雷斯
