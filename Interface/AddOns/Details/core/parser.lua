@@ -118,6 +118,9 @@
 			rampage_cast_amount = {},
 		}
 
+	--store the gear of each player
+		local gearCache = {}
+
 	--cache the data for passive trinkets procs
 		local _trinket_data_cache = {}
 
@@ -163,6 +166,7 @@
 			apoc = {},
 		}
 
+		--list of buffs that should be credited to the target of the buff
 		local buffs_to_other_players = {
 			--[10060] = true, --power infusion
 			[413426] = true, --rippling anthem (trinket 10.1)
@@ -376,6 +380,12 @@
 			[32176] = 17364, -- shaman Stormstrike
 			[45284] = 188196, --shaman lightining bolt overloaded
 
+			[45297] = 188443, -- shaman chain lightning overload
+			[120588] = 117014, -- shaman elemental blast overload
+			[285466] = 285452, -- shaman lava burst overload
+			[298765] = 77478, -- shaman earthquake overload
+			[219271] = 210714, -- shaman icefury overload
+
 			[228361] = 228360, --shadow priest void erruption
 
 			[401422] = 401428, --vessel of searing shadow (trinket)
@@ -554,7 +564,7 @@
 		--111400 warlock's burning rush
 		--368637 is buff from trinket "Scars of Fraternal Strife" which make the player bleed even out-of-combat
 		--371070 is "Iced Phial of Corrupting Rage" effect triggers randomly, even out-of-combat
-		--401394 is "Vessel of Seared Shadows" trinket 
+		--401394 is "Vessel of Seared Shadows" trinket
 		--146739 is corruption that doesn't expire
 
 		local spells_cant_start_combat = {
@@ -854,18 +864,13 @@
 					(not Details.in_group and sourceFlags and bitBand(sourceFlags, AFFILIATION_GROUP) ~= 0)
 				)
 			) then
-				
+
 				if (spells_cant_start_combat[spellId] and sourceName == Details.playername) then
 					return
 				end
 
 				if (Details.encounter_table.id and Details.encounter_table["start"] >= GetTime() - 3 and Details.announce_firsthit.enabled) then
-					local link
-					if (spellId <= 10) then
-						link = _GetSpellInfo(spellId)
-					else
-						link = _GetSpellInfo(spellId)
-					end
+					local link = _GetSpellInfo(spellId) --Removed check for the id being <= 10, both branches were the same.
 
 					if (Details.WhoAggroTimer) then
 						Details.WhoAggroTimer:Cancel()
@@ -1285,11 +1290,18 @@
 							augmentedSpell = evokerActor.augmentedSpellsContainer:GetOrCreateSpell(extraSpellId, true, token)
 						end
 
+						--> calculate tier and ilevel bonuses; this values could be cached at the start of the combat
+							local bHasFourPieces = gearCache[evokerSourceSerial] and gearCache[evokerSourceSerial].tierAmount >= 4
+							local tierPieceMultiplier = bHasFourPieces and 1.08 or 1
+							local evokerItemLevel = gearCache[evokerSourceSerial] and gearCache[evokerSourceSerial].ilevel or 400
+							evokerItemLevel = max(evokerItemLevel, 400)
+							local itemLevelMultiplier = 1 + ((evokerItemLevel - 400) * 0.01)
+
 						local predictedAmount = 0
 						if (Details.zone_type == "raid") then --0x410b
-							predictedAmount = amount * 0.06947705
+							predictedAmount = amount * (0.06947705 * tierPieceMultiplier * itemLevelMultiplier)
 						else
-							predictedAmount = amount * 0.08416225
+							predictedAmount = amount * (0.08416225 * tierPieceMultiplier * itemLevelMultiplier)
 						end
 
 						evokerActor.total_extra = evokerActor.total_extra + predictedAmount
@@ -2490,46 +2502,59 @@
 
 		if (targetActor.grupo) then
 			local t = last_events_cache[targetName]
-
 			if (not t) then
 				t = _current_combat:CreateLastEventsTable(targetName)
 			end
 
 			local i = t.n
 
-			local thisEvent = t[i]
-
-			thisEvent[1] = false --true if this is a damage || false for healing
-			thisEvent[2] = spellId --spellid || false if this is a battle ress line
-			thisEvent[3] = amount --amount of damage or healing
-			thisEvent[4] = time --parser time
-
-			--current unit heal
-			if (targetActor.arena_enemy) then
-				--this is an arena enemy, get the heal with the unit Id
-				local unitId = Details.arena_enemies[targetName]
-				if (not unitId) then
-					unitId = Details:GuessArenaEnemyUnitId(targetName)
+			--consolidate if the spellId is the same and the time is the same as well
+			local previousEvent = t[i-1]
+			if (previousEvent and previousEvent[2] == spellId and floor(previousEvent[4]) == floor(time)) then
+				previousEvent[3] = previousEvent[3] + amount
+				if (absorbed) then
+					previousEvent[8] = (previousEvent[8] or 0) + absorbed
 				end
-				if (unitId) then
-					thisEvent[5] = UnitHealth(unitId)
+				previousEvent[7] = previousEvent[7] or bIsShield
+				previousEvent[1] = false --true if this is a damage || false for healing
+				previousEvent[5] = UnitHealth(targetName)
+				previousEvent[11] = (previousEvent[11] or 0) + 1
+			else
+				local thisEvent = t[i]
+
+				thisEvent[1] = false --true if this is a damage || false for healing
+				thisEvent[2] = spellId --spellid || false if this is a battle ress line
+				thisEvent[3] = amount --amount of damage or healing
+				thisEvent[4] = time --parser time
+				thisEvent[11] = nil
+
+				--current unit heal
+				if (targetActor.arena_enemy) then
+					--this is an arena enemy, get the heal with the unit Id
+					local unitId = Details.arena_enemies[targetName]
+					if (not unitId) then
+						unitId = Details:GuessArenaEnemyUnitId(targetName)
+					end
+					if (unitId) then
+						thisEvent[5] = UnitHealth(unitId)
+					else
+						thisEvent[5] = 0
+					end
 				else
-					thisEvent[5] = 0
+					thisEvent[5] = UnitHealth(targetName)
 				end
-			else
-				thisEvent[5] = UnitHealth(targetName)
-			end
 
-			thisEvent[6] = sourceName
-			thisEvent[7] = bIsShield
-			thisEvent[8] = absorbed
+				thisEvent[6] = sourceName
+				thisEvent[7] = bIsShield
+				thisEvent[8] = absorbed
 
-			i = i + 1
+				i = i + 1
 
-			if (i == _amount_of_last_events + 1) then
-				t.n = 1
-			else
-				t.n = i
+				if (i == _amount_of_last_events + 1) then
+					t.n = 1
+				else
+					t.n = i
+				end
 			end
 		end
 
@@ -5498,6 +5523,55 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		Details222.AutoRunCode.DispatchAutoRunCode("on_entercombat")
 
 		Details.tabela_vigente.CombatStartedAt = GetTime()
+
+		local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
+		wipe(gearCache)
+		local bNeedPlayerGear = true
+
+		if (IsInRaid()) then
+			local unitIdCache = Details222.UnitIdCache.Raid
+			bNeedPlayerGear = false
+
+			for i = 1, 40 do
+				local unitId = unitIdCache[i]
+				local guid = UnitGUID(unitId)
+				if (guid) then
+					local unitGearInfo = openRaidLib.GetUnitGear(unitId)
+					if (unitGearInfo) then
+						gearCache[guid] = {
+							tierAmount = unitGearInfo.tierAmount or 0,
+							ilevel = unitGearInfo.ilevel or 0,
+						}
+					end
+				end
+			end
+
+		elseif (IsInGroup()) then
+			local unitIdCache = Details222.UnitIdCache.Party
+			for i = 1, 4 do
+				local unitId = unitIdCache[i]
+				local guid = UnitGUID(unitId)
+				if (guid) then
+					local unitGearInfo = openRaidLib.GetUnitGear(unitId)
+					if (unitGearInfo) then
+						gearCache[guid] = {
+							tierAmount = unitGearInfo.tierAmount or 0,
+							ilevel = unitGearInfo.ilevel or 0,
+						}
+					end
+				end
+			end
+		end
+
+		if (bNeedPlayerGear) then
+			local playerGearInfo = openRaidLib.GetUnitGear("player")
+			if (playerGearInfo) then
+				gearCache[UnitGUID("player")] = {
+					tierAmount = playerGearInfo.tierAmount or 0,
+					ilevel = playerGearInfo.ilevel or 0,
+				}
+			end
+		end
 	end
 
 	--in case the player left the raid during the encounter
