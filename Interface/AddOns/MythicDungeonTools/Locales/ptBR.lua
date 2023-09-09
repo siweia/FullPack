@@ -197,10 +197,8 @@ L["Azerokk"] = "Azerokk"
 --[[Translation missing --]]
 L["Azjol-Nerub"] = "Azjol-Nerub"
 L["Azules"] = "Azúles"
---[[Translation missing --]]
-L["Azure Captain"] = "Azure Captain"
---[[Translation missing --]]
-L["Azure Enforcer"] = "Azure Enforcer"
+L["Azure Captain"] = "Capitão Lazúli"
+L["Azure Enforcer"] = "Impositor Lazúli"
 --[[Translation missing --]]
 L["Azure Inquisitor"] = "Azure Inquisitor"
 --[[Translation missing --]]
