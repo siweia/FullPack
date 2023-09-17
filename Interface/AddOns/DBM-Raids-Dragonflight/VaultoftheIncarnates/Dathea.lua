@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod(2502, "DBM-VaultoftheIncarnates", nil, 1200)
+local mod	= DBM:NewMod(2502, "DBM-Raids-Dragonflight", 3, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230314030911")
+mod:SetRevision("20230908090104")
 mod:SetCreatureID(189813)
 mod:SetEncounterID(2635)
 mod:SetUsedIcons(8, 7, 6, 5, 4)
