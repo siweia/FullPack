@@ -1054,7 +1054,7 @@
 				overall["ALL"] = overall["ALL"] + 1  --qualtipo de hit ou absorb
 				mob["ALL"] = mob["ALL"] + 1  --qualtipo de hit ou absorb
 
-				if (spellId < 3) then
+				if (not isERA and spellId < 3) then
 					--overall
 					overall["HITS"] = overall["HITS"] + 1
 					mob["HITS"] = mob["HITS"] + 1
@@ -3902,6 +3902,15 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				misc_cache[sourceName] = sourceActor
 			end
 		end
+
+		if (not ownerActor) then
+			local petName, ownerName, ownerGUID, ownerFlag = Details.tabela_pets:PegaDono(sourceSerial, sourceName, sourceFlags)
+			if (petName) then
+				--print("pet found:", petName, ownerName, ownerGUID, ownerFlag)
+			end
+		end
+
+		--local sourceActor, ownerActor, sourceName = _current_misc_container:GetOrCreateActor(sourceSerial, sourceName, sourceFlags, true)
 
 	------------------------------------------------------------------------------------------------
 	--build containers on the fly
