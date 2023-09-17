@@ -1,11 +1,11 @@
-## Interface: 100105
+## Interface: 100107
 ## Title: Angrier World Quests
 ## Notes: Adds World Quests to the quest list
 ## Author: GurliGebis
-## Version: v0.41.1
+## Version: v0.41.2
 ## SavedVariables: AngrierWorldQuests_Config
 ## SavedVariablesPerCharacter: AngierWorldQuests_CharacterConfig
-## X-Packaged-Version: v0.41.1
+## X-Packaged-Version: v0.41.2
 
 Core.lua
 
