@@ -3,7 +3,7 @@ if (wowToc < 100200) and not testBuild then return end
 local mod	= DBM:NewMod(2556, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231013055351")
+mod:SetRevision("20231018234928")
 mod:SetCreatureID(206172)
 mod:SetEncounterID(2708)
 mod:SetUsedIcons(8, 7, 6)
@@ -17,9 +17,9 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 420846 423094 429108 429180 429615 426855",--426519 426147 424477
 	"SPELL_CAST_SUCCESS 420907",
 	"SPELL_SUMMON 421419 428465",
-	"SPELL_AURA_APPLIED 420554 425745 425781 423195 427722 426520",
+	"SPELL_AURA_APPLIED 420554 425745 425781 423195 427722",
 	"SPELL_AURA_APPLIED_DOSE 420554",
-	"SPELL_AURA_REMOVED 413443 425745 425781 423195 427722 426520",
+	"SPELL_AURA_REMOVED 413443 425745 425781 423195 427722",
 --	"SPELL_AURA_REMOVED_DOSE",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
@@ -30,49 +30,47 @@ mod:RegisterEventsInCombat(
 --[[
 
 --]]
---TODO, https://www.wowhead.com/ptr-2/spell=413540/dream-tether for mythic?
 --TODO, possibly infoframe to track some things, but need the fight overview and mythic mechanics to gauge it
---TODO, https://www.wowhead.com/ptr-2/spell=428471/waking-decimation cast bar, likely from add spawn if no aura or cast spell is added for it
 --TODO, redo every timer and stage detection and clean up scrapped spells that don't end up getting reused on mythic.
 --TODO, verify distance filtering for warden abilities since there are two of them
 --TODO, Radial Flourish doesn't have a clear cast ID
 --TODO, Unravel stack tracking in Stage 2?
+--TODO, Radial Flourish mechanic?
 --General
 local warnPhase										= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 --Stage One: Rapid Iteration
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(28355))
 local warnVerdantMatrix								= mod:NewCountAnnounce(420554, 2, nil, nil, DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.stack:format(420554))
---local warnThreadsofLife								= mod:NewCountAnnounce(425745, 2)
-local warnSurgingGrowth								= mod:NewCountAnnounce(424477, 2)
+--local warnThreadsofLife							= mod:NewCountAnnounce(425745, 2)
+local warnInflorescence								= mod:NewYouAnnounce(423195, 1)
 
 local specWarnContinuum								= mod:NewSpecialWarningYou(420846, nil, nil, nil, 2, 2)
 local specWarnImpendingLoom							= mod:NewSpecialWarningDodgeCount(429615, nil, nil, nil, 2, 2)
 local specWarnViridianRain							= mod:NewSpecialWarningDodgeCount(420907, nil, nil, nil, 2, 2)
-local specWarnWeaversBurden							= mod:NewSpecialWarningMoveAway(426520, nil, nil, nil, 1, 2)
-local yellWeaversBurden								= mod:NewShortYell(426520)
-local yellWeaversBurdenFades						= mod:NewShortFadesYell(426520)
-local specWarnWeaversBurdenOther					= mod:NewSpecialWarningTaunt(426520, nil, nil, nil, 1, 2)
---local specWarnThreadsFixate							= mod:NewSpecialWarningYou(425745, nil, nil, nil, 1, 2)
---local yellThreadsFixate								= mod:NewShortYell(425745)
---local specWarnSurgingGrowth						= mod:NewSpecialWarningDodgeCount(424477, nil, nil, nil, 2, 2)--Cast too often for special announce
+--local specWarnWeaversBurden							= mod:NewSpecialWarningMoveAway(427722, nil, nil, nil, 1, 2)
+--local yellWeaversBurden								= mod:NewShortYell(427722)
+--local yellWeaversBurdenFades						= mod:NewShortFadesYell(427722)
+--local specWarnWeaversBurdenOther					= mod:NewSpecialWarningTaunt(427722, nil, nil, nil, 1, 2)
+--local specWarnThreadsFixate						= mod:NewSpecialWarningYou(425745, nil, nil, nil, 1, 2)
+--local yellThreadsFixate							= mod:NewShortYell(425745)
 --local specWarnGTFO								= mod:NewSpecialWarningGTFO(409058, nil, nil, nil, 1, 8)
 
 local timerContinuumCD								= mod:NewAITimer(90, 420846, nil, nil, nil, 3)
 local timerImpendingLoomCD							= mod:NewAITimer(90, 429615, nil, nil, nil, 3)
 local timerSurgingGrowthCD							= mod:NewAITimer(49, 424477, nil, nil, nil, 3)
 local timerViridianRainCD							= mod:NewAITimer(49, 420907, nil, nil, nil, 3)
-local timerWeaversBurdenCD							= mod:NewAITimer(11.8, 426520, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerWeaversBurdenCD							= mod:NewAITimer(11.8, 427722, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --local timerThreadsofLifeCD							= mod:NewCDCountTimer(49, 425745, nil, nil, nil, 3)
 --local berserkTimer								= mod:NewBerserkTimer(600)
 
+mod:AddPrivateAuraSoundOption(427722, true, 427722, 1)--Weaver's Burden
 --mod:AddRangeFrameOption("5/6/10")
 --mod:AddInfoFrameOption(407919, true)
 --mod:AddNamePlateOption("NPFixate", 425745, true)
-
 --Stage Two: Creation Complete
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(28356))
 --local warnLifeWardOver								= mod:NewEndAnnounce(425794, 1)
-local warnInflorescence								= mod:NewYouAnnounce(423195, 1)
+local warnSurgingGrowth								= mod:NewCountAnnounce(424477, 2)
 
 --local specWarnNatureVolley						= mod:NewSpecialWarningInterruptCount(426854, "HasInterrupt", nil, nil, 1, 2)
 local specWarnLumberingSlam							= mod:NewSpecialWarningDodge(429108, nil, nil, nil, 2, 2)
@@ -99,7 +97,7 @@ local allTimers = {
 		--Surging Growth
 		[424477] = {15.1, 13.4, 14.4, 12.1, 8.4, 13.5, 31.8, 20.0, 20.0, 21.5, 26.6, 9.9, 15.2, 12.0, 6.5, 12.0, 32.1, 7.8, 15.0, 14.0, 4.5, 15.5, 32.5, 20.0, 20.0, 21.6, 26.5, 9.9, 15.1},
 		--Weaver's Burden
-		[426520] = {27.0, 25.1, 23.5, 64.1, 25.5, 64.4, 24.0, 69.5, 20.0, 64.6, 25.5},
+		[426519] = {27.0, 25.1, 23.5, 64.1, 25.5, 64.4, 24.0, 69.5, 20.0, 64.6, 25.5},
 		--Threads of Life
 --		[425745] = {35.0, 13.0, 12.0, 18.7, 36.7, 8.0, 12.0, 18.0, 10.4, 29.4, 11.0, 18.0, 12.0, 18.0, 28.6, 2.1, 10.3, 16.5, 12.0, 20.9, 37.1, 8.0, 12.0, 18.0, 13.6, 29.5, 12.5, 16.4},
 		--Viridian Rain
@@ -124,6 +122,7 @@ function mod:OnCombatStart(delay)
 --	timerThreadsofLifeCD:Start(1)
 	timerContinuumCD:Start(1)
 	timerFullBloomCD:Start(1)
+	self:EnablePrivateAuraSound(427722, "runout", 2)--Weaver's Burden
 	if self.Options.NPFixate then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
@@ -272,8 +271,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnVerdantMatrix:Cancel()
 			warnVerdantMatrix:Schedule(1, args.amount or 1)
 		end
-	elseif spellId == 427722 or spellId == 426520 then--426520 confirmed on heroic, 427722 is probably lfr/normal
-		DBM:AddMsg("Tank mechanic was completely reworked so old warnings disabled until they too can be reworked")
+--	elseif spellId == 427722 then--427722 to be only one now
 --		if args:IsPlayer() then
 --			specWarnWeaversBurden:Show()
 --			specWarnWeaversBurden:Play("runout")
@@ -316,10 +314,10 @@ function mod:SPELL_AURA_REMOVED(args)
 --		timerThreadsofLifeCD:Start(1)
 		timerContinuumCD:Start(2)
 		timerFullBloomCD:Start(2)
-	elseif spellId == 427722 or spellId == 426520 then--426520 confirmed on heroic
-		if args:IsPlayer() then
-			yellWeaversBurdenFades:Cancel()
-		end
+--	elseif spellId == 427722 then
+--		if args:IsPlayer() then
+--			yellWeaversBurdenFades:Cancel()
+--		end
 --	elseif spellId == 425745 or spellId == 425781 then--425745 confirmed on heroic
 --		if args:IsPlayer() then
 --			if self.Options.NPFixate then

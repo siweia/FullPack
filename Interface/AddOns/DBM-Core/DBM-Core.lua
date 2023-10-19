@@ -73,7 +73,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20231014081759"),
+	Revision = parseCurseDate("20231019035947"),
 }
 
 local fakeBWVersion, fakeBWHash = 290, "894cc27"
@@ -81,11 +81,11 @@ local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.1.29"
-	DBM.ReleaseRevision = releaseDate(2023, 10, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.1.30"
+	DBM.ReleaseRevision = releaseDate(2023, 10, 18) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 6--When this is incremented, trigger force disable regardless of major patch
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.49"
+	DBM.DisplayVersion = "1.14.50 alpha"
 	DBM.ReleaseRevision = releaseDate(2023, 10, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 3--When this is incremented, trigger force disable regardless of major patch
 elseif isBCC then
@@ -93,7 +93,7 @@ elseif isBCC then
 	DBM.ReleaseRevision = releaseDate(2023, 10, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 2--When this is incremented, trigger force disable regardless of major patch
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.53"
+	DBM.DisplayVersion = "3.4.54 alpha"
 	DBM.ReleaseRevision = releaseDate(2023, 10, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 3--When this is incremented, trigger force disable regardless of major patch
 end
@@ -8633,6 +8633,7 @@ do
 		end
 	end
 
+	--Object that's used when precision isn't possible (number of targets variable or unknown
 	function announcePrototype:CombinedShow(delay, ...)
 		if self.option and not self.mod.Options[self.option] then return end
 		if DBM.Options.DontShowBossAnnounces then return end	-- don't show the announces if the spam filter option is set
@@ -8651,6 +8652,32 @@ do
 		end
 		DBMScheduler:Unschedule(self.Show, self.mod, self)
 		DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
+	end
+
+	--New object that allows defining count instead of scheduling for more efficient and immediate warnings when precise count is known
+	function announcePrototype:PreciseShow(maxTotal, ...)
+		if self.option and not self.mod.Options[self.option] then return end
+		if DBM.Options.DontShowBossAnnounces then return end	-- don't show the announces if the spam filter option is set
+		if DBM.Options.DontShowTargetAnnouncements and (self.announceType == "target" or self.announceType == "targetcount") and not self.noFilter then return end--don't show announces that are generic target announces
+		local argTable = {...}
+		for i = 1, #argTable do
+			if type(argTable[i]) == "string" then
+				if #self.combinedtext < 7 then--Throttle spam. We may not need more than 6 targets..
+					if not checkEntry(self.combinedtext, argTable[i]) then
+						self.combinedtext[#self.combinedtext + 1] = argTable[i]
+					end
+				else
+					self.combinedcount = self.combinedcount + 1
+				end
+			end
+		end
+		DBMScheduler:Unschedule(self.Show, self.mod, self)
+		local viableTotal = DBM:NumRealAlivePlayers()
+		if (maxTotal == #self.combinedtext) or (viableTotal == #self.combinedtext) then--All targets gathered, show immediately
+			self:Show(...)--Does this need self or mod? will it have this bug? https://github.com/DeadlyBossMods/DBM-Unified/issues/153
+		else--And even still, use scheduling backup in case counts still fail
+			DBMScheduler:Schedule(1.2, self.Show, self.mod, self, ...)
+		end
 	end
 
 	function announcePrototype:Schedule(t, ...)
@@ -9518,6 +9545,7 @@ do
 		end
 	end
 
+	--Object that's used when precision isn't possible (number of targets variable or unknown
 	function specialWarningPrototype:CombinedShow(delay, ...)
 		--Check if option for this warning is even enabled
 		if self.option and not self.mod.Options[self.option] then return end
@@ -9539,6 +9567,35 @@ do
 		end
 		DBMScheduler:Unschedule(self.Show, self.mod, self)
 		DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
+	end
+
+	--New object that allows defining count instead of scheduling for more efficient and immediate warnings when precise count is known
+	function specialWarningPrototype:PreciseShow(maxTotal, ...)
+		--Check if option for this warning is even enabled
+		if self.option and not self.mod.Options[self.option] then return end
+		--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
+		if DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText then return end
+		--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
+		if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
+		local argTable = {...}
+		for i = 1, #argTable do
+			if type(argTable[i]) == "string" then
+				if #self.combinedtext < 6 then--Throttle spam. We may not need more than 5 targets..
+					if not checkEntry(self.combinedtext, argTable[i]) then
+						self.combinedtext[#self.combinedtext + 1] = argTable[i]
+					end
+				else
+					self.combinedcount = self.combinedcount + 1
+				end
+			end
+		end
+		DBMScheduler:Unschedule(self.Show, self.mod, self)
+		local viableTotal = DBM:NumRealAlivePlayers()
+		if (maxTotal == #self.combinedtext) or (viableTotal == #self.combinedtext) then--All targets gathered, show immediately
+			self:Show(...)--Does this need self or mod? will it have this bug? https://github.com/DeadlyBossMods/DBM-Unified/issues/153
+		else--And even still, use scheduling backup in case counts still fail
+			DBMScheduler:Schedule(1.2, self.Show, self.mod, self, ...)
+		end
 	end
 
 	function specialWarningPrototype:DelayedShow(delay, ...)
