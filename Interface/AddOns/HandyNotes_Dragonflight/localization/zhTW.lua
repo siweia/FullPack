@@ -95,7 +95,6 @@ L['elemental_storm_snowstorm'] = '冰雪風暴'
 
 L['elemental_storm_brakenhide_hollow'] = '蕨皮谷'
 L['elemental_storm_cobalt_assembly'] = '鈷藍集會'
-L['elemental_storm_dragonbane_keep'] = '龍禍要塞'
 L['elemental_storm_imbu'] = '伊姆布'
 L['elemental_storm_nokhudon_hold'] = '諾庫敦堡'
 L['elemental_storm_ohniri_springs'] = '雍伊爾溫泉'
@@ -146,6 +145,22 @@ L['options_icons_frostbound_chest'] = '霜縛寶箱'
 L['options_icons_frostbound_chest_desc'] = '顯示 {object:霜縛寶箱} 可能的位置.'
 
 L['fyrakk_assault_label'] = '菲拉卡突襲'
+L['fyrakk_secured_shipment'] = nil
+
+L['shadowflame_forge_label'] = nil
+L['shadowflame_forge_note'] = nil
+L['shadowflame_blacksmithing_anvil_label'] = nil
+L['shadowflame_blacksmithing_anvil_note'] = nil
+L['shadowflame_leatherworking_table_label'] = nil
+L['shadowflame_leatherworking_table_note'] = nil
+L['shadowflame_incantation_table_label'] = nil
+L['shadowflame_incantation_table_note'] = nil
+L['azure_loom_label'] = nil
+L['azure_loom_note'] = nil
+L['temporal_loom_label'] = nil
+L['temporal_loom_note'] = nil
+L['earthwarders_forge_label'] = nil
+L['earthwarders_forge_note'] = nil
 
 L['dreamsurge_sublabel'] = '{note:只有在 {location:夢境湧現} 在此區域生效時會出現.}'
 L['celestine_vendor_note'] = '使用 {item:207026} 交換坐騎, 玩具, 寵物和塑形.'
@@ -534,6 +549,7 @@ L['pt_jewel_painters_pretty_jewel_note'] = '在燈座內.'
 L['pt_leath_decayed_scales_note'] = '在一個袋子裡.'
 L['pt_script_counterfeit_darkmoon_deck_note'] = '和 {npc:194856} 講話並幫助她整理散落在他腳邊的 {object:風暴套卡}. 依照順序點選卡片 (1到8) 之後和她交談來取得套卡.'
 L['pt_script_forgetful_apprentices_tome_note'] = '在桌上一個大圓規旁.'
+L['pt_script_forgetful_apprentices_tome_algethera_note'] = nil
 L['pt_script_how_to_train_your_whelpling_note'] = '躺在沙盒內的一本小綠書.'
 L['pt_smith_draconic_flux_note'] = '在一棟建築內.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = '點選 {object:古老的龍紡織布機} 來完成一個小遊戲把線捲連到中間的寶石.'
@@ -799,6 +815,7 @@ L['options_icons_ritual_offering_desc'] = '顯示 {object:儀式祭品} 可能�
 L['nal_kskol_reliquary_label'] = '納克斯科聖匣'
 L['nal_kskol_reliquary_note'] = '使用 {object:聖匣存取控制臺} 並解開謎題來開啟 {object:納克斯科聖匣}.'
 
+L['busted_wyrmhole_generator_note'] = nil
 L['molten_scoutbot_note'] = '開啟 {object:熔火偵查機器人} 並拾取 {item:204855}.'
 L['bolts_and_brass_note'] = '開啟 {object:螺栓與黃銅} 並拾取 {item:204850}.'
 
@@ -836,6 +853,157 @@ L['zaralek_event_inactive'] = ns.color.Orange('此區域事件今日不會開始
 
 L['options_icons_zone_event'] = '區域事件'
 L['options_icons_zone_event_desc'] = '顯示區域事件的位置.'
+
+-------------------------------------------------------------------------------
+------------------------------- Emerald Dream ---------------------------------
+-------------------------------------------------------------------------------
+
+L['options_icons_emerald_dream_safari'] = '{achievement:19401}'
+L['options_icons_emerald_dream_safari_desc'] = nil
+
+L['envoy_of_winter_note'] = nil
+L['fruitface_note'] = nil
+L['greedy_gessie_note'] = nil
+L['nuoberon_note'] = nil
+L['reefbreaker_moruud_note'] = nil
+L['surging_lasher_note'] = nil
+
+L['in_a_tree'] = nil
+L['inside_building'] = nil
+
+L['hidden_moonkin_stash_label'] = nil
+L['magical_bloom_note'] = nil
+L['pineshrew_cache_note'] = nil
+L['reliquary_of_ashamane_note'] = nil
+L['reliquary_of_aviana_note'] = nil
+L['reliquary_of_goldrinn_note'] = nil
+L['reliquary_of_ursol_note'] = nil
+L['triflesnatchs_roving_trove_note'] = nil
+
+L['unwaking_echo_label'] = nil
+L['unwaking_echo_note'] = nil
+
+L['amirdrassil_defenders_shield_note'] = nil
+L['dreamtalon_claw_note'] = nil
+L['essence_of_dreams_note'] = nil
+L['exceedingly_soft_wildercloth_note'] = nil
+L['experimental_dreamcatcher_note'] = nil
+L['grove_keepers_pillar_note'] = nil
+L['handful_of_pebbles_note'] = nil
+L['molted_faerie_dragon_scales_note'] = nil
+L['petrified_hope_note'] = nil
+L['plush_pillow_note'] = nil
+L['snuggle_buddy_note'] = nil
+
+L['dreamseed_soil_label'] = nil
+L['dreamseed_soil_note'] = nil
+L['dreamseed_cache'] = nil
+
+L['options_icons_dream_of_seeds'] = '{achievement:19013}'
+L['options_icons_dream_of_seeds_desc'] = nil
+
+L['dreamfruit_label'] = nil
+L['dreamfruit_note_1'] = nil
+L['dreamfruit_note_2'] = nil
+
+L['options_icons_moonkin_hatchling'] = nil
+L['options_icons_moonkin_hatchling_desc'] = nil
+L['moonkin_hatchling_note'] = nil
+
+L['druid_glyphs_label'] = nil
+L['druid_glyphs_sublabel'] = nil
+L['druid_glyphs_note'] = nil
+
+L['pollenfused_bristlebruin_fur_sample_note'] = nil
+
+L['mbc_note_start'] = nil
+L['mbc_note_end'] = nil
+
+L['mbc_vial_b'] = nil
+L['mbc_vial_d'] = nil
+L['mbc_vial_e'] = nil
+L['mbc_vial_k'] = nil
+L['mbc_vial_n'] = nil
+L['mbc_vial_o'] = nil
+
+L['mbc_vial_d_location'] = nil
+L['mbc_vial_e_location'] = nil
+L['mbc_vial_k_location'] = nil
+L['mbc_vial_n_location'] = nil
+L['mbc_vial_o_location'] = nil
+
+L['mbc_vial_location'] = nil
+
+L['mbc_moonwell_label'] = nil
+L['mbc_feral_dreamstone_label'] = nil
+
+L['azure_somnowl_note'] = nil
+
+L['slumbering_somnowl_note_a'] = nil
+L['slumbering_somnowl_note_b'] = nil
+L['slumbering_somnowl_note_c'] = nil
+L['slumbering_somnowl_note_d'] = nil
+L['slumbering_somnowl_note_e'] = nil
+
+L['thaelishar_vendor_note'] = nil
+L['silent_mark_label'] = nil
+L['silent_mark_note'] = nil
+
+L['amirdrassil'] = nil
+L['prismatic_location'] = nil
+L['prismatic_note_1'] = nil
+L['prismatic_note_2'] = nil
+L['prismatic_note_3'] = nil
+L['prismatic_note_4'] = nil
+L['prismatic_note_5'] = nil
+
+L['options_icons_druid_glyph'] = nil
+L['options_icons_druid_glyph_desc'] = nil
+
+L['elianna_vendor_note'] = nil
+L['dream_energy_name'] = nil
+L['dream_energy_info'] = '%s: %d/%d (%.1f%%)'
+
+L['sylvia_vendor_note'] = nil
+
+L['somnut'] = nil
+L['options_icons_somnut'] = nil
+L['options_icons_somnut_desc'] = nil
+
+L['improvised_leafbed_note'] = nil
+L['kalandu_note'] = nil
+
+L['renewed_dream'] = nil
+
+L['ochre_note'] = nil
+L['ochre_note_stage1'] = nil
+L['ochre_note_stage2'] = nil
+L['ochre_note_stage3'] = nil
+L['ochre_note_stage4'] = nil
+L['ochre_note_stage5'] = nil
+
+L['thorn_beast_stag'] = nil
+L['thorn_beast_saber'] = nil
+L['thorn_beast_bear'] = nil
+
+L['thornbeast_disclaimer'] = nil
+
+L['thorn_laden_heart_note_1'] = nil
+L['thorn_laden_heart_note_2'] = nil
+
+L['athainne_note_1'] = nil
+L['athainne_note_2'] = nil
+
+L['ulfar_note_1'] = nil
+L['ulfar_note_2'] = nil
+
+L['thorn_stag_note'] = nil
+L['thorn_saber_note'] = nil
+L['thorn_bear_note'] = nil
+
+L['nahqi_note'] = nil
+
+L['sulraka_note'] = nil
 
 -------------------------------------------------------------------------------
 ----------------------------- SECRETS OF AZEROTH ------------------------------
@@ -1025,3 +1193,34 @@ L['soa_mjj_part2_note'] = [[{note:你至少需要4個玩家在你附近來完成
 
 當元素吸進4個人後, 他會爆炸並掉落 {item:209781}! 任何在附近的人都可以拾取它.]]
 L['soa_mjj_part3_note'] = '{item:209055} 會在 {location:詛咒之地} 的 {location:黑暗之門} 的正前方等你! 小心附近的{npc:210886}和NPC, 你需要讀12秒的施法條來拾取零件.'
+
+-------------------------------------------------------------------------------
+------------------------------- WARCRAFT RUMBLE -------------------------------
+-------------------------------------------------------------------------------
+
+L['rumble_coin_bag'] = '兵團零錢袋'
+L['rumble_foil_bag'] = '兵團錫箔包裝袋'
+L['rumble_both_bags'] = '兵團零錢和錫箔袋'
+L['warcraft_rumble_machine'] = '《魔獸兵團》遊戲機'
+
+L['wr_ohn_both_01'] = '在 {location:盧恩丹} 的一個廢墟建築內.'
+L['wr_ohn_foil_02'] = '在瀑布旁的一個石頭上.'
+L['wr_sto_coin_01'] = '在儲存箱後方.'
+L['wr_sto_foil_01'] = '在一堆砲彈旁.'
+L['wr_sto_foil_02'] = '在通往碼頭的坡道旁.'
+L['wr_tas_both_01'] = '在俯瞰 {location:捕鯨者望角} 的一棵樹後.'
+L['wr_tas_foil_01'] = '在一個巨大的斷木附近.'
+L['wr_tha_both_01'] = '在 {location:提爾堡蓄水池} 附近的飄浮島嶼上.'
+L['wr_tha_foil_01'] = '在一個巨大的植物花盆上.'
+L['wr_tws_both_01'] = '在俯瞰水的石塔頂端.'
+L['wr_tws_foil_01'] = '在俯瞰熔岩的山上.'
+L['wr_tws_foil_02'] = '在一個俯瞰水的小石塔上.'
+L['wr_val_coin_01'] = '在 {location:炙烤公羊旅店} 一樓 {object:烹飪爐灶} 旁.'
+L['wr_val_foil_01'] = '在 {location:炙烤公羊旅店} 二樓床上.'
+L['wr_val_machine'] = '在 {location:炙烤公羊旅店} 二樓.'
+L['wr_org_coin_01'] = '在 {location:破齒旅店} 二樓.'
+L['wr_org_foil_01'] = '在 {location:拍賣場} 後方.'
+L['wr_dur_foil_01'] = '在一些補給箱後面.'
+
+L['options_icons_warcraft_rumble'] = '魔獸兵團'
+L['options_icons_warcraft_rumble_desc'] = '顯示為了 {object:魔獸兵團} 跨界促銷的 {object:兵團零錢袋} 和 {object:兵團錫箔包裝袋} 的位置.'
