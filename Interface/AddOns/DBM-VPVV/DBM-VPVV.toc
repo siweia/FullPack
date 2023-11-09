@@ -1,4 +1,4 @@
-﻿## Interface: 100100
+﻿## Interface: 100200
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Voicepack VV|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0VV语音包|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0VV语音包|r
@@ -10,6 +10,6 @@
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: VV(普通话女)
 ## X-DBM-Voice-ShortName: VV
-## X-DBM-Voice-Version: 14
+## X-DBM-Voice-Version: 15
 ## X-DBM-Voice-HasCount: 1
 DBM-VPVV.lua
