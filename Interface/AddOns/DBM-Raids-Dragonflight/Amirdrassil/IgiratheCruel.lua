@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2554, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231116104849")
+mod:SetRevision("20231116152731")
 mod:SetCreatureID(200926)
 mod:SetEncounterID(2709)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
@@ -70,10 +70,9 @@ local berserkTimer									= mod:NewBerserkTimer(600)
 
 mod:AddSetIconOption("SetIconOnBlisteringSpear", 414888, false, false, {1, 2, 3, 4, 5, 6})
 
-local blisteringMythicTimers = {38.5, 33.2, 35.1, 20.2}
+local blisteringMythicTimers = {38.5, 32.7, 35.1, 20.2}
 local blisteringHeroicTimers = {38.5, 23.1, 23.1, 23.1, 21.1}
 local blisteringEasyTimers = {38.5, 30.4, 40.1, 20.7}
-
 
 mod.vb.spearCount = 0--used for sequencing
 mod.vb.spearTotal = 0--Used for timer text
@@ -101,7 +100,7 @@ function mod:OnCombatStart(delay)
 		timerMarkedforTormentCD:Start(45.8-delay, 1)
 		berserkTimer:Start(420-delay)
 	else
-		timerBlisteringSpearCD:Start(10.8-delay, 1)
+		timerBlisteringSpearCD:Start(10.6-delay, 1)
 		timerTwistingBladeCD:Start(4.5-delay, 1)
 		timerMarkedforTormentCD:Start(45-delay, 1)
 	end
@@ -116,7 +115,7 @@ function mod:SPELL_CAST_START(args)
 		--If initial itmers, or out of weapons on heroic and later, loop base Cd
 		if (self.vb.tormentCount == 0 and self.vb.spearCount == 1) or (self:IsHard() and self.vb.tormentCount >= 3 and self.vb.TwistingCount >= 2) then
 			timerBlisteringSpearCD:Start(20.5, self.vb.spearTotal+1)
-		else--Timers will follow sequence of event during active weapons basically
+		elseif self.vb.tormentCount >= 1 then--Timers will follow sequence of event during active weapons basically
 			local timer = self:IsMythic() and blisteringMythicTimers[self.vb.spearCount+1] or self:IsHeroic() and blisteringHeroicTimers[self.vb.spearCount+1] or blisteringEasyTimers[self.vb.spearCount+1]
 			if timer then
 				timerBlisteringSpearCD:Start(timer, self.vb.spearTotal+1)
@@ -294,9 +293,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.heartCount = 0
 		warnUmbralDestructionSoon:Show()
 		warnHeartstopperSoon:Show()
-		--New timers not known yet
---		timerHeartStopperCD:Start(14.3, 1)--Could be way off, totally extrapolated using marked for torment as timestamp then adjusting 30 sec difference
---		timerUmbralDestructionCD:Start(18.3, 1)--^^
+		timerHeartStopperCD:Start(22.6, 1)--Could be way off, totally extrapolated using marked for torment as timestamp then adjusting 30 sec difference
+		timerUmbralDestructionCD:Start(26.6, 1)--^^
 	elseif spellId == 425283 then--Axe Sword Stance
 		self.vb.smashingCount = 0
 		self.vb.umbralCount = 0

@@ -26,7 +26,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: a71a99c
+## Version: 83d1e2a
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua
@@ -77,5 +77,5 @@ modules\options\filters\Privacy.lua
 
 modules\options\frames\Frames.lua
 modules\options\frames\InfoFrame.lua
-modules\options\frames\Range.lua
+# modules\options\frames\Range.lua
 modules\options\frames\Nameplate.lua

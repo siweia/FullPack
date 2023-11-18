@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2127, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231026101326")
+mod:SetRevision("20231118045752")
 mod:SetCreatureID(131863)
 mod:SetEncounterID(2115)
 mod:SetHotfixNoticeRev(20231025000000)
@@ -82,7 +82,6 @@ function mod:SPELL_CAST_START(args)
 		else--2, 4, etc
 			timerRottenExpulsionCD:Start(20.2, self.vb.rottenCount+1)
 		end
-		timerRottenExpulsionCD:Start(nil, self.vb.rottenCount+1)
 	elseif spellId == 264734 then
 		warnConsumeAll:Show()
 	end
