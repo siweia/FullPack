@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2564, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231116152731")
+mod:SetRevision("20231119142606")
 mod:SetCreatureID(209333)
 mod:SetEncounterID(2820)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -159,7 +159,7 @@ function mod:OnCombatStart(delay)
 		timerShadowflameCleaveCD:Start(22.1-delay, 1)
 		timerControlledBurnCD:Start(33.2-delay, 1)
 	end
-	timerDoomCultivationCD:Start(93-delay, 2, 1)--Technically this variates too based on difficult, but meh, 2-3 sec at most
+	timerDoomCultivationCD:Start(92.2-delay, 2, 1)--Technically this variates too based on difficult, but meh, 2-3 sec at most
 end
 
 --function mod:OnCombatEnd()

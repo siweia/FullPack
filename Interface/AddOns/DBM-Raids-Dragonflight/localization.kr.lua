@@ -98,7 +98,6 @@ L:SetGeneralLocalization({
 	name =	"현신의 금고 일반몹"
 })
 
---[[
 ---------------------------
 --  Kazzara --
 ---------------------------
@@ -202,7 +201,6 @@ L:SetGeneralLocalization({
 	name =	"에베루스 일반몹"
 })
 
---]]
 ---------------------------
 --  Amirdrassil, the Dream's Hope --
 ---------------------------
@@ -261,7 +259,12 @@ L:SetMiscLocalization({
 ---------------------------
 --  Tindral Sageswift, Seer of the Flame --
 ---------------------------
---L= DBM:GetModLocalization(2565)
+L= DBM:GetModLocalization(2565)
+
+L:SetMiscLocalization({
+	TreeForm			= "나무 형상",
+	MoonkinForm			= "달빛야수 형상"
+})
 
 ---------------------------
 --  Fyrakk the Blazing --

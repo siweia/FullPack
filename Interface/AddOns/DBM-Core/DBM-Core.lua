@@ -73,7 +73,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20231116224606"),
+	Revision = parseCurseDate("20231120141155"),
 }
 
 local fakeBWVersion, fakeBWHash = 290, "894cc27"
@@ -81,8 +81,8 @@ local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.2.5"
-	DBM.ReleaseRevision = releaseDate(2023, 11, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.2.6"
+	DBM.ReleaseRevision = releaseDate(2023, 11, 20) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 8--When this is incremented, trigger force disable regardless of major patch
 elseif isClassic then
 	DBM.DisplayVersion = "1.15.1 alpha"
@@ -520,6 +520,7 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
 	"DBM-Sepulcher",--Combined into DBM-Raids-Shadowlands
 
 	"DBM-VaultoftheIncarnates",--Combined into DBM-Raids-Dragonflight
+	"DBM-Aberrus",--Combined into DBM-Raids-Dragonflight
 
 	"DBM-DMF",--Combined into DBM-WorldEvents
 }
@@ -2015,16 +2016,16 @@ function DBM:RepositionFrames()
 	self:UpdateWarningOptions()
 	self:UpdateSpecialWarningOptions()
 	self.Arrow:LoadPosition()
-	--local rangeCheck = _G["DBMRangeCheck"]
-	--if rangeCheck then
-	--	rangeCheck:ClearAllPoints()
-	--	rangeCheck:SetPoint(self.Options.RangeFramePoint, UIParent, self.Options.RangeFramePoint, self.Options.RangeFrameX, self.Options.RangeFrameY)
-	--end
-	--local rangeCheckRadar = _G["DBMRangeCheckRadar"]
-	--if rangeCheckRadar then
-	--	rangeCheckRadar:ClearAllPoints()
-	--	rangeCheckRadar:SetPoint(self.Options.RangeFrameRadarPoint, UIParent, self.Options.RangeFrameRadarPoint, self.Options.RangeFrameRadarX, self.Options.RangeFrameRadarY)
-	--end
+	local rangeCheck = _G["DBMRangeCheck"]
+	if rangeCheck then
+		rangeCheck:ClearAllPoints()
+		rangeCheck:SetPoint(self.Options.RangeFramePoint, UIParent, self.Options.RangeFramePoint, self.Options.RangeFrameX, self.Options.RangeFrameY)
+	end
+	local rangeCheckRadar = _G["DBMRangeCheckRadar"]
+	if rangeCheckRadar then
+		rangeCheckRadar:ClearAllPoints()
+		rangeCheckRadar:SetPoint(self.Options.RangeFrameRadarPoint, UIParent, self.Options.RangeFrameRadarPoint, self.Options.RangeFrameRadarX, self.Options.RangeFrameRadarY)
+	end
 	local infoFrame = _G["DBMInfoFrame"]
 	if infoFrame then
 		infoFrame:ClearAllPoints()
@@ -2785,21 +2786,21 @@ function DBM:GetUnitIdFromCID(creatureID, bossOnly)
 	return returnUnitID
 end
 
---To be removed when cleaned up out of all mods using it
-function DBM:CheckNearby()--range, targetname
+--Scope, will only check if a unit is within 43 yards now
+function DBM:CheckNearby(range, targetname)
+	if not targetname and DBM.RangeCheck:GetDistanceAll(range) then--Do not use self on this function, because self might be bossModPrototype
+		return true--No target name means check if anyone is near self, period
+	else
+		local uId = DBM:GetRaidUnitId(targetname)--Do not use self on this function, because self might be bossModPrototype
+		if uId and not UnitIsUnit("player", uId) then
+			local restrictionsActive = isRetail and DBM:HasMapRestrictions()
+			local inRange = DBM.RangeCheck:GetDistance(uId)--Do not use self on this function, because self might be bossModPrototype
+			if inRange and inRange < (restrictionsActive and 43 or range)+0.5 then
+				return true
+			end
+		end
+	end
 	return false
-	--if not targetname and DBM.RangeCheck:GetDistanceAll(range) then--Do not use self on this function, because self might be bossModPrototype
-	--	return true--No target name means check if anyone is near self, period
-	--else
-	--	local uId = DBM:GetRaidUnitId(targetname)--Do not use self on this function, because self might be bossModPrototype
-	--	if uId and not UnitIsUnit("player", uId) then
-	--		local inRange = DBM.RangeCheck:GetDistance(uId)--Do not use self on this function, because self might be bossModPrototype
-	--		if inRange and inRange < range+0.5 then
-	--			return true
-	--		end
-	--	end
-	--end
-	--return false
 end
 
 function DBM:IsTrivial(customLevel)
@@ -3703,9 +3704,9 @@ do
 		if self:HasMapRestrictions() then
 			self.Arrow:Hide()
 			self.HudMap:Disable()
-			--if self.RangeCheck:IsRadarShown() then
-			--	self.RangeCheck:Hide(true)
-			--end
+			if (isRetail and self.RangeCheck:IsShown()) or self.RangeCheck:IsRadarShown() then
+				self.RangeCheck:Hide(true)
+			end
 		end
 	end
 	--Faster and more accurate loading for instances, but useless outside of them
@@ -3724,9 +3725,9 @@ do
 		if self:HasMapRestrictions() then
 			self.Arrow:Hide()
 			self.HudMap:Disable()
-			--if self.RangeCheck:IsRadarShown() then
-			--	self.RangeCheck:Hide(true)
-			--end
+			if (isRetail and self.RangeCheck:IsShown()) or self.RangeCheck:IsRadarShown() then
+				self.RangeCheck:Hide(true)
+			end
 		end
 	end
 
@@ -3964,8 +3965,6 @@ do
 			local _, _, _, playerZone = UnitPosition("player")
 			local _, _, _, senderZone = UnitPosition(senderuId)
 			if playerZone ~= senderZone then return end--not same zone
-			--local range = DBM.RangeCheck:GetDistance("player", senderuId)--Same zone, so check range
-			--if not range or range > 120 then return end
 		end
 		if not cSyncSender[sender] then
 			cSyncSender[sender] = true
@@ -5176,6 +5175,7 @@ do
 		["event5"] = "normal",
 		["event20"] = "lfr25",
 		["event40"] = "lfr25",
+		["follower"] = "follower",
 		["normal5"] = "normal",
 		["heroic5"] = "heroic",
 		["challenge5"] = "challenge",
@@ -6056,6 +6056,10 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "wisdomscenario", difficultyName.." - ",difficulty, instanceGroupSize, 0
 	elseif difficulty == 171 then--Path of Ascention (Shadowlands)
 		return "humilityscenario", difficultyName.." - ",difficulty, instanceGroupSize, 0
+	elseif difficulty == 192 then--Non Instanced Challenge 1 (Likely Delves base difficulty)
+		return "delve1", difficultyName.." - ",difficulty, instanceGroupSize, 0
+	elseif difficulty == 205 then--Follower Dungeon (Dragonflight 10.2.5+)
+		return "follower", difficultyName.." - ",difficulty, instanceGroupSize, 0
 	else--failsafe
 		return "normal", "", difficulty, instanceGroupSize, 0
 	end
@@ -7228,16 +7232,16 @@ function bossModPrototype:IsLFR()
 	return diff == "lfr" or diff == "lfr25"
 end
 
---Dungeons: normal, heroic. (Raids excluded)
+--Dungeons: follower, normal, heroic. (Raids excluded)
 function bossModPrototype:IsEasyDungeon()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	return diff == "heroic5" or diff == "normal5"
+	return diff == "heroic5" or diff == "normal5" or diff == "follower5"
 end
 
---Dungeons: normal, heroic. Raids: LFR, normal
+--Dungeons: follower, normal, heroic. Raids: LFR, normal
 function bossModPrototype:IsEasy()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	return diff == "normal" or diff == "lfr" or diff == "lfr25" or diff == "heroic5" or diff == "normal5"
+	return diff == "normal" or diff == "lfr" or diff == "lfr25" or diff == "heroic5" or diff == "normal5" or diff == "follower5"
 end
 
 --Dungeons: mythic, mythic+. Raids: heroic, mythic
@@ -7292,6 +7296,11 @@ function DBM:IsRetail()
 end
 bossModPrototype.IsRetail = DBM.IsRetail
 
+function bossModPrototype:IsFollower()
+	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
+	return diff == "follower"
+end
+
 --Pretty much ANYTHING that has a heroic mode
 function bossModPrototype:IsHeroic()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
@@ -7327,6 +7336,11 @@ end
 function bossModPrototype:IsScenario()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
 	return diff == "normalscenario" or diff == "heroicscenario" or diff == "couragescenario" or diff == "loyaltyscenario" or diff == "wisdomscenario" or diff == "humilityscenario"
+end
+
+function bossModPrototype:IsDelve()
+	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
+	return diff == "delve1"
 end
 
 function bossModPrototype:IsValidWarning(sourceGUID, customunitID, loose, allowFriendly)
@@ -7463,34 +7477,19 @@ do
 	local rangeCache = {}
 	local rangeUpdated = {}
 
-	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, _, distance, defaultReturn)--itemId
+	--No current apis possible for checking boss distance directly anymore, this will basically just forward request to CheckTankDistance backup
+	--This is being left in for two reasons. Many mods use it, and I've requested to blizzard to give a concession just for checking boss (only) directly
+	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, _, _, defaultReturn)--itemId, distance
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
-		cidOrGuid = cidOrGuid or self.creatureId
-		local uId
-		if type(cidOrGuid) == "number" then--CID passed
-			uId = DBM:GetUnitIdFromCID(cidOrGuid, onlyBoss)
-		else--GUID
-			uId = DBM:GetUnitIdFromGUID(cidOrGuid, onlyBoss)
-		end
-		if uId then
-			--itemId = itemId or 32698
-			--local inRange = IsItemInRange(itemId, uId)
-			--if inRange then--IsItemInRange was a success
-			--	return inRange
-			--else--IsItemInRange doesn't work on all bosses/npcs, but tank checks do
-			--	DBM:Debug("CheckBossDistance failed on IsItemInRange for: "..cidOrGuid, 2)
-				return self:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)--Return tank distance check fallback
-			--end
-		end
-		DBM:Debug("CheckBossDistance failed on uId for: "..cidOrGuid, 2)
-		return (defaultReturn == nil) or defaultReturn--When we simply can't figure anything out, return true and allow warnings using this filter to fire
+		--Just forward to CheckTankDistance now, at least until such a time there is something more to do here
+		return self:CheckTankDistance(cidOrGuid, nil, onlyBoss, defaultReturn)--Return tank distance check fallback
 	end
 
-	function bossModPrototype:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)
+	function bossModPrototype:CheckTankDistance(cidOrGuid, _, onlyBoss, defaultReturn)--distance
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
-		distance = distance or 43
+		--distance = distance or 43--Basically unused
 		if rangeCache[cidOrGuid] and (GetTime() - (rangeUpdated[cidOrGuid] or 0)) < 2 then -- return same range within 2 sec call
-			return rangeCache[cidOrGuid] < distance
+			return rangeCache[cidOrGuid]
 		else
 			cidOrGuid = cidOrGuid or self.creatureId--GetBossTarget supports GUID or CID and it will automatically return correct values with EITHER ONE
 			local uId
@@ -7515,18 +7514,15 @@ do
 				if not UnitIsPlayer(uId) then
 					local inRange2, checkedRange = UnitInRange(uId)--43
 					if checkedRange then--checkedRange only returns true if api worked, so if we get false, true then we are not near npc
+						rangeCache[cidOrGuid] = inRange2
 						return inRange2
 					else--Its probably a totem or just something we can't assess. Fall back to no filtering
+						rangeCache[cidOrGuid] = true
 						return true
 					end
 				end
-				--local inRange = DBM.RangeCheck:GetDistance("player", uId)--We check how far we are from the tank who has that boss
-				--rangeCache[cidOrGuid] = inRange
-				--rangeUpdated[cidOrGuid] = GetTime()
-				--if inRange and (inRange > distance) then--You are not near the person tanking boss
-				--	return false
-				--end
-				--Tank in range, return true.
+				--Return true as safety
+				rangeCache[cidOrGuid] = true
 				return true
 			end
 			DBM:Debug("CheckTankDistance failed on uId for: "..cidOrGuid, 2)
@@ -11512,20 +11508,19 @@ function bossModPrototype:AddArrowOption(name, spellId, default, isRunTo)
 	end
 end
 
-function bossModPrototype:AddRangeFrameOption()--range, spellId, default
-	return
-	--self.DefaultOptions["RangeFrame"] = (default == nil) or default
-	--if default and type(default) == "string" then
-	--	default = self:GetRoleFlagValue(default)
-	--end
-	--self.Options["RangeFrame"] = (default == nil) or default
-	--if spellId then
-	--	self:GroupSpells(spellId, "RangeFrame")
-	--	self.localization.options["RangeFrame"] = L.AUTO_RANGE_OPTION_TEXT:format(range, spellId)
-	--else
-	--	self.localization.options["RangeFrame"] = L.AUTO_RANGE_OPTION_TEXT_SHORT:format(range)
-	--end
-	--self:SetOptionCategory("RangeFrame", "misc")
+function bossModPrototype:AddRangeFrameOption(range, spellId, default)
+	self.DefaultOptions["RangeFrame"] = (default == nil) or default
+	if default and type(default) == "string" then
+		default = self:GetRoleFlagValue(default)
+	end
+	self.Options["RangeFrame"] = (default == nil) or default
+	if spellId then
+		self:GroupSpells(spellId, "RangeFrame")
+		self.localization.options["RangeFrame"] = L.AUTO_RANGE_OPTION_TEXT:format(range, spellId)
+	else
+		self.localization.options["RangeFrame"] = L.AUTO_RANGE_OPTION_TEXT_SHORT:format(range)
+	end
+	self:SetOptionCategory("RangeFrame", "misc")
 end
 
 function bossModPrototype:AddHudMapOption(name, spellId, default)

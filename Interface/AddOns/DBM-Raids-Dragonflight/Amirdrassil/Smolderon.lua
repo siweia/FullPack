@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2563, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231115130844")
+mod:SetRevision("20231119142606")
 mod:SetCreatureID(200927)
 mod:SetEncounterID(2824)
 --mod:SetUsedIcons(1, 2, 3)
@@ -136,7 +136,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnLavaGeysers:Show(self.vb.geyserCount)
 		specWarnLavaGeysers:Play("watchstep")
 		if self.vb.geyserCount < 8 and self.vb.geyserCount % 2 == 1 then--Other timers started in phase change event
-			timerLavaGeysersCD:Start(nil, self.vb.geyserCount+1)--25.9
+			timerLavaGeysersCD:Start(self:IsMythic() and 25 or 26, self.vb.geyserCount+1)--25.9
 		end
 	elseif spellId == 426725 then
 		self.vb.encroached = true
@@ -249,4 +249,3 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		end
 	end
 end
-
