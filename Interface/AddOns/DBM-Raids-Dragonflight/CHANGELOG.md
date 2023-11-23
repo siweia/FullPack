@@ -1,8 +1,14 @@
 # <DBM Mod> Raids (DF)
 
-## [10.2.6](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.2.6) (2023-11-20)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.2.5...10.2.6) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.2.7](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.2.7) (2023-11-21)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.2.5...10.2.7) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
+- prep new tag to fix another breaking fyrak bug  
+- Fix anotehr critical bug that caused a key timer not to work at all on fyrak if you didn't one shot the boss.  
+- rebump alpha  
+- prep to remake 10.2.6 tag  
+- Fix error on fyrak  
+- bump alpha  
 - prep new tag with last few days of fixes/updates  
 - begin templating new dungeon difficulty type (follower). still some stats support to finalize  
 - Merge Aberus raid mods into Dragonflight raids mod, completing the full transition of all modules  

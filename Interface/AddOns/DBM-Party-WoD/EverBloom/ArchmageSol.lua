@@ -8,7 +8,7 @@ if (wowToc >= 100200) then
 	mod.upgradedMPlus = true
 end
 
-mod:SetRevision("20231022202350")
+mod:SetRevision("20231121073213")
 mod:SetCreatureID(82682)
 mod:SetEncounterID(1751)
 mod:SetHotfixNoticeRev(20231020000000)
@@ -99,7 +99,7 @@ if (wowToc >= 100200) then
 			warnCinderboltStorm:Show()
 			if self:IsMythic() then
 				if args:GetSrcCreatureID() == 82682 then--Source is Boss
-					timerGlacialFusionCD:Start(20, DBM_COMMON_L.BOSS)--Fire, Ice, Arcane, repeat
+					timerGlacialFusionCD:Start(19.4, DBM_COMMON_L.BOSS)--Fire, Ice, Arcane, repeat
 					timerCinderboltStormCD:Start(20, DBM_COMMON_L.ADD)--Add will recast this next
 				end
 			else
