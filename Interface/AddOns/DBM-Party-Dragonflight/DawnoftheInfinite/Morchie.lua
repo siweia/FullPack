@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2536, "DBM-Party-Dragonflight", 9, 1209)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231118052248")
+mod:SetRevision("20231128031653")
 mod:SetCreatureID(198999)
 mod:SetEncounterID(2671)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
@@ -59,15 +59,15 @@ mod.vb.problemIcons = 1
 mod.vb.facesCount = 0
 mod.vb.trapsCount = 0
 --Even on a +25 I could not find a pull longer than this
-local allTimers = {--Timers up to 2:19 for 10.2+ (with late october timer changes).
+local allTimers = {--Timers up to 3:43 for 10.2+ (with late october timer changes).
 	--Sand Blast
-	[404916] = {3, 27, 19.9, 28.9, 12, 12, 11.9, 24, 11.9, 12.0},
+	[404916] = {3, 27, 19.9, 28.9, 12, 12, 11.9, 24, 11.9, 12.0, 12.0, 24.0, 12.0, 12.0},
 	--More Problems
-	[403891] = {10, 50, 60},
+	[403891] = {10, 50, 60, 60},
 	--Time Traps
-	[406481] = {36, 48, 24, 47.9},
+	[406481] = {36, 48, 24, 47.9, 48.0},
 	--Familiar Faces
-	[405279] = {43, 52.9, 48},
+	[405279] = {43, 52.9, 48, 23.9, 48.0},
 }
 
 --[[

@@ -73,16 +73,16 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20231121040240"),
+	Revision = parseCurseDate("20231128034103"),
 }
 
-local fakeBWVersion, fakeBWHash = 290, "894cc27"
+local fakeBWVersion, fakeBWHash = 302, "1837480"--302.1
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.2.7"
-	DBM.ReleaseRevision = releaseDate(2023, 11, 20) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.2.8"
+	DBM.ReleaseRevision = releaseDate(2023, 11, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 8--When this is incremented, trigger force disable regardless of major patch
 elseif isClassic then
 	DBM.DisplayVersion = "1.15.1 alpha"
@@ -10962,22 +10962,23 @@ do
 		end
 		local timerTextValue
 		if timerText then
-			--If timertext is a number, accept it as a secondary auto translate spellid
 			--First check if it's shorttext
 			if DBM.Options.ShortTimerText then
+				--If timertext is a number, accept it as a secondary auto translate spellid
 				if type(timerText) == "number" then
 					timerTextValue = timerText
 					spellName = DBM:GetSpellInfo(timerText or 0)--Override Cached spell Name
+				--Interpret it literal with no restrictions, first checking mod local table, then just taking timerText directly
 				else
-					timerTextValue = self.localization.timers[timerText] or timerText--Check timers table first, otherwise accept it as literal timer text
+					timerTextValue = self.localization.timers[timerText]--Check timers table first, otherwise accept it as literal timer text
 				end
-			else--Short text is off, we want to be more aggressive in non setting short text if auto localize non short text available
+			else--Short text is off, we want to be more aggressive in NOT setting short text if we can help it
+				--Short text is off, and spellId does exist, only accept timerText if it's in mods localization tables, cause then it's not short text, it's hard localization
 				if spellId and type(spellId) == "number" then
-					--Still use fully localized timer object text if there, cause that's not short text
+					--Only use timerText if it's full localized, cause that's not shorttext
+					timerTextValue = rawget(self.localization.timers, timerText)
+				else--If no spellID, then we allow hard setting timerText because it's only translation timer object has
 					timerTextValue = self.localization.timers[timerText]
-				else
-					--if spellId isn't valid, we need to accept timerText in any form as fallback
-					timerTextValue = self.localization.timers[timerText] or timerText
 				end
 			end
 		end
@@ -11404,6 +11405,7 @@ function bossModPrototype:EnablePrivateAuraSound(auraspellId, voice, voiceVersio
 	end
 end
 
+--TODO, add ability to remove specific ID only with this function. I'm not so good with tables though so gotta figure it out later
 function bossModPrototype:DisablePrivateAuraSounds()
 	if DBM.Options.DontPlayPrivateAuraSound then return end
 	for _, id in next, self.paSounds do

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2524, "DBM-Raids-Dragonflight", 2, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231120131222")
+mod:SetRevision("20231123214402")
 mod:SetCreatureID(199659)--Warlord Kagni
 mod:SetEncounterID(2682)
 mod:SetHotfixNoticeRev(20230619000000)
@@ -110,7 +110,6 @@ local timerCatastrophicSlamCD						= mod:NewCDCountTimer(26.7, 410516, nil, nil,
 local timerFlamingCudgelCD							= mod:NewCDCountTimer(34, 410351, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --mod:AddInfoFrameOption(361651, true)
---mod:AddRangeFrameOption(5, 390715)
 --mod:AddSetIconOption("SetIconOnMagneticCharge", 399713, true, 0, {4})
 --mod:GroupSpells(390715, 396094)
 

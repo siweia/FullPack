@@ -2,7 +2,7 @@ local mod	= DBM:NewMod(104, "DBM-Party-Cataclysm", 9, 65)
 local L		= mod:GetLocalizedStrings()
 local wowToc = DBM:GetTOC()
 
-mod:SetRevision("20231121043415")
+mod:SetRevision("20231128005122")
 if (wowToc >= 100200) then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 	mod.upgradedMPlus = true
@@ -95,7 +95,7 @@ if (wowToc >= 100200) then
 			timerBlottingBarrageCD:Start(nil, self.vb.barrageCount+1)
 		elseif spellId == 428868 then
 			self.vb.putridCount = self.vb.putridCount + 1
-			specWarnPutridRoar:Show()
+			specWarnPutridRoar:Show(self.vb.putridCount)
 			specWarnPutridRoar:Play("aesoon")
 			timerPutridRoarCD:Start(nil, self.vb.putridCount+1)
 		elseif spellId == 428530 then

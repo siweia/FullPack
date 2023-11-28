@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2555, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231118233915")
+mod:SetRevision("20231123214402")
 mod:SetCreatureID(208363, 208365, 208367)--Urctos, Aerwynn, Pip
 mod:SetEncounterID(2728)
 mod:SetUsedIcons(1, 2, 3, 4)
 mod:SetBossHPInfoToHighest()
-mod:SetHotfixNoticeRev(20231118000000)
-mod:SetMinSyncRevision(20231118000000)
+mod:SetHotfixNoticeRev(20231122000000)
+mod:SetMinSyncRevision(20231122000000)
 mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -91,7 +91,6 @@ local timerPolymorphBombCD							= mod:NewCDCountTimer(18.9, 418720, L.Ducks, ni
 local timerEmeraldWindsCD							= mod:NewCDCountTimer(11.8, 421024, DBM_COMMON_L.PUSHBACK.." (%s)", nil, nil, 2)
 
 mod:AddPrivateAuraSoundOption(418589, true, 418591, 1)--Polymorph Bomb
---mod:AddRangeFrameOption("5/6/10")
 --mod:AddInfoFrameOption(407919, true)
 mod:AddSetIconOption("SetIconOnPoly", 418720, true, false, {1, 2, 3, 4})
 
@@ -118,14 +117,17 @@ local nextSpecial = 0
 
 local function castBeforeSpecial(self, cooldown)
 	--Check syncable timers first, that way this function has disconnect protection, if timers were enabled
-	if timerBlindingRageCD:GetRemaining(self.vb.rageCount+1) < cooldown then
+	local remainingRage = timerBlindingRageCD:GetRemaining(self.vb.rageCount+1)
+	local remainingVines = timerConstrictingThicketCD:GetRemaining(self.vb.vinesCount+1)
+	local remainingSong = timerSongoftheDragonCD:GetRemaining(self.vb.songCount+1)
+	if (remainingRage > 0) and (remainingRage < cooldown) then
 		return false
-	elseif timerConstrictingThicketCD:GetRemaining(self.vb.vinesCount+1) < cooldown then
+	elseif (remainingVines > 0) and (remainingVines < cooldown) then
 		return false
-	elseif timerSongoftheDragonCD:GetRemaining(self.vb.songCount+1) < cooldown then
+	elseif (remainingSong > 0) and (remainingSong < cooldown) then
 		return false
 	--Check local timer caching second in case user turned timers off
-	elseif nextSpecial - GetTime() < cooldown then
+	elseif nextSpecial > 0 and (nextSpecial - GetTime() < cooldown) then
 		return false
 	end
 	return true
@@ -247,12 +249,6 @@ function mod:OnCombatStart(delay)
 	self:EnablePrivateAuraSound(429123, "bombyou", 2, 418589)--Register secondary private aura (different ID for differentn difficulty?)
 	nextSpecial = GetTime() + 55.8
 end
-
---function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
---end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

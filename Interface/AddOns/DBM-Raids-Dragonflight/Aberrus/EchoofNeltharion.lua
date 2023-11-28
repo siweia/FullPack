@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2523, "DBM-Raids-Dragonflight", 2, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231120131222")
+mod:SetRevision("20231123214402")
 mod:SetCreatureID(201668)
 mod:SetEncounterID(2684)
 mod:SetUsedIcons(6)
@@ -66,7 +66,6 @@ local timerCalamitousStrikeCD					= mod:NewCDCountTimer(36.3, 401998, nil, "Tank
 
 mod:AddPrivateAuraSoundOption(407182, true, 407221, 1)--Rushing Darkness
 mod:AddPrivateAuraSoundOption(410966, true, 410953, 3)--Volcanic Heart
---mod:AddRangeFrameOption(5, 390715)
 --mod:AddSetIconOption("SetIconOnVolcanicHeart", 410953, true, 0, {1, 2, 3})
 mod:AddSetIconOption("SetIconOnRushingDarkness", 407221, true, 0, {6})
 --mod:AddNamePlateOption("NPAuraOnAscension", 385541)

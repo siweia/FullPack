@@ -270,7 +270,20 @@ L:SetMiscLocalization({
 ---------------------------
 --  Fyrakk the Blazing --
 ---------------------------
---L= DBM:GetModLocalization(2519)
+L= DBM:GetModLocalization(2519)
+
+L:SetTimerLocalization{
+	timerMythicDebuffs			= "Cages (%s)"
+}
+
+L:SetWarningLocalization{
+	warnMythicDebuffs			= "Cages (%s)"
+}
+
+L:SetOptionLocalization{
+	warnMythicDebuffs			= "Announce when $spell:428988 and $spell:428970 debuffs have been cast (with count)",
+	timerMythicDebuffs			= "Show timer (with count) for $spell:428988 and $spell:428970 debuffs"
+}
 
 -------------
 --  Trash  --

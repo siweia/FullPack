@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2564, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231119142606")
+mod:SetRevision("20231123214402")
 mod:SetCreatureID(209333)
 mod:SetEncounterID(2820)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -162,12 +162,6 @@ function mod:OnCombatStart(delay)
 	timerDoomCultivationCD:Start(92.2-delay, 2, 1)--Technically this variates too based on difficult, but meh, 2-3 sec at most
 end
 
---function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
---end
-
 function mod:OnTimerRecovery()
 	if self:IsMythic() then
 		difficultyName = "mythic"
@@ -306,7 +300,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local amount = args.amount or 1
 		--Applies 5 stacks at a time (then just refreshes after that)
 		--so this should effectively warn once per barrage
-		if amount >= 5 then
+		if amount % 5 == 0 then
 			if args:IsPlayer() then--This basically can swap every 1-2 stacks based on it's cooldown.
 				warnDreadfireBarrage:Show(args.destName, amount)
 			else

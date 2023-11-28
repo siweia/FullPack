@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2520, "DBM-Raids-Dragonflight", 2, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231120131222")
+mod:SetRevision("20231123214402")
 mod:SetCreatureID(201754)
 mod:SetEncounterID(2685)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -413,9 +413,6 @@ function mod:OnTimerRecovery()
 end
 
 function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
