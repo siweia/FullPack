@@ -1,39 +1,37 @@
 # <DBM Mod> Raids (DF)
 
-## [10.2.8](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.2.8) (2023-11-28)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.2.7...10.2.8) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.2.9](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.2.9) (2023-12-03)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.2.8...10.2.9) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- Prep new tag, time to push out more bug fixes before reset  
-- Fixed stage 3 heroic blaze timers on Fyrak, which changed at some point  
-- remove soak warning from normal larodar too, that was removed literally last week. very last minute change that was missed  
-- be uniform about it.  
-- Nymue Update  
-     - Changed some of counts to match BW public mods  
-- update some timers, closes https://github.com/DeadlyBossMods/DBM-Retail/issues/958  
-- Update commonlocal.ru.lua (#318)  
-- Update localization.ru.lua (#319)  
-- Update koKR (Retail) (#954)  
-- Update localization.ru.lua (#957)  
-- Update localization.ru.lua (#956)  
-- Update localization.ru.lua (#955)  
-- fix typo  
-- push fyrakk mythic mod  
-- tweak tank swaps on Molderon to default to on for Overheated, and not on branded. branded still an option but now off by default. you can enable that if you want to do double swaps to minimize tank melee damage during the soak/brand, but the priority here willbe keeping overheated out of the soak.  
-- Change default core behavior for pulling timer locals to make the short text disable work better. It shouldn't break anything, but if it does it'll be fixed case by case.  
-- no code changes, just notes  
-- Micro timer adjusts to last  
-- Combine normal heroic tables together on larodar. they are same. Confirmed LFR also the same. extended data a little too  
-- Minor Adjustments  
-- Fix a stray -  
-- Release tindral mythic stuff  
-- Add strings for translation, mod still private for now  
-- Missed a line  
-- Culling of range finders  
-- Add additional throttle to slam since distance filter still isn't working yet. just not gonna bother trying to fix that and hope we get a proper API for that in 10.2.5 :\  
-- adjust tank warning again to avoid spam if tanks fail to swap correctly.  
-- No soak in LFR Larodar  
-- Fix scorchtail timers some. should be close most of the time anyways  
-- small timer tweak for nymue  
-- minor tweaks to fyrakk timers and fix a double start of spirits timer  
-- Attempt to fix a bug that caused wrong timers to start on council, due to a logic error in special cooldown check where if the remaining time was 0 (because timer was disabled, or didn't exist) it always ran altered charge/polymorph timers  
+- prep new retail tag  
+- Disable Surging growth alerts and timer in LFR, since it's based on applied (due to blizzard hating combat log) and in LFR this is not a reliable metric like at all  
+- Update koKR (Retail) (#963)  
+- Fix last  
+- Rework timers to correctly support LFR version of Council of Dreams  
+- sync naming  
+- bump alpha  
+- prep new tag for classic era/SoD  
+- comment this code on retail for now  
+- Prep classic era tag  
+- Remove bad language on dispel alerts. most dispels aren't spellstealable and it's misleading  
+- Support Season of Discovery instance difficulty Ids  
+- revert nymue using boss distance checks for now. no ETA on change is known  
+- fix jump announce  
+- set EnableMouse on parent frame, to allow clickthrough.  
+- Revert CheckBossDistance check to using Item apis on bosses again, with blizzard reverting nerf on hostile targets for this purpose. (range check still dead, distance on players still forbidden). This is just a concession blizzard agreed was a reasonable one.  
+- Switch nymue back to distance calculation usage on bosses for filtering  
+- actually make sure unit is the boss  
+- fixes  
+- Finally add Aurostor mod  
+- again trying to fix special CD checking logic, cause it appears code was still just returning false 100% of time even when special was literally 40 seconds away.  
+- tweak fyrakk and igira tank swaps to not swap unnessesarily early  
+- Since it's early tier, will be updating the version check more often for checking if other raiders mods are out of date.  
+- Fix barreling charge to use YELL and following conventions  
+- More taunt tech improvements to smolderon  
+- timer tweaks  
+- Further refine tanking on smolderon to help movements  
+    Fixed tank swap alerts on council to be more correct and less spammy  
+    Also added a special alert to dodge charge if you already have trampled for all players  
+- fix smolderon tanking stuff  
+- small nitpick, make corrupt appear in stage 1.5 list  
 - bump alpha  

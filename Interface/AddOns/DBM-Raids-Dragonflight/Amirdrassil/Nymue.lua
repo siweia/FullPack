@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2556, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231127233244")
+mod:SetRevision("20231203004100")
 mod:SetCreatureID(206172)
 mod:SetEncounterID(2708)
 mod:SetUsedIcons(8, 7, 6)
@@ -49,7 +49,7 @@ local yellWeaversBurden								= mod:NewShortYell(426519, 37859)--ST "Bomb"
 local specWarnWeaversBurdenOther					= mod:NewSpecialWarningTaunt(426519, nil, 37859, nil, 1, 2)
 local specWarnGTFO									= mod:NewSpecialWarningGTFO(428474, nil, nil, nil, 1, 8)
 
-local timerImpendingLoomCD							= mod:NewCDCountTimer(23.8, 429615, DBM_COMMON_L.DODGES.." (%s)", nil, nil, 3)
+local timerImpendingLoomCD							= mod:NewCDCountTimer(23.8, 429615, L.Threads, nil, nil, 3)
 local timerEphemeralFloraCD							= mod:NewCDCountTimer(49, 430563, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerSurgingGrowthCD							= mod:NewCDCountTimer(7, 420971, DBM_COMMON_L.GROUPSOAKS.." (%s)", nil, nil, 3)--7-9, usually 8-9
 local timerViridianRainCD							= mod:NewCDCountTimer(19.1, 420907, DBM_COMMON_L.AOEDAMAGE.." (%s)", nil, nil, 3)
@@ -182,7 +182,8 @@ function mod:SPELL_CAST_START(args)
 			)
 		end
 	elseif spellId == 429108 or spellId == 429180 then
-		if self:CheckBossDistance(args.sourceGUID, false) and self:AntiSpam(4, 3) then--Antispam needed since checkbossdistance is not working (even though it should be)
+--		if self:CheckBossDistance(args.sourceGUID, true, 32698, 48) then
+		if self:AntiSpam(4, 5) then
 			specWarnLumberingSlam:Show()
 			specWarnLumberingSlam:Play("shockwave")
 		end
@@ -222,7 +223,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 			end
 		end
 	elseif spellId == 422721 then
-		if self:CheckBossDistance(args.sourceGUID, false) then
+--		if self:CheckBossDistance(args.sourceGUID, true, 32698, 48) then
+		if self:AntiSpam(4, 4) then
 			warnRadialFlourish:Show()
 		end
 		timerRadialFlourishCD:Start(nil, args.sourceGUID)
@@ -301,7 +303,7 @@ function mod:SPELL_AURA_APPLIED(args)
 --			warnBlazingCoalescence:Schedule(1, args.amount or 1)
 			warnLucidVulnerability:Show(args.amount or 1)
 		end
-	elseif spellId == 429983 and self:AntiSpam(5, 2) and self.vb.phase % 2 == 1 then
+	elseif spellId == 429983 and self:AntiSpam(5, 2) and self.vb.phase % 2 == 1 and not self:IsLFR() then
 		self.vb.surgingCount = self.vb.surgingCount + 1
 		warnSurgingGrowth:Show(self.vb.surgingCount)
 		timerSurgingGrowthCD:Start(nil, self.vb.surgingCount+1)
@@ -324,7 +326,7 @@ end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	--Taking damage from miasma with vulnerability debuff
-	if spellId == 428474 and destGUID == UnitGUID("player") and DBM:UnitDebuff("player", 428479) and self:AntiSpam(3, 4) then
+	if spellId == 428474 and destGUID == UnitGUID("player") and DBM:UnitDebuff("player", 428479) and self:AntiSpam(3, 3) then
 		specWarnGTFO:Show(spellName)
 		specWarnGTFO:Play("watchfeet")
 	end
