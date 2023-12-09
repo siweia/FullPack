@@ -152,6 +152,7 @@ local defaultSavedVars = {
     scale = 1,
     nonFullscreenScale = 1.3,
     enemyForcesFormat = 2,
+    useForcesCount = false, -- replaces percent in pull buttons with count
     enemyStyle = 1,
     currentDungeonIdx = 100,
     currentDifficulty = 10,
@@ -2906,7 +2907,6 @@ function MDT:MakePresetCreationFrame(frame)
     end
   end)
 
-
   frame.PresetCreationEditbox = AceGUI:Create("EditBox")
   frame.PresetCreationEditbox:SetLabel(L["Preset Name"]..":")
   frame.PresetCreationEditbox:SetWidth(255)
@@ -2922,6 +2922,10 @@ function MDT:MakePresetCreationFrame(frame)
       frame.presetCreationCreateButton.text:SetTextColor(0.5, 0.5, 0.5)
     end
     frame.presetCreationFrame:DoLayout()
+  end)
+  frame.PresetCreationEditbox:SetCallback("OnEnterPressed", function(widget, event, text)
+    local name = frame.PresetCreationEditbox:GetText()
+    MDT:CreateNewPreset(name)
   end)
   frame.presetCreationFrame:AddChild(frame.PresetCreationEditbox)
 
@@ -3254,9 +3258,10 @@ function MDT:MakeSettingsFrame(frame)
   frame.settingsFrame = AceGUI:Create("Frame")
   frame.settingsFrame:SetTitle(L["Settings"])
   frame.settingsFrame:SetWidth(240)
-  frame.settingsFrame:SetHeight(220)
+  frame.settingsFrame:SetHeight(250)
   frame.settingsFrame:EnableResize(false)
   frame.settingsFrame:SetLayout("Flow")
+  MDT:FixAceGUIShowHide(frame.settingsFrame)
 
   frame.minimapCheckbox = AceGUI:Create("CheckBox")
   frame.minimapCheckbox:SetLabel(L["Enable Minimap Button"])
@@ -3270,6 +3275,15 @@ function MDT:MakeSettingsFrame(frame)
     end
   end)
   frame.settingsFrame:AddChild(frame.minimapCheckbox)
+
+  frame.forcesCheckbox = AceGUI:Create("CheckBox")
+  frame.forcesCheckbox:SetLabel(L["Use forces count"])
+  frame.forcesCheckbox:SetValue(db.useForcesCount)
+  frame.forcesCheckbox:SetCallback("OnValueChanged", function(widget, callbackName, value)
+    db.useForcesCount = value
+    MDT:ReloadPullButtons()
+  end)
+  frame.settingsFrame:AddChild(frame.forcesCheckbox)
 
   frame.AutomaticColorsCheck = AceGUI:Create("CheckBox")
   frame.AutomaticColorsCheck:SetLabel(L["Automatically color pulls"])
@@ -3592,12 +3606,12 @@ function MDT:UpdatePullButtonNPCData(idx)
     oldPullForces = MDT:CountForces(idx - 1, false)
   end
   local oldPercent = oldPullForces / totalForcesMax
-  frame.newPullButtons[idx]:ShowReapingIcon(false, currentPercent, oldPercent)
+  frame.newPullButtons[idx]:ShowReapingIcon(false, pullForces, oldPullForces, totalForcesMax)
   --prideful icon
   if (math.floor(currentPercent / 0.2) > math.floor(oldPercent / 0.2)) and oldPercent < 1 and db.currentSeason == 5 then
-    frame.newPullButtons[idx]:ShowPridefulIcon(true, currentPercent, oldPercent)
+    frame.newPullButtons[idx]:ShowPridefulIcon(true, pullForces, oldPullForces, totalForcesMax)
   else
-    frame.newPullButtons[idx]:ShowPridefulIcon(false, currentPercent, oldPercent)
+    frame.newPullButtons[idx]:ShowPridefulIcon(false, pullForces, oldPullForces, totalForcesMax)
   end
   --shrouded icon
   --count amount of shrouded in this pull
@@ -3858,6 +3872,9 @@ function MDT:MakeRenameFrame(frame)
       renameText = nil
     end
     frame.RenameFrame:DoLayout()
+  end)
+  frame.RenameFrame.Editbox:SetCallback("OnEnterPressed", function(widget, event, text)
+    MDT:RenamePreset(renameText)
   end)
   frame.RenameFrame.Editbox:DisableButton(true)
 
