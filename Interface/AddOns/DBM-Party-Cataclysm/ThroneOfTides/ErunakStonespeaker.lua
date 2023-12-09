@@ -9,7 +9,7 @@ else--TODO, refine for cata classic since no timewalker there
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20231022202350")
+mod:SetRevision("20231202061953")
 mod:SetCreatureID(40825, 40788)
 mod:SetMainBossID(40788)-- 40788 = Mindbender Ghur'sha
 mod:SetEncounterID(1046)
@@ -56,7 +56,7 @@ if (wowToc >= 100200) then
 	function mod:OnCombatStart(delay)
 		self:SetStage(1)
 		timerFlameShockCD:Start(6-delay)
-		timerStormflurryTotemCD:Start(13-delay)
+		timerStormflurryTotemCD:Start(12.1-delay)
 		timerEarthfuryCD:Start(20.3-delay)
 	end
 

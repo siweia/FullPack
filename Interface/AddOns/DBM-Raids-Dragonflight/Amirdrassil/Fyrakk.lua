@@ -1,19 +1,19 @@
 local mod	= DBM:NewMod(2519, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231129181132")
+mod:SetRevision("20231209101725")
 mod:SetCreatureID(204931)
 
 mod:SetEncounterID(2677)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20231127000000)
-mod:SetMinSyncRevision(20231127000000)
+mod:SetHotfixNoticeRev(20231208000000)
+mod:SetMinSyncRevision(20231208000000)
 mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 419506 420422 417455 417431 412761 428963 428400 428971 428968 428965 419123 422837 410223 425492 422518",
+	"SPELL_CAST_START 419506 420422 417455 417431 412761 428963 428400 428971 428968 428965 419123 422837 410223 425492 422518 419144",
 	"SPELL_CAST_SUCCESS 428954 414186 422935 422524 426368",
 	"SPELL_AURA_APPLIED 417807 417443 429866 423717 425494 422517",
 	"SPELL_AURA_APPLIED_DOSE 417807 417443 429866 425494",
@@ -45,13 +45,13 @@ local timerPhaseCD									= mod:NewStageTimer(60, 408330)
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(26666))
 local warnDarkflameShades							= mod:NewCountAnnounce(428954, 2)
 local warnDarkflameCleave							= mod:NewCountAnnounce(426368, 4, nil, nil, 845)
-local warnFirestorm									= mod:NewCountAnnounce(419506, 4)
+local warnFirestorm									= mod:NewCountAnnounce(419506, 4, nil, nil, nil, nil, nil, nil, 2)
 local warnBlaze										= mod:NewCountAnnounce(414187, 3, nil, nil, nil, nil, nil, nil, 2)
 local warnAflame									= mod:NewCountAnnounce(417807, 3, nil, nil, DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.stack:format(417807))--Player
 local warnFyralathsMark								= mod:NewStackAnnounce(417443, 3, nil, "Tank|Healer")
 
 local specWarnWildFire								= mod:NewSpecialWarningCount(420422, nil, nil, nil, 2, 2)
-local specWarnDreamRend								= mod:NewSpecialWarningRunCount(417455, nil, 193997, nil, 4, 2)
+local specWarnDreamRend								= mod:NewSpecialWarningRunCount(417455, nil, nil, nil, 4, 2)
 local specWarnFyralathsBite							= mod:NewSpecialWarningDefensive(417431, nil, nil, nil, 1, 2)
 local specWarnFyralathsMark							= mod:NewSpecialWarningTaunt(417443, nil, 37454, nil, 1, 2)
 
@@ -60,7 +60,7 @@ local timerDarkflameCleaveCD						= mod:NewCDCountTimer(49, 426368, 845, nil, ni
 local timerDarkflameCleave							= mod:NewCastCountTimer(4, 426368, 845, nil, nil, 5, nil, DBM_CORE_L.MYTHIC_ICON)
 local timerFirestormCD								= mod:NewCDCountTimer(49, 419506, nil, nil, nil, 3)
 local timerWildFireCD								= mod:NewCDCountTimer(49, 420422, nil, nil, nil, 2)
-local timerDreamRendCD								= mod:NewCDCountTimer(49, 417455, 193997, nil, nil, 3)--"Pull" short text. MIght change to "Pull in" though if it's unclear to users
+local timerDreamRendCD								= mod:NewCDCountTimer(49, 417455, nil, nil, nil, 3)--"Pull" short text. MIght change to "Pull in" though if it's unclear to users
 local timerBlazeCD									= mod:NewCDCountTimer(49, 414187, nil, nil, nil, 3)
 local timeAFlameCD									= mod:NewCDCountTimer(49, 417807, nil, "RemoveMagic", 2, 5, nil, DBM_COMMON_L.MAGIC_ICON)
 local timerFyralathsBiteCD							= mod:NewCDCountTimer(49, 417431, DBM_COMMON_L.FRONTAL.." (%s)", nil, 2, 5, nil, DBM_COMMON_L.TANK_ICON)
@@ -162,7 +162,7 @@ local allTimers = {
 		--Flamefall
 		[420422] = {5.8, 75, 79.9},
 		--Fyralaths Bite
-		[417431] = {18.7, 11.0, 60.0, 11.0, 11.0, 58.0, 11.0, 11.0},
+		[417431] = {17.9, 11.0, 60.0, 11.0, 11.0, 58.0, 11.0, 11.0},
 		--Greater Firestorm
 		[422518] = {35.8, 79.9, 80.0},
 		--Shadowflame Devastation
@@ -180,9 +180,9 @@ local allTimers = {
 	},
 	[3] = {--Some timers assumed from pattern loop but probably fine
 		--Infernal Maw (Mythic)
-		[4254922] = {4.9, 3.0, 10.0, 3.0, 30.0, 3.0, 10.0, 3, 30, 10, 3, 30, 3, 10, 3},
+		[4254922] = {4.9, 3.0, 10.0, 3.0, 30.0, 3.0, 10.0, 3.0, 30.0, 3, 30, 3, 10, 3},
 		--Infernal Maw (Non Mythic)
-		[4254921] = {4.9, 3.0, 10.0, 3.0, 25.0, 3.0, 10.0, 3.0, 25.0, 10.0, 3.0, 25.0, 3.0, 10.0, 3.0},
+		[4254921] = {4.9, 3.0, 10.0, 3.0, 25.0, 3.0, 10.0, 3.0, 25.0, 3.0, 25.0, 3.0, 10.0, 3.0},
 		--Eternal Firestorm Embers
 		[402736] = {3.8, 6.4, 11.5, 11.5, 11.5, 5, 6.4, 11.5, 11.5, 11.5, 5, 6.4, 11.5, 11.5, 11.5, 5, 6.4, 11.5, 11.5, 11.5, 5, 6.4, 11.5, 11.5, 11.5},--Effectively 5, 6.4, 11.5, 11.5, 11.5 repeating, but with variance and no way to resync when it strays a little
 	},
@@ -310,6 +310,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 419506 then
 		self.vb.firestormCount = self.vb.firestormCount + 1
 		warnFirestorm:Show(self.vb.firestormCount)
+		warnFirestorm:Play("watchstep")
 		timerFirestormCD:Start(self:IsMythic() and 61 or 53.4, self.vb.firestormCount+1)
 	elseif spellId == 420422 then
 		self.vb.wildfireCount = self.vb.wildfireCount + 1
@@ -347,10 +348,9 @@ function mod:SPELL_CAST_START(args)
 		if timer then
 			timerFyralathsBiteCD:Start(timer, self.vb.tankCount+1)
 		end
---	elseif spellId == 419144 then--Corrupt
---		self:SetStage(1.5)
---		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
---		warnPhase:Play("phasechange")
+	elseif spellId == 419144 then--Corrupt
+		timerShadowflameOrbsCD:Start(3.5, 1)
+		self:Schedule(3.5, orbsLoop, self)
 	elseif spellId == 412761 then
 		self.vb.incarnCount = self.vb.incarnCount + 1
 		specWarnIncarnate:Show(self.vb.incarnCount)
@@ -370,8 +370,6 @@ function mod:SPELL_CAST_START(args)
 			self:Unschedule(blazeLoop)
 			timerDarkflameShadesCD:Stop()--Mythic Only
 			timerDarkflameCleaveCD:Stop()--Mythic Only
-			timerShadowflameOrbsCD:Start(3.5, 1)--TODO, maybe schedule on non mythic too
-			self:Schedule(3.5, orbsLoop, self)
 			timerCorrupt:Start(13)
 			if self:IsMythic() then
 				timerBlazeCD:Start(17, 1)--Mythic only
@@ -556,7 +554,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			remaining = expireTime-GetTime()
 		end
 		local timer = (self:GetFromTimersTable(allTimers, false, false, 425492, self.vb.tankCount+1) or 3) - 5
-		if amount >= 4 and (not remaining or remaining and remaining < timer) and not UnitIsDeadOrGhost("player") and not self:IsHealer() then
+		if not args:IsPlayer() and amount >= 4 and (not remaining or remaining and remaining < timer) and not UnitIsDeadOrGhost("player") and not self:IsHealer() then
 			specWarnInfernalMawTaunt:Show(args.destName)
 			specWarnInfernalMawTaunt:Play("tauntboss")
 		else
@@ -604,18 +602,16 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.aflameCount = 0
 		timerFlamefallCD:Start(5.8, 1)
 
-		timerFyralathsBiteCD:Start(18.4, 1)
-		timerSpiritsCD:Start(19.5, 1)
-		timerGreaterFirestormCD:Start(35.4, 1)
-		timerIncarnateCD:Start(44, 1)
-		timerShadowflameDevastationCD:Start(58.5, 1)
+		timerFyralathsBiteCD:Start(17.9, 1)
+		timerSpiritsCD:Start(19.1, 1)
+		timeAFlameCD:Start(27.1, 1)
+		timerGreaterFirestormCD:Start(34.9, 1)
+		timerIncarnateCD:Start(43.4, 1)
+		timerShadowflameDevastationCD:Start(57.9, 1)
 		timerPhaseCD:Start(215, 3)
 		if self:IsHard() then
 			timerBlazeCD:Start(20.7, 1)--Heroic/Mythic only
 			self:Schedule(20.7, blazeLoop, self)
-			timeAFlameCD:Start(35.4, 1)
-		else
-			timeAFlameCD:Start(27.1, 1)
 		end
 	end
 end

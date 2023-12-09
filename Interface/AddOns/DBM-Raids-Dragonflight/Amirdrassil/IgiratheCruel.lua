@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2554, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231129181132")
+mod:SetRevision("20231203212748")
 mod:SetCreatureID(200926)
 mod:SetEncounterID(2709)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 424456",
 	"SPELL_AURA_APPLIED 414340 414888 414367 419462 415623 414770 426056 422961",
 	"SPELL_AURA_APPLIED_DOSE 414340",
-	"SPELL_AURA_REMOVED 414888 422961",--415623
+	"SPELL_AURA_REMOVED 414888 422961 415623",
 	"UNIT_AURA player",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
@@ -254,6 +254,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 		if args:IsPlayer() then
 			yellBlisteringSpearFades:Cancel()
+		end
+	elseif spellId == 415623 then
+		if args:IsPlayer() then
+			yellHeartStopperFades:Cancel()
 		end
 	elseif spellId == 422961 then--Torment Ending
 		timerMarkedforTorment:Stop()
