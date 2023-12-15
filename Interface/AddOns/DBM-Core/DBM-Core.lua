@@ -72,21 +72,22 @@ local function showRealDate(curseDate)
 	end
 end
 
-DBM = {
-	Revision = parseCurseDate("20231209101806"),
+local DBM = {
+	Revision = parseCurseDate("20231212202026"),
 }
+_G.DBM = DBM
 
 local fakeBWVersion, fakeBWHash = 303, "479937c"--303.0
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.2.10"
-	DBM.ReleaseRevision = releaseDate(2023, 12, 8) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.2.11"
+	DBM.ReleaseRevision = releaseDate(2023, 12, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 8--When this is incremented, trigger force disable regardless of major patch
 elseif isClassic then
-	DBM.DisplayVersion = "1.15.4 alpha"
-	DBM.ReleaseRevision = releaseDate(2023, 12, 8) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.15.5 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 12, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 4--When this is incremented, trigger force disable regardless of major patch
 elseif isBCC then
 	DBM.DisplayVersion = "2.6.0 alpha"--When TBC returns (and it will one day). It'll probably be game version 2.6
@@ -620,7 +621,6 @@ end
 --------------------------------------------------------
 --  Cache frequently used global variables in locals  --
 --------------------------------------------------------
-local DBM = DBM
 -- these global functions are accessed all the time by the event handler
 -- so caching them is worth the effort
 local ipairs, pairs, next = ipairs, pairs, next
@@ -1645,12 +1645,29 @@ do
 								minToc = tonumber(GetAddOnMetadata(i, "X-Min-Interface-Wrath") or minToc)
 							end
 
+							local firstMapId = mapIdTable[1]
+							local firstMapName
+							if tonumber(firstMapId) then
+								firstMapName = GetRealZoneText(tonumber(firstMapId))
+							elseif firstMapId:sub(1, 1) == "m" then
+								firstMapName = C_Map.GetMapInfo(tonumber(firstMapId:sub(2)))
+								firstMapName = firstMapName and firstMapName.name
+							end
+							for j = #mapIdTable, 1, -1 do
+								local id = tonumber(mapIdTable[j])
+								if id then
+									mapIdTable[j] = id
+								elseif not (mapIdTable[j]:sub(1, 1) == "m" and tonumber(mapIdTable[j]:sub(2))) then
+									tremove(mapIdTable, j)
+								end
+							end
+
 							tinsert(self.AddOns, {
 								sort			= tonumber(GetAddOnMetadata(i, "X-DBM-Mod-Sort") or mhuge) or mhuge,
 								type			= GetAddOnMetadata(i, "X-DBM-Mod-Type") or "OTHER",
 								category		= GetAddOnMetadata(i, "X-DBM-Mod-Category") or "Other",
 								statTypes		= isWrath and GetAddOnMetadata(i, "X-DBM-StatTypes-Wrath") or GetAddOnMetadata(i, "X-DBM-StatTypes") or "",
-								name			= GetAddOnMetadata(i, "X-DBM-Mod-Name") or GetRealZoneText(tonumber(mapIdTable[1])) or CL.UNKNOWN,
+								name			= GetAddOnMetadata(i, "X-DBM-Mod-Name") or firstMapName or CL.UNKNOWN,
 								mapId			= mapIdTable,
 								subTabs			= GetAddOnMetadata(i, "X-DBM-Mod-SubCategoriesID") and {strsplit(",", GetAddOnMetadata(i, "X-DBM-Mod-SubCategoriesID"))} or GetAddOnMetadata(i, "X-DBM-Mod-SubCategories") and {strsplit(",", GetAddOnMetadata(i, "X-DBM-Mod-SubCategories"))},
 								oneFormat		= tonumber(GetAddOnMetadata(i, "X-DBM-Mod-Has-Single-Format") or 0) == 1, -- Deprecated
@@ -1667,14 +1684,6 @@ do
 								minToc			= minToc,
 								modId			= addonName,
 							})
-							for j = #self.AddOns[#self.AddOns].mapId, 1, -1 do
-								local id = tonumber(self.AddOns[#self.AddOns].mapId[j])
-								if id then
-									self.AddOns[#self.AddOns].mapId[j] = id
-								else
-									tremove(self.AddOns[#self.AddOns].mapId, j)
-								end
-							end
 							if self.AddOns[#self.AddOns].subTabs then
 								local subTabs = self.AddOns[#self.AddOns].subTabs
 								for k, _ in ipairs(subTabs) do
@@ -1824,7 +1833,8 @@ do
 				"PLAYER_LEVEL_CHANGED",
 				"PARTY_INVITE_REQUEST",
 				"LOADING_SCREEN_DISABLED",
-				"LOADING_SCREEN_ENABLED"
+				"LOADING_SCREEN_ENABLED",
+				"ZONE_CHANGED_NEW_AREA"
 			)
 			if not isClassic then -- Retail, WoTLKC, and BCC
 				self:RegisterEvents(
@@ -1865,6 +1875,7 @@ do
 				healthCombatInitialized = true
 			end)
 			self:Schedule(10, runDelayedFunctions, self)
+			self:ZONE_CHANGED_NEW_AREA()
 		end
 	end
 end
@@ -3735,6 +3746,14 @@ do
 		end
 	end
 
+	-- Load based on MapIDs
+	function DBM:ZONE_CHANGED_NEW_AREA()
+		local mapID = C_Map.GetBestMapForUnit("player")
+		if mapID then
+			self:LoadModsOnDemand("mapId", "m" .. mapID)
+		end
+	end
+
 	function DBM:CHALLENGE_MODE_RESET()
 		difficultyIndex = 8
 		self:CheckAvailableMods()
@@ -3758,7 +3777,7 @@ do
 	end
 
 	function DBM:LoadModsOnDemand(checkTable, checkValue)
-		self:Debug("LoadModsOnDemand fired")
+		self:Debug("LoadModsOnDemand fired for table " .. checkTable .. " value " .. tostring(checkValue))
 		for _, v in ipairs(self.AddOns) do
 			local modTable = v[checkTable]
 			local enabled = GetAddOnEnableState(playerName, v.modId)
@@ -5017,6 +5036,9 @@ do
 				-- 48.7, 49.76, 50.64, 49.42, 49.8, 50.67, 50.94, 51.06
 				SendWorldSync(self, 4, "WBA", "Zandalar\tBoth\t24425\t49\t4")
 				DBM:Debug("L.WORLD_BUFFS.zgHeartBooty detected")
+			elseif msg:find(L.WORLD_BUFFS.blackfathomBoon) then
+				--SendWorldSync(self, 4, "WBA", "Blackfathom\tBoth\t430947\t6\t4")
+				DBM:Debug("L.WORLD_BUFFS.blackfathomBoon detected")
 			end
 		end
 		return onMonsterMessage(self, "yell", msg)
@@ -5187,9 +5209,11 @@ do
 		["normal"] = "normal",
 		["heroic"] = "heroic",
 		["mythic"] = "mythic",
+		["mythic5"] = "mythic",
 		["worldboss"] = "normal",
 		["timewalker"] = "timewalker",
 		["progressivechallenges"] = "normal",
+		["delve1"] = "normal",
 		--BFA
 		["normalwarfront"] = "normal",
 		["heroicwarfront"] = "heroic",
@@ -6033,7 +6057,7 @@ function DBM:GetCurrentInstanceDifficulty()
 	elseif difficulty == 20 then--Special event 20 player LFR Queue (never used yet)
 		return "event20", difficultyName.." - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 23 then--Mythic 5 man Dungeon
-		return "mythic", difficultyName.." - ", difficulty, instanceGroupSize, 0
+		return "mythic5", difficultyName.." - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 24 or difficulty == 33 then--Timewalking Dungeon, Timewalking Raid
 		return "timewalker", difficultyName.." - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 38 then--Normal BfA Island expedition
@@ -6992,7 +7016,7 @@ do
 
 	function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 		name = tostring(name) -- the name should never be a number of something as it confuses sync handlers that just receive some string and try to get the mod from it
-		if name == "DBM-ProfilesDummy" then return end
+		if name == "DBM-ProfilesDummy" then return {} end
 		if modsById[name] then error("DBM:NewMod(): Mod names are used as IDs and must therefore be unique.", 2) end
 		local obj = setmetatable(
 			{
@@ -7043,6 +7067,16 @@ do
 			obj.modelId = select(4, EJ_GetCreatureInfo(1, tonumber(name)))
 		elseif name:match("z%d+") then
 			local t = GetRealZoneText(string.sub(name, 2))
+			if type(nameModifier) == "number" then--do nothing
+			elseif type(nameModifier) == "function" then--custom name modify function
+				t = nameModifier(t or name)
+			else--default name modify
+				t = string.split(",", t or name)
+			end
+			obj.localization.general.name = t or name
+		elseif name:match("m%d+") then
+			local t = C_Map.GetMapInfo(tonumber(name:sub(2)))
+			t = t and t.name
 			if type(nameModifier) == "number" then--do nothing
 			elseif type(nameModifier) == "function" then--custom name modify function
 				t = nameModifier(t or name)
@@ -7242,6 +7276,12 @@ function bossModPrototype:IsEasyDungeon()
 	return diff == "heroic5" or diff == "normal5" or diff == "follower5"
 end
 
+--Dungeons: Any 5 man dungeon
+function bossModPrototype:IsDungeon()
+	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
+	return diff == "heroic5" or diff == "mythic5" or diff == "challenge5" or diff == "normal5"
+end
+
 --Dungeons: follower, normal, heroic. Raids: LFR, normal
 function bossModPrototype:IsEasy()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
@@ -7251,7 +7291,7 @@ end
 --Dungeons: mythic, mythic+. Raids: heroic, mythic
 function bossModPrototype:IsHard()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	return diff == "mythic" or diff == "challenge5" or diff == "heroic" or diff == "humilityscenario"
+	return diff == "mythic" or diff == "mythic5" or diff == "challenge5" or diff == "heroic" or diff == "humilityscenario"
 end
 
 --Pretty much ANYTHING that has a normal mode
@@ -7314,7 +7354,7 @@ end
 --Pretty much ANYTHING that has mythic mode, with mythic+ included
 function bossModPrototype:IsMythic()
 	local diff = savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	return diff == "mythic" or diff == "challenge5" or diff == "mythicisland"
+	return diff == "mythic" or diff == "challenge5" or diff == "mythicisland" or diff == "mythic5"
 end
 
 function bossModPrototype:IsMythicPlus()
@@ -7481,7 +7521,7 @@ do
 	local rangeCache = {}
 	local rangeUpdated = {}
 
-	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, _, distance, defaultReturn)--itemId
+	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, itemId, distance, defaultReturn)
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
 		cidOrGuid = cidOrGuid or self.creatureId
 		local uId
@@ -7491,19 +7531,19 @@ do
 			uId = DBM:GetUnitIdFromGUID(cidOrGuid, onlyBoss)
 		end
 		if uId then
-			--if not UnitIsFriend("player", uId) then--API only allowed on hostile unit
-			--	itemId = itemId or 32698
-			--	local inRange = IsItemInRange(itemId, uId)
-			--	if inRange then--IsItemInRange was a success
-			--		return inRange
-			--	else--IsItemInRange doesn't work on all bosses/npcs, but tank checks do
-			--		DBM:Debug("CheckBossDistance failed on IsItemInRange due to bad check/unitId: "..cidOrGuid, 2)
-			--		return self:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)--Return tank distance check fallback
-			--	end
-			--else--Non hostile, immediately forward to very gimped TankDistance check (43 yards within tank target)
+			if not UnitIsFriend("player", uId) then--API only allowed on hostile unit
+				itemId = itemId or 32698
+				local inRange = IsItemInRange(itemId, uId)
+				if inRange then--IsItemInRange was a success
+					return inRange
+				else--IsItemInRange doesn't work on all bosses/npcs, but tank checks do
+					DBM:Debug("CheckBossDistance failed on IsItemInRange due to bad check/unitId: "..cidOrGuid, 2)
+					return self:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)--Return tank distance check fallback
+				end
+			else--Non hostile, immediately forward to very gimped TankDistance check (43 yards within tank target)
 				DBM:Debug("CheckBossDistance failed on IsItemInRange due to friendly unit: "..cidOrGuid, 2)
 				return self:CheckTankDistance(cidOrGuid, distance, onlyBoss, defaultReturn)--Return tank distance check fallback
-			--end
+			end
 		end
 		DBM:Debug("CheckBossDistance failed on uId for: "..cidOrGuid, 2)
 		return (defaultReturn == nil) or defaultReturn--When we simply can't figure anything out, return true and allow warnings using this filter to fire
@@ -8788,7 +8828,6 @@ do
 	function bossModPrototype:NewAnnounce(text, color, icon, optionDefault, optionName, soundOption, spellID, waCustomName)
 		if not text then
 			error("NewAnnounce: you must provide announce text", 2)
-			return
 		end
 		if type(text) == "number" then
 			DBM:Debug("|cffff0000NewAnnounce: Non auto localized text cannot be numbers, fix this for |r"..text)
@@ -9758,11 +9797,9 @@ do
 	function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, optionVersion, runSound, hasVoice, difficulty, icon, spellID, waCustomName)
 		if not text then
 			error("NewSpecialWarning: you must provide special warning text", 2)
-			return
 		end
 		if type(text) == "string" and text:match("OptionVersion") then
 			error("NewSpecialWarning: you must provide remove optionversion hack for "..optionDefault)
-			return
 		end
 		if runSound == true then
 			runSound = 2
@@ -10948,8 +10985,7 @@ do
 	-- If a new countdown is added to an existing timer that didn't have one before, use optionName (number) to force timer to reset defaults by assigning it a new variable
 	local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat)
 		if type(timer) == "string" and timer:match("OptionVersion") then
-			DBM:Debug("|cffff0000OptionVersion hack depricated, remove it from: |r"..spellId)
-			return
+			error("OptionVersion hack deprecated, remove it from: "..spellId)
 		end
 		if type(colorType) == "number" and colorType > 7 then
 			DBM:Debug("|cffff0000texture is in the colorType arg for: |r"..spellId)
@@ -12131,7 +12167,7 @@ do
 	function DBM:ElectIconSetter(mod)
 		--elect icon person
 		if mod.findFastestComputer and not self.Options.DontSetIcons then
-			if self:GetRaidRank() > 0 then
+			if mod:IsDungeon() or self:GetRaidRank() > 0 then
 				for i = 1, #mod.findFastestComputer do
 					local option = mod.findFastestComputer[i]
 					if mod.Options[option] then
