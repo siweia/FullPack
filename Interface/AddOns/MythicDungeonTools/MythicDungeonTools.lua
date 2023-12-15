@@ -1123,14 +1123,7 @@ function MDT:MakeSidePanel(frame)
       frame.LiveSessionButton:SetText("...")
       MDT:SendToGroup(distribution)
     end
-    local presetSize = self:GetPresetSize(false, 5)
-    if presetSize > 3500 then
-      local timeToSend = 1 + math.max(presetSize - 2550, 0) / 255
-      local prompt = string.format(L["LargePresetWarning"], timeToSend, "\n", "\n", "\n")
-      MDT:OpenConfirmationFrame(450, 150, L["Sharing large preset"], "Share", prompt, callback)
-    else
-      callback()
-    end
+    MDT:CheckPresetSize(callback)
   end)
   frame.LinkToChatButton.frame:SetScript("OnEnter", function()
     anchorTooltip(frame.LinkToChatButton.frame)
@@ -1197,7 +1190,7 @@ function MDT:MakeSidePanel(frame)
   frame.sidePanel.WidgetGroup:AddChild(frame.LinkToChatButton)
   frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelExportButton)
   frame.sidePanel.WidgetGroup:AddChild(frame.sidePanelImportButton)
-  -- frame.sidePanel.WidgetGroup:AddChild(frame.LiveSessionButton)
+  frame.sidePanel.WidgetGroup:AddChild(frame.LiveSessionButton)
 
   --Week Dropdown (Infested / Affixes)
   local function makeAffixString(week, affixes, longText)
@@ -2022,12 +2015,26 @@ end
 
 function MDT:SetLivePreset()
   local preset = self:GetCurrentPreset()
-  self:SetUniqueID(preset)
-  self.livePresetUID = preset.uid
-  self:LiveSession_SendPreset(preset)
-  self:UpdatePresetDropdownTextColor()
-  self.main_frame.setLivePresetButton:Hide()
-  self.main_frame.liveReturnButton:Hide()
+  local callback = function()
+    self:SetUniqueID(preset)
+    self.livePresetUID = preset.uid
+    self:LiveSession_SendPreset(preset)
+    self:UpdatePresetDropdownTextColor()
+    self.main_frame.setLivePresetButton:Hide()
+    self.main_frame.liveReturnButton:Hide()
+  end
+  MDT:CheckPresetSize(callback)
+end
+
+function MDT:CheckPresetSize(callback, cancelCallback, fireCancelOnClose)
+  local presetSize = self:GetPresetSize(false, 5)
+  if presetSize > 3500 then
+    local timeToSend = 1 + math.max(presetSize - 2550, 0) / 255
+    local prompt = string.format(L["LargePresetWarning"], timeToSend, "\n", "\n", "\n")
+    MDT:OpenConfirmationFrame(450, 150, L["Sharing large preset"], "Share", prompt, callback, nil, cancelCallback, fireCancelOnClose)
+  else
+    callback()
+  end
 end
 
 ---Returns if the current week has an affix week set that includes the teeming affix
@@ -2910,7 +2917,7 @@ function MDT:MakePresetCreationFrame(frame)
   frame.PresetCreationEditbox = AceGUI:Create("EditBox")
   frame.PresetCreationEditbox:SetLabel(L["Preset Name"]..":")
   frame.PresetCreationEditbox:SetWidth(255)
-  frame.PresetCreationEditbox:SetCallback("OnEnterPressed", function(widget, event, text)
+  frame.PresetCreationEditbox:SetCallback("OnTextChanged", function(widget, event, text)
     --check if name is valid, block button if so, unblock if valid
     if MDT:SanitizePresetName(text) then
       frame.presetCreationLabel:SetText(nil)
@@ -2925,7 +2932,9 @@ function MDT:MakePresetCreationFrame(frame)
   end)
   frame.PresetCreationEditbox:SetCallback("OnEnterPressed", function(widget, event, text)
     local name = frame.PresetCreationEditbox:GetText()
-    MDT:CreateNewPreset(name)
+    if MDT:SanitizePresetName(name) then
+      MDT:CreateNewPreset(name)
+    end
   end)
   frame.presetCreationFrame:AddChild(frame.PresetCreationEditbox)
 
@@ -3294,10 +3303,8 @@ function MDT:MakeSettingsFrame(frame)
     if value == true then
       frame.toggleForceColorBlindMode:SetDisabled(false)
       MDT:ReloadPullButtons()
-      MDT.main_frame.settingsCogwheel:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\helpIconRnbw")
     else
       frame.toggleForceColorBlindMode:SetDisabled(true)
-      MDT.main_frame.settingsCogwheel:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\helpIconGrey")
     end
   end)
   frame.settingsFrame:AddChild(frame.AutomaticColorsCheck)
@@ -3338,7 +3345,6 @@ function MDT:MakeSettingsFrame(frame)
     if not db.colorPaletteInfo.autoColoring then
       db.colorPaletteInfo.autoColoring = true
       frame.AutomaticColorsCheck:SetValue(db.colorPaletteInfo.autoColoring)
-      MDT.main_frame.settingsCogwheel:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\helpIconRnbw")
       frame.toggleForceColorBlindMode:SetDisabled(false)
     end
     MDT:SetPresetColorPaletteInfo()
@@ -3874,7 +3880,9 @@ function MDT:MakeRenameFrame(frame)
     frame.RenameFrame:DoLayout()
   end)
   frame.RenameFrame.Editbox:SetCallback("OnEnterPressed", function(widget, event, text)
-    MDT:RenamePreset(renameText)
+    if MDT:SanitizePresetName(renameText) then
+      MDT:RenamePreset(renameText)
+    end
   end)
   frame.RenameFrame.Editbox:DisableButton(true)
 
@@ -4026,7 +4034,7 @@ function MDT:MakeClearConfirmationFrame(frame)
 end
 
 ---Creates a generic dialog that pops up when a user wants needs confirmation for an action
-function MDT:OpenConfirmationFrame(width, height, title, buttonText, prompt, callback, buttonText2, callback2)
+function MDT:OpenConfirmationFrame(width, height, title, buttonText, prompt, callback, buttonText2, callback2, fireCancelOnClose)
   local f
   if MDT.main_frame then
     f = MDT.main_frame.ConfirmationFrame
@@ -4084,6 +4092,14 @@ function MDT:OpenConfirmationFrame(width, height, title, buttonText, prompt, cal
   else
     f.CancelButton:SetCallback("OnClick", function()
       if MDT.main_frame then MDT:HideAllDialogs() else f:Hide() end
+    end)
+  end
+  if fireCancelOnClose and callback2 then
+    f:SetCallback("OnClose", function(widget)
+      callback2()
+    end)
+  else
+    f:SetCallback("OnClose", function(widget)
     end)
   end
   if MDT.main_frame then MDT:HideAllDialogs() end
