@@ -4616,6 +4616,8 @@ L["Urg'roth, Breaker of Heroes"] = "Urg'roth, Breaker of Heroes"
 L["Urh Relic"] = "Urh Relic"
 L["Use /mdt reset to restore the default position and scale of MDT."] = "Use '/mdt reset' to restore the default position and scale of MDT."
 L["Use as a starting point:"] = "Use as a starting point:"
+--[[Translation missing --]]
+L["Use forces count"] = ""
 L["Utgarde Keep"] = "Utgarde Keep"
 L["Utgarde Pinnacle"] = "Utgarde Pinnacle"
 L["Valarjar Aspirant"] = "Valarjar Aspirant"
