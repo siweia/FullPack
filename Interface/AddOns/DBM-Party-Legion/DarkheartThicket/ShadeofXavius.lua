@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1657, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231212034315")
+mod:SetRevision("20231230120434")
 mod:SetCreatureID(99192)
 mod:SetEncounterID(1839)
 mod:SetHotfixNoticeRev(20231030000000)
@@ -59,9 +59,9 @@ mod.vb.paranoiaCount = 0
 --Festering Apoc triggers 6 ICD (technically cast + 1)
 local function updateAllTimers(self, ICD, isWeak, isPara)
 	DBM:Debug("updateAllTimers running", 3)
-	if timerFesteringRipCD:GetRemaining(self.vb.festerCount+1) < ((isPara or isPara) and 2.4 or ICD) then
+	if timerFesteringRipCD:GetRemaining(self.vb.festerCount+1) < ((isWeak or isPara) and 2.4 or ICD) then
 		local elapsed, total = timerFesteringRipCD:GetTime(self.vb.festerCount+1)
-		local extend = ((isPara or isPara) and 2.4 or ICD) - (total-elapsed)
+		local extend = ((isWeak or isPara) and 2.4 or ICD) - (total-elapsed)
 		DBM:Debug("timerFesteringRipCD extended by: "..extend, 2)
 		timerFesteringRipCD:Update(elapsed, total+extend, self.vb.festerCount+1)
 	end
