@@ -10,7 +10,9 @@ end
 local mod	= DBM:NewMod(2533, "DBM-Party-Dragonflight", 9, 1209)--Alliance ID used, horde is 2534
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240105210113")
+mod.statTypes = "normal,heroic,mythic,challenge"--No Follower dungeon
+
+mod:SetRevision("20240110230340")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2672)
 --mod:SetUsedIcons(1, 2, 3)
