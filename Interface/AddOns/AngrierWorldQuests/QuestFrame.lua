@@ -710,6 +710,7 @@ local isGoldReward = {
 	[199192] = true,
 	[204359] = true,
 	[205226] = true,
+	[210549] = true,
 }
 
 local function TaskPOI_IsFilteredReward(selectedFilters, questID)
