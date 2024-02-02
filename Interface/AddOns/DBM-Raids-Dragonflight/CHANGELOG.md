@@ -1,42 +1,39 @@
 # <DBM Mod> Raids (DF)
 
-## [10.2.19](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.2.19) (2024-01-24)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.2.18...10.2.19) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
+## [10.2.20](https://github.com/DeadlyBossMods/DBM-Retail/tree/10.2.20) (2024-02-01)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Retail/compare/10.2.19...10.2.20) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Retail/releases)
 
-- bump the version check before tag  
-- fix some of lua in last  
-- Update localization.ru.lua (#391)  
-- begin work on a work in progress CC checking api function. My class knowledge is limited so hopefully I can get more feedback besides MANUALLY browsing every class ability in game (several thousand). this work so far took about 2 hours. Druids alone had 500 spells to manually check  
-- Update koKR (#394)  
-- Update localization.tw.lua (#393)  
-- Update localization.br.lua (#392)  
-- clarify and update some option text a bit  
-- Fix DoesAddOnExist cache for WotLK (#390)  
-- Update commonlocal.ru.lua (#389)  
-- always check current dungeons in classic for good measure on missing dungeon mods  
-- Add spell key note to Larodar to clarify why there are two different Coalescence keys  
-- Merge branch 'master' of https://github.com/DeadlyBossMods/DBM-Retail  
-- option layout tweak  
-- Update commonlocal.es.lua (#387)  
-- Update commonlocal.es.lua (#386)  
-- Update commonlocal.es.lua (#385)  
-- Locale tweaks; - Fix common commonlocale (es, ru, tw) - Support optional in localizations.  
-- Update koKR (#378)  
-- Update localization.ru.lua (#384)  
-- update text for FilterTrashWarnings to signify follower dungeons are included in that filter  
-- Update localization.ru.lua (#383)  
-- Fix minor math error  
-- tweak initial timers  
-- Remove unused  
-- Aurostor Update:  
-     - Added cranky tantrum counter  
-     - Changed recombat time from 20 to 30 to avoid false engages that could occur  
-    -Council of Dreams Update:  
-     - Special warning for Barreling charge now always shows, instead of only if you have debuff  
-     - In addition, special warning for barreling charge will now announce which soak group it is via spoken alerts (ie "group 1 share", "group 2 share") if you do not have debuff. It'll continue to say "charge move" if you do.  
-     - Song of the Dragon "take damage" alert will now wait until absorb effect is up instead of saying it immediately on song being cast, so it's not telling you to take damage too early  
-     - In addition, Song of the Dragon take damage alert will repeat a 2nd time if you have not yet cleared the full absorb after 6 seconds.  
-     - Then finally, a new alert will show that song of the dragon has successfully faded.  
-     - GTFO warning will no longer alert you are afflicted with song of the dragon absorb  
-- rename roar from pushback to, well, roar. It's the more consistent call for the spell  
+- prep new retail tag  
+- change flamebound and shadowbound to non private aura alerts  
+- Fix garrison logic in refactor. In instance should ignore garrisons, those should only be touched by \"anywhere\" power user option  
+- Auto name mods for raids dungeon and world bosses.  
+- fix encoding/renderring error  
+- More LuaLS annotations (#403)  
+- Locale syncs: All core localizations finished.  
+- bump alpha  
+- bump classic era version  
+- note  
+- Update localization.es.lua (#402)  
+- Locale syncs: Core br.  
+- Locale syncs; Finished commonlocal  
+- remove unused spellids  
+- Update koKR (#400)  
+- Fix French translation of UPDATEREMINDER\_DISABLE (#401)  
+- another minor fix  
+- Make sure color type is always set to 0 if nil  
+- Slight performance tweak to last.  
+- Allow CINEMATIC\_START to block...well..blocking when outside of intended scope  
+- disable UI for HideMovieNonInstanceAnywhere . scope it to just power users to enable via script only.  
+- Update localization.tw.lua (Core) (#397)  
+- Update localization.ru.lua (#398)  
+- Update commonlocal.ru.lua (#399)  
+- Update localization.ru.lua (#985)  
+- CC spelldata update  
+- further throttle full roster updating to reduce cpu waste when roster is constant changing during forming (and reduce debug too so icon elect debug doesn't spam excessively). In contrast though, removed throttle in combat to avoid those niche race conditions in LFR where someone drops raid mid fight and the roster data is out of date when accessing it due to the old 1.5 delay.  
+- Update commonlocal.tw.lua (Core) (#396)  
+- Update localization.tw.lua (GUI) (#395)  
+-  - Fixed a bug where taunt alert on smolderon could get you killed because it would tell you to taunt boss for second brand if other tank got overheat, even though you had first brand due to other tank messing up rotation and not tanking boss on first brand even though you had overheat (thus causing you to have overheat AND brand 1. In english, if you had first brand, it won't tell you to taunt second one even if the tank has overheat, cause it is in fact their fault for not doing first brand correctly.  
+     - Also lowered taunt threshold on tindral to swap boss more often.  
+- tweak option defaults  
+- Rework the blizzard feature block panel - New options to auto disable Ambiance and Music sound channels during boss fights - Much cleaner and clearer options for cut scene blocking - Fixed bug where sound effects could get turned on even if they weren't on at combat start, if music had option to disable SFX enabled. - Organized options to better sub categories - The option to hide objectives tracker is now hidden on retail, since that feature is exclusive to classic due to UI taint without a full rework of feature - Removed unused texts - NOTE: All options will need updated translations Also updated Raid Leader Options to hide all the NYI stuff  
 - bump alpha  
