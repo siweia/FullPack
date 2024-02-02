@@ -1,4 +1,4 @@
-if not (GetLocale() == "zhTW") then
+if not ((GAME_LOCALE or GetLocale()) == "zhTW") then
   return
 end
 local addonName, MDT = ...
@@ -408,6 +408,8 @@ L["ChamberOfFlames"] = "烈焰之室"
 L["Champion Druna"] = "勇士德鲁娜"
 --[[Translation missing --]]
 L["Champion of Hodir"] = "Champion of Hodir"
+--[[Translation missing --]]
+L["Change Language"] = "Change Language"
 L["Channeler Varisz"] = "导魔者瓦里兹"
 --[[Translation missing --]]
 L["Chaotic Rift"] = "Chaotic Rift"
@@ -917,7 +919,7 @@ L["Error Message:"] = "Error Message:"
 --[[Translation missing --]]
 L["errorLabel1"] = "MDT has encountered errors."
 --[[Translation missing --]]
-L["errorLabel2"] = "Please visist either GitHub or Discord and report the error message below."
+L["errorLabel2"] = "Please visit either GitHub or Discord and report the error message below."
 --[[Translation missing --]]
 L["errorLabel3"] = "Press CTRL + C to copy!"
 L["Erudite Slayer"] = "艾瑞迪特屠杀者"
@@ -1571,6 +1573,10 @@ L["Living Waste"] = "活体废料"
 --[[Translation missing --]]
 L["Loatheb"] = "Loatheb"
 L["Local color blind mode"] = "局部色盲模式"
+--[[Translation missing --]]
+L["localeButtonTooltip1"] = "Requires the \"AddonLocale\" AddOn"
+--[[Translation missing --]]
+L["localeButtonTooltip2"] = "Click to start settings dialog in chat"
 L["Locked"] = "已鎖住"
 --[[Translation missing --]]
 L["Loken"] = "Loken"

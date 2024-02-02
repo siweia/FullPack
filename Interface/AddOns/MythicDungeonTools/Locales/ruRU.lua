@@ -1,4 +1,4 @@
-if not (GetLocale() == "ruRU") then
+if not ((GAME_LOCALE or GetLocale()) == "ruRU") then
   return
 end
 local addonName, MDT = ...
@@ -300,12 +300,12 @@ L["Chamber Sentinel"] = "Часовой чертогов"
 L["ChamberOfFlames"] = "Чертог Пламени"
 L["Champion Druna"] = "Защитница Друна"
 L["Champion of Hodir"] = "Защитник Ходира"
+L["Change Language"] = "Сменить язык"
 L["Channeler Varisz"] = "Чародейка Варис"
 L["Chaotic Rift"] = "Хаотический разлом"
 L["Chargath, Bane of Scales"] = "Чаргат Дробитель Чешуи"
 L["Charged Dust Devil"] = "Заряженная песчаная дьяволица"
---[[Translation missing --]]
-L["chatNoninteractiveWarning"] = "Chat frame is currently set to noninteractive, you will not be able to click on MDT routes."
+L["chatNoninteractiveWarning"] = "Рамка чата в настоящее время отключена от интерактивного режима, вы не сможете нажимать на маршруты MDT."
 L["Choose Enemy Forces Format"] = "Выберите формат для отображения вражеских сил"
 L["Choose Enemy Style. Requires Reload"] = "Выберите стиль для сил врага. Потребуется перезагрузка"
 L["Choose NPC tooltip position"] = "Расположение подсказки для НИП"
@@ -1153,6 +1153,8 @@ L["Living Rot"] = "Живая гниль"
 L["Living Waste"] = "Живые отходы"
 L["Loatheb"] = "Лотхиб"
 L["Local color blind mode"] = "Частичный режим для дальтоников"
+L["localeButtonTooltip1"] = "Требуется дополнение AddonLocale"
+L["localeButtonTooltip2"] = "Нажмите, чтобы запустить диалоговое окно настроек в чате"
 L["Locked"] = "Заперто"
 L["Loken"] = "Локен"
 L["Lord Chamberlain"] = "Лорд-камергер"

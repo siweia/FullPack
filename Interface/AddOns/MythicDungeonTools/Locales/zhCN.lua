@@ -1,4 +1,4 @@
-if not (GetLocale() == "zhCN") then
+if not ((GAME_LOCALE or GetLocale()) == "zhCN") then
   return
 end
 local addonName, MDT = ...
@@ -300,12 +300,12 @@ L["Chamber Sentinel"] = "大厅哨兵"
 L["ChamberOfFlames"] = "烈焰密室"
 L["Champion Druna"] = "勇士德鲁娜"
 L["Champion of Hodir"] = "霍迪尔的勇士"
+L["Change Language"] = "选择语言"
 L["Channeler Varisz"] = "导魔者瓦里兹"
 L["Chaotic Rift"] = "混乱裂隙"
 L["Chargath, Bane of Scales"] = "查尔加斯，龙鳞之灾"
 L["Charged Dust Devil"] = "充能的沙尘恶魔"
---[[Translation missing --]]
-L["chatNoninteractiveWarning"] = "Chat frame is currently set to noninteractive, you will not be able to click on MDT routes."
+L["chatNoninteractiveWarning"] = "警告：你的聊天窗口启用了“使其不可交互”，你将无法点击聊天信息内的MDT路线。"
 L["Choose Enemy Forces Format"] = "选择敌方部队形式"
 L["Choose Enemy Style. Requires Reload"] = "选择敌人风格 (需要重载)"
 L["Choose NPC tooltip position"] = "选择NPC鼠标提示位置"
@@ -623,8 +623,7 @@ L["Embershard Scorpion"] = "裂烬蝎虫"
 L["Emissary of the Tides"] = "潮汐使者"
 L["Empty"] = "空"
 L["Empyrean Assassin"] = "云巅刺客"
---[[Translation missing --]]
-L["Enable Compartment Button"] = "Enable Compartment Button"
+L["Enable Compartment Button"] = "启用暴雪插件收纳功能"
 L["Enable Minimap Button"] = "启用小地图按钮"
 L["Enchanted Broodling"] = "魔化巢蛛"
 L["Enchanted Emissary"] = "魔力使者"
@@ -1155,6 +1154,8 @@ L["Living Rot"] = "生命腐质"
 L["Living Waste"] = "活体废料"
 L["Loatheb"] = "洛欧塞布"
 L["Local color blind mode"] = "本地色盲模式"
+L["localeButtonTooltip1"] = "需要插件"
+L["localeButtonTooltip2"] = "点击聊天开始设置对话框。"
 L["Locked"] = "已锁"
 L["Loken"] = "洛肯"
 L["Lord Chamberlain"] = "宫务大臣"

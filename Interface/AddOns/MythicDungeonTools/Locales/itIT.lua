@@ -1,4 +1,4 @@
-if not (GetLocale() == "itIT") then
+if not ((GAME_LOCALE or GetLocale()) == "itIT") then
   return
 end
 local addonName, MDT = ...
@@ -328,6 +328,8 @@ L["Chamber Sentinel"] = "Sentinella della Sala"
 L["ChamberOfFlames"] = "Chamber of Flames"
 L["Champion Druna"] = "Campionessa Druna"
 L["Champion of Hodir"] = "Campione di Hodir"
+--[[Translation missing --]]
+L["Change Language"] = "Change Language"
 L["Channeler Varisz"] = "Incanalatrice Varisz"
 L["Chaotic Rift"] = "Fenditura Caotica"
 L["Chargath, Bane of Scales"] = "Chargath, Flagello delle Scaglie"
@@ -731,7 +733,7 @@ L["Error Message:"] = "Error Message:"
 --[[Translation missing --]]
 L["errorLabel1"] = "MDT has encountered errors."
 --[[Translation missing --]]
-L["errorLabel2"] = "Please visist either GitHub or Discord and report the error message below."
+L["errorLabel2"] = "Please visit either GitHub or Discord and report the error message below."
 --[[Translation missing --]]
 L["errorLabel3"] = "Press CTRL + C to copy!"
 L["Erudite Slayer"] = "Sicaria Erudita"
@@ -1274,6 +1276,10 @@ L["Living Rot"] = "Putridume Vivo"
 L["Living Waste"] = "Spazzatura Vivente"
 L["Loatheb"] = "Loatheb"
 L["Local color blind mode"] = "Modalità daltonici locale"
+--[[Translation missing --]]
+L["localeButtonTooltip1"] = "Requires the \"AddonLocale\" AddOn"
+--[[Translation missing --]]
+L["localeButtonTooltip2"] = "Click to start settings dialog in chat"
 L["Locked"] = "Chiuso a chiave"
 L["Loken"] = "Loken"
 L["Lord Chamberlain"] = "Ciambellano Supremo"

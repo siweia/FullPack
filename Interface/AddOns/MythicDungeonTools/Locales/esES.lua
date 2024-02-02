@@ -1,4 +1,4 @@
-if not (GetLocale() == "esES") then
+if not ((GAME_LOCALE or GetLocale()) == "esES") then
   return
 end
 local addonName, MDT = ...
@@ -318,6 +318,8 @@ L["Chamber Sentinel"] = "Centinela de la cámara"
 L["ChamberOfFlames"] = "Chamber of Flames"
 L["Champion Druna"] = "Campeona Druna"
 L["Champion of Hodir"] = "Campeón de Hodir"
+--[[Translation missing --]]
+L["Change Language"] = "Change Language"
 L["Channeler Varisz"] = "Canalizadora Varisz"
 L["Chaotic Rift"] = "Falla caótica"
 L["Chargath, Bane of Scales"] = "Chargath, Perdición de las Escamas"
@@ -713,7 +715,7 @@ L["Error Message:"] = "Error Message:"
 --[[Translation missing --]]
 L["errorLabel1"] = "MDT has encountered errors."
 --[[Translation missing --]]
-L["errorLabel2"] = "Please visist either GitHub or Discord and report the error message below."
+L["errorLabel2"] = "Please visit either GitHub or Discord and report the error message below."
 --[[Translation missing --]]
 L["errorLabel3"] = "Press CTRL + C to copy!"
 L["Erudite Slayer"] = "Asesina erudita"
@@ -1243,6 +1245,10 @@ L["Living Rot"] = "Putrefacción viva"
 L["Living Waste"] = "Residuo viviente"
 L["Loatheb"] = "Loatheb"
 L["Local color blind mode"] = "Modo daltónicos local"
+--[[Translation missing --]]
+L["localeButtonTooltip1"] = "Requires the \"AddonLocale\" AddOn"
+--[[Translation missing --]]
+L["localeButtonTooltip2"] = "Click to start settings dialog in chat"
 L["Locked"] = "Bloqueada"
 L["Loken"] = "Loken"
 L["Lord Chamberlain"] = "Lord chambelán"
