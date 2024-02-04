@@ -74,7 +74,7 @@ end
 
 ---@class DBM
 local DBM = {
-	Revision = parseCurseDate("20240201052448"),
+	Revision = parseCurseDate("20240203173223"),
 }
 _G.DBM = DBM
 
@@ -83,8 +83,8 @@ local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.2.20"
-	DBM.ReleaseRevision = releaseDate(2024, 1, 31) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.2.21"
+	DBM.ReleaseRevision = releaseDate(2024, 2, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	PForceDisable = 9--When this is incremented, trigger force disable regardless of major patch
 elseif isClassic then
 	DBM.DisplayVersion = "1.15.10 alpha"
@@ -7206,7 +7206,8 @@ do
 		self.HudMap:SupressCanvas()
 		local currentMapID = C_Map.GetBestMapForUnit("player")
 		local currentSubZone = GetSubZoneText() or ""
-		if checkOptions(self, currentMapID..currentSubZone, currentMapID) then
+		--Just abort if map is nil, don't want to touch it if can't map cinematic to an area
+		if currentMapID and checkOptions(self, currentMapID..currentSubZone, currentMapID) then
 			CinematicFrame_CancelCinematic()
 			self:AddMsg(L.MOVIE_SKIPPED)
 --			self:AddMsg(L.MOVIE_NOTSKIPPED)
