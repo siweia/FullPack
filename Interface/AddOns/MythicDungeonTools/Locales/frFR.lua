@@ -2261,6 +2261,8 @@ L["Titanium Vanguard"] = "Avant-garde en titane"
 L["T'lonja"] = "T'lonja"
 L["To share a different preset while the live session is active simply navigate to the preferred preset and click the new 'Set to Live' Button next to the preset-dropdown"] = "Pour partager une route différente pendant que la session en direct est active, il suffit de naviguer vers la route préférée et de cliquer sur le nouveau bouton \"Passer en direct\" à côté du menu déroulant des routes "
 L["tocNotes"] = "Outil pour planifier et optimiser vos parcours de donjons Mythique+"
+--[[Translation missing --]]
+L["Toggle MDT"] = "Toggle MDT"
 L["Toggle Window"] = "Activer/Désactiver la fenêtre "
 L["Toiling Groundskeeper"] = "Bedeau diligent"
 L["Tol Dagor"] = "Tol Dagor "

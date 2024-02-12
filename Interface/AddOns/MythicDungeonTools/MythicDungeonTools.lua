@@ -28,6 +28,9 @@ MDT.externalLinks = {
   },
 }
 
+BINDING_HEADER_MDT = "Mythic Dungeon Tools (MDT)"
+BINDING_NAME_MDTTOGGLE = L["Toggle MDT"]
+
 local mythicColor = "|cFFFFFFFF"
 MDT.BackdropColor = { 0.058823399245739, 0.058823399245739, 0.058823399245739, 0.9 }
 
@@ -3333,11 +3336,9 @@ function MDT:MakeSettingsFrame(frame)
   frame.AutomaticColorsCheck:SetCallback("OnValueChanged", function(widget, callbackName, value)
     db.colorPaletteInfo.autoColoring = value
     MDT:SetPresetColorPaletteInfo()
-    if value == true then
-      frame.toggleForceColorBlindMode:SetDisabled(false)
-      MDT:ReloadPullButtons()
-    else
-      frame.toggleForceColorBlindMode:SetDisabled(true)
+    frame.toggleForceColorBlindMode:SetDisabled(not value)
+    if value then
+      MDT:ReloadPullButtons(true)
     end
   end)
   frame.settingsFrame:AddChild(frame.AutomaticColorsCheck)
@@ -3350,7 +3351,7 @@ function MDT:MakeSettingsFrame(frame)
   frame.toggleForceColorBlindMode:SetCallback("OnValueChanged", function(widget, callbackName, value)
     db.colorPaletteInfo.forceColorBlindMode = value
     MDT:SetPresetColorPaletteInfo()
-    MDT:ReloadPullButtons()
+    MDT:ReloadPullButtons(true)
   end)
   frame.settingsFrame:AddChild(frame.toggleForceColorBlindMode)
 

@@ -2330,6 +2330,8 @@ L["Titanium Vanguard"] = "Vanguardia de titanio"
 L["T'lonja"] = "T'lonja"
 L["To share a different preset while the live session is active simply navigate to the preferred preset and click the new 'Set to Live' Button next to the preset-dropdown"] = "Para compartir una ruta diferente mientras la Sesión en vivo está activa, simplemente navegé a la ruta preferida y haga click en el nuevo botón 'Establecer en Directo' junto al menú desplegable de rutas"
 L["tocNotes"] = "Herramienta para planificar y optimizar las rutas de mazmorras de Piedras Angulares"
+--[[Translation missing --]]
+L["Toggle MDT"] = "Toggle MDT"
 L["Toggle Window"] = "Activar Ventana"
 L["Toiling Groundskeeper"] = "Guardés esforzado"
 L["Tol Dagor"] = "Tol Dagor"

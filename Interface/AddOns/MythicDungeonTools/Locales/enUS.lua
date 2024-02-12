@@ -1,6 +1,7 @@
 local addonName, MDT = ...
 local L = MDT.L
 L = L or {}
+L["Toggle MDT"] = "Toggle MDT"
 L["Language"] = "Language"
 L["Change Language"] = "Change Language"
 L["localeButtonTooltip1"] = "Requires the \"AddonLocale\" AddOn"
@@ -4527,6 +4528,7 @@ L["Titanium Vanguard"] = "Titanium Vanguard"
 L["T'lonja"] = "T'lonja"
 L["To share a different preset while the live session is active simply navigate to the preferred preset and click the new 'Set to Live' Button next to the preset-dropdown"] = "To share a different route while the live session is active simply navigate to the preferred route and click the new 'Set to Live' Button next to the route-dropdown"
 L["tocNotes"] = "Tool for planning and optimizing Mythic+ dungeon runs"
+L["Toggle MDT"] = "Toggle MDT"
 L["Toggle Window"] = "Toggle Window"
 L["Toiling Groundskeeper"] = "Toiling Groundskeeper"
 L["Tol Dagor"] = "Tol Dagor"

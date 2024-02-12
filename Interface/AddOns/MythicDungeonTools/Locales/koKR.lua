@@ -2305,6 +2305,8 @@ L["T'lonja"] = "트론자"
 --[[Translation missing --]]
 L["To share a different preset while the live session is active simply navigate to the preferred preset and click the new 'Set to Live' Button next to the preset-dropdown"] = "To share a different route while the live session is active simply navigate to the preferred route and click the new 'Set to Live' Button next to the route-dropdown"
 L["tocNotes"] = "신화 쐐기돌 던전을 계획하고 최적화하기를 위한 도구입니다"
+--[[Translation missing --]]
+L["Toggle MDT"] = "Toggle MDT"
 L["Toggle Window"] = "창을 열기/닫기"
 L["Toiling Groundskeeper"] = "느릿느릿한 관리인"
 L["Tol Dagor"] = "톨 다고르"

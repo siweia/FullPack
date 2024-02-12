@@ -2470,6 +2470,8 @@ L["To share a different preset while the live session is active simply navigate 
 --[[Translation missing --]]
 L["tocNotes"] = "Tool for planning and optimizing Mythic+ dungeon runs"
 --[[Translation missing --]]
+L["Toggle MDT"] = "Toggle MDT"
+--[[Translation missing --]]
 L["Toggle Window"] = "Toggle Window"
 L["Toiling Groundskeeper"] = "Zelador Mourejante"
 --[[Translation missing --]]

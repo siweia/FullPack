@@ -2832,6 +2832,8 @@ L["Titanium Vanguard"] = "Titanium Vanguard"
 L["T'lonja"] = "特隆加"
 L["To share a different preset while the live session is active simply navigate to the preferred preset and click the new 'Set to Live' Button next to the preset-dropdown"] = "在連線的過程中要分享不同的路線，只要切換到該路線，然後按下路線下拉選單旁新的 '設為即時連線' 按鈕。"
 L["tocNotes"] = "幫助你計算 M+ 的小怪%，規劃出最佳拉怪路線。"
+--[[Translation missing --]]
+L["Toggle MDT"] = "Toggle MDT"
 L["Toggle Window"] = "切換顯示視窗"
 L["Toiling Groundskeeper"] = "劳苦的管理员"
 L["Tol Dagor"] = "托達戈爾"

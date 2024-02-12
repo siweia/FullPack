@@ -2327,6 +2327,8 @@ L["Titanium Vanguard"] = "Avanguardia di Titanio"
 L["T'lonja"] = "T'lonja"
 L["To share a different preset while the live session is active simply navigate to the preferred preset and click the new 'Set to Live' Button next to the preset-dropdown"] = "Per condividere un percorso diverso mentre la Sessione Live è attiva è sufficiente aprire il percorso desiderato e fare clic sul nuovo pulsante 'Attiva percorso' accanto al menu a tendina dei percorsi"
 L["tocNotes"] = "Strumento che permette di pianificare e ottimizzare le spedizioni Mitica+"
+--[[Translation missing --]]
+L["Toggle MDT"] = "Toggle MDT"
 L["Toggle Window"] = "Apri/Chiudi finestra"
 L["Toiling Groundskeeper"] = "Custode Affaticato"
 L["Tol Dagor"] = "Tol Dagor"
