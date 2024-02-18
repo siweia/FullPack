@@ -327,9 +327,24 @@ function Details.Sort4Reverse(table1, table2) --[[exported]]
 	return table1[4] < table2[4]
 end
 
-function Details:GetTextColor(instanceObject, actorObject)
-	if (instanceObject.row_info.textL_class_colors) then
-		return unpack(Details.class_colors[actorObject.classe or "UNKNOW"])
+function Details:GetTextColor(instanceObject, textSide)
+	local actorObject = self
+	textSide = textSide or "left"
+
+	local bUseClassColor = false
+	if (textSide == "left") then
+		bUseClassColor = instanceObject.row_info.textL_class_colors
+	elseif (textSide == "right") then
+		bUseClassColor = instanceObject.row_info.textR_class_colors
+	end
+
+	if (bUseClassColor) then
+		local actorClass = actorObject.classe or "UNKNOW"
+		if (actorClass == "UNKNOW") then
+			return unpack(instanceObject.row_info.fixed_text_color)
+		else
+			return unpack(Details.class_colors[actorClass])
+		end
 	else
 		return unpack(instanceObject.row_info.fixed_text_color)
 	end
@@ -3179,9 +3194,12 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 		barNumber = bar.colocacao .. ". "
 	end
 
-	--translate cyrillic alphabet to western alphabet by Vardex (https://github.com/Vardex May 22, 2019)
 	if (instance.row_info.textL_translit_text) then
-		self.displayName = Translit:Transliterate(self.displayName, "!")
+		if (not self.transliteratedName) then
+			--translate cyrillic alphabet to western alphabet by Vardex (https://github.com/Vardex May 22, 2019)
+			self.transliteratedName = Translit:Transliterate(self.displayName, "!")
+		end
+		self.displayName = self.transliteratedName or self.displayName
 	end
 
 	if (enemy) then
@@ -3273,7 +3291,7 @@ function Details:SetBarColors(bar, instance, r, g, b, a) --[[exported]] --~color
 		end
 		bar.textura:SetVertexColor(r, g, b, a)
 	else
-		r, g, b = unpack(instance.row_info.fixed_texture_color)
+		r, g, b, a = unpack(instance.row_info.fixed_texture_color)
 		bar.textura:SetVertexColor(r, g, b, a)
 	end
 
@@ -3282,12 +3300,12 @@ function Details:SetBarColors(bar, instance, r, g, b, a) --[[exported]] --~color
 	end
 
 	if (instance.row_info.textL_class_colors) then
-		local textColor_Red, textColor_Green, textColor_Blue = Details:GetTextColor(instance, self)
+		local textColor_Red, textColor_Green, textColor_Blue = self:GetTextColor(instance, "left")
 		bar.lineText1:SetTextColor(textColor_Red, textColor_Green, textColor_Blue) --the r, g, b color passed are the color used on the bar, so if the bar is not using class color, the text is painted with the fixed color for the bar
 	end
 
 	if (instance.row_info.textR_class_colors) then
-		local textColor_Red, textColor_Green, textColor_Blue = Details:GetTextColor(instance, self)
+		local textColor_Red, textColor_Green, textColor_Blue = self:GetTextColor(instance, "right")
 		bar.lineText2:SetTextColor(textColor_Red, textColor_Green, textColor_Blue)
 		bar.lineText3:SetTextColor(textColor_Red, textColor_Green, textColor_Blue)
 		bar.lineText4:SetTextColor(textColor_Red, textColor_Green, textColor_Blue)
@@ -3640,7 +3658,7 @@ function damageClass.PredictedAugSpellsOnEnter(self)
 
 		--add the buff uptime into the tooltip
 		local allPrescienceTargets = buffUptimeTable[CONST_SPELLID_PRESCIENCE]
-		if (#allPrescienceTargets > 0) then
+		if (allPrescienceTargets and #allPrescienceTargets > 0) then
 			for i = 1, math.min(30, #allPrescienceTargets) do
 				local uptimeTable = allPrescienceTargets[i]
 
