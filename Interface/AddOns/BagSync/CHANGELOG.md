@@ -1,7 +1,8 @@
 # BagSync
 
-## [v19.26](https://github.com/Xruptor/BagSync/tree/v19.26) (2024-02-16)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.25...v19.26) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.29](https://github.com/Xruptor/BagSync/tree/v19.29) (2024-03-05)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.28...v19.29) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- DB Check Fix  
-    * Removed an old DB refresh check that was used to check for older database formats.  It was causing issues with those whom were using symlinks to combine multiple accounts together.  (Fixed #324)  
+- Slight fix for Show Only Current Player  
+    * Fixed a small issue with the new Show Only Current Player option.  It should now properly not cache or parse characters other than the currently logged in one.  
+    * Fixed an issue where the new show only current character option was disregarding some more advanced options.  
