@@ -1,6 +1,6 @@
 # Myslot
 
-## [v5.13.1](https://github.com/tg123/myslot/tree/v5.13.1) (2024-02-24)
-[Full Changelog](https://github.com/tg123/myslot/commits/v5.13.1) 
+## [v5.14.0](https://github.com/tg123/myslot/tree/v5.14.0) (2024-03-03)
+[Full Changelog](https://github.com/tg123/myslot/commits/v5.14.0) 
 
-- Update bigwig.yml  
+- Add ESCAPE key functionality to hide the GUI  
