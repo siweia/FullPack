@@ -1,7 +1,7 @@
 # Premade Groups Filter
 
-## [5.3.2](https://github.com/0xbs/premade-groups-filter/tree/5.3.2) (2024-02-09)
-[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/5.3.1...5.3.2) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
+## [5.3.4](https://github.com/0xbs/premade-groups-filter/tree/5.3.4) (2024-03-27)
+[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/5.3.2...5.3.4) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
 
-- Fix #239 prevent error when no member info  
-    It seems that in some rare cases C\_LFGList.GetSearchResultMemberInfo returns a nil result.  
+- Bump Retail TOC to 100206  
+- Update frFR.lua (#242)  
