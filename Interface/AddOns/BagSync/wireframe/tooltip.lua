@@ -158,8 +158,10 @@ function Tooltip:GetClassColor(unitObj, switch, bypass, altColor)
 		doChk = BSYC.options.itemTotalsByClassColor
 	end
 
-	if bypass or ( doChk and RAID_CLASS_COLORS[unitObj.data.class] ) then
-		return RAID_CLASS_COLORS[unitObj.data.class]
+	--adds support for depricated ClassColors / WeWantBlueShamans   Ticket #331
+	local classColor = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[unitObj.data.class] or RAID_CLASS_COLORS[unitObj.data.class]
+	if bypass or ( doChk and classColor ) then
+			return classColor
 	end
 	return altColor or BSYC.colors.first
 end
@@ -328,12 +330,39 @@ function Tooltip:DoSort(tblData)
 	return tblData
 end
 
-function Tooltip:AddItems(unitObj, itemID, target, countList)
+function Tooltip:GetEquipBags(target, unitObj, itemID, countList)
+	if not unitObj.data.equipbags or not unitObj.data.equipbags[target] then return 0 end
+
+	local iCount = 0
+	local tmpSlots = ""
+
+	for i=1, #unitObj.data.equipbags[target] do
+		local link, count, qOpts = BSYC:Split(unitObj.data.equipbags[target][i], false)
+		if BSYC.options.enableShowUniqueItemsTotals then link = BSYC:GetShortItemID(link) end
+		if link then
+			if link == itemID and qOpts and qOpts.bagslot then
+				tmpSlots = tmpSlots..","..qOpts.bagslot
+				iCount = iCount + (count or 1)
+			end
+		end
+	end
+
+	if iCount > 0 then
+		tmpSlots = string.sub(tmpSlots, 2)  -- remove comma
+		countList[target.."slots"] = self:HexColor(BSYC.colors.bagslots, " <"..tmpSlots..">")
+	elseif countList[target.."slots"] then
+		countList[target.."slots"] = nil
+	end
+
+	return iCount
+end
+
+function Tooltip:AddItems(unitObj, itemID, target, countList, isCurrentPlayer)
 	local total = 0
 	if not unitObj or not itemID or not target or not countList then return total end
 	if not unitObj.data then return total end
 
-	local function getTotal(data)
+	local function getTotal(data, target)
 		local iCount = 0
 		for i=1, #data do
 			if data[i] then
@@ -352,19 +381,22 @@ function Tooltip:AddItems(unitObj, itemID, target, countList)
 	if unitObj.data[target] and BSYC.tracking[target] then
 		if target == "bag" or target == "bank" or target == "reagents" then
 			for bagID, bagData in pairs(unitObj.data[target] or {}) do
-				total = total + getTotal(bagData)
+				total = total + getTotal(bagData, target)
+			end
+			if target == "bag" or target == "bank" then
+				total = total + self:GetEquipBags(target, unitObj, itemID, countList)
 			end
 		elseif target == "auction" then
-			total = getTotal(unitObj.data[target].bag or {})
+			total = getTotal(unitObj.data[target].bag or {}, target)
 
 		elseif target == "equip" or target == "void" or target == "mailbox" then
-			total = getTotal(unitObj.data[target] or {})
+			total = getTotal(unitObj.data[target] or {}, target)
 		end
 	end
 	if target == "guild" and BSYC.tracking.guild then
 		countList.gtab = {}
 		for tabID, tabData in pairs(unitObj.data.tabs or {}) do
-			local tabCount = getTotal(tabData)
+			local tabCount = getTotal(tabData, target)
 			if tabCount > 0 then
 				countList.gtab[tabID] = tabCount
 			end
@@ -400,11 +432,11 @@ function Tooltip:UnitTotals(unitObj, countList, unitList, advUnitList)
 
 	if ((countList["bag"] or 0) > 0) then
 		total = total + countList["bag"]
-		table.insert(tallyCount, self:GetCountString(colorType, dispType, "bag", countList["bag"]))
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "bag", countList["bag"], BSYC.options.showEquipBagSlots and countList["bagslots"]))
 	end
 	if ((countList["bank"] or 0) > 0) then
 		total = total + countList["bank"]
-		table.insert(tallyCount, self:GetCountString(colorType, dispType, "bank", countList["bank"]))
+		table.insert(tallyCount, self:GetCountString(colorType, dispType, "bank", countList["bank"], BSYC.options.showEquipBagSlots and countList["bankslots"]))
 	end
 	if ((countList["reagents"] or 0) > 0) then
 		total = total + countList["reagents"]
@@ -670,7 +702,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	--we do this because the itemID portion can be something like 190368::::::::::::5:8115:7946:6652:7579:1491::::::
 	local shortID = BSYC:GetShortItemID(link)
 
-	--we want to make sure the origLink for BattlePets is alwayhs the fakeID for parsing through cache below
+	--we want to make sure the origLink for BattlePets is always the fakeID for parsing through cache below
 	if isBattlePet then origLink = shortID end
 
 	--make sure we have something to work with
@@ -860,6 +892,14 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 				if not BSYC.tracking.bag then bagCount = 0 end
 				if not BSYC.tracking.bank then bankCount = 0 end
 				if not BSYC.tracking.reagents then regCount = 0 end
+
+				if bagCount > 0 then
+					self:GetEquipBags("bag", playerObj, link, countList)
+				end
+				if bankCount > 0 then
+					self:GetEquipBags("bank", playerObj, link, countList)
+				end
+
 				countList.bag = bagCount
 				countList.bank = bankCount
 				countList.reagents = regCount

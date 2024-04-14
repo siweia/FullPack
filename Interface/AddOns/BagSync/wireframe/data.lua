@@ -73,6 +73,7 @@ local optionsDefaults = {
 	enableCurrentRealmShortName = false,
 	enableCurrencyWindowTooltipData = true,
 	showCurrentPlayerOnly = false,
+	showEquipBagSlots = false,
 }
 
 local colorsDefaults = {
@@ -88,6 +89,7 @@ local colorsDefaults = {
 	expansion = HexToRGBPerc('FFCF9FFF'),
 	itemtypes = HexToRGBPerc('ffcccf66'),
 	currentrealm = HexToRGBPerc('ff4CBB17'),
+	bagslots = HexToRGBPerc('ff44EE77'),
 }
 
 local trackingDefaults = {
@@ -447,6 +449,7 @@ function Data:PopulateItemCache(errorList, errorCount)
 		mailbox = true,
 		void = true,
 		auction = true,
+		equipbags = true,
 	}
 	local tmpList = {}
 	local tmpError = {}
@@ -476,6 +479,10 @@ function Data:PopulateItemCache(errorList, errorCount)
 				end
 			elseif target == "auction" then
 				doItem(unitObj.data[target].bag or {})
+
+			elseif target == "equipbags" then
+				doItem(unitObj.data[target].bag or {})
+				doItem(unitObj.data[target].bank or {})
 
 			elseif target == "equip" or target == "void" or target == "mailbox" then
 				doItem(unitObj.data[target] or {})
