@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2510, "DBM-Party-Dragonflight", 8, 1204)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240412065918")
+mod:SetRevision("20240426175442")
 mod:SetCreatureID(189727)
 mod:SetEncounterID(2617)
 mod:SetHotfixNoticeRev(20230507000000)
@@ -36,7 +36,7 @@ local timerGlacialSurgeCD						= mod:NewCDCountTimer(22, 386559, nil, nil, nil, 
 local timerFrostCycloneCD						= mod:NewCDCountTimer(29.9, 390111, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerFrostShockCD							= mod:NewCDCountTimer(11, 385963, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
 
-local boulder = DBM:GetSpellInfo(386222)
+local boulder = DBM:GetSpellName(386222)
 
 mod.vb.hailCount = 0
 mod.vb.surgeCount = 0
