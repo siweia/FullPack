@@ -2,7 +2,7 @@
 	scanner.lua
 		Scanner module for BagSync, scans bags, bank, currency, etc...
 
-		BagSync - All Rights Reserved - (c) 2006-2023
+		BagSync - All Rights Reserved - (c) 2024
 		License included with addon.
 --]]
 
@@ -298,17 +298,7 @@ local function findBattlePet(iconTexture, petName, typeSlot, arg1, arg2)
 		TooltipUtil.SurfaceArgs(data)
 
 		if (data and data.battlePetSpeciesID) then
-			local speciesID, level, breedQuality, maxHealth, power, speed
-
-			speciesID = data.battlePetSpeciesID
-			level = data.battlePetLevel
-			breedQuality = data.battlePetBreedQuality
-			maxHealth = data.battlePetMaxHealth
-			power = data.battlePetPower
-			speed = data.battlePetSpeed
-			petName = data.battlePetName
-
-			return speciesID, level, breedQuality, maxHealth, power, speed, petName
+			return data.battlePetSpeciesID, data.battlePetLevel, data.battlePetBreedQuality, data.battlePetMaxHealth, data.battlePetPower, data.battlePetSpeed, data.battlePetName
 		end
 	end
 
@@ -375,6 +365,7 @@ function Scanner:SaveGuildBank(tabID)
 					end
 
 					if link then
+						Debug(BSYC_DL.FINE, "SaveGuildBank", tab, slot, iconTexture, link)
 						table.insert(slotItems, link)
 					end
 				end

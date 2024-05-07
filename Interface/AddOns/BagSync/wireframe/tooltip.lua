@@ -2,7 +2,7 @@
 	tooltip.lua
 		Tooltip module for BagSync
 
-		BagSync - All Rights Reserved - (c) 2006-2023
+		BagSync - All Rights Reserved - (c) 2024
 		License included with addon.
 --]]
 
@@ -1157,7 +1157,7 @@ function Tooltip:HookTooltip(objTooltip)
 		end)
 	end
 
-	if TooltipDataProcessor then
+	if C_TooltipInfo then
 
 		--Note: tooltip data type corresponds to the Enum.TooltipDataType types
 		--i.e Enum.TooltipDataType.Unit it type 2
