@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2507, "DBM-Party-Dragonflight", 8, 1204)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240426175442")
+mod:SetRevision("20240429063816")
 mod:SetCreatureID(189722)
 mod:SetEncounterID(2616)
 mod:SetHotfixNoticeRev(20230507000000)
@@ -95,7 +95,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.gulpCount = self.vb.gulpCount + 1
 		specWarnGulp:Show(self.vb.gulpCount)
 		specWarnGulp:Play("justrun")
-		timerGulpCD:Start(self.vb.gulpCount == 1 and 47.3 or 38.8, self.vb.gulpCount+1)
+		timerGulpCD:Start(self.vb.gulpCount == 1 and 47.3 or 37.6, self.vb.gulpCount+1)
 	elseif spellId == 385181 then
 		self.vb.croakCount = self.vb.croakCount + 1
 		specWarnOverpoweringCroak:Show(self.vb.croakCount)
