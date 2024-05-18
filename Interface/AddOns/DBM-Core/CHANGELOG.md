@@ -1,42 +1,49 @@
-# <DBM Mod> Raids (DF)
+# <DBM Mod> Delves (TWW)
 
-## [10.2.40](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/10.2.40) (2024-05-14)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/10.2.39...10.2.40) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [10.2.41](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/10.2.41) (2024-05-16)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/10.2.40...10.2.41) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- Prep new tag to get fixes for Cataclysm classic, and new API for pandaria remix (in case it's needed)  
-- Support for running multiple tests with one command  
-- Add shaman interrupts for classic  
-- Fixup recorded player name/uid vs. current player  
-- Cleanup test reports  
-    * Report spell ID mismatches  
-    * Add spell names  
-    * Summarize AntiSpam filtered events  
-    * Fix some sorting determinism problems  
-    * Detect combat end from different events  
-    * Filter generic sounds  
-- Tests: support icons  
-- Tests: enable all timers/warnings/etc  
-- Filter transcriptor logs more aggressively  
-- Add test result importer  
-- Avoid lua error on nymue if person DCs or reloads mid fight and variable recovery has not completed yet (or it failed)  
-- corrected logic in core that assumed if journal exists, ALL of it exists. Cata classic chose to exclude journal for vanilla tbc and wrath so DBM was attempting to use journal names for bosses instead of manually translated ones, and resulted in all names being nil.  
-    New code logic now doesn't assume journal is complete and instead validates it before using it, else returns the manually localized boss names.  
-    In english, vanilla tbc and wrath bosses will show their boss names again.  
-- Config and test updates/fixes (#1080)  
-- Split .pkgmeta by release type (#1081)  
-- Update nag for TBC mods (#1082)  
-- Add time warping for tests  
-    For example, run /dbm test <test> 10x to run a test at 10x speed.  
-- Add more flexible system for hooking locals in tests  
-- Fix error when warnings overflow in tests  
-- Cleanup unused variables  
-- Further refine voice schedulers to now validate for invalid voice files when scheduling (and it already caught 1)  
-- Further class and annotate up the timer object, which found quite a few obscure bugs, including one right here on retail where kurogs add enrage timer didn't correctly show inline icon  
-- Further annotate and define announce constructors (especially for non auto localized objects that have some niche args that needed docs)  
-- Push drycodes for both War within world bosses  
-- Add test framework for boss mods (#1074)  
-    Add a test framework that can replay Transcriptor logs and record how mods behave.  
-    This currently only works for simple mods, example: DeadlyBossMods/DBM-BCVanilla#143  
-- just remove status checks on prefixes, in all the years since it was introduced in cataclysm, i have NEVER seen the status be anything other than success, so just assume it's always successful and call it a day. Closes https://github.com/DeadlyBossMods/DeadlyBossMods/issues/1078  
-- Improve GroupInCombat error checking (which has no errors ATM but to avoid em in future)  
+- prep new tag for war within alpha delves support and better support for MoP scenarios returning in tomorrow remix  
+- RU locale for Delves (#1088)  
+- Make sync debug easier to notice since it's higher prio  
+- Fix regression with loadmod, handle it a diff way that still fixes scenario starts  
+- add 3 new trash abilities to delves  
+    Added support for FungalFolley's end boss  
+- support start delay for scenario's, since delves are always delayed by 5 seconds.  
+- Fix bug that caused scenario mods like delves to re-enter combat due to fact LoadModsOnDemands were firing scenariocheck on all map changes and not just instance map changes. The load type is now scoped better and filtered appropriately  
+- case sensitive fix  
+- Tweaks  
+- Fix 100206 getting flagged by packager  
+- Fix rename mapping  
+- Fix typo  
+- Fixed delve bug where a wipe would end delve with a success  
+- Add more zones for the special load conditions of delves to core  
+    Split trash abilities into their own common mod since trash abilities are shared between ALL delves so needed a unified trash mod  
+    Added earthcrawl mines end boss support  
+    Added lava blast to delve trash alerts  
+- quiet luacheck  
+- template remaining delve mods  
+- Remove diagnostic disables  
+- More LuaLS annotations for variables storing mods  
+- Tests: add /dbm test clear  
+- Tests: Make AntiSpam more deterministic  
+- Fix comparison function  
+    Check to see if it's a number, and not string of "No Raid Module"  
+- Delves kr locale initializing (#1087)  
+- Tag that as a TWW mod to future proof before it's too late.  
+- Add another spell to the spiral weave  
+    another delve core fix  
+- Fix another delve niche case  
+- fix bad option keys  
+- Support delves in trivial checks, and special load conditions, and check for wipe  
+- Preliminary delve work  
+- Fix bad case of stripping `-` from instance names;  
+    - Use a special case match of ` - `, to actually detect the space cases we wanted. this means moving away from strsplit as that is a list of deliminators rather than a pattern.  
+- Fix GetSpellDescription on alpha  
+- Fix UnitName issue in pull timer target  
+    Utilise `DBM:GetUnitFullName` instead, for appropriate filtering of friendly targets.  
+- change this to debuglevel 3. it spams a TON on retail (since group size changes every time someone joins or leaves raid.  
+- Fixed bugs with classic subversion check  
+     - It now ACTUALLY checks classic subversion instead of echoing DBM core version check (and only running IF dbm core is out of date)  
+     - It no longer runs on retail  
 - bump alpha  
