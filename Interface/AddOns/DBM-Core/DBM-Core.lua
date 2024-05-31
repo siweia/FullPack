@@ -75,16 +75,16 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20240516080018")
+DBM.Revision = parseCurseDate("20240530232740")
 
-local fakeBWVersion, fakeBWHash = 329, "e3dbf73"--329.2
+local fakeBWVersion, fakeBWHash = 330, "8c25119"--330.1
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "10.2.41"--Core version
+DBM.DisplayVersion = "10.2.46"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2024, 5, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-PForceDisable = 10--When this is incremented, trigger force disable regardless of major patch
+DBM.ReleaseRevision = releaseDate(2024, 5, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+PForceDisable = 12--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
 -- support for github downloads, which doesn't support curse keyword expansion
@@ -523,7 +523,7 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
 -----------------
 local LibSpec
 do
-	if private.isRetail and LibStub then
+	if (private.isRetail or private.isCata) and LibStub then
 		LibSpec = LibStub("LibSpecialization", true)
 		if LibSpec then
 			local function update(specID, _, _, playerName)
@@ -785,7 +785,12 @@ local function sendWhisper(target, msg)
 			BNSendWhisper(target, msg)
 		end
 	elseif type(target) == "string" then
-		SendChatMessage(msg, "WHISPER", nil, target) -- Whispering to ourselves here is okay and somewhat useful for whisper-warnings
+		local length = string.len(target)
+		--Only send sync if it's to a target with a shorter name due to blizzard bug
+		--https://github.com/Stanzilla/WoWUIBugs/issues/573
+		if length < 47 then
+			SendChatMessage(msg, "WHISPER", nil, target) -- Whispering to ourselves here is okay and somewhat useful for whisper-warnings
+		end
 	end
 end
 
@@ -1614,13 +1619,6 @@ do
 							local mapIdTable = {strsplit(",", C_AddOns.GetAddOnMetadata(i, "X-DBM-Mod-MapID") or "")}
 
 							local minToc = tonumber(C_AddOns.GetAddOnMetadata(i, "X-Min-Interface") or 0)
-							if private.isBCC then
-								minToc = tonumber(C_AddOns.GetAddOnMetadata(i, "X-Min-Interface-BCC") or minToc)
-							elseif private.isCata then
-								minToc = tonumber(C_AddOns.GetAddOnMetadata(i, "X-Min-Interface-Cata") or minToc)
-							elseif private.isWrath then
-								minToc = tonumber(C_AddOns.GetAddOnMetadata(i, "X-Min-Interface-Wrath") or minToc)
-							end
 
 							local firstMapId = mapIdTable[1]
 							local firstMapName
@@ -2115,7 +2113,12 @@ do
 					end
 				end
 				if notify and v.revision < self.ReleaseRevision then
-					SendChatMessage(chatPrefixShort .. L.YOUR_VERSION_OUTDATED, "WHISPER", nil, v.name)
+					local length = string.len(v.name)
+					--Only send sync if it's to a target with a shorter name due to blizzard bug
+					--https://github.com/Stanzilla/WoWUIBugs/issues/573
+					if length < 47 then
+						SendChatMessage(chatPrefixShort .. L.YOUR_VERSION_OUTDATED, "WHISPER", nil, v.name)
+					end
 				end
 			elseif self.Options.ShowAllVersions and v.displayVersion and v.bwversion then--DBM & BigWigs
 				self:AddMsg(L.VERSIONCHECK_ENTRY_TWO:format(name, L.DBM .. " " .. v.displayVersion, showRealDate(v.revision), L.BIG_WIGS, bwVersionResponseString:format(v.bwversion, v.bwhash)), false)
@@ -2184,7 +2187,12 @@ do
 				text = text:sub(1, 16)
 				text = text:gsub("%%t", UnitName("target") or "<no target>")
 				if whisperTarget then
-					C_ChatInfo.SendAddonMessageLogged(DBMPrefix, (DBMSyncProtocol .. "\tUW\t0\t%s"):format(text), "WHISPER", whisperTarget)
+					local length = string.len(whisperTarget)
+					--Only send sync if it's to a target with a shorter name due to blizzard bug
+					--https://github.com/Stanzilla/WoWUIBugs/issues/573
+					if length < 47 then
+						C_ChatInfo.SendAddonMessageLogged(DBMPrefix, (DBMSyncProtocol .. "\tUW\t0\t%s"):format(text), "WHISPER", whisperTarget)
+					end
 				else
 					sendLoggedSync(DBMSyncProtocol, "U", ("0\t%s"):format(text))
 				end
@@ -2204,7 +2212,12 @@ do
 			if whisperTarget then
 				--no dbm function uses whisper for pizza timers
 				--this allows weak aura creators or other modders to use the pizza timer object unicast via whisper instead of spamming group sync channels
-				C_ChatInfo.SendAddonMessageLogged(DBMPrefix, (DBMSyncProtocol .. "\tUW\t%s\t%s"):format(time, text), "WHISPER", whisperTarget)
+				local length = string.len(whisperTarget)
+				--Only send sync if it's to a target with a shorter name due to blizzard bug
+				--https://github.com/Stanzilla/WoWUIBugs/issues/573
+				if length < 47 then
+					C_ChatInfo.SendAddonMessageLogged(DBMPrefix, (DBMSyncProtocol .. "\tUW\t%s\t%s"):format(time, text), "WHISPER", whisperTarget)
+				end
 			else
 				sendLoggedSync(DBMSyncProtocol, "U", ("%s\t%s"):format(time, text))
 			end
@@ -2346,7 +2359,7 @@ do
 				if dbmIsEnabled then
 					SendAddonMessage("BigWigs", bwVersionQueryString:format(0, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or "RAID")
 				end
-				if private.isRetail then
+				if private.isRetail or private.isCata then
 					self:Schedule(2, self.RoleCheck, false, self)
 				end
 				fireEvent("DBM_raidJoin", playerName)
@@ -2435,7 +2448,7 @@ do
 				if dbmIsEnabled then
 					SendAddonMessage("BigWigs", bwVersionQueryString:format(0, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or "PARTY")
 				end
-				if private.isRetail then
+				if private.isRetail or private.isCata then
 					self:Schedule(2, self.RoleCheck, false, self)
 				end
 				fireEvent("DBM_partyJoin", playerName)
@@ -3120,6 +3133,8 @@ function DBM:LoadModOptions(modId, inCombat, first)
 			local stats = savedStats[id]
 			stats.followerKills = stats.followerKills or 0
 			stats.followerPulls = stats.followerPulls or 0
+			stats.storyKills = stats.storyKills or 0
+			stats.storyPulls = stats.storyPulls or 0
 			stats.normalKills = stats.normalKills or 0
 			stats.normalPulls = stats.normalPulls or 0
 			stats.heroicKills = stats.heroicKills or 0
@@ -3420,6 +3435,8 @@ function DBM:CreateDefaultModStats()
 	local defaultStats = {}
 	defaultStats.followerKills = 0
 	defaultStats.followerPulls = 0
+	defaultStats.storyKills = 0
+	defaultStats.storyPulls = 0
 	defaultStats.normalKills = 0
 	defaultStats.normalPulls = 0
 	defaultStats.heroicKills = 0
@@ -3586,7 +3603,7 @@ do
 		end
 		if currentSpecID ~= lastSpecID then--Don't fire specchanged unless spec actually has changed.
 			self:SpecChanged()
-			if private.isRetail and IsInGroup() then
+			if (private.isRetail or private.isCata) and IsInGroup() then
 				self:RoleCheck(false)
 			end
 		end
@@ -3604,7 +3621,7 @@ do
 		self:Schedule(2, throttledTalentCheck, self)
 	end
 	--Throttle this api too.
-	DBM.PLAYER_TALENT_UPDATE = DBM.CHARACTER_POINTS_CHANGED -- Wrath support
+	DBM.PLAYER_TALENT_UPDATE = DBM.CHARACTER_POINTS_CHANGED -- Wrath/Cata support
 end
 
 do
@@ -3951,7 +3968,7 @@ do
 			self:ScenarioCheck(delay)--Do not filter. Because ScenarioCheck function includes filter.
 		end
 		-- Hard-code loading logic for DMF classic which depends on time and map
-		if dmfMod and checkTable == "mapID" and private.isClassic and isDmfActiveClassic() == checkValue then
+		if dmfMod and checkTable == "mapId" and private.isClassic and isDmfActiveClassic() == checkValue then
 			self:LoadMod(dmfMod, true)
 		end
 	end
@@ -3983,7 +4000,7 @@ function DBM:LoadMod(mod, force)
 		end
 		return
 	end
-	if mod.minExpansion > GetExpansionLevel() then
+	if mod.minExpansion > GetExpansionLevel() and not force then
 		self:AddMsg(L.LOAD_MOD_EXP_MISMATCH:format(mod.name))
 		return
 	elseif not private.testBuild and mod.minToc > private.wowTOC then
@@ -4581,8 +4598,8 @@ do
 				else
 					classicSubVers = L.MOD_MISSING
 				end
-				forceDisable = tonumber(forceDisable) or 0
 			end
+			forceDisable = tonumber(forceDisable) or 0
 		elseif protocol >= 2 then
 			--Protocol 2 did not send classicSubVers
 			VPVersion = classicSubVers
@@ -5467,7 +5484,9 @@ do
 		["event5"] = "normal",
 		["event20"] = "lfr25",
 		["event40"] = "lfr25",
+		["quest"] = "follower",--For now, unless a conflict arises
 		["follower"] = "follower",
+		["story"] = "story",
 		["normal5"] = "normal",
 		["heroic5"] = "heroic",
 		["challenge5"] = "challenge",
@@ -5505,6 +5524,11 @@ do
 	}
 
 	---@param mod DBMMod
+	---@param delay number
+	---@param event string?
+	---@param synced boolean?
+	---@param syncedStartHp number?
+	---@param syncedEvent string?
 	function DBM:StartCombat(mod, delay, event, synced, syncedStartHp, syncedEvent)
 		---@class DBMMod
 		mod = mod
@@ -5820,6 +5844,9 @@ do
 	DBM.UNIT_HEALTH_FREQUENT = DBM.UNIT_HEALTH
 
 	---@param mod DBMMod
+	---@param wipe boolean?
+	---@param srmIncluded boolean? unregister all events including SPELL_AURA_REMOVED events
+	---@param event string?
 	function DBM:EndCombat(mod, wipe, srmIncluded, event)
 		---@class DBMMod
 		mod = mod
@@ -5827,9 +5854,9 @@ do
 			test:Trace(mod, "EndCombat", event)
 			local scenario = mod.addon.type == "SCENARIO" and not mod.soloChallenge
 			if mod.inCombatOnlyEvents and mod.inCombatOnlyEventsRegistered then
-				if srmIncluded then-- unregister all events including SPELL_AURA_REMOVED events
+				if srmIncluded then
 					mod:UnregisterInCombatEvents(false, true)
-				else-- unregister all events except for SPELL_AURA_REMOVED events (might still be needed to remove icons etc...)
+				else
 					mod:UnregisterInCombatEvents()
 					self:Schedule(2, mod.UnregisterInCombatEvents, mod, true) -- 2 seconds should be enough for all auras to fade
 				end
@@ -6051,7 +6078,7 @@ do
 					end
 				end
 			end
-			if mod.OnCombatEnd then mod:OnCombatEnd(wipe) end
+			if mod.OnCombatEnd then mod:OnCombatEnd(wipe or false) end
 			if mod.OnLeavingCombat then delayedFunction = mod.OnLeavingCombat end
 			mod.engagedDiff = nil
 			mod.engagedDiffText = nil
@@ -6223,15 +6250,39 @@ do
 		["EVOKER"] = 1465,
 	}
 
+	--In event api fails to pull any data at all, just assign classes to generic DPS role (typically unspecced players such as sub level 11)
+	local catafallbackClassToRole = {
+		["MAGE"] = 799,--Arcane Mage
+		["PALADIN"] = 855,--Ret Paladin
+		["WARRIOR"] = 746,--Arms Warrior
+		["DRUID"] = 752,--Balance druid
+		["DEATHKNIGHT"] = 251,--Frost DK
+		["HUNTER"] = 811,--Beastmaster Hunter
+		["PRIEST"] = 795,--Shadow Priest
+		["ROGUE"] = 182,--Assassination Rogue
+		["SHAMAN"] = 263,--Enhancement Shaman
+		["WARLOCK"] = 871,--Affliction Warlock
+	}
+
 	function DBM:SetCurrentSpecInfo()
 		if private.isRetail then
-			currentSpecGroup = GetSpecialization() or 1
-			if GetSpecializationInfo(currentSpecGroup) then
-				currentSpecID, currentSpecName = GetSpecializationInfo(currentSpecGroup)--give temp first spec id for non-specialization char. no one should use dbm with no specialization, below level 10, should not need dbm.
+			currentSpecGroup = GetSpecialization()
+			if currentSpecGroup and GetSpecializationInfo(currentSpecGroup) then
+				currentSpecID, currentSpecName = GetSpecializationInfo(currentSpecGroup)
 				currentSpecID = tonumber(currentSpecID)
 			else
-				currentSpecID, currentSpecName = fallbackClassToRole[playerClass], playerClass
+				currentSpecID, currentSpecName = fallbackClassToRole[playerClass], playerClass--give temp first spec id for non-specialization char. no one should use dbm with no specialization, below level 10, should not need dbm.
 			end
+			DBM:Debug("Current specID set to: "..currentSpecID, 2)
+		elseif private.isCata then
+			currentSpecGroup = GetPrimaryTalentTree()
+			if currentSpecGroup and GetTalentTabInfo(currentSpecGroup) then
+				currentSpecID, currentSpecName = GetTalentTabInfo(currentSpecGroup)
+				currentSpecID = tonumber(currentSpecID)
+			else
+				currentSpecID, currentSpecName = catafallbackClassToRole[playerClass], playerClass--give temp first spec id for non-specialization char. no one should use dbm with no specialization, below level 10, should not need dbm.
+			end
+			DBM:Debug("Current specID set to: "..currentSpecID, 2)
 		else
 			local numTabs = GetNumTalentTabs()
 			local highestPointsSpent = 0
@@ -6251,6 +6302,10 @@ do
 			--If 0 talents are spent, then just set them to first spec to prevent nil errors
 			--This should only happen for a level 1 player or someone who's in middle of respecing
 			if not currentSpecID then currentSpecID = playerClass .. tostring(1) end
+		end
+		if not InCombatLockdown() and currentSpecID and not private.specRoleTable[currentSpecID] then
+			--Refresh entire spec table if not in combat and it's still missing for some reason
+			DBMExtraGlobal:rebuildSpecTable()
 		end
 	end
 end
@@ -6279,7 +6334,7 @@ function DBM:GetStage(modId)
 	end
 end
 
----@param self DBM|DBMMod
+---@param self DBMModOrDBM
 function DBM:HasMapRestrictions()
 	--Check playerX and playerY. if they are nil restrictions are active
 	--Restrictions active in all party, raid, pvp, arena maps. No restrictions in "none" or "scenario"
@@ -6389,17 +6444,20 @@ do
 	end
 end
 
---Future proofing EJ_GetSectionInfo compat layer to make it easier updatable.
-function DBM:EJ_GetSectionInfo(sectionID)
-	if not private.isRetail then
+---Future proofing EJ_GetSectionInfo compat layer to make it easier updatable.
+function DBM:EJ_GetSectionInfo(sectionID)--Should be number, but accepts string too since Blizzards api converts strings to number.
+	if not sectionID then return end
+	if private.isClassic or private.isWrath then
 		return "EJ_GetSectionInfo not supported on Classic, please report this message and boss"
 	end
+	--Built in wow api extension doesn't know EJ_GetSectionInfo can accept strings
 	local info = EJ_GetSectionInfo(sectionID)
 	if not info then
 		self:Debug("|cffff0000Invalid call to EJ_GetSectionInfo for sectionID: |r" .. sectionID)
 		return
 	end
 	local flag1, flag2, flag3, flag4
+	--Built in wow api extension doesn't know EJ_GetSectionInfo can accept strings
 	local flags = GetSectionIconFlags(sectionID)
 	if flags then
 		flag1, flag2, flag3, flag4 = unpack(flags)
@@ -6425,7 +6483,7 @@ do
 	end
 	---Wrapper for Blizzard GetSpellInfo global that converts new table returns to old arg returns
 	---<br>This avoids having to significantly update nearly 20 years of boss mods.
-	---@param spellId string|number --Should be number, but accepts string too since Blizzards api converts strings to number.
+	---@param spellId string|number Should be number, but accepts string too since Blizzards api converts strings to number.
 	function DBM:GetSpellInfo(spellId)
 		--I want this to fail, and fail loudly (ie get reported when mods are completely missing the spellId)
 		if not spellId or spellId == "" then
@@ -6692,10 +6750,17 @@ do
 			end
 		end
 		if not selectedClient then return end
-		self:Debug("Requesting timer recovery to " .. selectedClient.name)
-		requestedFrom[selectedClient.name] = true
-		requestTime = GetTime()
-		SendAddonMessage(DBMPrefix, DBMSyncProtocol .. "\tRT", "WHISPER", selectedClient.name)
+		local length = string.len(selectedClient.name)
+		--Only send sync if it's to a target with a shorter name due to blizzard bug
+		--https://github.com/Stanzilla/WoWUIBugs/issues/573
+		if length < 47 then
+			self:Debug("Requesting timer recovery to " .. selectedClient.name)
+			requestedFrom[selectedClient.name] = true
+			requestTime = GetTime()
+			SendAddonMessage(DBMPrefix, DBMSyncProtocol .. "\tRT", "WHISPER", selectedClient.name)
+		else
+			self:Debug("Passing timer recovery due to blizzard bug to " .. selectedClient.name)
+		end
 	end
 
 	---@param mod DBMMod
@@ -6762,7 +6827,12 @@ do
 			--But only if we are not in combat with a boss
 			if DBT:GetBar(L.TIMER_BREAK) then
 				local remaining = DBT:GetBar(L.TIMER_BREAK).timer
-				SendAddonMessage(DBMPrefix, DBMSyncProtocol .. "\tBTR3\t" .. remaining, "WHISPER", target)
+				local length = string.len(target)
+				--Only send sync if it's to a target with a shorter name due to blizzard bug
+				--https://github.com/Stanzilla/WoWUIBugs/issues/573
+				if length < 47 then
+					SendAddonMessage(DBMPrefix, DBMSyncProtocol .. "\tBTR3\t" .. remaining, "WHISPER", target)
+				end
 			end
 			return
 		end
@@ -6800,25 +6870,35 @@ end
 ---@param mod DBMMod
 function DBM:SendCombatInfo(mod, target)
 	if not dbmIsEnabled then return end
-	return SendAddonMessage(DBMPrefix, (DBMSyncProtocol .. "\tCI\t%s\t%s"):format(mod.id, GetTime() - mod.combatInfo.pull), "WHISPER", target)
+	local length = string.len(target)
+	--Only send sync if it's to a target with a shorter name due to blizzard bug
+	--https://github.com/Stanzilla/WoWUIBugs/issues/573
+	if length < 47 then
+		return SendAddonMessage(DBMPrefix, (DBMSyncProtocol .. "\tCI\t%s\t%s"):format(mod.id, GetTime() - mod.combatInfo.pull), "WHISPER", target)
+	end
 end
 
 ---@param mod DBMMod
 function DBM:SendTimerInfo(mod, target)
 	if not dbmIsEnabled then return end
-	for _, v in ipairs(mod.timers) do
-		--Pass on any timer that has no type, or has one that isn't an ai timer
-		if not v.type or v.type and v.type ~= "ai" then
-			for _, uId in ipairs(v.startedTimers) do
-				local elapsed, totalTime, timeLeft
-				if select("#", string.split("\t", uId)) > 1 then
-					elapsed, totalTime = v:GetTime(select(2, string.split("\t", uId)))
-				else
-					elapsed, totalTime = v:GetTime()
-				end
-				timeLeft = totalTime - elapsed
-				if timeLeft > 0 and totalTime > 0 then
-					SendAddonMessage(DBMPrefix, (DBMSyncProtocol .. "\tTR\t%s\t%s\t%s\t%s\t%s"):format(mod.id, timeLeft, totalTime, uId, v.paused and "1" or "0"), "WHISPER", target)
+	local length = string.len(target)
+	--Only send sync if it's to a target with a shorter name due to blizzard bug
+	--https://github.com/Stanzilla/WoWUIBugs/issues/573
+	if length < 47 then
+		for _, v in ipairs(mod.timers) do
+			--Pass on any timer that has no type, or has one that isn't an ai timer
+			if not v.type or v.type and v.type ~= "ai" then
+				for _, uId in ipairs(v.startedTimers) do
+					local elapsed, totalTime, timeLeft
+					if select("#", string.split("\t", uId)) > 1 then
+						elapsed, totalTime = v:GetTime(select(2, string.split("\t", uId)))
+					else
+						elapsed, totalTime = v:GetTime()
+					end
+					timeLeft = totalTime - elapsed
+					if timeLeft > 0 and totalTime > 0 then
+						SendAddonMessage(DBMPrefix, (DBMSyncProtocol .. "\tTR\t%s\t%s\t%s\t%s\t%s"):format(mod.id, timeLeft, totalTime, uId, v.paused and "1" or "0"), "WHISPER", target)
+					end
 				end
 			end
 		end
@@ -6828,10 +6908,15 @@ end
 ---@param mod DBMMod
 function DBM:SendVariableInfo(mod, target)
 	if not dbmIsEnabled then return end
-	for vname, v in pairs(mod.vb) do
-		local v2 = tostring(v)
-		if v2 then
-			SendAddonMessage(DBMPrefix, (DBMSyncProtocol .. "\tVI\t%s\t%s\t%s"):format(mod.id, vname, v2), "WHISPER", target)
+	local length = string.len(target)
+	--Only send sync if it's to a target with a shorter name due to blizzard bug
+	--https://github.com/Stanzilla/WoWUIBugs/issues/573
+	if length < 47 then
+		for vname, v in pairs(mod.vb) do
+			local v2 = tostring(v)
+			if v2 then
+				SendAddonMessage(DBMPrefix, (DBMSyncProtocol .. "\tVI\t%s\t%s\t%s"):format(mod.id, vname, v2), "WHISPER", target)
+			end
 		end
 	end
 end
@@ -7006,6 +7091,10 @@ end
 do
 	local forceDisabled = false
 	function DBM:Disable(forceDisable)
+		for _, mod in ipairs(inCombat) do
+			-- force combat end if anything is active because :Unschedule below breaks wipe detection leaving you in a weird state
+			DBM:EndCombat(mod, true, true, "DBM:Disable() called")
+		end
 		DBMScheduler:Unschedule()
 		dbmIsEnabled = false
 		forceDisabled = forceDisable
@@ -7138,20 +7227,38 @@ end)
 
 --copied from big wigs with permission from funkydude. Modified by MysticalOS
 function DBM:RoleCheck(ignoreLoot)
-	local spec = GetSpecialization()
-	if not spec then return end
-	local role = GetSpecializationRole(spec)
-	if not role then return end
-	local specID = GetLootSpecialization()
-	local _, _, _, _, lootrole = GetSpecializationInfoByID(specID)
+	local role
+	if private.isRetail then
+		local spec = GetSpecialization()
+		if not spec then return end
+		role = GetSpecializationRole(spec)
+		if not role then return end
+		local specID = GetLootSpecialization()
+		local _, _, _, _, lootrole = GetSpecializationInfoByID(specID)
+		--Loot reminder even if spec isn't known or we are in LFR where we have a valid for role without us being ones that set us.
+		if not ignoreLoot and lootrole and (role ~= lootrole) and self.Options.RoleSpecAlert then
+			self:AddMsg(L.LOOT_SPEC_REMINDER:format(_G[role] or CL.UNKNOWN, _G[lootrole]))
+		end
+	else--Cata
+		if not currentSpecID then
+			DBM:SetCurrentSpecInfo()
+		end
+		if currentSpecID and private.specRoleTable[currentSpecID] then
+			if private.specRoleTable[currentSpecID]["Healer"] then
+				role = "HEALER"
+			elseif private.specRoleTable[currentSpecID]["Tank"] then
+				role = "TANK"
+			else
+				role = "DAMAGER"
+			end
+		else--By some miracle, despite excessive redundancy, it still failed because classic spagetti code.
+			role = "DAMAGER"--Set default role (which is what cataclysm does btw, it sets everyone to damager on raid join unless changed by our mod)
+		end
+	end
 	if not InCombatLockdown() and not IsFalling() and ((IsPartyLFG() and (difficulties.difficultyIndex == 14 or difficulties.difficultyIndex == 15)) or not IsPartyLFG()) then
 		if UnitGroupRolesAssigned("player") ~= role then
 			UnitSetRole("player", role)
 		end
-	end
-	--Loot reminder even if spec isn't known or we are in LFR where we have a valid for role without us being ones that set us.
-	if not ignoreLoot and lootrole and (role ~= lootrole) and self.Options.RoleSpecAlert then
-		self:AddMsg(L.LOOT_SPEC_REMINDER:format(_G[role] or CL.UNKNOWN, _G[lootrole]))
 	end
 end
 
@@ -7378,7 +7485,7 @@ do
 		if uId then--This version includes ONLY melee dps
 			local name = GetUnitName(uId, true)
 			--First we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
-			if private.isRetail and raid[name].specID then--We know their specId
+			if (private.isRetail or private.isCata) and raid[name].specID then--We know their specId
 				local specID = raid[name].specID
 				return private.specRoleTable[specID]["MeleeDps"]
 			else
@@ -7429,7 +7536,7 @@ do
 			end
 			--Now we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
 			local name = GetUnitName(uId, true)
-			if private.isRetail and raid[name].specID then--We know their specId
+			if (private.isRetail or private.isCata) and raid[name].specID then--We know their specId
 				local specID = raid[name].specID
 				return private.specRoleTable[specID]["Melee"]
 			else
@@ -7464,7 +7571,7 @@ do
 	function DBM:IsRanged(uId)
 		if uId then
 			local name = GetUnitName(uId, true)
-			if private.isRetail and raid[name].specID then--We know their specId
+			if (private.isRetail or private.isCata) and raid[name].specID then--We know their specId
 				local specID = raid[name].specID
 				return private.specRoleTable[specID]["Ranged"]
 			else
@@ -7482,7 +7589,7 @@ do
 	function bossModPrototype:IsSpellCaster(uId)
 		if uId then
 			local name = GetUnitName(uId, true)
-			if private.isRetail and raid[name].specID then--We know their specId
+			if (private.isRetail or private.isCata) and raid[name].specID then--We know their specId
 				local specID = raid[name].specID
 				return private.specRoleTable[specID]["SpellCaster"]
 			else
@@ -7499,7 +7606,7 @@ do
 	function bossModPrototype:IsMagicDispeller(uId)
 		if uId then
 			local name = GetUnitName(uId, true)
-			if private.isRetail and raid[name].specID then--We know their specId
+			if (private.isRetail or private.isCata) and raid[name].specID then--We know their specId
 				local specID = raid[name].specID
 				return private.specRoleTable[specID]["MagicDispeller"]
 			else
@@ -7625,7 +7732,7 @@ do
 		if not private.isRetail then
 			if private.specRoleTable[currentSpecID]["Tank"] then
 				-- 17 defensive stance, 5487 bear form, 9634 dire bear, 25780 righteous fury
-				if playerIsTank or GetShapeshiftFormID() == 18 or DBM:UnitBuff('player', 5487, 9634) then
+				if playerIsTank or GetShapeshiftFormID() == 18 or DBM:UnitBuff("player", 5487, 9634) then
 					playerIsTank = true
 					return true
 				end
@@ -8084,7 +8191,16 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, ico
 	end
 end
 
+---Still used for situations we may use static arrows to point for a specific way to move. Legacy arrows also supported toward/away from specific player units
+---@meta
+---@alias arrowTypes
+---|1: Shows an arrow pointing toward player target
+---|2: Shows an arrow pointing away from player target
+---|3: Shows an arrow pointing toward specific location
+---@param name string Option name
+---@param spellId number if used, auto localizes using spell or journal id. if left blank uses generic description
 ---@param default SpecFlags|boolean?
+---@param isRunTo arrowTypes|number
 function bossModPrototype:AddArrowOption(name, spellId, default, isRunTo)
 	if isRunTo == true then isRunTo = 2 end--Support legacy
 	self.DefaultOptions[name] = (default == nil) or default
@@ -8103,6 +8219,9 @@ function bossModPrototype:AddArrowOption(name, spellId, default, isRunTo)
 	end
 end
 
+---Legacy object at this point. Range checks aren't added to new modules due to no longer being usable inside raids. they should NOT be removed from old modules in event blizzard ever adds built in functionality we can automate
+---@param range number|string Non optional, should be number if fixed ranged or string with custom string such as "various" or "10/6"
+---@param spellId number? if used, auto localizes using spell or journal id. if left blank uses generic description
 ---@param default SpecFlags|boolean?
 function bossModPrototype:AddRangeFrameOption(range, spellId, default)
 	self.DefaultOptions["RangeFrame"] = (default == nil) or default
@@ -8119,6 +8238,9 @@ function bossModPrototype:AddRangeFrameOption(range, spellId, default)
 	self:SetOptionCategory("RangeFrame", "misc")
 end
 
+---Legacy object at this point. HUD checks aren't added to new modules due to no longer being usable inside raids.
+---@param name string Option name
+---@param spellId number? if used, auto localizes using spell or journal id. if left blank uses generic description
 ---@param default SpecFlags|boolean?
 function bossModPrototype:AddHudMapOption(name, spellId, default)
 	self.DefaultOptions[name] = (default == nil) or default
@@ -8135,7 +8257,10 @@ function bossModPrototype:AddHudMapOption(name, spellId, default)
 	self:SetOptionCategory(name, "misc")
 end
 
+---@param name string Option name
+---@param spellId number if used, auto localizes using spell or journal id. if left blank uses generic description
 ---@param default SpecFlags|boolean?
+---@param forceDBM boolean? Used in very rare cases we need to use nameplate feature without a clean place to use enable/disable callbacks for 3rd party NP addons
 function bossModPrototype:AddNamePlateOption(name, spellId, default, forceDBM)
 	if not spellId then
 		error("AddNamePlateOption must provide valid spellId", 2)
@@ -8150,6 +8275,7 @@ function bossModPrototype:AddNamePlateOption(name, spellId, default, forceDBM)
 	self.localization.options[name] = forceDBM and L.AUTO_NAMEPLATE_OPTION_TEXT_FORCED:format(spellId) or L.AUTO_NAMEPLATE_OPTION_TEXT:format(spellId)
 end
 
+---@param spellId number? if used, auto localizes using spell or journal id. if left blank uses generic description
 ---@param default SpecFlags|boolean?
 function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion, optionalThreshold)
 	local oVersion = ""
@@ -8792,6 +8918,24 @@ end)
 test:RegisterLocalHook("GetTime", function(val)
 	local old = GetTime
 	GetTime = val
+	return old
+end)
+
+test:RegisterLocalHook("UnitDetailedThreatSituation", function(val)
+	local old = UnitDetailedThreatSituation
+	UnitDetailedThreatSituation = val
+	return old
+end)
+
+test:RegisterLocalHook("UnitAffectingCombat", function(val)
+	local old = UnitAffectingCombat
+	UnitAffectingCombat = val
+	return old
+end)
+
+test:RegisterLocalHook("UnitGUID", function(val)
+	local old = UnitGUID
+	UnitGUID = val
 	return old
 end)
 

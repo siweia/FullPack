@@ -94,6 +94,9 @@ function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 		mt
 	)
 	test:Trace(obj, "NewMod", name, modId)
+	if test.testRunning and test.Mocks and test.Mocks.SetModEnvironment then
+		test.Mocks:SetModEnvironment(2)
+	end
 
 	if tonumber(name) and EJ_GetEncounterInfo and EJ_GetEncounterInfo(tonumber(name)) then
 		local t = EJ_GetEncounterInfo(tonumber(name))
@@ -299,15 +302,20 @@ end
 ---@param customunitID string? if provided, makes check require GUID match this unitID (such as "target")
 ---@param loose boolean? In a loose check, this just checks if we're in combat and alone. Designed for solo runs like torghast or delves
 ---@param allowFriendly boolean?
+---@param strict boolean? Used for even more strict filtering that makes it also require player themselves are in combat (usually used in outdoor world such as timeless isle)
 ---@return boolean
-function bossModPrototype:IsValidWarning(sourceGUID, customunitID, loose, allowFriendly)
+function bossModPrototype:IsValidWarning(sourceGUID, customunitID, loose, allowFriendly, strict)
 	if loose and InCombatLockdown() and GetNumGroupMembers() < 2 then return true end
 	if customunitID then
 		if UnitExists(customunitID) and UnitGUID(customunitID) == sourceGUID and UnitAffectingCombat(customunitID) and (allowFriendly or not UnitIsFriend("player", customunitID)) then return true end
 	else
 		local unitId = DBM:GetUnitIdFromGUID(sourceGUID)
 		if unitId and UnitExists(unitId) and UnitAffectingCombat(unitId) and (allowFriendly or not UnitIsFriend("player", unitId)) then
-			return true
+			if strict and not InCombatLockdown() then
+				return false
+			else
+				return true
+			end
 		end
 	end
 	return false
@@ -532,6 +540,7 @@ do
 		end
 
 		local unitID
+		-- Always assume we are currently targeting the unit in question in tests
 		if UnitGUID("target") == sourceGUID or test.testRunning then
 			unitID = "target"
 		elseif not private.isClassic and (UnitGUID("focus") == sourceGUID) then
@@ -869,7 +878,9 @@ function bossModPrototype:ScheduleMethod(t, method, ...)
 	if not self[method] then
 		error(("Method %s does not exist"):format(tostring(method)), 2)
 	end
-	return self:Schedule(t, self[method], self, ...)
+	local id = self:Schedule(t, self[method], self, ...)
+	test:Trace(self, "SetScheduleMethodName", id, self, method, ...)
+	return id
 end
 bossModPrototype.ScheduleEvent = bossModPrototype.ScheduleMethod
 

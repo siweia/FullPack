@@ -1,8 +1,9 @@
 local mod	= DBM:NewMod("NeltharusTrash", "DBM-Party-Dragonflight", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240412191704")
+mod:SetRevision("20240520102954")
 --mod:SetModelID(47785)
+--mod:SetZone(1234)--FIXME RIGHT ID
 mod.isTrashMod = true
 
 mod:RegisterEvents(

@@ -1,8 +1,9 @@
 local mod	= DBM:NewMod("HallsofInfusionTrash", "DBM-Party-Dragonflight", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240513062426")
+mod:SetRevision("20240520102954")
 --mod:SetModelID(47785)
+--mod:SetZone(1234)--FIXME RIGHT ID
 mod.isTrashMod = true
 
 mod:RegisterEvents(

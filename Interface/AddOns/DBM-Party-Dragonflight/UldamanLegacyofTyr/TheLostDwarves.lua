@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2475, "DBM-Party-Dragonflight", 2, 1197)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240513062426")
+mod:SetRevision("20240521083837")
 mod:SetCreatureID(184580, 184581, 184582)
 mod:SetEncounterID(2555)
 mod:SetBossHPInfoToHighest()
@@ -30,7 +30,6 @@ mod:RegisterEventsInCombat(
 --]]
 --Baelog
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24740))
-local warnHeavyArrow							= mod:NewTargetNoFilterAnnounce(369573, 3)
 local warnWildCleave							= mod:NewSpellAnnounce(369563, 3, nil, "Tank")
 
 local specWarnHeavyArrow						= mod:NewSpecialWarningDodge(369573, nil, nil, nil, 2, 2)
@@ -103,6 +102,13 @@ function mod:OnCombatEnd()
 		DBM.RangeCheck:Hide()
 	end
 end
+
+local UnitPower = UnitPower
+DBM.Test:RegisterLocalHook("UnitPower", function(val)
+	local old = UnitPower
+	UnitPower = val
+	return old
+end)
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

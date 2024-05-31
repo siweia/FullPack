@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,challenge,timewalker"
 
-mod:SetRevision("20230504231118")
+mod:SetRevision("20240517054509")
 mod:SetCreatureID(56732)
 mod:SetEncounterID(1416)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -58,7 +58,7 @@ end
 		else
 			warnDragonStrike:Show()
 		end
-		timerDragonStrikeCD:Start()
+		timerDragonStrikeCD:Start(self:IsMythicPlus() and 15.7 or 12.2)
 	elseif spellId == 106841 then--phase 2 dragonstrike
 		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnJadeDragonStrike:Show()
