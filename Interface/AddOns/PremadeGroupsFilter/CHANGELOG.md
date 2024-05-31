@@ -1,7 +1,7 @@
 # Premade Groups Filter
 
-## [5.6.1](https://github.com/0xbs/premade-groups-filter/tree/5.6.1) (2024-05-13)
-[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/5.6.0...5.6.1) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
+## [5.7.0](https://github.com/0xbs/premade-groups-filter/tree/5.7.0) (2024-05-24)
+[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/5.6.1...5.7.0) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
 
-- Improve sort order of applications.  
-    Add new keywords `isapp` and `apporder` for sorting applications to the top via `apporder desc` (see #255)  
+- Support Pandaria Remix, add keywords for old raids (fix #262, fix #260, fix #230)  
+- Add debug line  
