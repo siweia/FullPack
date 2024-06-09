@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2530, "DBM-Raids-Dragonflight", 2, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240426174649")
+mod:SetRevision("20240601044946")
 mod:SetCreatureID(200912, 200913, 200918)
 mod:SetEncounterID(2693)
 mod:SetUsedIcons(1, 2, 3)
@@ -312,7 +312,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.tankSafeClear = false
 		local amount = args.amount or 1
 		warnInfusedExplosion:Show(args.amount or 1)
-		timerInfusedExplosion:Restart()
+		timerInfusedExplosion:Stop()
+		timerInfusedExplosion:Start()
 		self:Unschedule(resetRaidDebuff)
 		self:Schedule(21, resetRaidDebuff, self)--1 extra second for good measure
 	elseif spellId == 407327 then

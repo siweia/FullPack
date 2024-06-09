@@ -1,53 +1,29 @@
 # DBM - Core
 
-## [10.2.46](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/10.2.46) (2024-05-30)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/10.2.45...10.2.46) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [10.2.47](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/10.2.47) (2024-06-07)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/10.2.46...10.2.47) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- Ready the tag  
-- Fix bug causing all cata journal based spells in RAID to show invalid classic support message, make this a force update  
-    Also force update for retail since this core update also has the disconnect workaround for long character names on long realm names that blizzard has taken longer than a month to fix themselves  
-- Work around blizzard whisper disconnect bug (for the second time in recent years) with addon comms  
-- Tests: enforce minimum real FPS to avoid lags  
-    This also enables a "run as fast as possible" mode just by setting the  
-    factor to a very huge value.  
-- UI/Tests: small UI fixes  
-    Correctly handle tests named like "a/b/c" and "a/b" at the same time.  
-    (But please don't create tests named like that)  
-- UI/Tests: Add big "Run all" button  
-- Tests: clean up use of DBM.Options for timewarp setting  
-- UI/Tests: make time warp slider exponential  
-- Split tocs and cleanup tocs  
-- Add UI for tests  
-- Make UpdateReminder frame more flexible  
-    Automatically set height to allow for more than 3 lines of text and  
-    avoid odd frame size for short texts (e.g., URL copy frames).  
-    Also allow user to configure width and text alignment.  
-- Clean up combat state on DBM:Disable()  
-- Tests: simulate a consistent frame rate of 30 fps  
-    Previously the simulated frame rate was the same as the real frame rate,  
-    so if you set a high replay speed and your game got laggy you simulated  
-    fewer OnUpdate calls, which can make logs less deterministic.  
-    The diff in Diurna shows such a case; it now consistently unschedules  
-    the scheduled announce before the event gets processed.  
-- Tests: correctly hook OnUpdate of frames created during the test  
-- Tests: fix rewiring args.destName to real player name  
-- Diurna: update test with new feature  
-    GetTime() global is now overriden in mods when tests are running, no  
-    more ugly self:GetTime() :)  
-- Tests: add a way to acknowledge/ignore warnings  
-- Tests: report deltas between Show/Start calls  
-- Tests: track and report calls to :Schedule() properly  
-    Potential problem: recursive schedule calls will look a bit ugly in the  
-    test report, but so far I haven't seen a mod that uses this excessively.  
-- Tests: fix error on importing test results if you have other files in target dir  
-- Tests: Replay UNIT_* events without implying they are _UNFILTERED  
-- Tests: make it easier to inject mocks into mods by changing the mod's environment  
-- Tests: add mock for UnitGUID  
-- Fix some potential nil index errors  
-    Not a problem in every instance of this because usually there is some  
-    check on the Unit that would never pass if it doesn't exist.  
-- Scheduler: clean up  
-    I'm not sure why I wrote it that way 🤷‍♂️  
-    unpack() takes parameters to handle exactly this case.  
-- Fix https://github.com/DeadlyBossMods/DeadlyBossMods/issues/1109 by actually canceling seeds timer on intermission  
+- Prep new tag  
+- Make all tocs multi toc and support war within versioning so it's clearer addon IS compatible with war within beta  
+    Also make all raid mods public to show just how ready DBM has been for war within ;)  
+- Restore wrath client compat for C\_Addons  
+- Fix error  
+- Fix invalid spellId in delves  
+- Fix and close https://github.com/DeadlyBossMods/DeadlyBossMods/issues/1100  
+- Fix and close https://github.com/DeadlyBossMods/DeadlyBossMods/issues/980  
+- Fix and close https://github.com/DeadlyBossMods/DeadlyBossMods/issues/979  
+- Fix and close https://github.com/DeadlyBossMods/DeadlyBossMods/issues/1086  
+- note updating  
+- fix a condition where auto logging would fail if traveling between a mapID set as a special consideration and an instance (special consideration are zones that are known to border other zoneIds without loading screens). The new code will now ensure auto logging can run on situations "secondaryloadcheck" only fires once (instead of twice) by changing the condition ordering. The race condition that existed before for fixing mythic+ logging is now being handled a different way.  
+    TL/DR, auto logging for vault and aberus (when set to log whole zone) should be fixed (amirdrassil was never affected).  
+- Push voice pack sounds update  
+- Misc api docs in boredom  
+- Improve PLAYER\_SPECIALIZATION\_CHANGED to only care about player unit  
+- Fix dragonflight tests not loading, and while at it prevent them from loading on non retail  
+- Don't send incompatible comms on triala ccounts. Closes https://github.com/DeadlyBossMods/DeadlyBossMods/issues/1111  
+- Deprecate restart object in all modules  
+- delete restart object, it doesn't work. this will allow luacheck to find any mod using it, so it can be replaced with what does work  
+- another handful of commons, rest would require a lot of mod or git digging  
+- more voice version data  
+- Update VoicePackSounds to include new version 17 media, and now also denote versions of all sounds from version 12 up. TODO, denote all files renamed in version 12 as well  
 - bump alpha  

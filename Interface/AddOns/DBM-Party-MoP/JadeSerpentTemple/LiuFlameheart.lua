@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,challenge,timewalker"
 
-mod:SetRevision("20240517054509")
+mod:SetRevision("20240605152629")
 mod:SetCreatureID(56732)
 mod:SetEncounterID(1416)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -42,7 +42,7 @@ local timerDragonStrikeCD		= mod:NewNextTimer(15.7, 106823, nil, nil, 2, 5, nil,
 local timerJadeDragonStrikeCD	= mod:NewNextTimer(15.7, 106841, nil, nil, 2, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.HEALER_ICON)--Kicks affect entire group as well (which are part of tank combo)
 
 function mod:OnCombatStart(delay)
-	timerDragonStrikeCD:Start(11.6-delay)
+	timerDragonStrikeCD:Start(self:IsMythicPlus() and 11.6 or 8.2-delay)
 end
 
  function mod:SPELL_CAST_START(args)

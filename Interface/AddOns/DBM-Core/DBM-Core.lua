@@ -75,15 +75,15 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20240530232740")
+DBM.Revision = parseCurseDate("20240607202110")
 
 local fakeBWVersion, fakeBWHash = 330, "8c25119"--330.1
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "10.2.46"--Core version
+DBM.DisplayVersion = "10.2.47"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2024, 5, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+DBM.ReleaseRevision = releaseDate(2024, 6, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 PForceDisable = 12--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -577,12 +577,44 @@ private.IsEncounterInProgress = IsEncounterInProgress
 
 local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS-- for Phanx' Class Colors
 
+-- Polyfill for C_AddOns, Cata, Era and Retail have the fully featured table, Wrath has only Metadata (as of Jun 6th 2024)
+local C_AddOns
+do
+	local cachedAddOns = nil
+	C_AddOns = {
+		GetAddOnMetadata = _G.C_AddOns.GetAddOnMetadata,
+		GetNumAddOns = _G.C_AddOns.GetNumAddOns or GetNumAddOns, ---@diagnostic disable-line:deprecated
+		GetAddOnInfo = _G.C_AddOns.GetAddOnInfo or GetAddOnInfo, ---@diagnostic disable-line:deprecated
+		LoadAddOn = _G.C_AddOns.LoadAddOn or LoadAddOn, ---@diagnostic disable-line:deprecated
+		IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded or IsAddOnLoaded, ---@diagnostic disable-line:deprecated
+		EnableAddOn = _G.C_AddOns.EnableAddOn or EnableAddOn, ---@diagnostic disable-line:deprecated
+		GetAddOnEnableState = _G.C_AddOns.GetAddOnEnableState or function(addon, character)
+			return GetAddOnEnableState(character, addon) ---@diagnostic disable-line:deprecated
+		end,
+		DoesAddOnExist = _G.C_AddOns.DoesAddOnExist or function(addon)
+			if not cachedAddOns then
+				cachedAddOns = {}
+				for i = 1, GetNumAddOns() do ---@diagnostic disable-line:deprecated
+					cachedAddOns[GetAddOnInfo(i)] = true ---@diagnostic disable-line:deprecated
+				end
+			end
+			return cachedAddOns[addon]
+		end,
+	}
+end
+
 ---------------------------------
 --  General (local) functions  --
 ---------------------------------
 local checkEntry, removeEntry = tableUtils.checkEntry, tableUtils.removeEntry
 
---Whisper/Whisper Sync filter function
+---Whisper/Whisper Sync filter function
+---@param sender any string for non realId and number for realId. Pass to true for realID
+---@param checkFriends boolean? checks sender against friends list
+---@param checkGuild boolean? checks sender against guild roster
+---@param filterRaid boolean? checks sender against group members of your raid
+---@param isRealIdMessage boolean? set true if this is a RealID whisper/comm
+---@return boolean
 local function checkForSafeSender(sender, checkFriends, checkGuild, filterRaid, isRealIdMessage)
 	if checkFriends then
 		--Check Battle.net friends
@@ -646,13 +678,15 @@ local function sendSync(protocol, prefix, msg)
 		msg = msg or ""
 		local fullname = playerName .. "-" .. normalizedPlayerRealm
 		local sendChannel = "SOLO"
-		if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
-			sendChannel = "INSTANCE_CHAT"
-		else
-			if IsInRaid() then
-				sendChannel = "RAID"
-			elseif IsInGroup(1) then
-				sendChannel = "PARTY"
+		if not IsTrialAccount() then
+			if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
+				sendChannel = "INSTANCE_CHAT"
+			else
+				if IsInRaid() then
+					sendChannel = "RAID"
+				elseif IsInGroup(1) then
+					sendChannel = "PARTY"
+				end
 			end
 		end
 		if sendChannel == "SOLO" then
@@ -695,13 +729,15 @@ local function sendLoggedSync(protocol, prefix, msg)
 		msg = msg or ""
 		local fullname = playerName .. "-" .. normalizedPlayerRealm
 		local sendChannel = "SOLO"
-		if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
-			sendChannel = "INSTANCE_CHAT"
-		else
-			if IsInRaid() then
-				sendChannel = "RAID"
-			elseif IsInGroup(1) then
-				sendChannel = "PARTY"
+		if not IsTrialAccount() then
+			if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
+				sendChannel = "INSTANCE_CHAT"
+			else
+				if IsInRaid() then
+					sendChannel = "RAID"
+				elseif IsInGroup(1) then
+					sendChannel = "PARTY"
+				end
 			end
 		end
 		if sendChannel == "SOLO" then
@@ -726,13 +762,15 @@ local function SendWorldSync(self, protocol, prefix, msg, noBNet)
 	DBM:Debug("SendWorldSync running for " .. prefix)
 	local fullname = playerName .. "-" .. normalizedPlayerRealm
 	local sendChannel = "SOLO"
-	if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
-		sendChannel = "INSTANCE_CHAT"
-	else
-		if IsInRaid() then
-			sendChannel = "RAID"
-		elseif IsInGroup(1) then
-			sendChannel = "PARTY"
+	if not IsTrialAccount() then
+		if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
+			sendChannel = "INSTANCE_CHAT"
+		else
+			if IsInRaid() then
+				sendChannel = "RAID"
+			elseif IsInGroup(1) then
+				sendChannel = "PARTY"
+			end
 		end
 	end
 	if sendChannel == "SOLO" then
@@ -743,7 +781,7 @@ local function SendWorldSync(self, protocol, prefix, msg, noBNet)
 			DBM:Debug("|cffff0000SendWorldSync failed with a result of " ..result.. " for prefix |r" .. prefix)
 		end
 	end
-	if IsInGuild() then
+	if IsInGuild() and sendChannel ~= "SOLO" then
 		SendAddonMessage(DBMPrefix, fullname .. "\t" .. (protocol or DBMSyncProtocol) .. "\t" .. prefix .. "\t" .. msg, "GUILD")--Even guild syncs send realm so we can keep antispam the same across realid as well.
 	end
 	if self.Options.EnableWBSharing and not noBNet then
@@ -780,6 +818,7 @@ end
 -- sends a whisper to a player by their character name or BNet presence id
 -- returns true if the message was sent, nil otherwise
 local function sendWhisper(target, msg)
+	if IsTrialAccount() then return end
 	if type(target) == "number" then
 		if not BNIsSelf(target) then -- Never send BNet whispers to ourselves
 			BNSendWhisper(target, msg)
@@ -1447,11 +1486,13 @@ do
 	local isLoaded = false
 	local onLoadCallbacks, disabledMods = {}, {}
 
+	---@param self DBM
 	local function infiniteLoopNotice(self, message)
 		AddMsg(self, message)
 		self:Schedule(30, infiniteLoopNotice, self, message)
 	end
 
+	---@param self DBM
 	local function runDelayedFunctions(self)
 		--Check if voice pack missing
 		local activeVP = self.Options.ChosenVoicePack2
@@ -2183,7 +2224,7 @@ do
 			DBT:CancelBar(text)
 			fireEvent("DBM_TimerStop", "DBMPizzaTimer")
 			-- Fire cancelation of pizza timer
-			if broadcast then
+			if broadcast and not IsTrialAccount() then
 				text = text:sub(1, 16)
 				text = text:gsub("%%t", UnitName("target") or "<no target>")
 				if whisperTarget then
@@ -2356,7 +2397,7 @@ do
 				twipe(forceDisablePerson)
 				inRaid = true
 				sendSync(DBMSyncProtocol, "H")
-				if dbmIsEnabled then
+				if dbmIsEnabled and not IsTrialAccount() then
 					SendAddonMessage("BigWigs", bwVersionQueryString:format(0, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or "RAID")
 				end
 				if private.isRetail or private.isCata then
@@ -2445,7 +2486,7 @@ do
 				twipe(forceDisablePerson)
 				inRaid = true
 				sendSync(DBMSyncProtocol, "H")
-				if dbmIsEnabled then
+				if dbmIsEnabled and not IsTrialAccount() then
 					SendAddonMessage("BigWigs", bwVersionQueryString:format(0, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or "PARTY")
 				end
 				if private.isRetail or private.isCata then
@@ -3197,7 +3238,7 @@ end
 function DBM:PLAYER_LEVEL_CHANGED()
 	private.playerLevel = UnitLevel("player")
 	if private.playerLevel < 15 and private.playerLevel > 9 then
-		self:PLAYER_SPECIALIZATION_CHANGED() -- Classic this is "CHARACTER_POINTS_CHANGED", but we just use this function anyway
+		self:PLAYER_SPECIALIZATION_CHANGED("player") -- Classic this is "CHARACTER_POINTS_CHANGED", but we just use this function anyway
 	end
 end
 
@@ -3610,9 +3651,11 @@ do
 	end
 
 	--Retail API doesn't need throttle
-	function DBM:PLAYER_SPECIALIZATION_CHANGED()
-		self:Unschedule(throttledTalentCheck)
-		throttledTalentCheck(self)
+	function DBM:PLAYER_SPECIALIZATION_CHANGED(unit)
+		if unit == "player" then
+			self:Unschedule(throttledTalentCheck)
+			throttledTalentCheck(self)
+		end
 	end
 	--Throttle checks on talent point updates so that if multiple CHARACTER_POINTS_CHANGED fire in succession
 	--It doesnt spam DBMs code and cause performance lag
@@ -3822,20 +3865,14 @@ do
 		difficulties:RefreshCache(true)
 		LastGroupSize = instanceGroupSize
 		self:Debug("Instance Check fired with mapID " .. mapID .. " and difficulty " .. difficulty, 2)
-		-- Auto Logging for entire zone if record only bosses is off
-		-- This Bypasses Same ID check because we still need to recheck this on keystone difficulty check
-		if not self.Options.RecordOnlyBosses then
-			if LastInstanceType == "raid" or LastInstanceType == "party" then
-				self:StartLogging(0)
-			else
-				self:StopLogging()
-			end
-		end
-		if LastInstanceMapID == mapID then
+		-- Difficulty index also checked because in challenge modes and M+, difficulty changes with no ID change
+		-- if ID changes we need to execute updated autologging and checkavailable mods checks
+		-- ID and difficulty hasn't changed, don't waste cpu doing anything else (example situation, porting into garrosh stage 4 is a loading screen)
+		if LastInstanceMapID == mapID and difficulties.difficultyIndex == difficulty then
 			self:TransitionToDungeonBGM()
-			self:Debug("No action taken because mapID hasn't changed since last check", 2)
+			self:Debug("No action taken because mapID and difficultyID hasn't changed since last check", 2)
 			return
-		end--ID hasn't changed, don't waste cpu doing anything else (example situation, porting into garrosh stage 4 is a loading screen)
+		end
 		LastInstanceMapID = mapID
 		DBMScheduler:UpdateZone()--Also update zone in scheduler
 		fireEvent("DBM_UpdateZone", mapID)
@@ -3855,6 +3892,14 @@ do
 				for i = #inCombat, 1, -1 do
 					self:EndCombat(inCombat[i], true, nil, "Left zone of world boss")
 				end
+			end
+		end
+		-- Auto Logging for entire zone if record only bosses is off
+		if not self.Options.RecordOnlyBosses then
+			if LastInstanceType == "raid" or LastInstanceType == "party" then
+				self:StartLogging(0)
+			else
+				self:StopLogging()
 			end
 		end
 		-- LoadMod
@@ -4273,7 +4318,12 @@ do
 
 	local dummyMod -- dummy mod for the pull timer
 
+	---@param self DBM
+	---@param sender string
+	---@param timer any string or number only, but luaLS bitches if I actually tell it that
+	---@param blizzardTimer boolean?
 	local function pullTimerStart(self, sender, timer, blizzardTimer)
+		if not timer then return end
 		if private.newShit and not blizzardTimer then return end--Ignore old DBM version comms
 		local unitId
 		if sender then--Blizzard cancel events triggered by system (such as encounter start) have no sender
@@ -4455,7 +4505,7 @@ do
 			end
 			return
 		end
-		if DBM.Options.FakeBWVersion and not dbmIsEnabled then
+		if DBM.Options.FakeBWVersion and not dbmIsEnabled and not IsTrialAccount() then
 			SendAddonMessage("BigWigs", bwVersionResponseString:format(fakeBWVersion, fakeBWHash), IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
 			return
 		end
@@ -5340,7 +5390,7 @@ do
 	function DBM:RAID_BOSS_WHISPER(msg)
 		--Make it easier for devs to detect whispers they are unable to see
 		--TINTERFACE\\ICONS\\ability_socererking_arcanewrath.blp:20|t You have been branded by |cFFF00000|Hspell:156238|h[Arcane Wrath]|h|r!"
-		if msg and msg ~= "" and IsInGroup() and not _G["BigWigs"] then
+		if msg and msg ~= "" and IsInGroup() and not _G["BigWigs"] and not IsTrialAccount() then
 			SendAddonMessage("Transcriptor", msg, IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")--Send any emote to transcriptor, even if no spellid
 		end
 	end
@@ -5463,7 +5513,7 @@ do
 	end
 
 	local tooltipsHidden = false
-	--Delayed Guild Combat sync object so we allow time for RL to disable them
+	---Delayed Guild Combat sync object so we allow time for RL to disable them
 	local function delayedGCSync(modId, difficultyIndex, difficultyModifier, name, thisTime, wipeHP)
 		if not dbmIsEnabled then return end
 		if not private.statusGuildDisabled and updateNotificationDisplayed == 0 then
@@ -6447,7 +6497,7 @@ end
 ---Future proofing EJ_GetSectionInfo compat layer to make it easier updatable.
 function DBM:EJ_GetSectionInfo(sectionID)--Should be number, but accepts string too since Blizzards api converts strings to number.
 	if not sectionID then return end
-	if private.isClassic or private.isWrath then
+	if private.isClassic or private.isBCC or private.isWrath then
 		return "EJ_GetSectionInfo not supported on Classic, please report this message and boss"
 	end
 	--Built in wow api extension doesn't know EJ_GetSectionInfo can accept strings
@@ -6809,7 +6859,7 @@ end
 do
 	local spamProtection = {}
 	function DBM:SendTimers(target)
-		if not dbmIsEnabled then return end
+		if not dbmIsEnabled or IsTrialAccount() then return end
 		self:Debug("SendTimers requested by " .. target, 2)
 		local spamForTarget = spamProtection[target] or 0
 		-- just try to clean up the table, that should keep the hash table at max. 4 entries or something :)
@@ -6869,7 +6919,7 @@ end
 
 ---@param mod DBMMod
 function DBM:SendCombatInfo(mod, target)
-	if not dbmIsEnabled then return end
+	if not dbmIsEnabled or IsTrialAccount() then return end
 	local length = string.len(target)
 	--Only send sync if it's to a target with a shorter name due to blizzard bug
 	--https://github.com/Stanzilla/WoWUIBugs/issues/573
@@ -6880,7 +6930,7 @@ end
 
 ---@param mod DBMMod
 function DBM:SendTimerInfo(mod, target)
-	if not dbmIsEnabled then return end
+	if not dbmIsEnabled or IsTrialAccount() then return end
 	local length = string.len(target)
 	--Only send sync if it's to a target with a shorter name due to blizzard bug
 	--https://github.com/Stanzilla/WoWUIBugs/issues/573
@@ -6907,7 +6957,7 @@ end
 
 ---@param mod DBMMod
 function DBM:SendVariableInfo(mod, target)
-	if not dbmIsEnabled then return end
+	if not dbmIsEnabled or IsTrialAccount() then return end
 	local length = string.len(target)
 	--Only send sync if it's to a target with a shorter name due to blizzard bug
 	--https://github.com/Stanzilla/WoWUIBugs/issues/573
@@ -6940,7 +6990,6 @@ do
 		return alive
 	end
 
-	--Cleanup in 8.x with C_Map.GetMapGroupMembersInfo
 	local function getNumRealAlivePlayers()
 		local alive = 0
 		local isInInstance = IsInInstance()
@@ -7328,6 +7377,7 @@ do
 	local requiresRecentKill = {
 		[2238] = 2519--Fyrakk in Amirdrassil
 	}
+	---@param self DBM
 	local function checkOptions(self, id, mapID)
 		--First, check if this specific cut scene should be blocked at all via the 3 primary rules
 		local allowBlock = false
@@ -8797,6 +8847,7 @@ end
 --  Synchronization  --
 -----------------------
 do
+	---@param self DBMMod
 	local function prepareSync(self, event, ...)
 		event = event or ""
 		local arg = select("#", ...) > 0 and strjoin("\t", tostringall(...)) or ""
@@ -8830,7 +8881,7 @@ do
 end
 
 function bossModPrototype:SendBigWigsSync(msg, extra)
-	if not dbmIsEnabled then return end
+	if not dbmIsEnabled or IsTrialAccount() then return end
 	msg = "B^" .. msg
 	if extra then
 		msg = msg .. "^" .. extra
