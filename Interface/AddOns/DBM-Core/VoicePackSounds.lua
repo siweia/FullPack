@@ -180,6 +180,7 @@
 ---|"lineapart"
 ---|"linegather"
 ---|"linesoon"
+---|"lineyou" 17
 ---|"lowsanity"
 ---|"markedfordeath" 12
 ---|"mblue"
@@ -237,7 +238,7 @@
 ---|"pthree"
 ---|"ptran"
 ---|"ptwo"
----|"pullin"
+---|"pullin" 12
 ---|"pulverize" 12
 ---|"purpleyou" 17
 ---|"pushbackincoming"
