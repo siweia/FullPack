@@ -17,12 +17,14 @@ local strfind, format, strsplit = string.find, string.format, string.split
 local gsub, pairs, tonumber, tostring = gsub, pairs, tonumber, tostring
 local floor, ceil = math.floor, math.ceil
 local IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
+local GetSpellDescription = C_Spell.GetSpellDescription or GetSpellDescription
 
 DB.Devs = {
 	["寧德-加尔"] = true,
 	["图咿-万色星辰"] = true,
 	["打蛋獵手-地獄吼"] = true,
 	["Huniverster-Koranos"] = true,
+	["Therefire-TheseGoToEleven"] = true,
 }
 local function isDeveloper()
 	local rawName = gsub(DB.MyFullName, "%s", "")

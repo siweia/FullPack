@@ -70,7 +70,10 @@ tinsert(C.defaultThemes, function()
 	B.ReskinInput(searchPanel.SearchBox)
 	searchPanel.SearchBox:SetHeight(22)
 	B.ReskinFilterButton(searchPanel.FilterButton)
-	if DB.isNewPatch then
+
+	if DB.isWW then
+		B.ReskinFilterReset(searchPanel.FilterButton.ResetButton)
+	else
 		B.ReskinFilterReset(searchPanel.FilterButton.ResetToDefaults)
 		B.ReskinEditBox(MinRatingFrame.MinRating)
 		MinRatingFrame.MinRating:SetHeight(18)
@@ -196,8 +199,13 @@ tinsert(C.defaultThemes, function()
 	B.ReskinInput(entryCreation.Name)
 	B.ReskinInput(entryCreation.ItemLevel.EditBox)
 	B.ReskinInput(entryCreation.VoiceChat.EditBox)
-	B.ReskinDropDown(entryCreation.GroupDropDown)
-	B.ReskinDropDown(entryCreation.ActivityDropDown)
+	if DB.isWW then
+		B.ReskinDropDown(entryCreation.GroupDropdown)
+		B.ReskinDropDown(entryCreation.ActivityDropdown)
+	else
+		B.ReskinDropDown(entryCreation.GroupDropDown)
+		B.ReskinDropDown(entryCreation.ActivityDropDown)
+	end
 	B.ReskinDropDown(entryCreation.PlayStyleDropdown)
 	B.ReskinCheck(entryCreation.MythicPlusRating.CheckButton)
 	B.ReskinInput(entryCreation.MythicPlusRating.EditBox)

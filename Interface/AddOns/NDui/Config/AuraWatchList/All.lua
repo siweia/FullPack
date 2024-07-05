@@ -78,6 +78,7 @@ local list = {
 		{AuraID = 423611, UnitID = "player"},	-- 灵魂燃烧
 		{AuraID = 429262, UnitID = "player"},	-- 水润滋养
 		{AuraID = 417452, UnitID = "player"},	-- 增速沙漏
+		{AuraID = 381966, UnitID = "player"},	-- 驭电之术
 		{AuraID = 394456, UnitID = "player", Value = true},	-- 巢穴守护者的屏障
 		-- 盟约，TODO: 部分已被整合进天赋，待整理
 		{AuraID = 331937, UnitID = "player", Flash = true},	-- 沉醉
@@ -319,7 +320,7 @@ local list = {
 		{AuraID = 48792, UnitID = "target"},	-- 冰封之韧
 		{AuraID = 48707, UnitID = "target"},	-- 反魔法护罩
 		{AuraID = 61336, UnitID = "target"},	-- 生存本能
-		{AuraID = 197690, UnitID = "target"},	-- 防御姿态
+		{AuraID = 197690, UnitID = "target"},	-- 防御姿态 -- isWW: removed?
 		{AuraID = 147833, UnitID = "target"},	-- 援护
 		{AuraID = 186265, UnitID = "target"},	-- 灵龟守护
 		{AuraID = 113862, UnitID = "target"},	-- 强化隐形术

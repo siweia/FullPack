@@ -35,11 +35,17 @@ C.themes["Blizzard_AchievementUI"] = function()
 		end
 	end
 
-	B.ReskinDropDown(AchievementFrameFilterDropDown)
-	AchievementFrameFilterDropDown:ClearAllPoints()
-	AchievementFrameFilterDropDown:SetPoint("TOPRIGHT", -120, 0)
-	AchievementFrameFilterDropDownText:ClearAllPoints()
-	AchievementFrameFilterDropDownText:SetPoint("CENTER", -10, 1)
+	if DB.isWW then
+		B.ReskinFilterButton(AchievementFrameFilterDropdown)
+		AchievementFrameFilterDropdown:ClearAllPoints()
+		AchievementFrameFilterDropdown:SetPoint("TOPLEFT", 25, -5)
+	else
+		B.ReskinDropDown(AchievementFrameFilterDropDown)
+		AchievementFrameFilterDropDown:ClearAllPoints()
+		AchievementFrameFilterDropDown:SetPoint("TOPRIGHT", -120, 0)
+		AchievementFrameFilterDropDownText:ClearAllPoints()
+		AchievementFrameFilterDropDownText:SetPoint("CENTER", -10, 1)
+	end
 	B.ReskinClose(AchievementFrameCloseButton)
 
 	-- Search box

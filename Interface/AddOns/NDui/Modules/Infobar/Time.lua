@@ -246,7 +246,7 @@ local itemCache = {}
 local function GetItemLink(itemID)
 	local link = itemCache[itemID]
 	if not link then
-		link = select(2, GetItemInfo(itemID))
+		link = select(2, C_Item.GetItemInfo(itemID))
 		itemCache[itemID] = link
 	end
 	return link
@@ -451,7 +451,7 @@ info.onMouseUp = function(_, btn)
 	if btn == "RightButton" then
 		ToggleTimeManager()
 	elseif btn == "MiddleButton" then
-		if not WeeklyRewardsFrame then LoadAddOn("Blizzard_WeeklyRewards") end
+		if not WeeklyRewardsFrame then C_AddOns.LoadAddOn("Blizzard_WeeklyRewards") end
 		if InCombatLockdown() then
 			B:TogglePanel(WeeklyRewardsFrame)
 		else

@@ -35,6 +35,12 @@ if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
 
+-- isWW, depreacated
+local GetSpellLossOfControlCooldown = C_Spell and C_Spell.GetSpellLossOfControlCooldown or GetSpellLossOfControlCooldown
+local IsAttackSpell = C_Spell and C_Spell.IsAutoAttackSpell or IsAttackSpell
+local IsPressHoldReleaseSpell = C_Spell and C_Spell.IsPressHoldReleaseSpell or IsPressHoldReleaseSpell
+local IsAutoRepeatSpell = C_Spell and C_Spell.IsAutoRepeatSpell or IsAutoRepeatSpell
+
 -- Lua functions
 local type, error, tostring, tonumber, assert, select = type, error, tostring, tonumber, assert, select
 local setmetatable, wipe, unpack, pairs, next = setmetatable, wipe, unpack, pairs, next
@@ -2180,7 +2186,7 @@ else
 			-- based on ActionButton_UpdateFlyout in ActionButton.lua
 			local actionType = GetActionInfo(self._state_action)
 			if actionType == "flyout" then
-				local isMouseOverButton =  GetMouseFocus() == self;
+				local isMouseOverButton = GetMouseFocus and GetMouseFocus() == self;
 
 				local isButtonDown
 				if (isButtonDownOverride ~= nil) then
@@ -2371,9 +2377,9 @@ end
 
 Item.HasAction               = function(self) return true end
 Item.GetActionText           = function(self) return "" end
-Item.GetTexture              = function(self) return GetItemIcon(self._state_action) end
+Item.GetTexture              = function(self) return C_Item.GetItemIconByID(self._state_action) end
 Item.GetCharges              = function(self) return nil end
-Item.GetCount                = function(self) return GetItemCount(self._state_action, nil, true) end
+Item.GetCount                = function(self) return C_Item.GetItemCount(self._state_action, nil, true) end
 Item.GetCooldown             = function(self) return GetItemCooldown(getItemId(self._state_action)) end
 Item.IsAttack                = function(self) return nil end
 Item.IsEquipped              = function(self) return IsEquippedItem(self._state_action) end

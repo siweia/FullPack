@@ -28,6 +28,7 @@
 	<Script file="LootHistory.lua"/>
 	<Script file="LossOfControlFrame.lua"/>
 	<Script file="MailFrame.lua"/>
+	<Script file="Menu.lua"/>
 	<Script file="MerchantFrame.lua"/>
 	<Script file="ModelPreviewFrame.lua"/>
 	<Script file="MovieFrame.lua"/>
@@ -35,7 +36,6 @@
 	<Script file="ObjectiveTracker.lua"/>
 	<Script file="PetBattleUI.lua"/>
 	<Script file="PetitionFrame.lua"/>
-	<Script file="PetStable.lua"/>
 	<Script file="PVEFrame.lua"/>
 	<Script file="PVPMatch.lua"/>
 	<Script file="QuestFrame.lua"/>

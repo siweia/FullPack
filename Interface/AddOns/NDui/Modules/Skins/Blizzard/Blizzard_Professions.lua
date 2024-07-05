@@ -33,14 +33,15 @@ function B:ReskinProfessionsFlyout(parent)
 
 	for i = 1, parent:GetNumChildren() do
 		local child = select(i, parent:GetChildren())
-		if child.HideUnownedCheckBox then
+		local checkbox = child.HideUnownedCheckBox or child.HideUnownedCheckbox -- isWW
+		if checkbox then
 			flyoutFrame = child
 
 			B.StripTextures(flyoutFrame)
 			flyoutFrame.bg = B.SetBD(flyoutFrame)
 			hooksecurefunc(flyoutFrame, "SetParent", resetFrameStrata)
-			B.ReskinCheck(flyoutFrame.HideUnownedCheckBox)
-			flyoutFrame.HideUnownedCheckBox.bg:SetInside(nil, 6, 6)
+			B.ReskinCheck(checkbox)
+			checkbox.bg:SetInside(nil, 6, 6)
 			B.ReskinTrimScroll(flyoutFrame.ScrollBar)
 			reskinFlyoutButton(flyoutFrame.UndoItem)
 			hooksecurefunc(flyoutFrame.ScrollBox, "Update", refreshFlyoutButtons)
@@ -100,13 +101,13 @@ local function reskinProfessionForm(form)
 		hl:SetInside(button.bg)
 	end
 
-	local trackBox = form.TrackRecipeCheckBox
+	local trackBox = form.TrackRecipeCheckBox or form.TrackRecipeCheckbox --isWW
 	if trackBox then
 		B.ReskinCheck(trackBox)
 		trackBox:SetSize(24, 24)
 	end
 
-	local checkBox = form.AllocateBestQualityCheckBox
+	local checkBox = form.AllocateBestQualityCheckBox or form.AllocateBestQualityCheckbox --isWW
 	if checkBox then
 		B.ReskinCheck(checkBox)
 		checkBox:SetSize(24, 24)
@@ -215,6 +216,10 @@ C.themes["Blizzard_Professions"] = function()
 	B.Reskin(craftingPage.ViewGuildCraftersButton)
 	reskinArrowInput(craftingPage.CreateMultipleInputBox)
 	B.ReskinMinMax(frame.MaximizeMinimize)
+	if DB.isWW then
+		B.ReskinEditBox(craftingPage.MinimizedSearchBox)
+		B.ReskinIcon(craftingPage.ConcentrationDisplay.Icon)
+	end
 
 	local guildFrame = craftingPage.GuildFrame
 	B.StripTextures(guildFrame)
@@ -249,7 +254,11 @@ C.themes["Blizzard_Professions"] = function()
 	if recipeList.BackgroundNineSlice then recipeList.BackgroundNineSlice:Hide() end -- in case blizz rename
 	B.CreateBDFrame(recipeList, .25):SetInside()
 	B.ReskinEditBox(recipeList.SearchBox)
-	B.ReskinFilterButton(recipeList.FilterButton)
+	if DB.isWW then
+		B.ReskinFilterButton(recipeList.FilterDropdown)
+	else
+		B.ReskinFilterButton(recipeList.FilterButton)
+	end
 
 	local form = craftingPage.SchematicForm
 	B.StripTextures(form)
@@ -260,6 +269,9 @@ C.themes["Blizzard_Professions"] = function()
 
 	local rankBar = craftingPage.RankBar
 	reskinRankBar(rankBar)
+	if DB.isWW then
+		B.ReskinArrow(rankBar.ExpansionDropdownButton, "down")
+	end
 
 	B.ReskinArrow(craftingPage.LinkButton, "right")
 	craftingPage.LinkButton:SetSize(20, 20)
@@ -321,11 +333,18 @@ C.themes["Blizzard_Professions"] = function()
 	if recipeList.BackgroundNineSlice then recipeList.BackgroundNineSlice:Hide() end -- in case blizz rename
 	B.CreateBDFrame(recipeList, .25):SetInside()
 	B.ReskinEditBox(recipeList.SearchBox)
-	B.ReskinFilterButton(recipeList.FilterButton)
+	if DB.isWW then
+		B.ReskinFilterButton(recipeList.FilterDropdown)
+	else
+		B.ReskinFilterButton(recipeList.FilterButton)
+	end
 
 	B.ReskinTab(browseFrame.PublicOrdersButton)
 	B.ReskinTab(browseFrame.GuildOrdersButton)
 	B.ReskinTab(browseFrame.PersonalOrdersButton)
+	if DB.isWW then
+		B.ReskinTab(browseFrame.NpcOrdersButton)
+	end
 	B.StripTextures(browseFrame.OrdersRemainingDisplay)
 	B.CreateBDFrame(browseFrame.OrdersRemainingDisplay, .25)
 

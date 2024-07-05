@@ -10,14 +10,20 @@ tinsert(C.defaultThemes, function()
 	TimeManagerStopwatchCheck:SetCheckedTexture(DB.pushedTex)
 	B.CreateBDFrame(TimeManagerStopwatchCheck)
 
-	TimeManagerAlarmHourDropDown:SetWidth(80)
-	TimeManagerAlarmMinuteDropDown:SetWidth(80)
-	TimeManagerAlarmAMPMDropDown:SetWidth(90)
+	if DB.isWW then
+		B.ReskinDropDown(TimeManagerAlarmTimeFrame.HourDropdown)
+		B.ReskinDropDown(TimeManagerAlarmTimeFrame.MinuteDropdown)
+		B.ReskinDropDown(TimeManagerAlarmTimeFrame.AMPMDropdown)
+	else
+		TimeManagerAlarmHourDropDown:SetWidth(80)
+		TimeManagerAlarmMinuteDropDown:SetWidth(80)
+		TimeManagerAlarmAMPMDropDown:SetWidth(90)
+		B.ReskinDropDown(TimeManagerAlarmHourDropDown)
+		B.ReskinDropDown(TimeManagerAlarmMinuteDropDown)
+		B.ReskinDropDown(TimeManagerAlarmAMPMDropDown)
+	end
 
 	B.ReskinPortraitFrame(TimeManagerFrame)
-	B.ReskinDropDown(TimeManagerAlarmHourDropDown)
-	B.ReskinDropDown(TimeManagerAlarmMinuteDropDown)
-	B.ReskinDropDown(TimeManagerAlarmAMPMDropDown)
 	B.ReskinInput(TimeManagerAlarmMessageEditBox)
 	B.ReskinCheck(TimeManagerAlarmEnabledButton)
 	B.ReskinCheck(TimeManagerMilitaryTimeCheck)

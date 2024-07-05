@@ -1,6 +1,7 @@
 local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local r, g, b = DB.r, DB.g, DB.b
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 
 local function ReskinMissionPage(self)
 	B.StripTextures(self)
@@ -785,7 +786,11 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	-- Pick
 	local Pick = GarrisonRecruiterFrame.Pick
 	B.Reskin(Pick.ChooseRecruits)
-	B.ReskinDropDown(Pick.ThreatDropDown)
+	if DB.isWW then
+		B.ReskinDropDown(Pick.ThreatDropdown)
+	else
+		B.ReskinDropDown(Pick.ThreatDropDown)
+	end
 	B.ReskinRadio(Pick.Radio1)
 	B.ReskinRadio(Pick.Radio2)
 

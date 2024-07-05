@@ -9,7 +9,7 @@ local UnitIsGroupLeader, UnitIsGroupAssistant = UnitIsGroupLeader, UnitIsGroupAs
 local IsPartyLFG, IsLFGComplete, HasLFGRestrictions = IsPartyLFG, IsLFGComplete, HasLFGRestrictions
 local GetInstanceInfo, GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, SetRaidTarget = GetInstanceInfo, GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, SetRaidTarget
 local GetSpellCharges, GetSpellInfo, UnitAura = GetSpellCharges, GetSpellInfo, UnitAura
-local GetTime, SendChatMessage, IsAddOnLoaded = GetTime, SendChatMessage, IsAddOnLoaded
+local GetTime, SendChatMessage = GetTime, SendChatMessage
 local IsAltKeyDown, IsControlKeyDown, IsShiftKeyDown, InCombatLockdown = IsAltKeyDown, IsControlKeyDown, IsShiftKeyDown, InCombatLockdown
 local UnitExists, UninviteUnit = UnitExists, UninviteUnit
 local DoReadyCheck, InitiateRolePoll, GetReadyCheckStatus = DoReadyCheck, InitiateRolePoll, GetReadyCheckStatus
@@ -17,6 +17,7 @@ local C_Timer_After = C_Timer.After
 local LeaveParty = C_PartyInfo.LeaveParty
 local ConvertToRaid = C_PartyInfo.ConvertToRaid
 local ConvertToParty = C_PartyInfo.ConvertToParty
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 
 function M:RaidTool_Visibility(frame)
 	if IsInGroup() then
@@ -261,8 +262,8 @@ function M:RaidTool_Marker(parent)
 	local markerButton = CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton
 	if not markerButton then
 		for _, addon in next, {"Blizzard_CUFProfiles", "Blizzard_CompactRaidFrames"} do
-			EnableAddOn(addon)
-			LoadAddOn(addon)
+			C_AddOns.EnableAddOn(addon)
+			C_AddOns.LoadAddOn(addon)
 		end
 	end
 	if markerButton then
@@ -515,6 +516,8 @@ function M:RaidTool_CreateMenu(parent)
 end
 
 function M:RaidTool_EasyMarker()
+	if DB.isWW then return end
+
 	local menuList = {}
 
 	local function GetMenuTitle(color, text)

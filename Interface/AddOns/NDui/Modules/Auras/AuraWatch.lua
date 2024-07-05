@@ -9,7 +9,7 @@ local AuraList, FrameList, UnitIDTable, IntTable, IntCD, myTable, cooldownTable 
 local pairs, select, tinsert, tremove, wipe, strfind = pairs, select, table.insert, table.remove, table.wipe, strfind
 local InCombatLockdown, UnitAura, GetPlayerInfoByGUID, UnitInRaid, UnitInParty = InCombatLockdown, UnitAura, GetPlayerInfoByGUID, UnitInRaid, UnitInParty
 local GetTime, GetSpellInfo, GetSpellCooldown, GetSpellCharges, GetTotemInfo, IsPlayerSpell = GetTime, GetSpellInfo, GetSpellCooldown, GetSpellCharges, GetTotemInfo, IsPlayerSpell
-local GetItemCooldown, GetItemInfo, GetInventoryItemLink, GetInventoryItemCooldown = GetItemCooldown, GetItemInfo, GetInventoryItemLink, GetInventoryItemCooldown
+local GetItemCooldown, GetItemInfo, GetInventoryItemLink, GetInventoryItemCooldown = GetItemCooldown, C_Item.GetItemInfo, GetInventoryItemLink, GetInventoryItemCooldown
 
 -- DataConvert
 local function DataAnalyze(v)
@@ -627,13 +627,6 @@ function A:IsAuraTracking(value, eventType, sourceGUID, sourceName, sourceFlags,
 end
 
 local cache = {}
-local soundKitID = SOUNDKIT.ALARM_CLOCK_WARNING_3
-
-local playSoundSpells = {
-	[396364] = true,
-	[396369] = true,
-	[240447] = true,
-}
 
 function A:AuraWatch_UpdateInt(event, ...)
 	if not IntCD.List then return end
@@ -665,7 +658,6 @@ function A:AuraWatch_UpdateInt(event, ...)
 
 			cache[timestamp] = spellID
 		end
-		if C.db["AuraWatch"]["QuakeRing"] and eventList[eventType] and playSoundSpells[spellID] then PlaySound(soundKitID, "Master") end -- 'Ding' on quake
 
 		if #cache > 666 then wipe(cache) end
 	end
