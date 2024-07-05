@@ -1,12 +1,12 @@
 # BagSync
 
-## [v19.40](https://github.com/Xruptor/BagSync/tree/v19.40) (2024-05-09)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.38...v19.40) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.41](https://github.com/Xruptor/BagSync/tree/v19.41) (2024-06-11)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.40...v19.41) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Fixed Compatibility with ArkInventory  
-    * Fixed a nil tooltip issue that would occur rarely with BattlePets when using ArkInventory. (Fixes #335)  
-    * TOC Update  
-- Added a Taint Library to help reduce common Blizzard Taints  
-- Merge pull request #334 from nanjuekaien1/patch-63  
+- Keyring and TWW Fix  
+    * Fixed an error caused by TWW depreciated GetItemClassInfo.  (Fixes #338)  
+    * Fixed an issue where the KeyRing on disabled servers is now used to store equipment information. (Fixes #337)  
+- Merge pull request #336 from nanjuekaien1/patch-64  
     Update BagSync.toc  
+- Update release.yml  
 - Update BagSync.toc  
