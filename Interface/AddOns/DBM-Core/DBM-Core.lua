@@ -75,16 +75,16 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20240629082334")
+DBM.Revision = parseCurseDate("20240728191115")
 
-local fakeBWVersion, fakeBWHash = 337, "848363e"--337.4
+local fakeBWVersion, fakeBWHash = 349, "fc8e3ff"--349.1
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "10.2.50"--Core version
+DBM.DisplayVersion = "11.0.2"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2024, 6, 29) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-PForceDisable = 12--When this is incremented, trigger force disable regardless of major patch
+DBM.ReleaseRevision = releaseDate(2024, 7, 28) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+PForceDisable = 14--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
 -- support for github downloads, which doesn't support curse keyword expansion
@@ -196,7 +196,7 @@ DBM.DefaultOptions = {
 	FilterDispel = true,
 	FilterCrowdControl = true,
 	FilterTrashWarnings2 = true,
-	FilterVoidFormSay = true,
+	FilterVoidFormSay2 = false,
 	AutologBosses = false,
 	AdvancedAutologBosses = false,
 	RecordOnlyBosses = false,
@@ -436,7 +436,7 @@ local targetEventsRegistered, combatInitialized, healthCombatInitialized, watchF
 -- Nil variables
 local currentSpecID, currentSpecName, currentSpecGroup, loadOptions, checkWipe, checkBossHealth, checkCustomBossHealth, fireEvent, LastInstanceType, breakTimerStart, AddMsg, delayedFunction, handleSync, lastGroupLeader
 -- 0 variables
-local dbmToc, eeSyncReceived, cSyncReceived, showConstantReminder, updateNotificationDisplayed, updateSubNotificationDisplayed = 0, 0, 0, 0, 0, 0
+local eeSyncReceived, cSyncReceived, showConstantReminder, updateNotificationDisplayed, updateSubNotificationDisplayed = 0, 0, 0, 0, 0
 local LastInstanceMapID = -1
 
 local bannedMods = { -- a list of "banned" (meaning they are replaced by another mod or discontinued). These mods will not be loaded by DBM (and they wont show up in the GUI)
@@ -602,6 +602,9 @@ do
 		end,
 	}
 end
+
+-- this is not technically a lib and instead a standalone addon but the api is available via LibStub
+local CustomNames = C_AddOns.IsAddOnLoaded("CustomNames") and LibStub and LibStub("CustomNames")
 
 ---------------------------------
 --  General (local) functions  --
@@ -1572,7 +1575,6 @@ do
 					DBM.classicSubVersion = tonumber(string.sub(version, 2, 4)) or 0
 				end
 			end
-			dbmToc = tonumber(C_AddOns.GetAddOnMetadata("DBM-Core", "X-Min-Interface")) or 0
 			isLoaded = true
 			for _, v in ipairs(onLoadCallbacks) do
 				xpcall(v, geterrorhandler())
@@ -1961,6 +1963,8 @@ do
 		end
 	end
 
+	---@param event string
+	---@param ... any?
 	function DBM:FireEvent(event, ...)
 		fireEvent(event, ...)
 	end
@@ -2685,7 +2689,36 @@ do
 		return raid[name] and raid[name].id
 	end
 
-	local fullUids = {
+	local fullPlayerUids = {
+		"player", "party1", "party2", "party3", "party4",
+		"raid1", "raid2", "raid3", "raid4", "raid5", "raid6", "raid7", "raid8", "raid9", "raid10",
+		"raid11", "raid12", "raid13", "raid14", "raid15", "raid16", "raid17", "raid18", "raid19", "raid20",
+		"raid21", "raid22", "raid23", "raid24", "raid25", "raid26", "raid27", "raid28", "raid29", "raid30",
+		"raid31", "raid32", "raid33", "raid34", "raid35", "raid36", "raid37", "raid38", "raid39", "raid40"
+	}
+
+	---Used Strictly to look up Player UnitId by GUID
+	---@param self DBMModOrDBM
+	---@param playerGUID string
+	function DBM:GetRaidUnitIdByGuid(playerGUID)
+		local returnUnitID
+		if UnitTokenFromGUID then
+			returnUnitID = UnitTokenFromGUID(playerGUID)
+		end
+		if returnUnitID then
+			return returnUnitID
+		else
+			--Sadly this can't use caching from raid table, because we don't know the name, only the guid
+			for _, unitId in ipairs(fullPlayerUids) do
+				local guid2 = UnitGUID(unitId)
+				if playerGUID == guid2 then
+					return unitId
+				end
+			end
+		end
+	end
+
+	local fullEnemyUids = {
 		"boss1", "boss2", "boss3", "boss4", "boss5", "boss6", "boss7", "boss8", "boss9", "boss10",
 		"mouseover", "target", "focus", "focustarget", "targettarget", "mouseovertarget",
 		"party1target", "party2target", "party3target", "party4target",
@@ -2703,25 +2736,25 @@ do
 		"boss1", "boss2", "boss3", "boss4", "boss5", "boss6", "boss7", "boss8", "boss9", "boss10"
 	}
 
-	---Not to be confused with GetUnitIdFromCID
+	---Used Strictly to look up Enemy UnitId by GUID
 	---@param self DBMModOrDBM
-	---@param guid string
+	---@param enemyGUID string
 	---@param bossOnly boolean? --Used when you only need to check "boss" unitids. Bypasses UnitTokenFromGUID (which checks EVERYTHING)
-	function DBM:GetUnitIdFromGUID(guid, bossOnly)
+	function DBM:GetUnitIdFromGUID(enemyGUID, bossOnly)
 		local returnUnitID
 		--First use blizzard internal client token check but only if it's not boss only
-		--(because blizzard checks every token imaginable, even more than fullUids does and they have boss as the END in their order selection)
+		--(because blizzard checks every token imaginable, even more than fullEnemyUids does and they have boss as the END in their order selection)
 		--DBM prioiritzes the most common/useful tokens first, and rarely iterates passed even boss1, which is first token in OUR priorities
 		if UnitTokenFromGUID and not bossOnly then
-			returnUnitID = UnitTokenFromGUID(guid)
+			returnUnitID = UnitTokenFromGUID(enemyGUID)
 		end
 		if returnUnitID then
 			return returnUnitID
 		else
-			local usedTable = bossOnly and bossTargetuIds or fullUids
+			local usedTable = bossOnly and bossTargetuIds or fullEnemyUids
 			for _, unitId in ipairs(usedTable) do
 				local guid2 = UnitGUID(unitId)
-				if guid == guid2 then
+				if enemyGUID == guid2 then
 					return unitId
 				end
 			end
@@ -2745,7 +2778,7 @@ do
 			end
 		end
 		if not bossOnly then
-			for _, unitId in ipairs(fullUids) do
+			for _, unitId in ipairs(fullEnemyUids) do
 				local guid2 = UnitGUID(unitId)
 				local cid = self:GetCIDFromGUID(guid2)
 				if cid == creatureID then
@@ -2795,14 +2828,18 @@ do
 	---Shortens name but custom so we add * to off realmers instead of stripping it entirely like Ambiguate does
 	---<br>Technically GetUnitName without "true" can be used to shorten name to "name (*)" but "name*" is even shorter which is why we do this
 	function DBM:GetShortServerName(name)
-		if not self.Options.StripServerName then return name end--If strip is disabled, just return name
-		local shortName, serverName = string.split("-", name)
-		if serverName and serverName ~= playerRealm and serverName ~= normalizedPlayerRealm then
-			return shortName .. "*"
-		else
-			return name
-		end
-	end
+        if not self.Options.StripServerName then return name end--If strip is disabled, just return name
+        if CustomNames then
+			---@diagnostic disable-next-line: undefined-field
+            name = CustomNames.Get(name)
+        end
+        local shortName, serverName = string.split("-", name)
+        if serverName and serverName ~= playerRealm and serverName ~= normalizedPlayerRealm then
+            return shortName .. "*"
+        else
+            return name
+        end
+    end
 
 	---@param guid string
 	function DBM:GetFullPlayerNameByGUID(guid)
@@ -3163,6 +3200,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 			stats.storyPulls = stats.storyPulls or 0
 			stats.normalKills = stats.normalKills or 0
 			stats.normalPulls = stats.normalPulls or 0
+			stats.normalBestRank = stats.normalBestRank or 0
 			stats.heroicKills = stats.heroicKills or 0
 			stats.heroicPulls = stats.heroicPulls or 0
 			stats.challengeKills = stats.challengeKills or 0
@@ -3465,6 +3503,7 @@ function DBM:CreateDefaultModStats()
 	defaultStats.storyPulls = 0
 	defaultStats.normalKills = 0
 	defaultStats.normalPulls = 0
+	defaultStats.normalBestRank = 0
 	defaultStats.heroicKills = 0
 	defaultStats.heroicPulls = 0
 	defaultStats.challengeKills = 0
@@ -3729,33 +3768,49 @@ do
 	--local dragonflightZones = {[2522] = true, [2569] = true, [2549] = true}
 	local challengeScenarios = {[1148] = true, [1698] = true, [1710] = true, [1703] = true, [1702] = true, [1684] = true, [1673] = true, [1616] = true, [2215] = true}
 	local pvpZones = {[30] = true, [489] = true, [529] = true, [559] = true, [562] = true, [566] = true, [572] = true, [617] = true, [618] = true, [628] = true, [726] = true, [727] = true, [761] = true, [968] = true, [980] = true, [998] = true, [1105] = true, [1134] = true, [1170] = true, [1504] = true, [1505] = true, [1552] = true, [1681] = true, [1672] = true, [1803] = true, [1825] = true, [1911] = true, [2106] = true, [2107] = true, [2118] = true, [2167] = true, [2177] = true, [2197] = true, [2245] = true, [2373] = true, [2509] = true, [2511] = true, [2547] = true, [2563] = true}
-	local seasonalZones = {[2516] = true, [2526] = true, [2515] = true, [2521] = true, [2527] = true, [2519] = true, [2451] = true, [2520] = true}--DF Season 4
+	local seasonalZones = {[2516] = true, [2526] = true, [2515] = true, [2521] = true, [2527] = true, [2519] = true, [2451] = true, [2520] = true, [2652]=true, [2662]=true, [2660]=true, [2669]=true, [670]=true, [1822]=true, [2286]=true, [2290]=true}--DF Season 4 / TWW Season 1
 	--This never wants to spam you to use mods for trivial content you don't need mods for.
 	--It's intended to suggest mods for content that's relevant to your level (TW, leveling up in dungeons, or even older raids you can't just roll over)
 	function DBM:CheckAvailableMods()
 		if _G["BigWigs"] then return end--If they are running two boss mods at once, lets assume they are only using DBM for a specific feature (such as brawlers) and not nag
-		if not self:IsTrivial() then
+		if not self:IsTrivial() or seasonalZones[LastInstanceMapID] then
 			--TODO, bump checkedDungeon to WarWithin dungeon mods on retail in prepatch
 			local checkedDungeon = private.isRetail and "DBM-Party-Dragonflight" or private.isCata and "DBM-Party-Cataclysm" or private.isWrath and "DBM-Party-WotLK" or private.isBCC and "DBM-Party-BC" or "DBM-Party-Vanilla"
-			if (seasonalZones[LastInstanceMapID] or difficulties:InstanceType(LastInstanceMapID) == 2) and not C_AddOns.DoesAddOnExist(checkedDungeon) and not dungeonShown then
-				AddMsg(self, L.MOD_AVAILABLE:format("DBM Dungeon mods"), nil, private.isRetail or private.isCata)
-				dungeonShown = true
-			elseif (self:IsSeasonal("SeasonOfDiscovery") and sodRaids[LastInstanceMapID] or classicZones[LastInstanceMapID]) and not C_AddOns.DoesAddOnExist("DBM-Raids-Vanilla") then
-				AddMsg(self, L.MOD_AVAILABLE:format("DBM Vanilla/SoD mods"), nil, private.isClassic)--Play sound only in Vanilla
+			if (difficulties:InstanceType(LastInstanceMapID) == 2) then
+				if not C_AddOns.DoesAddOnExist(checkedDungeon) and not dungeonShown then
+					AddMsg(self, L.MOD_AVAILABLE:format("DBM Dungeon mods"), nil, private.isRetail or private.isCata)
+					dungeonShown = true
+				end
+				if self:IsSeasonal("SeasonOfDiscovery") then
+					self:AnnoyingPopupCheckZone(LastInstanceMapID, "Vanilla")
+				elseif seasonalZones[LastInstanceMapID] then--M+ Dungeons Only
+					self:AnnoyingPopupCheckZone(LastInstanceMapID, "Retail")
+				end
+			elseif (self:IsSeasonal("SeasonOfDiscovery") and sodRaids[LastInstanceMapID] or classicZones[LastInstanceMapID] or (LastInstanceMapID == 249 and private.isClassic)) then
+				if not C_AddOns.DoesAddOnExist("DBM-Raids-Vanilla") then
+					AddMsg(self, L.MOD_AVAILABLE:format("DBM Vanilla/SoD mods"), nil, private.isClassic)--Play sound only in Vanilla
+				end
 				--Reshow news message as well in classic flavors
 				--if not isRetail and (DBM.classicSubVersion or 0) < 1 then
 				--	C_TimerAfter(5, function() self:AddMsg(L.NEWS_UPDATE_REPEAT, nil, true) end)
 				--end
+				self:AnnoyingPopupCheckZone(LastInstanceMapID, "Vanilla") -- Show extra annoying popup in current content that's non trivial in classic
 			elseif bcZones[LastInstanceMapID] and not C_AddOns.DoesAddOnExist("DBM-Raids-BC") then
 				AddMsg(self, L.MOD_AVAILABLE:format("DBM Burning Crusade mods"), nil, private.isBCC)--Play sound only in TBC
-			elseif wrathZones[LastInstanceMapID] and not C_AddOns.DoesAddOnExist("DBM-Raids-WoTLK") then
-				AddMsg(self, L.MOD_AVAILABLE:format("DBM Wrath of the Lich King mods"), nil, private.isWrath)--Play sound only in wrath
+			elseif wrathZones[LastInstanceMapID] and not private.isClassic then
+				if not C_AddOns.DoesAddOnExist("DBM-Raids-WoTLK") then
+					AddMsg(self, L.MOD_AVAILABLE:format("DBM Wrath of the Lich King mods"), nil, private.isWrath)--Play sound only in wrath
+				end
 				--Reshow news message as well in classic flavors
 				--if not isRetail and (DBM.classicSubVersion or 0) < 1 then
 				--	C_TimerAfter(5, function() self:AddMsg(L.NEWS_UPDATE_REPEAT, nil, true) end)
 				--end
-			elseif cataZones[LastInstanceMapID] and not C_AddOns.DoesAddOnExist("DBM-Raids-Cata") then
-				AddMsg(self, L.MOD_AVAILABLE:format("DBM Cataclysm mods"), nil, private.isCata)--Play sound only in cata
+				self:AnnoyingPopupCheckZone(LastInstanceMapID, "Wrath") -- Show extra annoying popup in current content that's non trivial in classic
+			elseif cataZones[LastInstanceMapID] then
+				if not C_AddOns.DoesAddOnExist("DBM-Raids-Cata") then
+					AddMsg(self, L.MOD_AVAILABLE:format("DBM Cataclysm mods"), nil, private.isCata)--Play sound only in cata
+				end
+				self:AnnoyingPopupCheckZone(LastInstanceMapID, "Cata") -- Show extra annoying popup in current content that's non trivial in classic
 			elseif mopZones[LastInstanceMapID] and not C_AddOns.DoesAddOnExist("DBM-Raids-MoP") then
 				AddMsg(self, L.MOD_AVAILABLE:format("DBM Mists of Pandaria mods"))
 			elseif wodZones[LastInstanceMapID] and not C_AddOns.DoesAddOnExist("DBM-Raids-WoD") then
@@ -3964,7 +4019,7 @@ do
 			--Delay is still needed due to GetInstanceInfo not returning new information yet instantly on PLAYER_MAP_CHANGED
 			self:TransitionToDungeonBGM(false, true)
 			self:Unschedule(SecondaryLoadCheck)
-			self:Schedule(1, SecondaryLoadCheck, self, 1)
+--			self:Schedule(1, SecondaryLoadCheck, self, 1)
 			self:Schedule(5, SecondaryLoadCheck, self, 5)
 			if self:HasMapRestrictions() then
 				self.Arrow:Hide()
@@ -4342,7 +4397,7 @@ do
 		local unitId
 		if sender then--Blizzard cancel events triggered by system (such as encounter start) have no sender
 			if blizzardTimer then
-				unitId = self:GetUnitIdFromGUID(sender)
+				unitId = self:GetRaidUnitIdByGuid(sender)
 				sender = self:GetUnitFullName(unitId) or sender
 			else
 				unitId = self:GetRaidUnitId(sender)
@@ -4543,7 +4598,7 @@ do
 				if not checkEntry(newerVersionPerson, sender) then
 					newerVersionPerson[#newerVersionPerson + 1] = sender
 					DBM:Debug("Newer version detected from " .. sender .. " : Rev - " .. revision .. ", Ver - " .. version .. ", Rev Diff - " .. (revision - DBM.Revision), 3)
-					if (dbmToc < private.wowTOC or forceDisable > PForceDisable) and not checkEntry(forceDisablePerson, sender) then
+					if (forceDisable > PForceDisable) and not checkEntry(forceDisablePerson, sender) then
 						forceDisablePerson[#forceDisablePerson + 1] = sender
 						DBM:Debug("Newer force disable detected from " .. sender .. " : Rev - " .. forceDisable, 3)
 					end
@@ -4838,6 +4893,9 @@ do
 	end
 
 	guildSyncHandlers["WBA"] = function(sender, protocol, bossName, faction, spellId, time) -- Classic only
+		if DBM:IsSeasonal("SeasonOfDiscovery") then -- All World Buffs are spammy in SoD, disable
+			return
+		end
 		if not protocol or protocol ~= 4 or private.isRetail then return end--Ignore old versions
 		if lastBossEngage[bossName .. faction] and (GetTime() - lastBossEngage[bossName .. faction] < 30) then return end--We recently got a sync about this buff on this realm, so do nothing.
 		lastBossEngage[bossName .. faction] = GetTime()
@@ -5049,22 +5107,22 @@ do
 		end
 	end
 
-	function DBM:START_PLAYER_COUNTDOWN(initiatedByGuid, timeSeconds, _, _, initiatedByName)--totalTime, informChat
+	function DBM:START_PLAYER_COUNTDOWN(initiatedByGuid, timeSeconds)
 		--Ignore this event in combat
 		if #inCombat > 0 then return end
 --		if timeSeconds > 60 then--treat as a break timer
 --			breakTimerStart(self, timeSeconds, initiatedBy, true)
 --		else--Treat as a pull timer
 			--In TWW, initiatedByName is in a diff place. We solve this by simply checking new location cause that'll be nil on live
-			pullTimerStart(self, initiatedByName or initiatedByGuid, timeSeconds, true)
+			pullTimerStart(self, initiatedByGuid, timeSeconds, true)
 --		end
 	end
 
-	function DBM:CANCEL_PLAYER_COUNTDOWN(initiatedByGuid, _, initiatedByName)--informChat
+	function DBM:CANCEL_PLAYER_COUNTDOWN(initiatedByGuid)
 		--when CANCEL_PLAYER_COUNTDOWN is called by ENCOUNTER_START, sender is nil
 --		breakTimerStart(self, 0, initiatedBy, true)
 		--In TWW, initiatedByName is in a diff place. We solve this by simply checking new location cause that'll be nil on live
-		pullTimerStart(self, initiatedByName or initiatedByGuid, 0, true)
+		pullTimerStart(self, initiatedByGuid, 0, true)
 	end
 end
 
@@ -5345,6 +5403,9 @@ do
 			self:Debug("CHAT_MSG_MONSTER_YELL from " .. npc .. " while looking at " .. targetName, 2)
 		end
 		if not private.isRetail and not IsInInstance() then
+			if DBM:IsSeasonal("SeasonOfDiscovery") then -- All World Buffs are spammy in SoD, disable
+				return
+			end
 			if msg:find(L.WORLD_BUFFS.hordeOny) then
 				SendWorldSync(self, 4, "WBA", "Onyxia\tHorde\t22888\t15\t4")
 			elseif msg:find(L.WORLD_BUFFS.allianceOny) then
@@ -5634,6 +5695,7 @@ do
 			mod.engagedDiff = difficulties.savedDifficulty
 			mod.engagedDiffText = difficulties.difficultyText
 			mod.engagedDiffIndex = difficulties.difficultyIndex
+			mod.engagedDiffModifier = difficulties.difficultyModifier
 			mod.inCombat = true
 			---@class CombatInfo
 			local combatInfo = mod.combatInfo
@@ -5744,9 +5806,9 @@ do
 				--show speed timer
 				if self.Options.AlwaysShowSpeedKillTimer2 and mod.stats and not mod.ignoreBestkill and not mod.noStatistics then
 					local bestTime
-					if difficulties.difficultyIndex == 8 then--Mythic+/Challenge Mode
-						local bestMPRank = mod.stats.challengeBestRank or 0
-						if bestMPRank == difficulties.difficultyModifier then
+					if difficulties.difficultyIndex == 8 or difficulties.difficultyIndex == 208 or difficulties.difficultyIndex == 226 then--Mythic+/Challenge Mode, Delves, and sod Molten Core
+						local bestRank = mod.stats[statVarTable[difficulties.savedDifficulty] .. "BestRank"] or 0
+						if bestRank == difficulties.difficultyModifier then
 							--Don't show speed kill timer if not our highest rank. DBM only stores highest rank
 							bestTime = mod.stats[statVarTable[difficulties.savedDifficulty] .. "BestTime"]
 						end
@@ -5949,6 +6011,7 @@ do
 			local usedDifficulty = mod.engagedDiff or difficulties.savedDifficulty
 			local usedDifficultyText = mod.engagedDiffText or difficulties.difficultyText
 			local usedDifficultyIndex = mod.engagedDiffIndex or difficulties.difficultyIndex
+			local usedDifficultyModifier = mod.engagedDiffModifier or difficulties.difficultyModifier
 			local name = mod.combatInfo.name
 			local modId = mod.id
 			if wipe and mod.stats and not mod.noStatistics then
@@ -6042,11 +6105,11 @@ do
 					if bestTime and bestTime > 0 and bestTime < 1.5 then
 						mod.stats[statVarTable[usedDifficulty] .. "BestTime"] = thisTime
 					else
-						if usedDifficultyIndex == 8 then--Mythic+/Challenge Mode
-							if mod.stats.challengeBestRank > difficulties.difficultyModifier then--Don't save time stats at all
+						if usedDifficultyIndex == 8 or usedDifficultyIndex == 208 or usedDifficultyIndex == 226 then--Mythic+/Challenge Mode, Delves, and sod Molten Core
+							if mod.stats[statVarTable[usedDifficulty] .. "BestRank"] > usedDifficultyModifier then--Don't save time stats at all
 								--DO nothing
-							elseif mod.stats.challengeBestRank < difficulties.difficultyModifier then--Update best time and best rank, even if best time is lower (for a lower rank)
-								mod.stats.challengeBestRank = difficulties.difficultyModifier--Update best rank
+							elseif mod.stats[statVarTable[usedDifficulty] .. "BestRank"] < usedDifficultyModifier then--Update best time and best rank, even if best time is lower (for a lower rank)
+								mod.stats[statVarTable[usedDifficulty] .. "BestRank"] = usedDifficultyModifier--Update best rank
 								mod.stats[statVarTable[usedDifficulty] .. "BestTime"] = thisTime--Write this time no matter what.
 							else--Best rank must match current rank, so update time normally
 								mod.stats[statVarTable[usedDifficulty] .. "BestTime"] = mmin(bestTime or mhuge, thisTime)
@@ -6094,7 +6157,7 @@ do
 					local check = not private.statusGuildDisabled and (private.isRetail and ((usedDifficultyIndex == 8 or usedDifficultyIndex == 14 or usedDifficultyIndex == 15 or usedDifficultyIndex == 16) and InGuildParty()) or usedDifficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10) -- Classic
 					if not scenario and thisTimeString and check and not self.Options.DisableGuildStatus and updateNotificationDisplayed == 0 then
 						self:Unschedule(delayedGCSync, modId)
-						self:Schedule(private.isRetail and 1.5 or 3, delayedGCSync, modId, usedDifficultyIndex, difficulties.difficultyModifier, name, thisTimeString)
+						self:Schedule(private.isRetail and 1.5 or 3, delayedGCSync, modId, usedDifficultyIndex, usedDifficultyModifier, name, thisTimeString)
 					end
 					self:Schedule(1, self.AddMsg, self, msg)
 				end
@@ -6137,6 +6200,7 @@ do
 			mod.engagedDiff = nil
 			mod.engagedDiffText = nil
 			mod.engagedDiffIndex = nil
+			mod.engagedDiffModifier = nil
 			mod.vb.stageTotality = nil
 			if #inCombat == 0 then--prevent error if you pulled multiple boss. (Earth, Wind and Fire)
 				private.statusGuildDisabled, private.statusWhisperDisabled, private.raidIconsDisabled, private.chatBubblesDisabled = false, false, false, false
@@ -6343,9 +6407,10 @@ do
 			if MAX_TALENT_TABS then
 				for i = 1, MAX_TALENT_TABS do
 					if i <= numTabs then
-						local pointsSpent = private.isCata and select(5, GetTalentTabInfo(i)) or select(3, GetTalentTabInfo(i))
-						if pointsSpent > highestPointsSpent then
-							highestPointsSpent = pointsSpent
+						local _, _, wrathPointsSpent, _, pointsSpent = GetTalentTabInfo(i)--specID, specName will be used in next update once era spec table rebuilt
+						local usedPoints = private.isWrath and wrathPointsSpent or pointsSpent
+						if usedPoints > highestPointsSpent then
+							highestPointsSpent = usedPoints
 							currentSpecGroup = i
 							currentSpecID = playerClass .. tostring(i)--Associate specID with class name and tabnumber (class is used because spec name is shared in some spots like "holy")
 							currentSpecName = currentSpecID
@@ -6533,6 +6598,7 @@ do
 		GetSpellInfo, GetSpellTexture, GetSpellCooldown, GetSpellName = C_Spell.GetSpellInfo, C_Spell.GetSpellTexture, C_Spell.GetSpellCooldown, C_Spell.GetSpellName
 	else
 		newPath = false
+		---@diagnostic disable-next-line: undefined-field
 		GetSpellInfo, GetSpellTexture, GetSpellCooldown = _G.GetSpellInfo, _G.GetSpellTexture, _G.GetSpellCooldown
 	end
 	---Wrapper for Blizzard GetSpellInfo global that converts new table returns to old arg returns
@@ -6599,6 +6665,7 @@ do
 	---Wrapper for Blizzard GetSpellCooldown global that converts new table returns to old arg returns
 	---<br>This avoids having to significantly update nearly 20 years of boss mods.
 	---@param spellId string|number --Should be number, but accepts string too since Blizzards api converts strings to number.
+	---@return number, number, number
 	function DBM:GetSpellCooldown(spellId)
 		local start, duration, enable
 		if newPath then
@@ -7139,8 +7206,6 @@ do
 	function DBM:ForceDisableSpam()
 		if private.testBuild then
 			DBM:AddMsg(L.UPDATEREMINDER_DISABLETEST)
-		elseif dbmToc < private.wowTOC then
-			DBM:AddMsg(L.UPDATEREMINDER_MAJORPATCH)
 		else
 			DBM:AddMsg(L.UPDATEREMINDER_DISABLE)
 		end
@@ -7293,12 +7358,9 @@ end
 ---@param time number? time to wait between two events (optional, default 2.5 seconds)
 ---@param id any? id to distinguish different events (optional, only necessary if your mod keeps track of two different spam events at the same time)
 function DBM:AntiSpam(time, id)
-	if GetTime() - (id and (self["lastAntiSpam" .. tostring(id)] or 0) or self.lastAntiSpam or 0) > (time or 2.5) then
-		if id then
-			self["lastAntiSpam" .. tostring(id)] = GetTime()
-		else
-			self.lastAntiSpam = GetTime()
-		end
+	id = id or "(nil)"
+	if GetTime() - (self["lastAntiSpam" .. tostring(id)] or 0) > (time or 2.5) then
+		self["lastAntiSpam" .. tostring(id)] = GetTime()
 		test:Trace(self, "AntiSpam", id, true)
 		return true
 	end
@@ -7739,6 +7801,7 @@ do
 	end
 end
 
+---@param uId string? Used for querying external unit. If nil, queries "player"
 function bossModPrototype:UnitClass(uId)
 	if uId then--Return unit requested
 		local _, class = UnitClass(uId)
@@ -7771,6 +7834,8 @@ do
 	end
 end
 
+---@param uId string? Used for querying external unit. If nil, queries "player"
+---@return boolean
 function bossModPrototype:IsDps(uId)
 	if uId then--External unit call.
 		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
@@ -7787,6 +7852,8 @@ function bossModPrototype:IsDps(uId)
 end
 
 ---@param self DBMModOrDBM
+---@param uId string? Used for querying external unit. If nil, queries "player"
+---@return boolean
 function DBM:IsHealer(uId)
 	if uId then--External unit call.
 		if not private.isRetail then
@@ -7815,13 +7882,14 @@ end
 bossModPrototype.IsHealer = DBM.IsHealer
 
 ---@param self DBMModOrDBM
----@param playerUnitID string? unitID of requested unit. this or isName must be provided
----@param enemyUnitID string? unitID of tanked unit we're checking. This or enemyGUID must be provided
+---@param playerUnitID playerUUIDs|targetUIDs? unitID of requested unit. this or isName must be provided
+---@param enemyUnitID enemyUIDs|targetUIDs? unitID of tanked unit we're checking. This or enemyGUID must be provided
 ---@param isName string? name of the requested unit. This or playerUnitID must be provided
 ---@param onlyRequested boolean? true if tight search, false if loose search that will return ALL tank specs
 ---@param enemyGUID string? guid of tanked unit we're checking. This or enemyUnitID must be provided
 ---@param includeTarget boolean? set to true to allow bosses target to be good enough if threat check fails
 ---@param onlyS3 boolean? true for tight threat check (status 3 securly tanked required). loose threat otherwise
+---@return boolean
 function DBM:IsTanking(playerUnitID, enemyUnitID, isName, onlyRequested, enemyGUID, includeTarget, onlyS3)
 	--Didn't have playerUnitID so combat log name was passed
 	if isName then
@@ -7904,8 +7972,10 @@ end
 do
 	local bossNames, bossIcons = {}, {}
 
-	--This accepts both CID and GUID which makes switching to UnitPercentHealthFromGUID and UnitTokenFromGUID not as cut and dry
+	---This accepts both CID and GUID which makes switching to UnitPercentHealthFromGUID and UnitTokenFromGUID not as cut and dry
 	---@param self DBMModOrDBM
+	---@param cIdOrGUID number|string
+	---@param onlyHighest boolean?
 	function DBM:GetBossHP(cIdOrGUID, onlyHighest)
 		local uId = bossHealthuIdCache[cIdOrGUID] or "target"
 		local guid = UnitGUID(uId)
@@ -8051,8 +8121,16 @@ end
 ---------------
 --  Options  --
 ---------------
+---@param name any Option name must be string, but language server gets confused if it's not set to any
 ---@param default SpecFlags|boolean?
-function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, extraOptionTwo, spellId, optionType, waCustomName)
+---@param cat string? category type: ie "timer", "announce", "misc", "sound", etc
+---@param func any? Custom function to call when option is changed
+---@param extraOption string|number? Used for attached options such as timer color or special warning sound
+---@param extraOptionTwo string|number? Used for attached options such as countdown voice or special warning note
+---@param spellId any? spellId to group with other options for same spell
+---@param optionSubType string? ie "gtfo", "adds", "achievement", "stage", etc
+---@param waCustomName string? used to inject custom weak aura spellId key text
+function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, extraOptionTwo, spellId, optionSubType, waCustomName)
 	if checkDuplicateObjects[name] and name ~= "timer_berserk" then
 		DBM:Debug("|cffff0000Option already exists for: |r" .. name)
 	else
@@ -8076,22 +8154,29 @@ function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, e
 		if waCustomName then--Do custom shit for options using invalid spellIds as weak auras keys
 			self:GroupWASpells(waCustomName, spellId, name)
 		else
-			if optionType and optionType == "achievement" then
+			if optionSubType and optionSubType == "achievement" then
 				spellId = "at" .. spellId--"at" for achievement timer
 			end
-			local optionTypeMatch = optionType or ""
+			local optionTypeMatch = optionSubType or ""
 			if not optionTypeMatch:find("stage") then
 				self:GroupSpells(spellId, name)
 			end
 		end
 	end
-	self:SetOptionCategory(name, cat, optionType, waCustomName)
+	self:SetOptionCategory(name, cat, optionSubType, waCustomName)
 	if func then
 		self.optionFuncs = self.optionFuncs or {}
 		self.optionFuncs[name] = func
 	end
 end
 
+---@param name any
+---@param default SpecFlags|boolean?
+---@param defaultSound number|string? Can be number for built in spec warn sound 1-4 or string for custom sound path
+---@param cat string? category type: ie "timer", "announce", "misc", "sound", etc
+---@param spellId any? spellId to group with other options for same spell
+---@param optionType string?
+---@param waCustomName string? used to inject custom weak aura spellId key text
 function bossModPrototype:AddSpecialWarningOption(name, default, defaultSound, cat, spellId, optionType, waCustomName)
 	if checkDuplicateObjects[name] then
 		DBM:Debug("|cffff0000Option already exists for: |r" .. name)
@@ -8479,6 +8564,7 @@ end
 
 ---Custom function for handling group spells where we want to group by ID, but not use that IDs name (basically a fake Id for purpose of a unified WA key)
 ---This lets us group options up that aren't using valid IDs, and show the ID it is using for WA in the gui next to custom name
+---@param customName string? Used to inject custom weak aura spellId key text
 function bossModPrototype:GroupWASpells(customName, ...)
 	local spells = {...}
 	local catSpell = tostring(tremove(spells, 1))
@@ -8545,12 +8631,17 @@ function bossModPrototype:GroupSpells(...)
 	end
 end
 
-function bossModPrototype:SetOptionCategory(name, cat, optionType, waCustomName, hasPrivate)
-	optionType = optionType or ""
+---@param name any
+---@param cat string category type: ie "timer", "announce", "misc", "sound", etc
+---@param optionSubType string? ie "gtfo", "adds", "achievement", "stage", etc
+---@param waCustomName string? used to inject custom weak aura spellId key text
+---@param hasPrivate boolean? used to mark option as private aura option so it displays PA icon in GUI
+function bossModPrototype:SetOptionCategory(name, cat, optionSubType, waCustomName, hasPrivate)
+	optionSubType = optionSubType or ""
 	for _, options in pairs(self.optionCategories) do
 		removeEntry(options, name)
 	end
-	if self.addon and self.groupSpells[name] and not (optionType == "gtfo" or optionType == "adds" or optionType == "addscount" or optionType == "addscustom" or optionType:find("stage") or cat == "icon" and DBM.Options.GroupOptionsExcludeIcon) then
+	if self.addon and self.groupSpells[name] and not (optionSubType == "gtfo" or optionSubType == "adds" or optionSubType == "addscount" or optionSubType == "addscustom" or optionSubType:find("stage") or cat == "icon" and DBM.Options.GroupOptionsExcludeIcon) then
 		local sSpell = self.groupSpells[name]
 		if not self.groupOptions[sSpell] then
 			self.groupOptions[sSpell] = {}
@@ -8574,6 +8665,23 @@ end
 --------------
 --  Combat  --
 --------------
+---@meta
+---@alias combatTypes
+---|"combat": Default Option. Triggers Combat on ENCOUNTER_START, INSTANCE_ENCOUNTER_ENGAGE_UNIT, UNIT_HEALTH, PLAYER_REGEN_DISABLED
+---|"yell": Triggers Combat on CHAT_MSG_MONSTER_YELL
+---|"say": Triggers Combat on CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY
+---|"emote": Triggers Combat on CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE
+---|"yell_regex": Triggers Combat on CHAT_MSG_MONSTER_YELL using regex matching
+---|"say_regex": Triggers Combat on CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY using regex matching
+---|"emote_regex": Triggers Combat on CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE using regex matching
+---|"combat_yell": Same as combat, but also uses CHAT_MSG_MONSTER_YELL exact matching
+---|"combat_say": Same as combat, but also uses CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY exact matching
+---|"combat_emote": Same as combat, but also uses CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE exact matching
+---|"combat_yellfind": Same as combat, but also uses CHAT_MSG_MONSTER_YELL loose matching
+---|"combat_sayfind": Same as combat, but also uses CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY loose matching
+---|"combat_emotefind": Same as combat, but also uses CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE loose matching
+---|"scenario": Tells mod to treat an entire scenario as combat
+---@param cType combatTypes
 function bossModPrototype:RegisterCombat(cType, ...)
 	if cType then
 		cType = cType:lower()
@@ -8671,6 +8779,7 @@ function bossModPrototype:SetDetectCombatInVehicle(flag)
 	combatInfo.noCombatInVehicle = not flag
 end
 
+---Used to set creature IDs this mod will scan for Boss Health and legacy or backup combat detection methods
 function bossModPrototype:SetCreatureID(...)
 	self.creatureId = ...
 	if select("#", ...) > 1 then
@@ -8698,6 +8807,7 @@ function bossModPrototype:SetCreatureID(...)
 	end
 end
 
+---Used to set Encounter IDs this mod will pass to ENCOUNTER_START/ENCOUNTER_END/BOSS_KILL
 function bossModPrototype:SetEncounterID(...)
 	self.encounterId = ...
 	if select("#", ...) > 1 then
@@ -8916,6 +9026,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	end
 end
 
+---@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20240728191115" to be auto set by packager
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
 	if not revision or type(revision) == "string" then
