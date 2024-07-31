@@ -1,6 +1,6 @@
 # Myslot
 
-## [v5.17.2](https://github.com/tg123/myslot/tree/v5.17.2) (2024-07-02)
-[Full Changelog](https://github.com/tg123/myslot/commits/v5.17.2) 
+## [v5.18.0](https://github.com/tg123/myslot/tree/v5.18.0) (2024-07-31)
+[Full Changelog](https://github.com/tg123/myslot/commits/v5.18.0) 
 
-- fix missing commits  
+- Refactor MySlot.lua to improve talent handling  
