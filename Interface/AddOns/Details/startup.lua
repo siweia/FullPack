@@ -1,15 +1,11 @@
 
---[=[
-	Details startup file
-	The function Details:StartMeUp() is called when the addon is fully loaded with saved variables and profiles
---]=]
-
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 local _
 local tocName, Details222 = ...
+local detailsFramework = DetailsFramework
 
 --start funtion
-function Details:StartMeUp()
+function Details222.StartUp.StartMeUp()
 	if (Details.AndIWillNeverStop) then
 		return
 	end
@@ -67,7 +63,7 @@ function Details:StartMeUp()
 
 		if (C_CVar) then
 			if (not InCombatLockdown() and DetailsFramework.IsDragonflightAndBeyond()) then --disable for releases
-			C_CVar.SetCVar("cameraDistanceMaxZoomFactor", 2.6)
+			--C_CVar.SetCVar("cameraDistanceMaxZoomFactor", 2.6)
 			end
 		end
 
@@ -97,10 +93,12 @@ function Details:StartMeUp()
 
 	Details222.LoadCommentatorFunctions()
 
+	Details222.AuraScan.FindAndIgnoreWorldAuras()
+
 	if (Details.ocd_tracker.show_options) then
 		Details:InitializeCDTrackerWindow()
 	else
-		Details:InitializeCDTrackerWindow() --enabled for v11 beta, debug openraid
+		--Details:InitializeCDTrackerWindow() --enabled for v11 beta, debug openraid
 	end
 	--/run Details.ocd_tracker.show_options = true; ReloadUI()
 	--custom window
@@ -190,9 +188,9 @@ function Details:StartMeUp()
 		for id = 1, Details:GetNumInstances() do
 			local instance = Details:GetInstance(id)
 			if (instance:IsEnabled()) then
-				if (instance.modo == 3) then --everything
-				instance.LastModo = 2 --standard
-				instance.modo = 2 --standard
+				if (instance.modo == 3 and Details.auto_change_to_standard) then --everything
+					instance.LastModo = 2 --standard
+					instance.modo = 2 --standard
 				end
 
 				--refresh wallpaper
@@ -367,6 +365,12 @@ function Details:StartMeUp()
 			Details:AddDefaultCustomDisplays()
 		end
 		Details:FillUserCustomSpells()
+
+		if (C_CVar) then
+			if (not InCombatLockdown() and DetailsFramework.IsDragonflightAndBeyond()) then
+				C_CVar.SetCVar("cameraDistanceMaxZoomFactor", 2.6)
+			end
+		end
 	end
 
 	--check is this is the first run of this version

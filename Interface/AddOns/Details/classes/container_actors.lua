@@ -176,6 +176,19 @@ local find_name_declension = function(tooltipString, playerName)
 	return false
 end
 
+local unitNameTitles = {
+    UNITNAME_TITLE_PET,
+    UNITNAME_TITLE_COMPANION,
+    UNITNAME_TITLE_GUARDIAN,
+    UNITNAME_TITLE_MINION,
+    UNITNAME_TITLE_CHARM,
+    UNITNAME_TITLE_CREATION,
+    UNITNAME_TITLE_SQUIRE
+}
+for i=1, #unitNameTitles do
+    unitNameTitles[i] = unitNameTitles[i]:gsub('%%s', '(.*)')
+end
+
 ---attempt to the owner of a pet using tooltip scan, if the owner isn't found, return nil
 ---@param petGUID string
 ---@param petName string
@@ -183,6 +196,84 @@ end
 ---@return string|nil ownerGUID
 ---@return integer|nil ownerFlags
 	function Details222.Pets.GetPetOwner(petGUID, petName) --this is under the Pets namespace, the new pet system is under the PetContainer namespace
+
+        local ownerGUID, ownerName, lineText
+
+        local cbMode = tonumber(GetCVar("colorblindMode")) or 0
+        if (bIsDragonflightOrAbove) then
+            local tooltipData = C_TooltipInfo.GetHyperlink('unit:'.. petGUID)
+            if (tooltipData) then
+                if (tooltipData.lines[1].leftText == '') then -- Assume this is an Akaari's soul / Storm Earth Fire tooltip
+                    ownerGUID = tooltipData.guid
+                elseif (tooltipData.lines[1].leftText == petName) then
+                    local lineTwo = tooltipData.lines[2 + cbMode]
+                    if (lineTwo.type == 16 and lineTwo.guid) then
+                        ownerGUID = lineTwo.guid
+                    else
+                        lineText = lineTwo.leftText
+                    end
+                end
+            end
+        else
+            pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
+            pet_tooltip_frame:SetHyperlink(("unit:" .. petGUID) or "")
+
+            local line = _G['DetailsPetOwnerFinderTextLeft' .. (2 + cbMode)]
+            lineText = line and line:GetText()
+
+            if (not lineText or lineText == '') then
+                line = _G['DetailsPetOwnerFinderTextLeft1']
+                lineText = line and line:GetText()
+            end
+        end
+
+        if (lineText) then
+            for i=1, #unitNameTitles do
+                ownerName = lineText:match(unitNameTitles[i])
+                if (ownerName) then
+                    break
+                end
+            end
+
+            if (not ownerName) then
+                return
+            end
+
+            ---@type combat
+            local currentCombat = Details:GetCurrentCombat()
+
+            if (not currentCombat) then
+                return
+            end
+
+            local isInRaid = currentCombat.raid_roster[ownerName]
+            if (isInRaid) then
+                return UnitGUID(ownerName), ownerName, 0x514
+            end
+        elseif (ownerGUID and ownerGUID:sub(1,6) == 'Player') then
+            local playerGUID = ownerGUID
+            local actorObject = Details:GetActorFromCache(playerGUID) --quick cache only exists during conbat
+            if (actorObject) then
+                return actorObject.nome, playerGUID, actorObject.flag_original
+            end
+
+            local guidCache = Details:GetParserPlayerCache() --cache exists until the next combat starts
+            ownerName = guidCache[playerGUID]
+            if (ownerName) then
+                return ownerName, playerGUID, 0x514
+            end
+
+            if(Details.zone_type == 'arena') then --Attempt to find enemy pet owner
+                for enemyName, enemyToken in pairs(Details.arena_enemies) do
+                    if(UnitGUID(enemyToken) == ownerGUID) then
+                        return enemyName, ownerGUID, 0x548
+                    end
+                end
+            end
+        end
+
+        if true then return end
+
 		pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
 		pet_tooltip_frame:SetHyperlink(("unit:" .. petGUID) or "")
 
@@ -325,6 +416,7 @@ end
 						else
 							for playerName in actorName:gmatch("([^%s]+)") do
 								playerName = playerName:gsub(",", "")
+                                playerName = playerName:gsub("'s$", "")
 								local playerIsOnRaidCache = currentCombat.raid_roster[playerName]
 								if (playerIsOnRaidCache) then
 									ownerGUID = UnitGUID(playerName)
@@ -751,7 +843,7 @@ end
 	---@param actorName string
 	---@param actorFlags number
 	---@param bShouldCreateActor boolean
-	---@return table|nil, table|nil, string|nil
+	---@return actor|nil, actor|nil, actorname|nil
 	function actorContainer:PegarCombatente(actorSerial, actorName, actorFlags, bShouldCreateActor)
 		return self:GetOrCreateActor(actorSerial, actorName, actorFlags, bShouldCreateActor)
 	end
@@ -760,7 +852,7 @@ end
 	---@param actorName string
 	---@param actorFlags number
 	---@param bShouldCreateActor boolean
-	---@return table|nil, table|nil, string|nil
+	---@return actor|nil, actor|nil, actorname|nil
 	function actorContainer:GetOrCreateActor(actorSerial, actorName, actorFlags, bShouldCreateActor)
 		--need to check if the actor is a pet
 		local petOwnerObject
@@ -769,10 +861,21 @@ end
 		--check if this actor is a pet and the pet is in the pet cache
 		if (petContainer.IsPetInCache(actorSerial)) then --this is a registered pet
 			--hashName is "petName <ownerName>"
+			--actorSerial: petGuid, actorName: petName
 			local hashName, ownerName, ownerGuid, ownerFlag = petContainer.GetOwner(actorSerial, actorName) --hashName, ownerName, ownerGuid, ownerFlags
+
 			if (hashName and ownerName and ownerGuid and ownerGuid ~= actorSerial and ownerFlag) then
 				actorName = hashName
 				petOwnerObject = self:PegarCombatente(ownerGuid, ownerName, ownerFlag, true)
+			end
+
+			if (Details222.Debug.DebugPets or Details222.Debug.DebugPlayerPets) then
+				Details:Msg("DebugPets|ActorContainer|petContainer.IsPetInCache(actorSerial) = true")
+				if (hashName) then
+					Details:Msg("DebugPets|ActorContainer|Owner Found In Pet Cache|OwnerName:", ownerName, "Actor Hash:", hashName, "petOwnerObject:", petOwnerObject)
+				else
+					Details:Msg("DebugPets|ActorContainer|Pet Is Orphan|petContainer.GetOwner(", actorSerial, actorName, ") == nil")
+				end
 			end
 
 		--this actor isn't in the pet cache

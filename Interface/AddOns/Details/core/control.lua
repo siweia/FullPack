@@ -479,6 +479,7 @@
 		Details:CatchRaidBuffUptime("BUFF_UPTIME_OUT")
 		Details:CatchRaidDebuffUptime("DEBUFF_UPTIME_OUT")
 		Details:CloseEnemyDebuffsUptime()
+		Details222.AuraScan.CheckForOneHourBuffs()
 
 		Details222.GuessSpecSchedules.ClearSchedules()
 
@@ -510,6 +511,9 @@
 		--lock timers
 		currentCombat:LockActivityTime()
 
+		--remove death events that are irrelevant for the death log
+		currentCombat:CutDeathEventsByTime()
+
 		--get waste shields
 		if (Details.close_shields) then
 			Details:CloseShields(currentCombat)
@@ -520,7 +524,7 @@
 		currentCombat:SetDateToNow(bSetStartTime, bSetEndTime)
 		currentCombat:SetEndTime(GetTime())
 
-		--drop last events table to garbage collector
+		--drop player last events table to garbage collector
 		currentCombat.player_last_events = {}
 
 		--flag instance type

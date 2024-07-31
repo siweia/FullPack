@@ -19,12 +19,12 @@
 		local addonName, Details222 = ...
 		local version, build, date, tvs = GetBuildInfo()
 
-		Details.build_counter = 12804
-		Details.alpha_build_counter = 12804 --if this is higher than the regular counter, use it instead
+		Details.build_counter = 12822
+		Details.alpha_build_counter = 12822 --if this is higher than the regular counter, use it instead
 		Details.dont_open_news = true
 		Details.game_version = version
 		Details.userversion = version .. " " .. Details.build_counter
-		Details.realversion = 158 --core version, this is used to check API version for scripts and plugins (see alias below)
+		Details.realversion = 159 --core version, this is used to check API version for scripts and plugins (see alias below)
 		Details.gametoc = tvs
 		Details.APIVersion = Details.realversion --core version
 		Details.version = Details.userversion .. " (core " .. Details.realversion .. ")" --simple stirng to show to players
@@ -76,6 +76,8 @@
 			DamageSpellsCache = {}
 		}
 
+		Details222.StartUp = {}
+
 		Details222.Unknown = _G["UNKNOWN"]
 
 		--namespace color
@@ -115,9 +117,9 @@
 		---@type details_storage_feature
 		---@diagnostic disable-next-line: missing-fields
 		local storage = {
-			DiffNames = {"normal", "heroic", "mythic", "raidfinder"},
-			DiffNamesHash = {normal = 14, heroic = 15, mythic = 16, raidfinder = 17},
-			DiffIdToName = {[14] = "normal", [15] = "heroic", [16] = "mythic", [17] = "raidfinder"},
+			DiffNames = {"normal", "heroic", "mythic", "raidfinder", "10player", "25player", "10playerheroic", "25playerheroic", "raidfinderclassic", "raidfindertimewalking", "timewalking"},
+			DiffNamesHash = {normal = 14, heroic = 15, mythic = 16, raidfinder = 17, ["10player"] = 3, ["25player"] = 4, ["10playerheroic"] = 5, ["25playerheroic"] = 6, raidfinderclassic = 7, raidfindertimewalking = 151, timewalking = 33},
+			DiffIdToName = {[14] = "normal", [15] = "heroic", [16] = "mythic", [17] = "raidfinder", [3] = "10player", [4] = "25player", [5] = "10playerheroic", [6] = "25playerheroic", [7] = "raidfinderclassic", [151] = "raidfindertimewalking", [33] = "timewalking"},
 			IsDebug = false
 		}
 		Details222.storage = storage
@@ -126,7 +128,13 @@
 		Details222.DamageSpells = {}
 		--namespace for texture
 		Details222.Textures = {}
-		Details222.Debug = {}
+
+		Details222.Debug = {
+			DebugPets = false,
+			DebugPlayerPets = false,
+			DebugBuff = false,
+		}
+
 		Details222.Tvs = tvs
 		--namespace for pet
 		Details222.Pets = {}
@@ -190,6 +198,9 @@
 			[1473] = {},
 		}
 
+		Details222.IgnoredWorldAuras = {}
+		Details222.OneHourAuras = {}
+
 		Details222.Parser = {}
 
 		Details222.Actors = {}
@@ -202,7 +213,7 @@
 		--aura scanner
 		Details222.AuraScan = {}
 
-        local GetSpellInfo = GetSpellInfo or C_Spell.GetSpellInfo
+        local GetSpellInfo = C_Spell and C_Spell.GetSpellInfo or GetSpellInfo
         Details222.GetSpellInfo = GetSpellInfo
 
 		local UnitBuff = UnitBuff or C_UnitAuras.GetBuffDataByIndex
@@ -1312,51 +1323,65 @@ do
 				for i = 1, #allTooltips do
 					local tooltipName = allTooltips[i]
 					local tooltip = _G[tooltipName]
+					if (tooltip and tooltip:IsVisible()) then
+                        if (tooltip.GetTooltipData) then
+                            local tooltipData = tooltip:GetTooltipData()
+                            if (tooltipData) then
+                                if (tooltip.ItemTooltip and tooltip.ItemTooltip:IsVisible()) then
+                                    local icon = tooltip.ItemTooltip.Icon
+                                    if (icon) then
+                                        local texture = icon:GetTexture()
+                                        local atlas = icon:GetAtlas()
+                                        if (texture or atlas) then
+                                            tooltipData.IconTexture = texture
+                                            tooltipData.IconAtlas = atlas
+                                        end
+                                    end
+                                end
 
-					if (tooltip and tooltip.GetTooltipData and tooltip:IsVisible()) then
-						local tooltipData = tooltip:GetTooltipData()
-						if (tooltipData) then
-							if (tooltip.ItemTooltip and tooltip.ItemTooltip:IsVisible()) then
-								local icon = tooltip.ItemTooltip.Icon
-								if (icon) then
-									local texture = icon:GetTexture()
-									local atlas = icon:GetAtlas()
-									if (texture or atlas) then
-										tooltipData.IconTexture = texture
-										tooltipData.IconAtlas = atlas
-									end
-								end
-							end
+                                if (tooltipData.hyperlink) then
+                                    local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
+                                    itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
+                                    expacID, setID, isCraftingReagent = GetItemInfo(tooltipData.hyperlink)
 
-							if (tooltipData.hyperlink) then
-								local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
-								itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
-								expacID, setID, isCraftingReagent = GetItemInfo(tooltipData.hyperlink)
+                                    local itemInfo = {
+                                        itemName = itemName,
+                                        itemLink = itemLink,
+                                        itemQuality = itemQuality,
+                                        itemLevel = itemLevel,
+                                        itemMinLevel = itemMinLevel,
+                                        itemType = itemType,
+                                        itemSubType = itemSubType,
+                                        itemStackCount = itemStackCount,
+                                        itemEquipLoc = itemEquipLoc,
+                                        itemTexture = itemTexture,
+                                        sellPrice = sellPrice,
+                                        classID = classID,
+                                        subclassID = subclassID,
+                                        bindType = bindType,
+                                        expacID = expacID,
+                                        setID = setID,
+                                        isCraftingReagent = isCraftingReagent
+                                    }
+                                    DetailsFramework.table.deploy(tooltipData, itemInfo)
+                                end
 
-								local itemInfo = {
-									itemName = itemName,
-									itemLink = itemLink,
-									itemQuality = itemQuality,
-									itemLevel = itemLevel,
-									itemMinLevel = itemMinLevel,
-									itemType = itemType,
-									itemSubType = itemSubType,
-									itemStackCount = itemStackCount,
-									itemEquipLoc = itemEquipLoc,
-									itemTexture = itemTexture,
-									sellPrice = sellPrice,
-									classID = classID,
-									subclassID = subclassID,
-									bindType = bindType,
-									expacID = expacID,
-									setID = setID,
-									isCraftingReagent = isCraftingReagent
-								}
-								DetailsFramework.table.deploy(tooltipData, itemInfo)
-							end
-
-							return Details:Dump(tooltipData)
-						end
+                                return Details:Dump(tooltipData)
+                            end
+                        else
+                            local outputTable = {}
+                            for lineNumber = 1, 10 do
+                                local leftText = _G[tooltipName..'TextLeft'..lineNumber]
+                                local rightText = _G[tooltipName..'TextRight'..lineNumber]
+                                if not (leftText and rightText) then
+                                    break
+                                end
+                                
+                                outputTable[#outputTable+1] = {left = leftText:GetText(), right = rightText:GetText()}
+                            end
+                            
+                            return Details:Dump(outputTable)                            
+                        end
 					end
 				end
 			end
@@ -1549,9 +1574,11 @@ end
 
 Details222.UnitIdCache.Raid = {}
 Details222.UnitIdCache.RaidPet = {}
+Details222.UnitIdCache.RaidTargets = {}
 for i = 1, 40 do
 	Details222.UnitIdCache.Raid[i] = "raid" .. i
 	Details222.UnitIdCache.RaidPet[i] = "raidpet" .. i
+	Details222.UnitIdCache.RaidTargets[i] = "raidtarget" .. i
 end
 
 Details222.UnitIdCache.Boss = {}

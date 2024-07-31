@@ -278,6 +278,13 @@ function LibStub:IterateLibraries()end
 ---@field spellID number
 ---@field originalIconID number
 
+---@class spellchargeinfo
+---@field currentCharges number
+---@field maxCharges number
+---@field cooldownStartTime number
+---@field cooldownDuration number
+---@field chargeModRate number
+
 ---@class privateaura_anchor : table
 ---@field unitToken unit
 ---@field auraIndex number
@@ -357,6 +364,7 @@ function LibStub:IterateLibraries()end
 ---@alias encounterid number encounter ID number received by the event ENCOUNTER_START and ENCOUNTER_END
 ---@alias encounterejid number encounter ID number used by the encounter journal
 ---@alias encountername string encounter name received by the event ENCOUNTER_START and ENCOUNTER_END also used by the encounter journal
+---@alias encounterdifficulty number difficulty of the encounter received by the event ENCOUNTER_START and ENCOUNTER_END
 ---@alias instancename string localized name of an instance (e.g. "The Nighthold")
 ---@alias spellid number each spell in the game has a unique spell id, this id can be used to identify a spell.
 ---@alias unitname string name of a unit
@@ -409,6 +417,9 @@ function LibStub:IterateLibraries()end
 ---@field UnitName fun(unit: string): string
 ---@field GetCursorPosition fun(): number, number return the position of the cursor on the screen, in pixels, relative to the bottom left corner of the screen.
 ---@field C_Timer C_Timer
+
+---table containing backdrop functions
+BackdropTemplateMixin = {}
 
 ---@class timer : table
 ---@field Cancel fun(self: timer)
@@ -940,6 +951,47 @@ function C_Item.DoesItemMatchTrackJump() end
 function C_Item.GetItemCount() end
 function C_Item.GetItemInfoInstant() end
 function C_Item.GetStackCount() end
+
+--quests
+---@class questrewardcurrencyinfo
+---@field texture number
+---@field name string
+---@field currencyID number
+---@field quality number
+---@field baseRewardAmount number
+---@field bonusRewardAmount number
+---@field totalRewardAmount number
+---@field questRewardContextFlags table?
+
+--faction
+---@class factioninfo
+---@field hasBonusRepGain boolean
+---@field description string
+---@field isHeaderWithRep boolean
+---@field isHeader boolean
+---@field currentReactionThreshold number
+---@field canSetInactive boolean
+---@field atWarWith boolean
+---@field isWatched boolean
+---@field isCollapsed boolean
+---@field canToggleAtWar boolean
+---@field nextReactionThreshold number
+---@field factionID number
+---@field name string
+---@field currentStanding number
+---@field isAccountWide boolean
+---@field isChild boolean
+---@field reaction number
+
+C_Reputation = {}
+---return a table of class 'factioninfo' containing the faction data
+---@param id number
+---@return factioninfo
+function C_Reputation.GetFactionDataByID(id) return {} end
+
+---return a table of class 'factioninfo' containing the player guild rep information
+---@return factioninfo
+function C_Reputation.GetGuildFactionData() return {} end
 
 C_UnitAuras = {}
 
@@ -1674,6 +1726,15 @@ function bit.ror(x, y) return 0 end
 ---@return number
 function GetServerTime() return 0 end
 
+C_Spell = {}
+
+---@param spellID number
+---@return spellinfo
+function C_Spell.GetSpellInfo(spellID) return {} end
+
+---@param spellID number
+---@return spellchargeinfo
+function C_Spell.GetSpellCharges(spellID) return {} end
 
 C_Timer = {}
 ---@param delay number
@@ -3646,9 +3707,9 @@ GuildUninvite = function(unit) end
 ---@return boolean
 IsGuildLeader = function(unit) return true end
 
----@param unit string
+---return true if the player is in a guild
 ---@return boolean
-IsInGuild = function(unit) return true end
+IsInGuild = function() return true end
 
 ---@param eventIndex number
 QueryGuildEventLog = function(eventIndex) end
@@ -5249,8 +5310,9 @@ IsAttackSpell = function(spellId) return true end
 IsAutoRepeatSpell = function(spellId) return true end
 
 ---@param spellId number
+---@param spellBank string
 ---@return boolean
-IsPassiveSpell = function(spellId) return true end
+IsPassiveSpell = function(spellId, spellBank) return true end
 
 ---@param spellName string
 ---@param target string
@@ -5675,9 +5737,11 @@ function FocusUnit(unit) end
 
 function ClearFocus() end
 
----@param unit string
+---if bFullName is true, return the full name of the unit if the unit is from another realm, otherwise return the short name
+---@param unit unit
+---@param bFullName boolean
 ---@return string
-function GetUnitName(unit) return "" end
+function GetUnitName(unit, bFullName) return "" end
 
 ---@param unit string
 ---@return number

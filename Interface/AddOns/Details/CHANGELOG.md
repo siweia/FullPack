@@ -1,6 +1,8 @@
 # Details! Damage Meter
 
-## [Details.20240711.12804.158](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20240711.12804.158) (2024-07-11)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20240711.12803.158...Details.20240711.12804.158) 
+## [Details.12822.159](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.12822.159) (2024-07-30)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.12821.159...Details.12822.159) 
 
-- Added TOC files for plugins  
+- Fixed /key not showing the map name  
+- Fixed GetItemInfo not using C\_Item namespace  
+- Cutting off events that are beyond 10 seconds from the character death  
