@@ -786,11 +786,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	-- Pick
 	local Pick = GarrisonRecruiterFrame.Pick
 	B.Reskin(Pick.ChooseRecruits)
-	if DB.isWW then
-		B.ReskinDropDown(Pick.ThreatDropdown)
-	else
-		B.ReskinDropDown(Pick.ThreatDropDown)
-	end
+	B.ReskinDropDown(Pick.ThreatDropdown)
 	B.ReskinRadio(Pick.Radio1)
 	B.ReskinRadio(Pick.Radio2)
 
@@ -962,7 +958,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	CombatLog.ElevatedFrame:SetAlpha(0)
 	B.StripTextures(CombatLog.CombatLogMessageFrame)
 	B.CreateBDFrame(CombatLog.CombatLogMessageFrame, .25)
-	-- todo CombatLog.CombatLogMessageFrame.ScrollBar
 
 	B.Reskin(HealFollowerButtonTemplate)
 	local bg = B.CreateBDFrame(CovenantMissionFrame.FollowerTab, .25)

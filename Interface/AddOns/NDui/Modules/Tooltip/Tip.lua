@@ -149,9 +149,28 @@ function TT:ShowUnitMythicPlusScore(unit)
 	end
 end
 
+local function ShouldHideInCombat()
+	local index = C.db["Tooltip"]["HideInCombat"]
+	if index == 1 then
+		return true
+	elseif index == 2 then
+		return IsAltKeyDown()
+	elseif index == 3 then
+		return IsShiftKeyDown()
+	elseif index == 4 then
+		return IsControlKeyDown()
+	elseif index == 5 then
+		return false
+	end
+end
+
 function TT:OnTooltipSetUnit()
 	if self:IsForbidden() or self ~= GameTooltip then return end
-	if C.db["Tooltip"]["CombatHide"] and InCombatLockdown() then self:Hide() return end
+
+	if (not ShouldHideInCombat()) and InCombatLockdown() then
+		self:Hide()
+		return
+	end
 
 	local unit, guid = TT.GetUnit(self)
 	if not unit or not UnitExists(unit) then return end
@@ -705,13 +724,6 @@ TT:RegisterTooltips("Blizzard_EncounterJournal", function()
 	EncounterJournalTooltip.Item2.icon:SetTexCoord(unpack(DB.TexCoord))
 	EncounterJournalTooltip.Item2.IconBorder:SetAlpha(0)
 end)
-
-if not DB.isWW then
-	TT:RegisterTooltips("Blizzard_Calendar", function()
-		CalendarContextMenu:HookScript("OnShow", TT.ReskinTooltip)
-		CalendarInviteStatusContextMenu:HookScript("OnShow", TT.ReskinTooltip)
-	end)
-end
 
 TT:RegisterTooltips("Blizzard_PerksProgram", function()
 	if PerksProgramTooltip then
