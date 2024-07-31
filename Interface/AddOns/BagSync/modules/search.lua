@@ -281,7 +281,7 @@ function Search:CheckItems(searchStr, unitObj, target, checkList, atUserLoc)
 					--do cache grab
 					local cacheObj = Data:CacheLink(link)
 					if cacheObj then
-						local entry = cacheObj.speciesName or cacheObj.itemLink --GetItemInfo does not support battlepet links, use speciesName instead
+						local entry = cacheObj.speciesName or cacheObj.itemLink --C_Item.GetItemInfo does not support battlepet links, use speciesName instead
 						local texture = cacheObj.speciesIcon or cacheObj.itemTexture
 						local itemName = cacheObj.speciesName or cacheObj.itemName
 						local testMatch = ItemScout:Find(entry, searchStr, cacheObj)
@@ -455,7 +455,7 @@ function Search:RefreshList()
 
 			--while we are updating the scrollframe, is the mouse currently over a button?
 			--if so we need to force the OnEnter as the items will scroll up in data but the button remains the same position on our cursor
-			if GetMouseFocus() == button then
+			if BSYC.GMF() == button then
 				Search:Item_OnLeave() --hide first
 				Search:Item_OnEnter(button)
 			end

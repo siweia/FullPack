@@ -21,7 +21,7 @@ local WOW_PROJECT_WRATH_CLASSIC = _G.WOW_PROJECT_WRATH_CLASSIC
 
 --Get TOC version
 --/dump select(4, GetBuildInfo())
---https://wowpedia.fandom.com/wiki/Template:API_LatestInterface
+--https://warcraft.wiki.gg/wiki/Template:API_LatestInterface
 
 --use the ingame trace tool to debug stuff
 --/etrace or /eventtrace
@@ -32,6 +32,8 @@ BSYC.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 BSYC.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 --BSYC.IsTBC_C = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 BSYC.IsWLK_C = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+
+BSYC.GMF = GetMouseFocus or GetMouseFoci
 
 --increment forceDBReset to reset the ENTIRE db forcefully
 local forceDBReset = 3
@@ -241,7 +243,7 @@ function BSYC:ParseItemLink(link, count)
 		--sometimes the profession window has a bug for the items it parses, so lets fix it
 		-----------------------------
 		if shortID and tonumber(shortID) == 0 and TradeSkillFrame then
-			local focus = GetMouseFocus():GetName()
+			local focus = BSYC.GMF():GetName()
 
 			if focus == 'TradeSkillSkillIcon' then
 				link = C_TradeSkillUI.GetRecipeItemLink(TradeSkillFrame.selectedSkill)

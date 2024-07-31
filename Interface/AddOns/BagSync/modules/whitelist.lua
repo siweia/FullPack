@@ -194,7 +194,7 @@ function Whitelist:RefreshList()
 			button.Text:SetText(item.value or "")
 			button.HeaderHighlight:SetAlpha(0)
 
-			if GetMouseFocus() == button then
+			if BSYC.GMF() == button then
 				Whitelist:Item_OnLeave() --hide first
 				Whitelist:Item_OnEnter(button)
 			end
@@ -247,13 +247,13 @@ function Whitelist:AddItemID()
 		BSYC.db.whitelist[itemid] = "|cFFCF9FFF"..speciesName.."|r"
 		BSYC:Print(L.ItemIDAdded:format(itemid), speciesName)
 	else
-		if not GetItemInfo(itemid) then
+		if not C_Item.GetItemInfo(itemid) then
 			BSYC:Print(L.ItemIDNotValid:format(itemid))
 			editBox:SetText("")
 			return
 		end
 
-		local dName, dItemLink = GetItemInfo(itemid)
+		local dName, dItemLink = C_Item.GetItemInfo(itemid)
 
 		BSYC.db.whitelist[itemid] = dItemLink
 		BSYC:Print(L.ItemIDAdded:format(itemid), dItemLink)
