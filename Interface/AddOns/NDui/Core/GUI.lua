@@ -127,7 +127,8 @@ G.DefaultSettings = {
 		FilterEquipSet = false,
 		FilterAnima = false,
 		FilterRelic = false,
-		FilterStone = true,
+		FilterStone = false,
+		FilterAOE = true,
 	},
 	Auras = {
 		Reminder = true,
@@ -227,8 +228,6 @@ G.DefaultSettings = {
 		PartyAltPower = true,
 		PartyWatcherSync = true,
 		RaidTextScale = 1,
-		FrequentHealth = false,
-		HealthFrequency = .2,
 		ShowRaidBuff = false,
 		RaidBuffSize = 12,
 		BuffClickThru = true,
@@ -244,7 +243,7 @@ G.DefaultSettings = {
 		DescRole = true,
 		PlayerAbsorb = false,
 		AutoBuffs = false,
-		HideDPSRole = false,
+		ShowRoleMode = 1,
 
 		PlayerWidth = 245,
 		PlayerHeight = 24,
@@ -342,6 +341,7 @@ G.DefaultSettings = {
 		WhisperSound = true,
 		BottomBox = false,
 		SysFont = false,
+		EditFont = 14,
 	},
 	Map = {
 		DisableMap = false,
@@ -422,6 +422,7 @@ G.DefaultSettings = {
 		DotSpells = {},
 		RaidTargetX = 0,
 		RaidTargetY = 3,
+		PlateRange = 45,
 
 		PlateWidth = 190,
 		PlateHeight = 8,
@@ -979,10 +980,6 @@ local function updateRaidTextScale()
 	B:GetModule("UnitFrames"):UpdateRaidTextScale()
 end
 
-local function updateRaidHealthMethod()
-	B:GetModule("UnitFrames"):UpdateRaidHealthMethod()
-end
-
 local function toggleCastBarLatency()
 	B:GetModule("UnitFrames"):ToggleCastBarLatency()
 end
@@ -1131,11 +1128,11 @@ G.TabList = {
 	L["Bags"],
 	L["Unitframes"],
 	NewTag..L["RaidFrame"],
-	L["Nameplate"],
+	NewTag..L["Nameplate"],
 	L["PlayerPlate"],
 	L["Auras"],
 	L["Raid Tools"],
-	L["ChatFrame"],
+	NewTag..L["ChatFrame"],
 	L["Maps"],
 	L["Skins"],
 	NewTag..L["Tooltip"],
@@ -1239,16 +1236,14 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{},--blank
 		{4, "UFs", "RaidHealthColor", L["HealthColor"].."*", nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"], L["ClearHealth"], L["ClearClass"]}, updateRaidTextScale},
 		{4, "UFs", "RaidHPMode", L["HealthValueType"].."*", true, {DISABLE, L["ShowHealthPercent"], L["ShowHealthCurrent"], L["ShowHealthLoss"], L["ShowHealthLossPercent"]}, updateRaidTextScale, L["100PercentTip"]},
-		{1, "UFs", "ShowSolo", L["ShowSolo"].."*", nil, nil, updateAllHeaders, L["ShowSoloTip"]},
-		{1, "UFs", "SmartRaid", HeaderTag..L["SmartRaid"].."*", nil, nil, updateAllHeaders, L["SmartRaidTip"]},
+		{4, "UFs", "ShowRoleMode", NewTag..L["ShowRoleMode"], nil, {ALL, DISABLE, L["HideDPSRole"]}},
 		{3, "UFs", "RaidTextScale", L["UFTextScale"].."*", true, {.8, 1.5, .05}, updateRaidTextScale},
+		{1, "UFs", "ShowSolo", L["ShowSolo"].."*", nil, nil, updateAllHeaders, L["ShowSoloTip"]},
+		{1, "UFs", "SmartRaid", HeaderTag..L["SmartRaid"].."*", true, nil, updateAllHeaders, L["SmartRaidTip"]},
 		{1, "UFs", "TeamIndex", L["RaidFrame TeamIndex"].."*", nil, nil, updateTeamIndex},
 		{1, "UFs", "SpecRaidPos", L["Spec RaidPos"], true, nil, nil, L["SpecRaidPosTip"]},
 		{1, "UFs", "RCCName", L["ClassColor Name"].."*", nil, nil, updateRaidTextScale},
-		{1, "UFs", "FrequentHealth", HeaderTag..L["FrequentHealth"].."*", true, nil, updateRaidHealthMethod, L["FrequentHealthTip"]},
-		{1, "UFs", "HideTip", L["HideTooltip"].."*", nil, nil, updateRaidTextScale, L["HideTooltipTip"]},
-		{1, "UFs", "HideDPSRole", NewTag..L["HideDPSRole"]},
-		{3, "UFs", "HealthFrequency", L["HealthFrequency"].."*", true, {.1, .5, .05}, updateRaidHealthMethod, L["HealthFrequencyTip"]},
+		{1, "UFs", "HideTip", L["HideTooltip"].."*", true, nil, updateRaidTextScale, L["HideTooltipTip"]},
 	},
 	[5] = {
 		{1, "Nameplate", "Enable", HeaderTag..L["Enable Nameplate"], nil, setupNameplateSize, refreshNameplates},
@@ -1298,7 +1293,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{5, "Nameplate", "OffTankColor", L["OffTank Color"].."*", 3},
 		{},--blank
 		{1, "Nameplate", "CVarOnlyNames", L["CVarOnlyNames"], nil, nil, updatePlateCVars, L["CVarOnlyNamesTip"]},
-		{1, "Nameplate", "CVarShowNPCs", L["CVarShowNPCs"].."*", nil, nil, updatePlateCVars, L["CVarShowNPCsTip"]},
+		{1, "Nameplate", "CVarShowNPCs", L["CVarShowNPCs"].."*", true, nil, updatePlateCVars, L["CVarShowNPCsTip"]},
+		{3, "Nameplate", "PlateRange", NewTag..L["PlateRange"].."*", nil, {0, 60, 1}, updatePlateCVars, L["PlateRangeTip"]},
 		{3, "Nameplate", "VerticalSpacing", L["NP VerticalSpacing"].."*", true, {.5, 2.5, .1}, updatePlateCVars},
 		{3, "Nameplate", "MinScale", L["Nameplate MinScale"].."*", nil, {.5, 1, .1}, updatePlateCVars},
 		{3, "Nameplate", "MinAlpha", L["Nameplate MinAlpha"].."*", true, {.3, 1, .1}, updatePlateCVars},
@@ -1368,8 +1364,11 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Chat", "ChatWidth", L["LockChatWidth"].."*", nil, {200, 600, 1}, updateChatSize},
 		{3, "Chat", "ChatHeight", L["LockChatHeight"].."*", true, {100, 500, 1}, updateChatSize},
 		{},--blank
+		{4, "ACCOUNT", "TimestampFormat", L["TimestampFormat"].."*", nil, {DISABLE, "03:27 PM", "03:27:32 PM", "15:27", "15:27:32"}},
+		{4, "Chat", "ChatBGType", L["ChatBGType"].."*", true, {DISABLE, L["Default Dark"], L["Gradient"]}, toggleChatBackground},
 		{1, "Chat", "Oldname", L["Default Channel"]},
-		{1, "Chat", "Sticky", L["Chat Sticky"].."*", true, nil, updateChatSticky},
+		{1, "Chat", "Sticky", L["Chat Sticky"].."*", nil, nil, updateChatSticky},
+		{3, "Chat", "EditFont", NewTag..L["EditFont"].."*", true, {10, 30, 1}, toggleEditBoxAnchor},
 		{1, "Chat", "Chatbar", L["ShowChatbar"]},
 		{1, "Chat", "WhisperColor", L["Differ WhisperColor"].."*", true},
 		{1, "Chat", "ChatItemLevel", L["ShowChatItemLevel"]},
@@ -1377,8 +1376,6 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Chat", "WhisperSound", L["WhisperSound"].."*", nil, nil, nil, L["WhisperSoundTip"]},
 		{1, "Chat", "BottomBox", L["BottomBox"].."*", true, nil, toggleEditBoxAnchor},
 		{1, "Chat", "SysFont", L["SysFont"], nil, nil, nil, L["SysFontTip"]},
-		{4, "ACCOUNT", "TimestampFormat", L["TimestampFormat"].."*", nil, {DISABLE, "03:27 PM", "03:27:32 PM", "15:27", "15:27:32"}},
-		{4, "Chat", "ChatBGType", L["ChatBGType"].."*", true, {DISABLE, L["Default Dark"], L["Gradient"]}, toggleChatBackground},
 		{},--blank
 		{1, "Chat", "EnableFilter", HeaderTag..L["Enable Chatfilter"]},
 		{1, "Chat", "BlockAddonAlert", L["Block Addon Alert"], true},

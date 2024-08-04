@@ -192,16 +192,6 @@ function UF:CreateHealthBar(self)
 	UF:UpdateHealthBarColor(self)
 end
 
-function UF:UpdateRaidHealthMethod()
-	for _, frame in pairs(oUF.objects) do
-		if frame.mystyle == "raid" then
-			frame:SetHealthUpdateMethod(C.db["UFs"]["FrequentHealth"])
-			frame:SetHealthUpdateSpeed(C.db["UFs"]["HealthFrequency"])
-			frame.Health:ForceUpdate()
-		end
-	end
-end
-
 UF.VariousTagIndex = {
 	[1] = "",
 	[2] = "currentpercent",
@@ -531,7 +521,7 @@ end
 
 local function postUpdateRole(element, role)
 	if element:IsShown() then
-		if role == "DAMAGER" and C.db["UFs"]["HideDPSRole"] then
+		if role == "DAMAGER" and C.db["UFs"]["ShowRoleMode"] == 3 then
 			element:Hide()
 			return
 		end
@@ -618,15 +608,17 @@ function UF:CreateIcons(self)
 	phase.Icon = icon
 	self.PhaseIndicator = phase
 
-	local ri = self:CreateTexture(nil, "OVERLAY")
-	if mystyle == "raid" then
-		ri:SetPoint("TOPRIGHT", self, 5, 5)
-	else
-		ri:SetPoint("TOPRIGHT", self, 0, 8)
+	if C.db["UFs"]["ShowRoleMode"] ~= 2 then
+		local ri = self:CreateTexture(nil, "OVERLAY")
+		if mystyle == "raid" then
+			ri:SetPoint("TOPRIGHT", self, 5, 5)
+		else
+			ri:SetPoint("TOPRIGHT", self, 0, 8)
+		end
+		ri:SetSize(15, 15)
+		ri.PostUpdate = postUpdateRole
+		self.GroupRoleIndicator = ri
 	end
-	ri:SetSize(15, 15)
-	ri.PostUpdate = postUpdateRole
-	self.GroupRoleIndicator = ri
 
 	local li = self:CreateTexture(nil, "OVERLAY")
 	li:SetPoint("TOPLEFT", self, -1, 8)
@@ -1399,8 +1391,7 @@ function UF:CreateClassPower(self)
 				bar.chargeParent:SetFrameLevel(8)
 			end
 			local chargeStar = bar.chargeParent:CreateTexture()
-			chargeStar:SetAtlas("VignetteKill")
-			chargeStar:SetDesaturated(true)
+			chargeStar:SetTexture(DB.starTex)
 			chargeStar:SetSize(14, 14)
 			chargeStar:SetPoint("CENTER", bars[i])
 			chargeStar:Hide()
