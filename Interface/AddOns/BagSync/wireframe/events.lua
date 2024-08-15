@@ -48,6 +48,7 @@ function Events:OnEnable()
 	self:RegisterMessage('BAGSYNC_EVENT_AUCTION')
 	self:RegisterMessage('BAGSYNC_EVENT_VOIDBANK')
 	self:RegisterMessage('BAGSYNC_EVENT_GUILDBANK')
+	--self:RegisterMessage('BAGSYNC_EVENT_WARBANDBANK')
 
 	--check to see if the ReagentBank is even enabled on server
 	if IsReagentBankUnlocked then
@@ -78,9 +79,30 @@ function Events:OnEnable()
 		BSYC.tracking.guild = false
 	end
 
+	--check to see if warband banks are even enabled on server
+	if BSYC.isWarbandActive then
+		--C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
+		self:RegisterEvent("PLAYER_ACCOUNT_BANK_TAB_SLOTS_CHANGED", function() Scanner:SaveWarbandBank() end)
+		self:RegisterEvent("ACCOUNT_MONEY", function() Scanner:SaveWarbandBankMoney() end)
+	else
+		BSYC.tracking.warband = false
+	end
+
 	--only do currency checks if the server even supports it
 	if BSYC:CanDoCurrency() then
 		self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+
+		--check for the ability to do currency transfer
+		if C_CurrencyInfo and C_CurrencyInfo.RequestCurrencyFromAccountCharacter then
+			self:RegisterEvent("CURRENCY_TRANSFER_LOG_UPDATE", function()
+				Scanner:ProcessCurrencyTransfer(true)
+				Scanner.currencyTransferInProgress = false
+			end)
+
+			hooksecurefunc(C_CurrencyInfo, "RequestCurrencyFromAccountCharacter", function(sourceGUID, currencyID, transferAmt)
+				Scanner:ProcessCurrencyTransfer(false, sourceGUID, currencyID, transferAmt)
+			end)
+		end
 	else
 		BSYC.tracking.currency = false
 	end
@@ -114,6 +136,11 @@ function Events:BAGSYNC_EVENT_BANK(event, isOpen)
 	Debug(BSYC_DL.DEBUG, "BAGSYNC_EVENT_BANK", isOpen)
 	if isOpen then
 		Scanner:SaveBank()
+
+		if BSYC.isWarbandActive then
+			Scanner:SaveWarbandBank()
+			Scanner:SaveWarbandBankMoney()
+		end
 	end
 end
 
@@ -147,16 +174,14 @@ function Events:PLAYER_EQUIPMENT_CHANGED(event)
 end
 
 function Events:BAG_UPDATE(event, bagid)
-	Debug(BSYC_DL.SL3, "BAG_UPDATE", bagid, BSYC.tracking.bag)
-	if not BSYC.tracking.bag then return end
+	Debug(BSYC_DL.SL3, "BAG_UPDATE", bagid)
 	if not self.SpamBagQueue then self.SpamBagQueue = {} end
 	self.SpamBagQueue[bagid] = true
 	self.SpamBagTotal = (self.SpamBagTotal or 0) + 1
 end
 
 function Events:BAG_UPDATE_DELAYED(event)
-	Debug(BSYC_DL.SL3, "BAG_UPDATE_DELAYED", BSYC.tracking.bag)
-	if not BSYC.tracking.bag then return end
+	Debug(BSYC_DL.SL3, "BAG_UPDATE_DELAYED")
 	if not self.SpamBagQueue then self.SpamBagQueue = {} end
 	if not self.SpamBagTotal then self.SpamBagTotal = 0 end
 	--NOTE: BSYC:GetHashTableLen(self.SpamBagQueue) may show more then is actually processed.  Example it has the banks in queue but we aren't at a bank.
@@ -166,7 +191,7 @@ function Events:BAG_UPDATE_DELAYED(event)
 
 	for bagid in pairs(self.SpamBagQueue) do
 		local bagname
-		
+
 		Debug(BSYC_DL.SL1, "SpamBagCheck", bagid)
 		if Scanner:IsBackpack(bagid) or Scanner:IsBackpackBag(bagid) or Scanner:IsKeyring(bagid) then
 			bagname = "bag"
@@ -175,6 +200,8 @@ function Events:BAG_UPDATE_DELAYED(event)
 			if Unit.atBank then
 				bagname = "bank"
 			end
+		elseif Scanner:IsWarbandBank(bagid) then
+			Scanner:SaveWarbandBank(bagid)
 		end
 
 		if bagname then
@@ -235,6 +262,8 @@ function Events:GuildBank_Changed()
 end
 
 function Events:CURRENCY_DISPLAY_UPDATE()
+	if not BSYC.tracking.currency then return end
+
 	if Unit:InCombatLockdown() then
 		if not self.doCurrencyUpdate then
 			self.doCurrencyUpdate = true
@@ -242,7 +271,7 @@ function Events:CURRENCY_DISPLAY_UPDATE()
 		end
 		return
 	end
-	Scanner:SaveCurrency()
+	BSYC:StartTimer("CURRENCY_DISPLAY_UPDATE", 1, Scanner, "SaveCurrency")
 end
 
 function Events:PLAYER_REGEN_ENABLED()
@@ -250,7 +279,7 @@ function Events:PLAYER_REGEN_ENABLED()
 	if Unit:InCombatLockdown() then return end
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	self.doCurrencyUpdate = nil
-	Scanner:SaveCurrency()
+	BSYC:StartTimer("CURRENCY_DISPLAY_UPDATE", 1, Scanner, "SaveCurrency")
 end
 
 function Events:TRADE_SKILL_SHOW()

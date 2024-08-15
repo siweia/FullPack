@@ -61,6 +61,7 @@ local optionsDefaults = {
 	itemTotalsByClassColor = true,
 	showRaceIcons = true,
 	showGuildTabs = false,
+	showWarbandTabs = false,
 	enableWhitelist = false,
 	enableSourceExpansion = true,
 	enableItemTypes = true,
@@ -81,11 +82,13 @@ local colorsDefaults = {
 	second = HexToRGBPerc('FFFFFFFF'),
 	total = HexToRGBPerc('FFF4A460'),
 	guild = HexToRGBPerc('FF65B8C0'),
+	warband = HexToRGBPerc('FFFF3C38'),
 	debug = HexToRGBPerc('FF4DD827'),
 	cr = HexToRGBPerc('FFFF7D0A'),
 	bnet = HexToRGBPerc('FF3588FF'),
 	itemid = HexToRGBPerc('FF52D386'),
 	guildtabs = HexToRGBPerc('FF09DBE0'),
+	warbandtabs = HexToRGBPerc('FF09DBE0'),
 	expansion = HexToRGBPerc('FFCF9FFF'),
 	itemtypes = HexToRGBPerc('ffcccf66'),
 	currentrealm = HexToRGBPerc('ff4CBB17'),
@@ -103,6 +106,7 @@ local trackingDefaults = {
 	guild = true,
 	professions = true,
 	currency = true,
+	warband = true,
 }
 
 Data.__cache = {}
@@ -166,6 +170,7 @@ function Data:OnEnable()
 	BSYC.db.player.race = player.race
 	BSYC.db.player.gender = player.gender
 	BSYC.db.player.faction = player.faction
+	BSYC.db.player.guid = player.guid
 	BSYC.db.player.realmKey = player.realmKey
 	BSYC.db.player.rwsKey = player.rwsKey
 
@@ -597,6 +602,11 @@ function Data:CheckGuildDB()
 	return BagSyncDB[unit.guildrealm][unit.guild]
 end
 
+function Data:CheckWarbandBankDB()
+	if not BagSyncDB["warband§"] then BagSyncDB["warband§"] = {} end
+	return BagSyncDB["warband§"]
+end
+
 function Data:GetPlayerObj(player)
 	if not player then player = Unit:GetPlayerInfo(true) end
 	local isConnectedRealm = Unit:isConnectedRealm(player.realm)
@@ -634,6 +644,28 @@ function Data:GetPlayerGuildObj(player)
 		isGuild = true,
 		isConnectedRealm = isConnectedRealm,
 		isXRGuild = isXRGuild
+	}
+end
+
+function Data:GetPlayerCurrencyObj(player, realm)
+	if not player or not realm then return end
+	Debug(BSYC_DL.TRACE, "GetPlayerCurrencyObj", player, realm)
+	if not BSYC.tracking.currency then return end
+
+	if not BagSyncDB[realm] then return end
+	if not BagSyncDB[realm][player] then return end
+	return BagSyncDB[realm][player].currency
+end
+
+function Data:GetWarbandBankObj()
+	if not BSYC.tracking.warband then return end
+
+	if not BagSyncDB["warband§"] then return end
+	return {
+		realm = L.Tooltip_warband,
+		name = L.Tooltip_warband,
+		data = BagSyncDB["warband§"],
+		isWarbandBank = true,
 	}
 end
 

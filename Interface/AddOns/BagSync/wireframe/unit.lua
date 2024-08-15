@@ -40,6 +40,9 @@ if C_PlayerInteractionManager then
 		[InteractType.VoidStorageBanker] = true,
 		[InteractType.GuildBanker] = true,
 	}
+	if BSYC.isWarbandActive then
+		showDebug[InteractType.AccountBanker] = true
+	end
 
 	Unit:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", function(event, winArg)
 		if winArg and showDebug[winArg] then
@@ -64,6 +67,10 @@ if C_PlayerInteractionManager then
 		elseif winArg == InteractType.GuildBanker then
 			Unit.atGuildBank = true
 			Unit:SendMessage('BAGSYNC_EVENT_GUILDBANK', true)
+
+		elseif BSYC.isWarbandActive and winArg == InteractType.AccountBanker then
+			Unit.atWarbandBank = true
+			Unit:SendMessage('BAGSYNC_EVENT_WARBANDBANK', true)
 		end
 	end)
 
@@ -91,6 +98,10 @@ if C_PlayerInteractionManager then
 		elseif winArg == InteractType.GuildBanker then
 			Unit.atGuildBank = false
 			Unit:SendMessage('BAGSYNC_EVENT_GUILDBANK')
+
+		elseif BSYC.isWarbandActive and winArg == InteractType.AccountBanker then
+			Unit.atWarbandBank = false
+			Unit:SendMessage('BAGSYNC_EVENT_WARBANDBANK')
 		end
 	end)
 else
@@ -141,7 +152,6 @@ else
 			Unit:SendMessage('BAGSYNC_EVENT_GUILDBANK')
 		end)
 	end
-
 end
 
 --these are used to process auction house data when it's ready.  Second variable is true for ready
@@ -236,6 +246,7 @@ function Unit:GetPlayerInfo(bypassDebug)
 	unit.money = (_G.GetMoney() or 0) - _G.GetCursorMoney() - _G.GetPlayerTradeMoney()
 	unit.class = select(2, _G.UnitClass("player"))
 	unit.race = select(2, _G.UnitRace("player"))
+	unit.guid = _G.UnitGUID("player")
 	unit.guild = _G.GetGuildInfo("player")
 	if unit.guild then
 		--we need to check for Normalized realm names that will cause issues since they are missing spaces and hyphens and won't match GetRealmName()

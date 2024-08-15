@@ -10,6 +10,7 @@ local BSYC = select(2, ...) --grab the addon namespace
 local Scanner = BSYC:NewModule("Scanner")
 local Unit = BSYC:GetModule("Unit")
 local Data = BSYC:GetModule("Data")
+local L = LibStub("AceLocale-3.0"):GetLocale("BagSync")
 
 local function Debug(level, ...)
     if BSYC.DEBUG then BSYC.DEBUG(level, "Scanner", ...) end
@@ -32,6 +33,8 @@ local MAX_GUILDBANK_SLOTS_PER_TAB = 98
 local FirstEquipped = INVSLOT_FIRST_EQUIPPED
 local LastEquipped = INVSLOT_LAST_EQUIPPED
 
+Scanner.currencyTransferInProgress = false
+Scanner.lastCurrencyID = 0
 Scanner.pendingdMail = {items={}}
 
 function Scanner:ResetTooltips()
@@ -92,6 +95,12 @@ function Scanner:IsReagentBag(bagid)
 	return bagid == REAGENTBANK_CONTAINER
 end
 
+function Scanner:IsWarbandBank(bagid)
+	if not bagid then return false end
+	if not BSYC.isWarbandActive then return false end
+	return BSYC.WarbandIndex.bags[bagid]
+end
+
 function Scanner:StartupScans()
 	Debug(BSYC_DL.INFO, "StartupScans", BSYC.startupScanChk)
 	if BSYC.startupScanChk then return end --only do this once per load.  Does not include /reloadui
@@ -130,8 +139,8 @@ end
 
 function Scanner:SaveBag(bagtype, bagid)
 	Debug(BSYC_DL.INFO, "SaveBag", bagtype, bagid, BSYC.tracking.bag)
-	if not BSYC.tracking.bag then return end
 	if not bagtype or not bagid then return end
+	if not BSYC.tracking[bagtype] then return end
 	if not BSYC.db.player[bagtype] then BSYC.db.player[bagtype] = {} end
 
 	local xGetNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
@@ -411,6 +420,86 @@ function Scanner:SaveGuildBankMoney()
 	self:ResetTooltips()
 end
 
+function Scanner:SaveWarbandBank(bagID)
+	Debug(BSYC_DL.INFO, "SaveWarbandBank", Unit.atBank, BSYC.tracking.warband)
+	if not BSYC.isWarbandActive then return end
+	if not Unit.atBank or not BSYC.tracking.warband then return end
+
+	local warbandDB = Data:CheckWarbandBankDB()
+
+	local allTabs = C_Bank.FetchPurchasedBankTabData(Enum.BankType.Account)
+	local xGetNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
+	local xGetContainerInfo = (C_Container and C_Container.GetContainerItemInfo) or GetContainerItemInfo
+
+	local function doWarbandSlot(bagID, slotID, tabID)
+		if not bagID or not slotID then return end
+		local xObj, count, _,_,_,_, link = xGetContainerInfo(bagID, slotID)
+
+		--lets check for C_Container
+		if xObj and xObj.hyperlink then
+			link = xObj.hyperlink
+			count = xObj.stackCount or 1
+		end
+		if link then
+			local tmpItem = BSYC:ParseItemLink(link, count)
+			Debug(BSYC_DL.FINE, "doWarbandSlot", bagID, slotID, tabID, tmpItem)
+			return tmpItem
+		end
+	end
+
+	if not bagID then
+		--scan everything
+		for tabID, tabData in ipairs(allTabs) do
+			local slotItems = {}
+			if not warbandDB.tabs then warbandDB.tabs = {} end
+
+			if BSYC.WarbandIndex.tabs[tabID] then
+				bagID = BSYC.WarbandIndex.tabs[tabID]
+				local numSlots = xGetNumSlots(bagID)
+				Debug(BSYC_DL.INFO, "SaveWarbandBank", tabID, bagID, numSlots, tabData)
+
+				for slotID = 1, numSlots do
+					local link = doWarbandSlot(bagID, slotID, tabID)
+					table.insert(slotItems, link)
+				end
+			end
+
+			warbandDB.tabs[tabID] = slotItems
+		end
+	else
+		--scan specific bag/tab
+		local slotItems = {}
+		local tabID = BSYC.WarbandIndex.bags[bagID]
+
+		if tabID then
+			if not warbandDB.tabs then warbandDB.tabs = {} end
+			local numSlots = xGetNumSlots(bagID)
+			Debug(BSYC_DL.INFO, "SaveWarbandBank", tabID, bagID, numSlots)
+
+			for slotID = 1, numSlots do
+				local link = doWarbandSlot(bagID, slotID, tabID)
+				table.insert(slotItems, link)
+			end
+
+			warbandDB.tabs[tabID] = slotItems
+		end
+	end
+
+	self:ResetTooltips()
+end
+
+function Scanner:SaveWarbandBankMoney()
+	if not BSYC.tracking.warband then return end
+	if not Unit.atBank then return end
+
+	local warbandDB = Data:CheckWarbandBankDB()
+	local money = C_Bank.FetchDepositedMoney(Enum.BankType.Account)
+
+	Debug(BSYC_DL.INFO, "SaveWarbandBankMoney", money)
+	warbandDB.money = money
+	self:ResetTooltips()
+end
+
 function Scanner:SaveMailbox(isShow)
 	Debug(BSYC_DL.INFO, "SaveMailbox", isShow, Unit.atMailbox, BSYC.tracking.mailbox, self.isCheckingMail)
 	if not Unit.atMailbox or not BSYC.tracking.mailbox then return end
@@ -601,6 +690,62 @@ function Scanner:SaveAuctionHouse()
 	self:ResetTooltips()
 end
 
+function Scanner:ProcessCurrencyTransfer(doCurrentPlayer, sourceGUID, currencyID, transferAmt)
+	if not BSYC.tracking.currency then return end
+	Debug(BSYC_DL.INFO, "ProcessCurrencyTransfer", doCurrentPlayer, sourceGUID, currencyID, transferAmt)
+
+	--update the source player
+	if not doCurrentPlayer and sourceGUID and not Scanner.currencyTransferInProgress then
+		Scanner.currencyTransferInProgress = true
+		Scanner.lastCurrencyID = currencyID
+
+		local localizedClass, englishClass, localizedRace, englishRace, sex, name, realm = GetPlayerInfoByGUID(sourceGUID)
+		if name then
+			local player = Unit:GetPlayerInfo(true)
+			local tmpRealm = player.realm --default to our current realm.  Because GetPlayerInfoByGUID() returns empty realm if sourceGUID is on the same server.
+
+			--lets get the true realm name from localized for our DB
+			--blizzard for some reason sends back an empty string instead of nil, so check for that
+			if realm ~= nil and realm ~= '' then
+				tmpRealm = Unit:GetTrueRealmName(realm)
+			end
+
+			Debug(BSYC_DL.INFO, "CurrencyTransferSourceUpt-1", name, tmpRealm, sourceGUID, currencyID, transferAmt)
+			--lets check to see that the source player even exists
+
+			local currencyObj = Data:GetPlayerCurrencyObj(name, tmpRealm)
+			if currencyObj and currencyObj[currencyID] and currencyObj[currencyID].count then
+				currencyObj[currencyID].count = currencyObj[currencyID].count - transferAmt
+				Debug(BSYC_DL.FINE, "CurrencyTransferSourceUpt-2", name, tmpRealm, sourceGUID, currencyID, transferAmt, currencyObj[currencyID].count)
+			else
+				BSYC:Print(L.WarningCurrencyUpt.." "..name.. " | "..tmpRealm)
+			end
+
+			--do not process below as we wait for the CURRENCY_TRANSFER_LOG_UPDATE to process the player
+			return
+		end
+
+	elseif doCurrentPlayer and Scanner.lastCurrencyID > 0 and Scanner.currencyTransferInProgress then
+		--update the current player
+		local xGetCurrencyInfo = (C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo) or GetCurrencyInfo
+		local currencyData = xGetCurrencyInfo(Scanner.lastCurrencyID )
+
+		if currencyData then
+			Debug(BSYC_DL.INFO, "CurrencyTransferPlayerUpt", Scanner.lastCurrencyID, currencyData.quantity)
+			--lets try to individually update the currency
+			if BSYC.db.player.currency[Scanner.lastCurrencyID] then
+				BSYC.db.player.currency[Scanner.lastCurrencyID].count = currencyData.quantity
+			else
+				--something went wrong so lets just can the entire thing
+				Scanner:SaveCurrency(false)
+			end
+		end
+	end
+
+	Scanner.currencyTransferInProgress = false
+	Scanner.lastCurrencyID = 0
+end
+
 function Scanner:SaveCurrency(showDebug)
 	if not BSYC:CanDoCurrency() then return end
 	if Unit:InCombatLockdown() then return end
@@ -647,9 +792,9 @@ function Scanner:SaveCurrency(showDebug)
 			local currencyinfo = xGetCurrencyListInfo(i)
 			local link = xGetCurrencyListLink(i)
 			local currencyID = BSYC:GetShortCurrencyID(link)
-			
+
 			local currName = currencyinfo.name or currencyinfo --classic and wotlk servers don't return an array but a string name instead
-			
+
 			--classic and wotlk do not use array returns for xGetCurrencyListInfo, so lets compensate for it
 			if not currencyinfo.name then
 				_, xHeader, _, _, _, xCount, xIcon1, xIcon2 = xGetCurrencyListInfo(i)
