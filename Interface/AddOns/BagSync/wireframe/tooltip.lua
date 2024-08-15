@@ -608,7 +608,7 @@ function Tooltip:GetBottomChild()
 	end
 
 	--first do TradeSkillMaster
-	if _G.IsAddOnLoaded("TradeSkillMaster") then
+	if C_AddOns.IsAddOnLoaded("TradeSkillMaster") then
         for i=1, 20 do
             local t = _G["TSMExtraTip" .. i]
             if t and t:IsVisible() then
@@ -781,8 +781,15 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	}
 
 	--check blacklist
+	local personalBlacklist = false
 	if shortID and (permIgnore[tonumber(shortID)] or BSYC.db.blacklist[tonumber(shortID)]) then
-		skipTally = true
+		if BSYC.db.blacklist[tonumber(shortID)] then
+			--don't use this on perm ignores only personal blacklist
+			skipTally = not BSYC.options.showBlacklistCurrentPlayerOnly
+			personalBlacklist = true
+		else
+			skipTally = true
+		end
 	end
 	--check whitelist
 	if BSYC.options.enableWhitelist then
@@ -822,8 +829,9 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	local turnOffCache = (BSYC.options.debug.enable and BSYC.options.debug.cache and true) or false
 	local advPlayerChk = false
 	local advPlayerGuildChk = false
+	local doCurrentPlayerOnly = BSYC.options.showCurrentPlayerOnly or (BSYC.options.showBlacklistCurrentPlayerOnly and personalBlacklist)
 
-	Debug(BSYC_DL.SL2, "TallyUnits", "|cFFe454fd[Item]|r", link, shortID, origLink, advUnitList, turnOffCache)
+	Debug(BSYC_DL.SL2, "TallyUnits", "|cFFe454fd[Item]|r", link, shortID, origLink, skipTally, advUnitList, turnOffCache, doCurrentPlayerOnly, personalBlacklist)
 
 	--DB TOOLTIP COUNTS
 	-------------------
@@ -835,7 +843,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		--NOTE: This cache check is ONLY for units (guild, players) that isn't related to the current player.  Since that data doesn't really change we can cache those lines
 		--For the player however, we always want to grab the latest information.  So once it's grabbed we can do a small local cache for that using __lastTally
 		--Advanced Searches should always be processed and not stored in the cache
-		if turnOffCache or advUnitList or (not Data.__cache.tooltip[origLink] and not BSYC.options.showCurrentPlayerOnly) then
+		if turnOffCache or advUnitList or (not Data.__cache.tooltip[origLink] and not doCurrentPlayerOnly) then
 
 			--allow advance search matches if found, no need to set to true as advUnitList will default to dumpAll if found
 			for unitObj in Data:IterateUnits(false, advUnitList) do
@@ -881,7 +889,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 				Data.__cache.tooltip[origLink].unitList = (grandTotal > 0 and CopyTable(unitList)) or {}
 				Data.__cache.tooltip[origLink].grandTotal = grandTotal
 			end
-		elseif Data.__cache.tooltip[origLink] and not BSYC.options.showCurrentPlayerOnly then
+		elseif Data.__cache.tooltip[origLink] and not doCurrentPlayerOnly then
 			--use the cached results from previous DB searches, copy the table don't reference it, 
 			--otherwise we will add to it unintentially below with player data using table.insert()
 			unitList = CopyTable(Data.__cache.tooltip[origLink].unitList)
@@ -896,7 +904,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		if not advUnitList or advPlayerChk then
 			countList = {}
 			local playerObj = Data:GetPlayerObj(player)
-			Debug(BSYC_DL.SL2, "TallyUnits", "|cFF4DD827[CurrentPlayer]|r", playerObj.name, playerObj.realm)
+			Debug(BSYC_DL.SL2, "TallyUnits", "|cFF4DD827[CurrentPlayer]|r", playerObj.name, playerObj.realm, link)
 
 			--grab the equip count as we need that below for an accurate count on the bags, bank and reagents
 			grandTotal = grandTotal + self:AddItems(playerObj, link, "equip", countList)
@@ -917,6 +925,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 				carryCount = C_Item.GetItemCount(origLink) or 0 --get the total amount the player is currently carrying (bags + equip)
 				bagCount = carryCount - equipCount -- subtract the equipment count from the carry amount to get bag count
+				if bagCount < 0 then bagCount = 0 end
 
 				if IsReagentBankUnlocked and IsReagentBankUnlocked() then
 					--C_Item.GetItemCount returns the bag count + reagent regardless of parameters.  So we have to subtract bag and reagents.  This does not include bank totals
@@ -928,7 +937,6 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 				--bankCount = C_Item.GetItemCount returns the bag + bank count regardless of parameters.  So we have to subtract the carry totals
 				bankCount = C_Item.GetItemCount(origLink, true, false, false) or 0
 				bankCount = (bankCount - carryCount)
-
 				if bankCount < 0 then bankCount = 0 end
 
 				-- --now assign the values (check for disabled modules)
@@ -984,6 +992,11 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		if #unitList > 0 then
 			unitList = self:DoSort(unitList)
 		end
+	end
+
+	--check for blacklist (showBlacklistCurrentPlayerOnly)
+	if BSYC.options.showBlacklistCurrentPlayerOnly and personalBlacklist then
+		table.insert(unitList, 1, { colorized="|cffff7d0a["..L.Blacklist.."]|r", tallyString=" "} )
 	end
 
 	--EXTRA OPTIONAL DISPLAYS
@@ -1116,20 +1129,36 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	-- }
 	--if permIgnore[currencyID] then return end
 
-	local tenderCheck = false
+	local tenderCheck = currencyID == 2032 or false
 
 	for unitObj in Data:IterateUnits() do
 		if not unitObj.isGuild and unitObj.data.currency and unitObj.data.currency[currencyID] and unitObj.data.currency[currencyID].count > 0 then
 			--check for "Trader's Tender" which is currencyID 2032.  Only display it once for the current player.
 			--that currency is account-wide.
-			if currencyID ~= 2032 or (currencyID == 2032 and not tenderCheck and unitObj.data == BSYC.db.player) then
+			local doTender = (tenderCheck and unitObj.data == BSYC.db.player) or false
+
+			if not tenderCheck or doTender then
+
+				local colorized = self:ColorizeUnit(unitObj)
+				local sortIndex = self:GetSortIndex(unitObj)
+				local count = unitObj.data.currency[currencyID].count
+
+				if doTender then
+					local warbandObj = Data:GetWarbandBankObj()
+					if warbandObj then
+						colorized = Tooltip:ColorizeUnit(warbandObj, true, false, false, false)
+						sortIndex = Tooltip:GetSortIndex(warbandObj)
+						count = L.TooltipIcon_warband.." "..count
+					end
+				end
+
 				table.insert(usrData, {
-					unitObj=unitObj,
-					colorized=self:ColorizeUnit(unitObj),
-					sortIndex=self:GetSortIndex(unitObj),
-					count=unitObj.data.currency[currencyID].count
+					unitObj = unitObj,
+					colorized = colorized,
+					sortIndex = sortIndex,
+					count = count
 				})
-				if currencyID == 2032 and unitObj.data == BSYC.db.player then tenderCheck = true end
+
 			end
 		end
 	end
@@ -1155,9 +1184,9 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	end
 
 	--this is for trader tenders since they are account wide, only add them once
-	if currencyID == 2032 then
-		table.insert(displayList, {"|cffff7d0a["..L.DisplayTooltipAccountWide.."]|r", " "})
-	end
+	-- if currencyID == 2032 then
+	-- 	table.insert(displayList, {"|cffff7d0a["..L.DisplayTooltipAccountWide.."]|r", " "})
+	-- end
 
 	if BSYC.options.enableTooltipItemID and currencyID then
 		local desc = self:HexColor(BSYC.colors.itemid, L.TooltipCurrencyID)
@@ -1234,7 +1263,7 @@ function Tooltip:HookTooltip(objTooltip)
 
 					if data.id and shortID and data.id ~= shortID then
 						--if the data.id doesn't match the shortID it's probably a pattern, schematic, etc.. 
-						--This is because the hyperlink is overwritten during the args process with TooltipUtil.SurfaceArgs.
+						--This is because the hyperlink is overwritten during the args process.
 						--Pattern hyperlinks are usally args3 but get overwritten when they get to args7 that has the hyperlink of the item being crafted.
 						--Instead the pattern/recipe/schematic is returned in the data.id, because that is the only thing not overwritten
 						link = data.id

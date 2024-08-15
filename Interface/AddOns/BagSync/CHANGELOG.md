@@ -1,12 +1,15 @@
 # BagSync
 
-## [v19.46](https://github.com/Xruptor/BagSync/tree/v19.46) (2024-08-10)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.45...v19.46) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.47](https://github.com/Xruptor/BagSync/tree/v19.47) (2024-08-15)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.46...v19.47) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Fixed a lag issue found on some servers with the Currency Module in BagSync  
-    * On some servers, the event CURRENCY\_DISPLAY\_UPDATE is being spammed a lot. In order to address this, I've added spam protection checks on that event.  (Fixes #350)  
-- Merge pull request #352 from nanjuekaien1/patch-67  
-    Update zhCN.lua  
-- Update zhCN.lua  
-- Update config.lua  
-- Update zhCN.lua  
+- Show Blacklisted items on the current player only  
+    * New option to display BagSync Blacklisted items on the current player only.  This option is not recommended and will still display a total account even if the item is blacklisted. (Fixes #353)  
+- Fixed a nil bug with IsAddOnLoaded  
+    * Blizzard has moved IsAddOnLoaded to C\_AddOns.IsAddOnLoaded.  This has been fixed. (Fixes #356)  
+- Fixed an error when opening Guild Bank and with zero durability items  
+    * Fixed an error caused by recent changes to the API by Blizzard.  SurfaceArgs was removed.  Guild Bank scanning should work again.  (Fixed #356)  
+    * Changed the way Tenders are handled.  They are now considered a Warband Currency.  So as long as you have Warbands unlocked, it will display the Warband tag and symbol for the Tenders currency otherwise it will show the current player.  (Fixes #351)  
+    * Fixed an issue where items with zero durability were not being counted correctly by BagSync.  (Fixes #355)  
+- Fixed an issue when using Warband Bank Convergence  
+    * Items were not properly being counted when using the Warband Bank Convergence.  This has been fixed.  (Fixes #355)  
