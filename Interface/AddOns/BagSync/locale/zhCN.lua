@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("BagSync", "zhCN")
 if not L then return end
 
 --  zhCN client (NGA-[男爵凯恩])
---  Last update: 2024/8/10
+--  Last update: 2024/8/15
 
 L.Yes = "Yes"
 L.No = "No"
@@ -185,15 +185,16 @@ L.Display_GSC = "显示[详细]金额（|cFFFFD700金|r， |cFFC0C0C0银|r 和 |
 L.DisplayGuildBank = "显示[公会银行]物品。|cFF99CC33（需要扫描公会银行）|r"
 L.DisplayMailbox = "显示[信箱]物品。"
 L.DisplayAuctionHouse = "显示[拍卖行]物品。"
-L.DisplayMinimap = "显示[小地图图标。"
+L.DisplayMinimap = "显示[小地图]图标。"
 L.DisplayFaction = "显示[双方阵营]物品 （|cff3587ff联盟|r/|cFFDF2B2B部落|r）。"
 L.DisplayClassColor = "显示职业颜色。"
 L.DisplayItemTotalsByClassColor = "根据角色的职业颜色显示物品总计。"
 L.DisplayTooltipOnlySearch = "在搜索窗内|cFF99CC33（仅）|r显示BagSync提示。"
 L.DisplayTooltipCurrencyData = "在暴雪货币窗口中显示BagSync数据。"
 L.DisplayLineSeparator = "显示空行分割线。"
-L.DisplayCurrentPlayer = "当前玩家" 
-L.DisplayCurrentPlayerOnly = "|cFFFFD700仅限！|r鼠标提示上显示\"当前\"玩家的BagSync数据 |r |cFFDF2B2B（不推荐）|r"
+L.DisplayCurrentCharacter = "当前角色" 
+L.DisplayCurrentCharacterOnly = "|cFFFFD700仅限！|r鼠标提示上显示\"当前\"角色的BagSync数据。|cFFDF2B2B（不推荐）|r"
+L.DisplayBlacklistCurrentCharOnly = "|cFFFFD700仅限！|r显示\"当前\"角色的黑名单物品数量。|cFFDF2B2B（不推荐）|r"
 L.DisplayCurrentRealmName = "显示玩家的\"当前\"|cFF4CBB17[服务器]|r。"
 L.DisplayCurrentRealmShortName = "为\"当前\"|cFF4CBB17[服务器]|r使用一个简短的名称。"
 L.DisplayCR = "显示\"合并\"|cffff7d0a[服务器]|r信息。|cffff7d0a[CR]|r"
@@ -211,6 +212,7 @@ L.DisplaySortOrderStatus = "当前排序: [%s]"
 L.DisplayWhitelistHelp = "白名单帮助"
 L.DisplayWhitelistStatus = "当前白名单: [%s]"
 L.DisplayWhitelistHelpInfo = "你只能在白名单数据库中输入物品ID. \n\n输入战斗宠物请使用虚拟ID[FakeID]而不是物品ID[ItemID], 你可以通过在BagSync设置内启用鼠标提示物品ID[ItemID]功能来获取虚拟ID[FakeID]。\n\n|cFFDF2B2B这对货币窗口不起作用。|r"
+L.DisplayWhitelistHelpInfo2 = "\n\n\n\n|cFFFF7D0A警告：此白名单功能将阻止|cFFFFFFFF--所有--|r 物品被BagSync统计，但在此列表中找到的物品除外。|r\n|cFF09DBE0这是一个反向黑名单！|r"
 L.DisplayTooltipAccountWide = "账号信息"
 L.DisplayAccountWideTagOpts = "|cFF99CC33选项 ( |cffff7d0a[CR]|r和|cff3587ff[BNet]|r )|r"
 L.DisplayGreenCheck = "在当前角色名前显示 %s 。"
@@ -237,7 +239,7 @@ L.CustomSortInfo = "列表使用升序排列 (1,2,3)"
 L.CustomSortInfoWarn = "|cFF99CC33注意: 仅使用数字! (-1,0,3,4)|r"
 L.DisplayShowUniqueItemsTotals = "启用该选项将允许物品总数量增加独特的物品,无论物品的统计信息。|cFF99CC33（推荐）|r"
 L.DisplayShowUniqueItemsTotals_2 = [[
-某些物品例如 |cffff7d0a[Legendaries]|r 可以共享相同的名字但具有不同的统计数据。由于这些物品是彼此独立处理,因此有时不计入总物品数。启用此选项将完全忽略独特的物品统计数据并一视同仁,,只要它们共享相同的物品名称。
+某些物品例如 |cffff7d0a[传说物品]|r 可以共享相同的名字但具有不同的统计数据。由于这些物品是彼此独立处理,因此有时不计入总物品数。启用此选项将完全忽略独特的物品统计数据并一视同仁,只要它们共享相同的物品名称。
 
 禁用此选项将独立显示物品计数,因此将考虑物品统计信息。物品总数将只显示每个游戏角色共享相同的唯一物品和完全相同的统计数据|cFFDF2B2B(不推荐)|r
 ]]

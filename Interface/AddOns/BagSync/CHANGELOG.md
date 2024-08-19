@@ -1,15 +1,19 @@
 # BagSync
 
-## [v19.47](https://github.com/Xruptor/BagSync/tree/v19.47) (2024-08-15)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.46...v19.47) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.49](https://github.com/Xruptor/BagSync/tree/v19.49) (2024-08-18)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.48...v19.49) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Show Blacklisted items on the current player only  
-    * New option to display BagSync Blacklisted items on the current player only.  This option is not recommended and will still display a total account even if the item is blacklisted. (Fixes #353)  
-- Fixed a nil bug with IsAddOnLoaded  
-    * Blizzard has moved IsAddOnLoaded to C\_AddOns.IsAddOnLoaded.  This has been fixed. (Fixes #356)  
-- Fixed an error when opening Guild Bank and with zero durability items  
-    * Fixed an error caused by recent changes to the API by Blizzard.  SurfaceArgs was removed.  Guild Bank scanning should work again.  (Fixed #356)  
-    * Changed the way Tenders are handled.  They are now considered a Warband Currency.  So as long as you have Warbands unlocked, it will display the Warband tag and symbol for the Tenders currency otherwise it will show the current player.  (Fixes #351)  
-    * Fixed an issue where items with zero durability were not being counted correctly by BagSync.  (Fixes #355)  
-- Fixed an issue when using Warband Bank Convergence  
-    * Items were not properly being counted when using the Warband Bank Convergence.  This has been fixed.  (Fixes #355)  
+- Fixed an issue with BagSync Warband Bank Support  
+    * Warband Bank data should no longer vanish or empty when logging in different characters.  The data will only be scanned when visiting a bank or using the warband bank convergence.  Blizzard was sending Warband Bank events even during login which was clearing all the data.  (Fixes #363)  
+- Merge pull request #366 from nanjuekaien1/patch-72  
+    Update zhCN.lua  
+- Update zhCN.lua  
+- Merge pull request #365 from nanjuekaien1/patch-71  
+    Update zhCN.lua  
+- Update zhCN.lua  
+- Merge pull request #364 from DlargeX/master  
+    updated German Locals  
+- updated German Locals  
+- Merge pull request #362 from nanjuekaien1/patch-70  
+    Update zhCN.lua  
+- Update zhCN.lua  

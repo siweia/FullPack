@@ -782,19 +782,24 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 	--check blacklist
 	local personalBlacklist = false
+	local personalWhitelist = false
+
 	if shortID and (permIgnore[tonumber(shortID)] or BSYC.db.blacklist[tonumber(shortID)]) then
 		if BSYC.db.blacklist[tonumber(shortID)] then
 			--don't use this on perm ignores only personal blacklist
-			skipTally = not BSYC.options.showBlacklistCurrentPlayerOnly
+			skipTally = not BSYC.options.showBLCurrentCharacterOnly
 			personalBlacklist = true
 		else
 			skipTally = true
 		end
+		Debug(BSYC_DL.SL3, "TallyUnits", "|cFFe454fd[Blacklist]|r", link, shortID, personalBlacklist, BSYC.options.showBLCurrentCharacterOnly)
 	end
-	--check whitelist
+	--check whitelist (blocks all items except those found in whitelist)
 	if BSYC.options.enableWhitelist then
 		if not BSYC.db.whitelist[tonumber(shortID)] then
 			skipTally = true
+			personalWhitelist = true
+			Debug(BSYC_DL.SL3, "TallyUnits", "|cFFe454fd[Whitelist]|r", link, shortID, personalWhitelist)
 		end
 	end
 
@@ -829,9 +834,9 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 	local turnOffCache = (BSYC.options.debug.enable and BSYC.options.debug.cache and true) or false
 	local advPlayerChk = false
 	local advPlayerGuildChk = false
-	local doCurrentPlayerOnly = BSYC.options.showCurrentPlayerOnly or (BSYC.options.showBlacklistCurrentPlayerOnly and personalBlacklist)
+	local doCurrentPlayerOnly = BSYC.options.showCurrentCharacterOnly or (BSYC.options.showBLCurrentCharacterOnly and personalBlacklist)
 
-	Debug(BSYC_DL.SL2, "TallyUnits", "|cFFe454fd[Item]|r", link, shortID, origLink, skipTally, advUnitList, turnOffCache, doCurrentPlayerOnly, personalBlacklist)
+	Debug(BSYC_DL.SL2, "TallyUnits", "|cFFe454fd[Item]|r", link, shortID, origLink, skipTally, advUnitList, turnOffCache, doCurrentPlayerOnly)
 
 	--DB TOOLTIP COUNTS
 	-------------------
@@ -901,7 +906,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 
 		--CURRENT PLAYER
 		-----------------
-		if not advUnitList or advPlayerChk then
+		if (not personalWhitelist and not advUnitList) or advPlayerChk then
 			countList = {}
 			local playerObj = Data:GetPlayerObj(player)
 			Debug(BSYC_DL.SL2, "TallyUnits", "|cFF4DD827[CurrentPlayer]|r", playerObj.name, playerObj.realm, link)
@@ -967,7 +972,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		--We do this separately so that the guild has it's own line in the unitList and not included inline with the player character
 		--We also want to do this in real time and not cache, otherwise they may put stuff in their guild bank which will not be reflected in a cache
 		-----------------
-		if guildObj and (not advUnitList or advPlayerGuildChk) then
+		if not personalWhitelist and guildObj and (not advUnitList or advPlayerGuildChk) then
 			Debug(BSYC_DL.SL2, "TallyUnits", "|cFF4DD827[CurrentPlayer-Guild]|r", player.guild, player.guildrealm)
 			countList = {}
 			grandTotal = grandTotal + self:AddItems(guildObj, link, "guild", countList)
@@ -978,7 +983,7 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		end
 
 		--Warband Bank can updated frequently, so we need to collect in real time and not cached
-		if warbandObj and allowList.warband and not advUnitList then
+		if not personalWhitelist and warbandObj and allowList.warband and not advUnitList then
 			Debug(BSYC_DL.SL2, "TallyUnits", "|cFF4DD827[Warband]|r")
 			countList = {}
 			grandTotal = grandTotal + self:AddItems(warbandObj, link, "warband", countList)
@@ -994,8 +999,8 @@ function Tooltip:TallyUnits(objTooltip, link, source, isBattlePet)
 		end
 	end
 
-	--check for blacklist (showBlacklistCurrentPlayerOnly)
-	if BSYC.options.showBlacklistCurrentPlayerOnly and personalBlacklist then
+	--check for blacklist (showBLCurrentCharacterOnly)
+	if BSYC.options.showBLCurrentCharacterOnly and personalBlacklist then
 		table.insert(unitList, 1, { colorized="|cffff7d0a["..L.Blacklist.."]|r", tallyString=" "} )
 	end
 
@@ -1123,6 +1128,7 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 
 	--loop through our characters
 	local usrData = {}
+	local grandTotal = 0
 
 	-- local permIgnore ={
 	-- 	[2032] = "Trader's Tender", --shared across all characters
@@ -1142,6 +1148,7 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 				local colorized = self:ColorizeUnit(unitObj)
 				local sortIndex = self:GetSortIndex(unitObj)
 				local count = unitObj.data.currency[currencyID].count
+				grandTotal = grandTotal + count
 
 				if doTender then
 					local warbandObj = Data:GetWarbandBankObj()
@@ -1169,10 +1176,10 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	local displayList = {}
 	local showQTip = Tooltip:QTipCheck()
 
-	if currencyName then
-		table.insert(displayList, {string.format("|cff%s%s|r", RGBPercToHex(64/255, 224/255, 208/255), tostring(currencyName)), " "})
-		table.insert(displayList, {" ", " "})
-	end
+	-- if currencyName then
+	-- 	table.insert(displayList, {string.format("|cff%s%s|r", RGBPercToHex(64/255, 224/255, 208/255), tostring(currencyName)), " "})
+	-- 	table.insert(displayList, {" ", " "})
+	-- end
 
 	for i=1, #usrData do
 		if usrData[i].count then
@@ -1188,11 +1195,20 @@ function Tooltip:CurrencyTooltip(objTooltip, currencyName, currencyIcon, currenc
 	-- 	table.insert(displayList, {"|cffff7d0a["..L.DisplayTooltipAccountWide.."]|r", " "})
 	-- end
 
+	--add [Total]
+	if BSYC.options.showTotal and grandTotal > 0 and #displayList > 1 then
+		--add a separator
+		table.insert(displayList, {" ", " "})
+		local desc = self:HexColor(BSYC.colors.total, L.TooltipTotal)
+		local value = self:HexColor(BSYC.colors.second, comma_value(grandTotal))
+		table.insert(displayList, {desc, value})
+	end
+
 	if BSYC.options.enableTooltipItemID and currencyID then
 		local desc = self:HexColor(BSYC.colors.itemid, L.TooltipCurrencyID)
 		local value = self:HexColor(BSYC.colors.second, currencyID)
-		table.insert(displayList, {" ", " "})
-		table.insert(displayList, {desc, value})
+		table.insert(displayList, 1, {" ", " "})
+		table.insert(displayList, 1,  {desc, value})
 	end
 
 	--finally display it
