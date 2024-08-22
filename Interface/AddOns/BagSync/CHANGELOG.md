@@ -1,19 +1,12 @@
 # BagSync
 
-## [v19.49](https://github.com/Xruptor/BagSync/tree/v19.49) (2024-08-18)
-[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.48...v19.49) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
+## [v19.50](https://github.com/Xruptor/BagSync/tree/v19.50) (2024-08-20)
+[Full Changelog](https://github.com/Xruptor/BagSync/compare/v19.49...v19.50) [Previous Releases](https://github.com/Xruptor/BagSync/releases)
 
-- Fixed an issue with BagSync Warband Bank Support  
-    * Warband Bank data should no longer vanish or empty when logging in different characters.  The data will only be scanned when visiting a bank or using the warband bank convergence.  Blizzard was sending Warband Bank events even during login which was clearing all the data.  (Fixes #363)  
-- Merge pull request #366 from nanjuekaien1/patch-72  
-    Update zhCN.lua  
-- Update zhCN.lua  
-- Merge pull request #365 from nanjuekaien1/patch-71  
-    Update zhCN.lua  
-- Update zhCN.lua  
-- Merge pull request #364 from DlargeX/master  
-    updated German Locals  
-- updated German Locals  
-- Merge pull request #362 from nanjuekaien1/patch-70  
-    Update zhCN.lua  
-- Update zhCN.lua  
+- Fixed an issue where Recipes weren't showing  
+    * The Recipe window in BagSync should now work properly.  (Fixes #369)  
+    * Added additional checks to ensure Professions work in future updates other than Retail.  
+- Merge pull request #367 from Zazou89/patch-1  
+    Add French missing keys  
+- revert typo  
+- Add missing keys, translation in progress  
