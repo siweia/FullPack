@@ -81,6 +81,7 @@ L['sathilga_location'] = nil
 L['trungal_note'] = nil
 L['disturbed_earthgorger_note'] = nil
 L['deepflayer_broodmother_note'] = nil
+L['lurker_note'] = nil
 
 L['gnawbles_ruby_vendor_note'] = nil
 L['options_icons_disturbed_earth'] = nil
@@ -152,6 +153,7 @@ L['gobbo_location'] = nil
 
 L['croakit_note'] = nil
 L['deathtide_note'] = nil
+L['murkshade_note'] = nil
 
 L['options_icons_mereldar_menace'] = '{achievement:40151}'
 L['options_icons_mereldar_menace_desc'] = nil

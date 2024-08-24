@@ -81,6 +81,7 @@ L['sathilga_location'] = '在土灵采矿机械建筑物附近的崖边上。'
 L['trungal_note'] = '击杀在入口周围和洞穴下方出现的 {npc:220615} 后出现。'
 L['disturbed_earthgorger_note'] = '使用额外动作法术 {spell:437003} 对地面使用3次后出现。'
 L['deepflayer_broodmother_note'] = '在高空飞来飞去。'
+L['lurker_note'] = '{note:需要5名玩家才能出现。}\n\n在10秒内激活5个 {dot:Red}{object:细小的控制杆} 即可出现。\n成功触发后，将看到区域范围的消息。'
 
 L['gnawbles_ruby_vendor_note'] = [[从 {object:翻动过的土地} 收集 {item:212493} 并将其带给 {npc:225166}。
 
@@ -101,7 +102,7 @@ L['illuminated_footlocker_note'] = '从 {npc:220703} 处接住5个掉落的 {spe
 L['illusive_kobyss_lure_note'] = '组合全部4个物品制造 {item:225641}：'
 L['sunless_lure_location'] = '由 {location:无晖之滨} 的 {npc:215653} 掉落。'
 L['murkfin_lure_location'] = '由 {location:威尔汉之征} 的 {npc:213622} 掉落。它们伪装起来并使用 {npc:215623} 作为诱饵。'
-L['hungering_shimmerfin_location'] = '由 {location:饥寒之池} 的 {npc:215243} 掉落。它们伪装起来并使用 {npc:215623} 作为诱饵。'
+L['hungering_shimmerfin_location'] = '由 {location:饥寒之池} 的 {npc:215243} 掉落。它们伪装起来并使用 {npc:219210} 作为诱饵。'
 L['ragefin_necrostaff_location'] = '由 {location:崇圣之地} 的 {npc:213406} 掉落。'
 L['jewel_of_the_cliffs_location'] = '在石墙上极高的地方。'
 L['lost_necklace_note'] = '拾取神龛边缘的 {object:失落的纪念物}。'
@@ -164,6 +165,7 @@ L['deathtide_note'] = [[要召唤他，必须在 {object:不祥祭坛} 上使用
 需要结合 {item:220122} {dot:Blue} 和 {item:220124} {dot:Green} 来获得 {item:220123}。
 
 {note:需要达到80级才能拾取它们。} ]] -- from wowhead, needs to be reviewed
+L['murkshade_note'] = nil
 
 L['options_icons_mereldar_menace'] = '{achievement:40151}'
 L['options_icons_mereldar_menace_desc'] = '显示 {achievement:40151} 成就中的目标位置。'

@@ -62,6 +62,7 @@ map.nodes[49556618] = Aquellion() -- seen spawn here
 map.nodes[66232975] = Rare({ -- flyes around
     id = 220276,
     quest = 80505, -- One time kill
+    rlabel = ReputationGain(150, 2594), -- The Assembly of the Deeps
     rewards = {
         Achievement({id = 40837, criteria = 69623}),
         Transmog({item = 223363, slot = L['leather']}), -- Flying Kobold's Seatbelt
@@ -100,6 +101,7 @@ map.nodes[66636887] = Rare({
     id = 220272,
     quest = 81566, -- One time kill
     note = L['in_small_cave'],
+    rlabel = ReputationGain(150, 2594), -- The Assembly of the Deeps
     rewards = {Achievement({id = 40837, criteria = 69627})}
 }) -- Deathbound Husk
 
@@ -143,7 +145,7 @@ map.nodes[47064697] = Rare({
 
 map.nodes[42773508] = Rare({
     id = 220275,
-    quest = 80547, -- One Time Kill
+    quest = 80547, -- One Time Kill (gives 150 rep on first kill)
     rewards = {
         Achievement({id = 40837, criteria = 69624}),
         Transmog({item = 223353, slot = L['cloth']}), -- Waterskipper's Trousers
@@ -153,12 +155,19 @@ map.nodes[42773508] = Rare({
     }
 }) -- King Splash
 
-map.nodes[74002000] = Rare({ -- review
+map.nodes[60887668] = Rare({
     id = 220285,
-    quest = 81633, -- review -- need rep quest id if triggered
+    quest = 81633, -- 85163
+    note = L['lurker_note'],
     rewards = {
         Achievement({id = 40837, criteria = 69637}),
         Mount({item = 223501, id = 2205}) -- Ol' Mole Rufus
+    },
+    pois = {
+        POI({
+            points = {49460881, 53902529, 57622357, 62844464, 59059239},
+            color = 'Red'
+        })
     }
 }) -- Lurker of the Deeps
 
@@ -236,7 +245,10 @@ map.nodes[45511745] = Treasure({ -- lvl 71
 
 map.nodes[48254896] = Treasure({ -- lvl 71
     quest = 82820,
-    rewards = {Achievement({id = 40724, criteria = 69311})}
+    rewards = {
+        Achievement({id = 40724, criteria = 69311}),
+        Pet({item = 221548, id = 4536}) -- Blightbud
+    }
 }) -- Dislodged Blockage (Blocked Intake)
 
 map.nodes[49053163] = Treasure({ -- Inside the Inn
@@ -287,6 +299,7 @@ map.nodes[50485349] = Treasure({ -- lvl 71
 map.nodes[55391385] = Treasure({ -- lvl 71
     quest = 82235,
     note = L['in_small_cave'],
+    rlabel = ReputationGain(150, 2594), -- The Assembly of the Deeps
     rewards = {Achievement({id = 40724, criteria = 69282})},
     pois = {POI({54681421})} -- Entrance
 }) -- Munderut's Forgotten Stash
@@ -294,12 +307,14 @@ map.nodes[55391385] = Treasure({ -- lvl 71
 map.nodes[58933027] = Treasure({ -- lvl 71
     quest = 82818,
     rewards = {
-        Achievement({id = 40724, criteria = 69307}), Pet({id = 4470}) -- Oop'lajax
+        Achievement({id = 40724, criteria = 69307}),
+        Pet({item = 224439, id = 4470}) -- Oop'lajax
     }
 }) -- Scary Dark Chest
 
 map.nodes[66203341] = Treasure({ -- lvl 71
     quest = 83030,
+    rlabel = ReputationGain(150, 2594), -- The Assembly of the Deeps
     rewards = {Achievement({id = 40724, criteria = 69304})}
 }) -- Waterlogged Refuse
 
@@ -532,7 +547,7 @@ map.nodes[39311739] = LoreObject({
 }) -- A Skull on a Sign
 
 map.nodes[64945614] = LoreObject({
-    -- rlabel = ReputationGain(250, 2594), -- The Assembly of the Deeps
+    rlabel = ReputationGain(250, 2594), -- The Assembly of the Deeps
     rewards = {Achievement({id = 40762, criteria = 69378})}
 }) -- Kobold Warning Sign
 
@@ -542,7 +557,7 @@ map.nodes[51477241] = LoreObject({
 }) -- Submerged Sign
 
 map.nodes[71364240] = LoreObject({
-    -- rlabel = ReputationGain(250, 2594), -- The Assembly of the Deeps
+    rlabel = ReputationGain(250, 2594), -- The Assembly of the Deeps
     rewards = {Achievement({id = 40762, criteria = 69375})}
 }) -- Warning: Collapsed Tunnel
 
