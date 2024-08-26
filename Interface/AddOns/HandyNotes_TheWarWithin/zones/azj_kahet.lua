@@ -57,7 +57,7 @@ map.nodes[37924284] = Rare({
 map.nodes[70722147] = Rare({
     id = 216042,
     quest = 81704, -- 84073
-    note = L['in_small_cave'],
+    note = L['in_waterfall_cave'],
     -- ReputationGain(50, 2601), -- The Weaver
     -- ReputationGain(50, 2605), -- The General
     -- ReputationGain(50, 2607), -- The Vizier
@@ -98,7 +98,10 @@ map.nodes[61232730] = Rare({
     id = 216041,
     quest = 81699, -- One Time Kill
     note = L['in_building'],
-    rewards = {Achievement({id = 40840, criteria = 69655})}
+    rewards = {
+        Achievement({id = 40840, criteria = 69655}),
+        Transmog({item = 223369, slot = L['back']}) -- Webspeaker's Spiritual Cloak
+    }
 }) -- Webspeaker Grik'ik
 
 akl.nodes[65198283] = Rare({
@@ -280,6 +283,7 @@ map.nodes[62816618] = Rare({
 akl.nodes[62728795] = Treasure({
     quest = 82520,
     parent = map.id,
+    requires = ns.requirement.Item(223870), -- Cache Key
     note = L['memory_cache_note'],
     -- ReputationGain(50, 2601), -- The Weaver
     -- ReputationGain(50, 2605), -- The General
@@ -288,7 +292,9 @@ akl.nodes[62728795] = Treasure({
         Achievement({id = 40828, criteria = 69615}),
         Pet({item = 225544, id = 4599}) -- Mind Slurp
     },
-    pois = {POI({61498384, 62338363, 63478590, 65238877})}
+    pois = {
+        POI({points = {61498384, 62338363, 63478590, 65238877}, color = 'Red'})
+    }
 }) -- Memory Cache
 
 map.nodes[67459072] = Treasure({
@@ -312,7 +318,10 @@ cot.nodes[31642077] = Treasure({
 
 map.nodes[49554370] = Treasure({
     quest = 82529,
-    rewards = {Achievement({id = 40828, criteria = 69645})}
+    rewards = {
+        Achievement({id = 40828, criteria = 69645}),
+        Pet({item = 221760, id = 4513}) -- Bonedrinker
+    }
 }) -- Nest Egg
 
 map.nodes[54525081] = Treasure({
@@ -368,6 +377,36 @@ map.nodes[34056102] = Treasure({
     -- ReputationGain(50, 2607), -- The Vizier
     rewards = {Achievement({id = 40828, criteria = 70381})}
 }) -- Concealed Contraband -- Web Cocoon
+
+-------------------------------------------------------------------------------
+--------------------------------- BATTLE PETS ---------------------------------
+-------------------------------------------------------------------------------
+
+cotl.nodes[61263699] = ns.node.PetBattle({
+    id = 223443,
+    parent = {cot.id, map.id},
+    rewards = {
+        Achievement({id = 40153, criteria = 67138, oneline = true}), -- Battle on Khaz Algar
+        ns.reward.Spacer(),
+        Achievement({id = 40154, criteria = 67142, oneline = true}), -- Aquatic Battler of Khaz Algar
+        Achievement({id = 40155, criteria = 67146, oneline = true}), -- Beast Battler of Khaz Algar
+        Achievement({id = 40156, criteria = 67150, oneline = true}), -- Critter Battler of Khaz Algar
+        Achievement({id = 40157, criteria = 67154, oneline = true}), -- Dragonkin Battler of Khaz Algar
+        Achievement({id = 40158, criteria = 67158, oneline = true}), -- Elemental Battler of Khaz Algar
+        Achievement({id = 40161, criteria = 67162, oneline = true}), -- Flying Battler of Khaz Algar
+        Achievement({id = 40162, criteria = 67165, oneline = true}), -- Humanoid Battler of Khaz Algar
+        Achievement({id = 40163, criteria = 67169, oneline = true}), -- Magic Battler of Khaz Algar
+        Achievement({id = 40164, criteria = 67173, oneline = true}), -- Mechanical Battler of Khaz Algar
+        Achievement({id = 40165, criteria = 67177, oneline = true}) -- Undead Battler of Khaz Algar
+    }
+}) -- Collector Dyna
+
+map.nodes[53093158] = ns.node.PetBattle({
+    id = 223406,
+    rewards = {
+        Achievement({id = 40153, criteria = 67134, oneline = true}) -- Battle on Khaz Algar
+    }
+}) -- Zaedu
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
@@ -430,6 +469,33 @@ map.nodes[56545524] = PT.Skinning({quest = 83921, id = 226347}) -- Carapace Shin
 map.nodes[53285313] = PT.Tailoring({quest = 83928, id = 226354}) -- Nerubian Quilt
 cot.nodes[50321682] =
     PT.Tailoring({quest = 83929, id = 226355, parent = map.id}) -- Nerubian's Pincushion
+
+-------------------------------------------------------------------------------
+---------------------------- ACHIEVEMENT: BOOKWORM ----------------------------
+-------------------------------------------------------------------------------
+
+local Bookworm = Class('bookworm', Collectible, {
+    icon = 4549129,
+    group = ns.groups.BOOKWORM,
+    requires = ns.requirement.Spell(456122), -- Polymorphic Translation: Nerubian
+    note = L['nerubian_potion_note'] .. '\n\n' .. L['bookworm_note'],
+    pois = {POI({47166941, color = 'Red'})} -- Siesbarg
+})
+
+map.nodes[40103980] = Bookworm({
+    location = L['bookworm_1_location'],
+    rewards = {Achievement({id = 40629, criteria = 68983})}
+}) -- Entomological Essay on Grubs, Volume 1
+
+map.nodes[39794051] = Bookworm({
+    location = L['in_small_cave'],
+    rewards = {Achievement({id = 40629, criteria = 68989})}
+}) -- Entomological Essay on Grubs, Volume 2
+
+map.nodes[39094259] = Bookworm({
+    location = L['in_small_cave'],
+    rewards = {Achievement({id = 40629, criteria = 68990})}
+}) -- Entomological Essay on Grubs, Volume 3
 
 -------------------------------------------------------------------------------
 --------------------------- AZJ-KAHET GLYPH HUNTER ----------------------------
@@ -609,13 +675,15 @@ map.nodes[71126233] = LoreObject({
 local SmellingHistory = Class('smelling_history', Collectible, {
     icon = 4549130,
     group = ns.groups.SMELLING_HISTORY,
-    note = L['smelling_history_note']
+    requires = ns.requirement.Spell(456122), -- Polymorphic Translation: Nerubian
+    note = L['nerubian_potion_note'] .. '\n\n' .. L['smelling_history_note']
 })
 
 cot.nodes[45291254] = SmellingHistory({
-    parent = map.id,
     id = 218192,
     icon = 134713,
+    location = L['in_building'],
+    parent = map.id,
     rewards = {Achievement({id = 40542})}
 }) -- Siesbarg
 
@@ -633,7 +701,7 @@ map.nodes[62963117] = SmellingHistory({
 map.nodes[66693128] = SmellingHistory({
     location = L['smelling_history_3_location'],
     rewards = {Achievement({id = 40542, criteria = 68980})},
-    pois = {POI({65422765})}
+    pois = {POI({65422765, 64712965})}
 }) -- Ethos of War, Part 2
 
 map.nodes[48852400] = SmellingHistory({
@@ -667,9 +735,11 @@ cot.nodes[38423227] = SmellingHistory({
     pois = {POI({40743385})}
 }) -- Queen Zaltra
 
-map.nodes[08002400] = SmellingHistory({ -- review
+cot.nodes[38203910] = SmellingHistory({
+    parent = map.id,
     location = L['smelling_history_9_location'],
-    rewards = {Achievement({id = 40542, criteria = 68987})}
+    rewards = {Achievement({id = 40542, criteria = 68987})},
+    pois = {POI({40173874})}
 }) -- Treatise on Forms: Sages
 
 cot.nodes[38543774] = SmellingHistory({

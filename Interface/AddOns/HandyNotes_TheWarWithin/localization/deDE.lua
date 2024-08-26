@@ -49,9 +49,7 @@ L['not_so_quick_fix_note'] = 'Repariere die defekte Konsole der Irdenen.'
 L['water_console_location'] = 'Neben der Treppe.'
 L['abyssal_console_location'] = nil
 L['taelloch_console_location'] = 'Auf der Brücke zwischen den Fässern.'
-L['obsidian_console_location'] = nil
 L['lost_console_location'] = 'Im Eingang der eingestürzten Mine.'
-L['earthen_console_location'] = nil
 
 L['options_icons_notable_machines'] = '{achievement:40628}'
 L['options_icons_notable_machines_desc'] = 'Zeigt die Positionen der Notizen für den Erfolg {achievement:40628} an.'
@@ -92,6 +90,10 @@ Jeder Gegenstand kostet 1 {item:224642}.]]
 L['options_icons_disturbed_earth'] = 'Aufgewühlte Erde'
 L['options_icons_disturbed_earth_desc'] = 'Zeigt die Positionen von {object:Aufgewühlte Erde} an.'
 
+L['options_icons_gobblin_with_glublurp'] = '{achievement:40614}'
+L['options_icons_gobblin_with_glublurp_desc'] = 'Zeigt die Position für den Erfolg {achievement:40614} an.'
+L['gobblin_with_glublurp_note'] = 'Klicke einen {object:Funkelnder Kristall} ({dot:Red}) an, um den Stärkungszauber {spell:456739} zu erhalten. Fange damit einen {npc:227138} bei dem kleinen Teich (' .. ns.color.Orange('Orangener Kreis') .. ') und bringe diesen zu {npc:227132}.\n\n(statisches Fliegen wird empfohlen, um dies zu erreichen).'
+
 -------------------------------------------------------------------------------
 --------------------------------- HALLOWFALL ----------------------------------
 -------------------------------------------------------------------------------
@@ -99,9 +101,17 @@ L['options_icons_disturbed_earth_desc'] = 'Zeigt die Positionen von {object:Aufg
 L['arathi_loremaster_note'] = 'Sprich mit {npc:221630} in {location:Mereldar} und beantworte mehrere Fragen richtig, um die {item:225659} zu erhalten.\n\nDie Antworten findest du in den Büchern, die in ganz {location:Heilsturz} verteilt sind.'
 L['caesper_note'] = 'Kaufe 1x {item:225238} von ({dot:Blue}) {npc:217645} in {location:Dunelles Güte}, {location:Hallowfall}.\n\nFüttere {npc:225948} damit und folge ihm zum Schatz.'
 L['dark_ritual_note'] = 'Interagiere mit dem Buch {object:Dunkles Ritual} und besiege alle erscheinenden Gegner, um eine {object:Schattige Essenz} zu erhalten.'
-L['illuminated_footlocker_note'] = 'Fange 5x fallende {spell:442389} von einer {npc:220703}, um {spell:442529} zu erhalten und den Schatz zu enthüllen.'
+L['illuminated_footlocker_note'] = 'Fange 5x fallenden {spell:442389} von der {npc:220703}, um {spell:442529} zu erhalten und den Schatz zu enthüllen.'
 L['illusive_kobyss_lure_note'] = 'Kombiniere alle vier Gegenstände, um {item:225641} herzustellen:'
 L['sunless_lure_location'] = 'Kann von {npc:215653} am {location:Sonnenloser Strand} geplündert werden.'
+L['sky_captains_sunken_cache_note'] = [[
+Spreche mit vier verschiedenen Himmelskapitänen auf ihren Luftschiffen, um den Schatz zu enthüllen.
+
+{npc:222333} ({dot:Green}) fliegt gegen den Uhrzeigersinn.
+{npc:222311} ({dot:Yellow}) fliegt gegen den Uhrzeigersinn.
+{npc:222323} ({dot:Red}) fliegt im Uhrzeigersinn.
+{npc:222337} ({dot:Orange}) fliegt gegen den Uhrzeigersinn.
+]]
 L['murkfin_lure_location'] = 'Kann von {npc:213622} in {location:Velhans Geltung} geplündert werden. Diese benutzen einen {npc:215623} als Köder.'
 L['hungering_shimmerfin_location'] = 'Kann von {npc:215243} in {location:Der Lauernde Strudel} geplündert werden. Diese benutzen einen {npc:219210} als Köder.'
 L['ragefin_necrostaff_location'] = 'Kann von {npc:213406} in {location:Ehrengründe} geplündert werden.'
@@ -131,10 +141,10 @@ L['biblo_book_11_location'] = 'Im Gebäude auf dem Tisch.'
 L['options_icons_lost_and_found'] = '{achievement:40618}'
 L['options_icons_lost_and_found_desc'] = 'Zeigt die Positionen der Andenken für den Erfolg {achievement:40618} an.'
 
-L['lost_and_found_note'] = 'Progress the Memories of the Sky storyline starting with the quest {quest:80673} from {npc:220718} ({dot:Blue}). {note:The quests unlock weekly}.\n\nJede Woche können drei verlorene Andenken abgeschlossen werden, until complete the quest {quest:82813}.'
+L['lost_and_found_note'] = 'Starte mit der Quest {quest:80673} bei {npc:220718} ({dot:Red}) den Geschichtsstrang "Erinnerungen im Wind". {note:Jede Woche kannst du nur drei verlorene Andenken erhalten, da die Quests wöchentlich freigeschaltet werden.}'
 L['broken_bracelet_location'] = 'Bringe den Gegenstand {item:219810} zu {npc:215527}.'
 L['stuffed_lynx_toy_location'] = 'Bringe den Gegenstand {item:219809} zu {npc:218486}.'
-L['tarnished_compass_location'] = 'Bringe den Gegenstand {item:219524} zu {object:Grave Offering Location}.' -- review
+L['tarnished_compass_location'] = 'Bringe den Gegenstand {item:219524} zur {object:Ablagestelle für Grabbeigaben}.'
 L['sturdy_locket_location'] = 'Bringe den Gegenstand {item:224274} zu {npc:220859}.'
 L['wooden_figure_location'] = 'Bringe den Gegenstand {item:224273} zu {npc:217609}.'
 L['calcified_journal_location'] = 'Bringe den Gegenstand {item:224272} zu {npc:222813}.'
@@ -147,7 +157,7 @@ L['options_icons_missing_lynx_desc'] = 'Zeigt die Positionen der Kriegskatzen f�
 
 L['missing_lynx_note'] = 'Streichle die wilde Kriegskatze.'
 L['magpie_location'] = 'Auf dem Boden neben der Fahne.'
-L['nightclaw_location'] = 'Entfache die {npc:Lesser Keyflame} in der Nähe.' -- review
+L['nightclaw_location'] = 'Entfache die {npc:Kleine Schlüsselflamme} in der Nähe.'
 L['purrlock_location'] = 'Die {npc:229127} in der Nähe muss entfacht sein.'
 L['shadowpouncer_location'] = 'Die {npc:229127} in der Nähe muss entfacht sein.'
 L['miral_murder_mittens_location'] = 'Draußen.'
@@ -168,6 +178,11 @@ L['light_and_flame_location'] = 'Ziele auf {npc:218472} östlich des {object:Wur
 L['lamplighter_doorway_location'] = 'Ziele auf den Eingang des Gebäudes im Osten.'
 L['barracks_doorway_location'] = 'Ziele auf den Eingang des rot-goldenen Zeltes im Westen.'
 
+L['options_icons_beacon_of_hope'] = '{achievement:40308}'
+L['options_icons_beacon_of_hope_desc'] = 'Zeigt die Positionen der kleinen Schlüsselflammen für den Erfolg {achievement:40308} an.'
+
+L['beacon_of_hope_note'] = 'Steuert {item:206350} bei, um kleinere Schlüsselflammen zu entzünden und die folgenden Quests abzuschließen. '
+
 -------------------------------------------------------------------------------
 ---------------------------------- AZJ-KAHET ----------------------------------
 -------------------------------------------------------------------------------
@@ -184,28 +199,35 @@ L['thimble_location'] = nil
 L['scampering_weave_rat_location'] = nil
 L['generals_scouting_shadecaster_location'] = nil
 
+L['options_icons_bookworm'] = '{achievement:40629}'
+L['options_icons_bookworm_desc'] = 'Zeigt die Positionen von Büchern für den Erfolg {achievement:40629} an.'
+
+L['nerubian_potion_note'] = 'Um die Bücher lesen zu können, benötigst du einen {item:225784} ({note:Buff hält 10 Minuten an}). Diesen kannst du von {npc:218192} für 500x {currency:3056} kaufen.'
+L['bookworm_note'] = '{note:Du kannst gleichzeitig den Erfolg {achievement:40542} mit dem {item:225784} erringen.}'
+L['bookworm_1_location'] = 'Am Eingang der kleinen Höhle.'
+
 L['options_icons_smelling_history'] = '{achievement:40542}'
 L['options_icons_smelling_history_desc'] = 'Zeigt die Positionen von Büchern für den Erfolg {achievement:40542} an.'
 
-L['smelling_history_note'] = 'Kaufe {item:225784} von {npc:218192} für 500x {currency:3056}.' -- review
-L['smelling_history_1_location'] = 'Im Gebäude auf dem Tresen.'
+L['smelling_history_note'] = '{note:Du kannst gleichzeitig den Erfolg {achievement:40629} mit dem {item:225784} erringen.}'
+L['smelling_history_1_location'] = 'Im Gebäude auf dem Tisch.'
 L['smelling_history_2_location'] = 'Auf einer Truhe.'
-L['smelling_history_3_location'] = 'Auf einem Tisch.'
+L['smelling_history_3_location'] = 'In einer kleinen Höhle auf einem Tisch.'
 L['smelling_history_4_location'] = 'Im Gebäude auf einem Tisch.'
 L['smelling_history_5_location'] = 'Im Gebäude auf einem Tisch.'
-L['smelling_history_6_location'] = 'Auf dem Bett an der Südseite des Zimmers.'
-L['smelling_history_7_location'] = 'Auf auf einem Stapel von Büchern.'
-L['smelling_history_8_location'] = 'Auf dem Tisch neben dem Bett an der Nordseite des Zimmers.'
-L['smelling_history_9_location'] = nil
-L['smelling_history_10_location'] = 'Auf einer Bank.'
-L['smelling_history_11_location'] = 'Das Buch liegt auf einem Tisch neben dem Bett. Der Eingang befindet sich oberhalb des Brunnens.'
+L['smelling_history_6_location'] = 'Im Gebäude auf dem Bett an der Südseite des Zimmers.'
+L['smelling_history_7_location'] = 'Im Gebäude auf auf dem Bücherstapel.'
+L['smelling_history_8_location'] = 'Im Gebäude auf dem Tisch neben dem Bett an der Nordseite des Zimmers.'
+L['smelling_history_9_location'] = 'Im Gebäude, von hinten angelehnt an den Tisch von {npc:226024}.'
+L['smelling_history_10_location'] = 'Im Gebäude auf der Bank.'
+L['smelling_history_11_location'] = 'Im Gebäude auf dem Tisch neben dem Bett. Der Eingang befindet sich oberhalb des Brunnens.'
 L['smelling_history_12_location'] = 'Im Gebäude auf einem Tisch.'
 
 L['options_icons_skittershaw_spin'] = '{achievement:40727}'
 L['options_icons_skittershaw_spin_desc'] = 'Zeigt die Position des Krabblertaxis für den Erfolg {achievement:40727} an.'
 L['skittershaw_spin_note'] = 'Fahre mit dem {npc:224973} eine ganze Runde um den Distrikt.\n\nDas {npc:224973} hält an verschiedenen Stellen ({dot:Red}) entlang der Runde.'
 
-L['memory_cache_note'] = 'Erhalte {spell:420847} von einem {object:Extractor Storage} ({dot:Blue}) in der Nähe. After kill the {npc:223908} to get the {item:223870} to open the {object:Memory Cache}.' -- review WHAT?
+L['memory_cache_note'] = 'Hole dir den Schwächungszauber {spell:420847} von einem {object:Extraktor} ({dot:Red}) in der Nähe und töte dann die {npc:223908} vor der Kiste, um den {item:223870} zu erhalten.'
 L['niffen_stash_note'] = 'Befindet sich unter der Brücke.'
 L['trapped_trove_note'] = 'In einem Gebäude das von der Decke hängt. Vermeide die Spinnweben am Boden.'
 
