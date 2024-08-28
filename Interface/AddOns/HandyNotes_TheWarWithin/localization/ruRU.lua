@@ -11,6 +11,9 @@ L['skyriding_glyph'] = nil
 L['options_icons_skyriding_glyph'] = nil
 L['options_icons_skyriding_glyph_desc'] = nil
 
+L['options_icons_profession_treasures'] = 'Сокровища Профессии'
+L['options_icons_profession_treasures_desc'] = 'Отображение местонахождения сокровищ, дающих знания для профессий.'
+
 L['options_icons_khaz_algar_lore_hunter'] = nil
 L['options_icons_khaz_algar_lore_hunter_desc'] = nil
 
@@ -31,6 +34,9 @@ L['trees_treasure_note'] = nil
 L['turtles_thanks_1_note'] = nil
 L['turtles_thanks_2_note'] = nil
 L['turtles_thanks_3_note'] = nil
+L['web_wrapped_axe_note'] = nil
+
+L['cendvin_note'] = nil
 
 L['options_icons_flat_earthen'] = nil
 L['options_icons_flat_earthen_desc'] = nil
@@ -41,6 +47,10 @@ L['options_icons_flat_earthen_desc'] = nil
 
 L['forgotten_treasure_note'] = nil
 L['kaja_cola_machine_note'] = nil
+
+L['options_icons_i_only_need_one_trip'] = '{achievement:40623}'
+L['options_icons_i_only_need_one_trip_desc'] = nil
+L['i_only_need_one_trip_note'] = nil
 
 L['options_icons_not_so_quick_fix'] = nil
 L['options_icons_not_so_quick_fix_desc'] = nil
@@ -89,6 +99,10 @@ L['options_icons_disturbed_earth_desc'] = nil
 L['options_icons_gobblin_with_glublurp'] = '{achievement:40614}'
 L['options_icons_gobblin_with_glublurp_desc'] = nil
 L['gobblin_with_glublurp_note'] = nil
+
+L['critter_love_note'] = nil
+L['options_icons_critter_love'] = nil
+L['options_icons_critter_love_desc'] = nil
 
 -------------------------------------------------------------------------------
 --------------------------------- HALLOWFALL ----------------------------------
@@ -155,6 +169,7 @@ L['furball_location'] = nil
 L['dander_location'] = nil
 L['gobbo_location'] = nil
 
+L['beledars_spawn_note'] = nil
 L['croakit_note'] = nil
 L['deathtide_note'] = nil
 L['murkshade_note'] = nil
@@ -171,6 +186,8 @@ L['options_icons_beacon_of_hope'] = '{achievement:40308}'
 L['options_icons_beacon_of_hope_desc'] = nil
 
 L['beacon_of_hope_note'] = nil
+
+L['parasidious_note'] = nil
 
 -------------------------------------------------------------------------------
 ---------------------------------- AZJ-KAHET ----------------------------------
@@ -216,8 +233,21 @@ L['options_icons_skittershaw_spin'] = '{achievement:40727}'
 L['options_icons_skittershaw_spin_desc'] = nil
 L['skittershaw_spin_note'] = nil
 
+L['options_icons_no_harm_from_reading'] = '{achievement:40632}'
+L['options_icons_no_harm_from_reading_desc'] = nil
+L['no_harm_from_reading_note'] = nil
+L['another_you_4_note'] = nil
+
 L['memory_cache_note'] = nil
 L['niffen_stash_note'] = 'Расположен под мостом.'
 L['trapped_trove_note'] = nil
 
 L['tkaktath_note'] = nil
+
+L['options_icons_the_unseeming'] = '{achievement:40633}'
+L['options_icons_the_unseeming_desc'] = nil
+L['the_unseeming_note'] = nil
+
+L['options_icons_you_cant_hang_with_us'] = '{achievement:40634}'
+L['options_icons_you_cant_hang_with_us_desc'] = nil
+L['you_cant_hang_with_us_note'] = nil
