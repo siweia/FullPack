@@ -79,5 +79,6 @@ L["handler_tooltip_requires_level"] = "플레이어 최소 요구 레벨"
 L["Mailbox"] = "우편함"
 L["Portal to Orgrimmar"] = "오그리마로 통하는 차원문"
 L["Portal to Stormwind"] = "스톰윈드로 통하는 차원문"
+L["The Catalyst"] = "촉매"
 L["TomTom"] = true
 end

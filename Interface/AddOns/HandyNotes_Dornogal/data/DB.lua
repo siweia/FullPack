@@ -44,9 +44,9 @@ DB.nodes = {
         [37644088] = { icon = "mail", label = L["Mailbox"] },
         [45364822] = { icon = "mail", label = L["Mailbox"] },
 
-        [56724666] = { icon = "auctioneer", npc = 219040, sublabel = '' }, -- Auctioneer Prana
+        [56574708] = { icon = "auctioneer", npc = 219040, sublabel = '' }, -- Auctioneer Prana
         [56924692] = { icon = "auctioneer", npc = 219037, sublabel = '' }, -- Auctioneer Durzin
-        [57074719] = { icon = "auctioneer", npc = 219039, sublabel = '' }, -- Auctioneer Zyrgas
+        [56834746] = { icon = "auctioneer", npc = 219039, sublabel = '' }, -- Auctioneer Zyrgas
 
         [51174334] = { icon = "portal", label = L["Portal to The Timeways"], level = 80 }, -- RE(MOVED) / Needs S1?
 

@@ -147,5 +147,5 @@ L["Portal to Orgrimmar"] = "Портал в Оргриммар"
 L["Portal to Stormwind"] = "Портал в Штормград"
 L["Portal to The Timeways"] = "Портал в Потоки времени"
 L["Rostrum of Transformation"] = "Постамент трансформации"
--- L["The Catalyst"] = ""
+L["The Catalyst"] = "Катализатор"
 end

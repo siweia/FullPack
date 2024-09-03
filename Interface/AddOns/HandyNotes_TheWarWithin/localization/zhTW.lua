@@ -6,6 +6,9 @@ if not L then return end
 --------------------------------- KHAZ ALGAR ----------------------------------
 -------------------------------------------------------------------------------
 
+L['options_icons_delve_rewards'] = '探究獎勵'
+L['options_icons_delve_rewards_desc'] = '在提示顯示 {location:探究} 的獎勵.'
+
 L['skyriding_glyph'] = '天空騎術雕紋'
 L['options_icons_skyriding_glyph'] = '天空騎術雕紋'
 L['options_icons_skyriding_glyph_desc'] = '顯示所有天空騎術雕紋的位置.'
@@ -34,8 +37,9 @@ L['turtles_thanks_1_note'] = '繳交 5x {item:220143} (可以從 {object:平靜�
 L['turtles_thanks_2_note'] = '繳交 1x {item:222533} (可以從 {object:微光水池}, {object:膿瘡腐池}, {object:倒翻的灌注膿液} 等魚群釣到, 或是從拍賣場購買).'
 L['turtles_thanks_3_note'] = '在 {location:多恩諾加} 找到 {npc:223338} 並和他說話來接露寶藏.'
 L['web_wrapped_axe_note'] = '在一樓.\n\n{note:重生時間1-2小時.}'
+L['faithful_dog_note'] = nil
 
-L['cendvin_note'] = '在 {location:森德文} 的菁英怪農 900x {item:225557} 來從 {npc:226205} 購買 {item:223153} 坐騎.'
+L['cendvin_note'] = '在 {location:火渣林} 的菁英怪農 900x {item:225557} 來從 {npc:226205} 購買 {item:223153} 坐騎.'
 
 L['options_icons_flat_earthen'] = '{achievement:40606}'
 L['options_icons_flat_earthen_desc'] = '顯示成就 {achievement:40606} 的位置.'
@@ -48,60 +52,64 @@ L['forgotten_treasure_note'] = '開啟附近的 {object:地底藏寶} 來取得 
 L['kaja_cola_machine_note'] = '以下列順序購買飲料 {item:223741} > {item:223743} > {item:223744} > {item:223742}.'
 
 L['options_icons_i_only_need_one_trip'] = '{achievement:40623}'
-L['options_icons_i_only_need_one_trip_desc'] = nil
-L['i_only_need_one_trip_note'] = nil
+L['options_icons_i_only_need_one_trip_desc'] = '顯示成就 {achievement:40623} 所需位置.'
+L['i_only_need_one_trip_note'] = '在世界任務 {wq:信差任務: 回收礦石} 一次繳交10個礦石.'
 
 L['options_icons_not_so_quick_fix'] = '{achievement:40473}'
 L['options_icons_not_so_quick_fix_desc'] = '顯示成就 {achievement:40473} 所需的控制臺位置.'
 
-L['not_so_quick_fix_note'] = nil
-L['water_console_location'] = nil
-L['abyssal_console_location'] = nil
-L['taelloch_console_location'] = nil
-L['lost_console_location'] = nil
+L['not_so_quick_fix_note'] = '修復損壞的土靈控制臺'
+L['water_console_location'] = '在階梯旁.'
+L['abyssal_console_location'] = '在一個凹室內.'
+L['taelloch_console_location'] = '在橋上的兩個桶子間'
+L['lost_console_location'] = '在一個凹室內.'
 
 L['options_icons_notable_machines'] = '{achievement:40628}'
 L['options_icons_notable_machines_desc'] = '顯示成就 {achievement:40628} 所需的筆記位置.'
 
-L['notable_machines_note'] = nil
-L['fragment_I_location'] = nil
-L['fragment_II_location'] = nil
-L['fragment_III_location'] = nil
-L['fragment_IV_location'] = nil
-L['fragment_V_location'] = nil
-L['fragment_VI_location'] = nil
+L['notable_machines_note'] = '閱讀筆記.'
+L['fragment_I_location'] = '在地上.'
+L['fragment_II_location'] = '在岩架上.'
+L['fragment_III_location'] = '在建築頂端.'
+L['fragment_IV_location'] = '在木頭塔上 (推薦使用穩速飛行來取得).'
+L['fragment_V_location'] = '在階梯頂端的拱門上方.'
+L['fragment_VI_location'] = '在地上, 路燈旁邊.'
 
 L['options_icons_rocked_to_sleep'] = '{achievement:40504}'
 L['options_icons_rocked_to_sleep_desc'] = '顯示成就 {achievement:40504} 顯示成就 {achievement:40504} 所需的名牌位置.'
 
-L['rocked_to_sleep_note'] = nil
-L['attwogaz_location'] = nil
-L['halthaz_location'] = nil
-L['krattdaz_location'] = nil
-L['uisgaz_location'] = nil
-L['venedaz_location'] = nil
-L['merunth_location'] = nil
-L['varerko_location'] = nil
-L['alfritha_location'] = nil
-L['gundrig_location'] = nil
-L['sathilga_location'] = nil
+L['rocked_to_sleep_note'] = '閱讀靜滯土靈的名牌'
+L['attwogaz_location'] = '在岩架上.'
+L['halthaz_location'] = '在柱子地基的岩架上.'
+L['krattdaz_location'] = '在兩個瀑布間岩架上.'
+L['uisgaz_location'] = '在岩架上.'
+L['venedaz_location'] = '在管線旁的平台上.'
+L['merunth_location'] = '在階梯上方的管線上.'
+L['varerko_location'] = '在岩架上.'
+L['alfritha_location'] = '坐在峭壁邊緣.'
+L['gundrig_location'] = '坐在岩架頂端.'
+L['sathilga_location'] = '在岩架上. 靠近土靈挖掘機建築旁.'
 
 L['trungal_note'] = '殺掉從山洞入口到內部的 {npc:220615} 來刷新.'
-L['disturbed_earthgorger_note'] = nil
-L['deepflayer_broodmother_note'] = nil
+L['disturbed_earthgorger_note'] = '使用額外動作技能 {spell:437003} 地板3次來刷新.'
+L['deepflayer_broodmother_note'] = '在高處飛行'
 L['lurker_note'] = '{note:需要5個玩家以召喚}\n\n在10秒內啟動5個 {dot:Red}{object:不顯眼的控制桿} 來召喚稀有.\n當成功啟動時你會看到區域性的廣播.'
 
-L['gnawbles_ruby_vendor_note'] = nil
+L['gnawbles_ruby_vendor_note'] = [[從 {object:受打擾的土地} 收集 {item:212493} 並交給 {npc:225166}.
+
+當你捐獻10次或是總共捐獻 50x {item:212493} 你會收到 1x {item:224642}.
+
+每個物品價值 1x {item:224642}.]]
 L['options_icons_disturbed_earth'] = '受打擾的土地'
 L['options_icons_disturbed_earth_desc'] = '顯示 {object:受打擾的土地} 的位置.'
 
 L['options_icons_gobblin_with_glublurp'] = '{achievement:40614}'
-L['options_icons_gobblin_with_glublurp_desc'] = nil
-L['gobblin_with_glublurp_note'] = nil
+L['options_icons_gobblin_with_glublurp_desc'] = '顯示成就 {achievement:40614} 的位置.'
+L['gobblin_with_glublurp_note'] = '點擊一個 {dot:Red}{object:微光水晶} 來取得 {spell:456739}. 抓住一個在' .. ns.color.Orange('橘色圓圈') .. '飛行的 {npc:227138} 並帶回去給 {npc:227132}.\n\n(推薦使用穩速飛行來取得).'
 
-L['critter_love_note'] = nil
-L['options_icons_critter_love'] = nil
-L['options_icons_critter_love_desc'] = nil
+L['critter_love_note'] = '你必須要對小動物而不是戰寵使用表情 {emote:/love}.'
+L['options_icons_critter_love'] = '{achievement:40475}'
+L['options_icons_critter_love_desc'] = '顯示成就 {achievement:40475} 所需的小動物位置.'
 
 -------------------------------------------------------------------------------
 --------------------------------- HALLOWFALL ----------------------------------
@@ -183,17 +191,21 @@ L['murkshade_note'] = nil
 L['options_icons_mereldar_menace'] = '{achievement:40151}'
 L['options_icons_mereldar_menace_desc'] = '顯示成就 {achievement:40151} 所需的目標位置.'
 
-L['mereldar_menace_note'] = nil
-L['light_and_flame_location'] = nil
-L['lamplighter_doorway_location'] = nil
-L['barracks_doorway_location'] = nil
+L['mereldar_menace_note'] = '和 {object:投擲石頭} 互動並對目標丟石頭.'
+L['light_and_flame_location'] = '瞄準 {object:投擲石頭} 東邊的 {npc:218472}.'
+L['lamplighter_doorway_location'] = '瞄準東方的建築門口.'
+L['barracks_doorway_location'] = '瞄準西方金紅帳篷的門框上方.'
 
 L['options_icons_beacon_of_hope'] = '{achievement:40308}'
-L['options_icons_beacon_of_hope_desc'] = nil
+L['options_icons_beacon_of_hope_desc'] = '顯示成就 {achievement:40308} 所需的低階鑰炎位置.'
 
-L['beacon_of_hope_note'] = nil
+L['beacon_of_hope_note'] = '捐獻  {item:206350} 到低階鑰炎並完成下列的任務.'
 
 L['parasidious_note'] = nil
+
+L['options_icons_flamegards_hope'] = '{achievement:20594}'
+L['options_icons_flamegards_hope_desc'] = nil
+L['flamegards_hope_note'] = nil
 
 -------------------------------------------------------------------------------
 ---------------------------------- AZJ-KAHET ----------------------------------
@@ -212,7 +224,7 @@ L['scampering_weave_rat_location'] = nil
 L['generals_scouting_shadecaster_location'] = nil
 
 L['options_icons_bookworm'] = '{achievement:40629}'
-L['options_icons_bookworm_desc'] = nil
+L['options_icons_bookworm_desc'] = '顯示成就 {achievement:40629} 所需的書籍位置.'
 
 L['nerubian_potion_note'] = nil
 L['bookworm_note'] = nil
@@ -237,10 +249,10 @@ L['smelling_history_12_location'] = nil
 
 L['options_icons_skittershaw_spin'] = '{achievement:40727}'
 L['options_icons_skittershaw_spin_desc'] = '顯示成就 {achievement:40727} 飛掠拉車路線位置.'
-L['skittershaw_spin_note'] = nil
+L['skittershaw_spin_note'] = '在這區搭乘 {npc:224973} 一整圈.\n\n{npc:224973} 會停留在 {dot:Red} 位置.'
 
 L['options_icons_no_harm_from_reading'] = '{achievement:40632}'
-L['options_icons_no_harm_from_reading_desc'] = nil
+L['options_icons_no_harm_from_reading_desc'] = '顯示成就 {achievement:40632} 所需的 {npc:227421} 位置.'
 L['no_harm_from_reading_note'] = nil
 L['another_you_4_note'] = nil
 
@@ -248,12 +260,37 @@ L['memory_cache_note'] = '從附近 {spell:420847} from a nearby ({dot:Blue}) {o
 L['niffen_stash_note'] = '在橋的下面。'
 L['trapped_trove_note'] = nil
 
-L['tkaktath_note'] = nil
+L['tkaktath_note'] = '開始取得坐騎 {item:224150} 的任務線.'
 
 L['options_icons_the_unseeming'] = '{achievement:40633}'
-L['options_icons_the_unseeming_desc'] = nil
-L['the_unseeming_note'] = nil
+L['options_icons_the_unseeming_desc'] = '顯示成就 {achievement:40633} 的位置.'
+L['the_unseeming_note'] = '站在池子內直到你有100層的 {spell:420847}.'
 
 L['options_icons_you_cant_hang_with_us'] = '{achievement:40634}'
-L['options_icons_you_cant_hang_with_us_desc'] = nil
+L['options_icons_you_cant_hang_with_us_desc'] = '顯示成就 {achievement:40634} 的位置.'
 L['you_cant_hang_with_us_note'] = nil
+
+-------------------------------------------------------------------------------
+----------------------------------- DELVES ------------------------------------
+-------------------------------------------------------------------------------
+
+L['sturdy_chest'] = nil
+L['sturdy_chest_suffix'] = nil
+
+L['ecm_chest_3_location'] = nil
+L['fol_chest_1_location'] = nil
+L['fol_chest_3_location'] = nil
+L['fol_use_mushrooms'] = nil
+L['kvr_chest_2_location'] = nil
+L['nfs_chest_2_location'] = nil
+L['nfs_chest_3_location'] = nil
+L['nfs_chest_4_location'] = nil
+L['ski_chest_3_location'] = nil
+L['tra_chest_2_location'] = nil
+L['tsw_chest_2_location'] = nil
+L['tsw_chest_2_note'] = nil
+L['tsw_chest_3_location'] = nil
+L['tsw_chest_4_location'] = nil
+L['tuk_chest_1_note'] = nil
+L['tuk_chest_2_note'] = nil
+L['tuk_chest_3_note'] = nil

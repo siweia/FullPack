@@ -1,5 +1,14 @@
 ## Revision History:
 
+#### v2 (August 30, 2024)
+-------------------------------
+* Added profile management [[CF#1](https://legacy.curseforge.com/wow/addons/handynotes-dornogal?comment=1)]
+    * From now on all characters share a profile.
+    * Characters that were already logged in while this addon was active are still on a profile for that character only, you can change this in the settings under Addons -> HandyNotes -> Plugins -> Dornogal -> Profile.
+    * Hidden nodes are not (yet) shared between your characters.
+* Updated the location for auctioneers
+* Updated localizations
+
 #### v1 (August 22, 2024)
 -------------------------------
 * Added and updated nodes

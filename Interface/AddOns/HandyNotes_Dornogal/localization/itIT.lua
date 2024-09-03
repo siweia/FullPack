@@ -83,5 +83,6 @@ L["Portal to Orgrimmar"] = "Portale per Orgrimmar"
 L["Portal to Stormwind"] = "Portale per Roccavento"
 L["Portal to The Timeways"] = "Portale per i Flussi Temporali"
 L["Rostrum of Transformation"] = "Podio della Trasformazione"
+L["The Catalyst"] = "Catalizzatore"
 L["TomTom"] = true
 end

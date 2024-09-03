@@ -47,10 +47,9 @@ map.nodes[52591991] = Rare({
     }
 }) -- Automaxor
 
-local Aquellion = Class('Aquellion', Rare, {
+map.nodes[49556618] = Rare({
     id = 220274,
     quest = 80557, -- One time kill
-    fgroup = 'aquellion',
     rewards = {
         Achievement({id = 40837, criteria = 69625}),
         Reputation({id = 2594, gain = 150, quest = 80557}),
@@ -60,9 +59,6 @@ local Aquellion = Class('Aquellion', Rare, {
         Transmog({item = 223340, slot = L['plate']}) -- Footguards of Shallow Waters
     }
 }) -- Aquellion
-
-map.nodes[55087053] = Aquellion()
-map.nodes[49556618] = Aquellion() -- seen spawn here
 
 map.nodes[66232975] = Rare({ -- flyes around
     id = 220276,
@@ -106,7 +102,7 @@ map.nodes[50994631] = Rare({
         Reputation({id = 2594, gain = 150, quest = 84042}),
         Transmog({item = 221205, slot = L['cloth']}), -- Vest of the River
         Transmog({item = 221507, slot = L['cloak']}), -- Earth Golem's Wrap
-        Transmog({item = 221554, slot = L['polearm']}) -- Earthshatter Lance
+        Transmog({item = 221254, slot = L['polearm']}) -- Earthshatter Lance
     }
 }) -- Cragmund
 
@@ -434,7 +430,7 @@ map.nodes[44612213] = PT.Enchanting({quest = 83860, id = 226286}) -- Soot-Coated
 map.nodes[67186590] = PT.Enchanting({quest = 83861, id = 226287}) -- Animated Enchanting Dust1
 map.nodes[42632725] = PT.Engineering({quest = 83868, id = 226294}) -- Inert Mining Bomb
 map.nodes[64495875] = PT.Engineering({quest = 83869, id = 226295}) -- Earthen Construct Blueprints
-map.nodes[48563432] = PT.Inscription({quest = 83883, id = 226310}) -- Runic Scroll
+map.nodes[48563432] = PT.Inscription({quest = 83884, id = 226310}) -- Runic Scroll
 map.nodes[62465801] = PT.Inscription({quest = 83885, id = 226311}) -- Blue Earthen Pigment
 map.nodes[48243504] = PT.Herbalism({quest = 83876, id = 226302}) -- Earthen Digging Fork
 map.nodes[52916581] = PT.Herbalism({quest = 83877, id = 226303}) -- Fungarian Slicer's Knife
@@ -726,7 +722,7 @@ map.nodes[57486764] = CritterLove(68670) -- Spring Mole
 map.nodes[51281543] = CritterLove(68673) -- Snake
 map.nodes[64533238] = CritterLove(68674) -- Lightdarter
 map.nodes[52855473] = CritterLove(68676) -- Tiny Sporbit
-map.nodes[42011638] = CritterLove(68677) -- Dustcrawler Beetle
+map.nodes[63463980] = CritterLove(68677) -- Dustcrawler Beetle
 map.nodes[60319221] = CritterLove(68675) -- Mass of Worms
 map.nodes[58796861] = CritterLove(68731) -- Grottoscale Hatchling
 map.nodes[54672992] = CritterLove(68729) -- Crackcreeper
