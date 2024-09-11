@@ -1,8 +1,7 @@
 # Details! Damage Meter
 
-## [Details.12888.160](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.12888.160) (2024-08-26)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.12879.159...Details.12888.160) 
+## [Details.13009.161](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.13009.161) (2024-09-09)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.13001.160...Details.13009.161) 
 
-- Libraries Updates, Quick fixes, Version bump for wow 11 launch  
-- Fixed custom display My Spells not using spell school color and tooltip being to small  
-- Duspels  
+- Added API documentation for /notes  
+- Added option to hide helptips for broadcasters. /note stuff  
