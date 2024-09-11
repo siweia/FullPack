@@ -1,3 +1,17 @@
+## 11.0.2-20240911-1
+
+* Change options to store bool values as strings.
+* Update the quest log tooltip to have WQ related info.
+
+## 11.0.2-20240910-2
+
+* Added workarounds for World Map taints.
+
+## 11.0.2-20240910-1
+
+* Complete refactor and code cleanup.
+* Added The War Within factions to faction filter.
+
 ## v0.43.3
 
 * Override the SetPassThroughButtons on the data provider, to hopefully stop lua errors.

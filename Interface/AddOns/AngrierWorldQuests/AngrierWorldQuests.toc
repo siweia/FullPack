@@ -1,20 +1,21 @@
 ## Interface: 110002
 ## Title: Angrier World Quests
-## Version: v0.43.3
+## Version: 11.0.2-20240911-1
 ## Notes: Adds World Quests to the quest list
 ## Author: GurliGebis
 ## X-Category: Quests & Leveling
 ## X-Compatible-With: 110002
-## X-Curse-Packaged-Version: v0.43.3
+## X-Curse-Packaged-Version: 11.0.2-20240911-1
 ## X-Curse-Project-Name: Battle Pet Completionist
 ## X-Curse-Project-ID: 426990
-## SavedVariables: AngrierWorldQuests_Config
-## SavedVariablesPerCharacter: AngierWorldQuests_CharacterConfig
+## SavedVariables: AngrierWorldQuests_Config, AngrierWorldQuestsDB
 
-Core.lua
+# Libs
+embeds.xml
 
-Config.lua
-Locale.lua
+# Core
+Main.lua
 
-QuestFrame.lua
-Data.lua
+# Modules
+Common\common.xml
+Modules\modules.xml
