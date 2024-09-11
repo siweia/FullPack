@@ -70,6 +70,12 @@ ns.groups.FLAT_EARTHEN = Group('flat_earthen', 4620670, {
     achievement = 40606
 })
 
+ns.groups.FLIGHT_MASTER = Group('flight_master', 'flight_point_y', {
+    defaults = ns.GROUP_HIDDEN,
+    type = ns.group_types.ACHIEVEMENT,
+    achievement = 40430
+})
+
 ns.groups.GOBBLIN_WITH_GLUBLURP = Group('gobblin_with_glublurp', 5763494, {
     defaults = ns.GROUP_HIDDEN,
     type = ns.group_types.ACHIEVEMENT,
@@ -87,11 +93,11 @@ ns.groups.I_ONLY_NEED_ONE_TRIP = Group('i_only_need_one_trip', 236316, {
     achievement = 40623
 })
 
-ns.groups.KHAZ_ALGAR_LORE_HUNTER = Group('khaz_algar_lore_hunter', 4419344, {
-    defaults = ns.GROUP_HIDDEN,
-    type = ns.group_types.ACHIEVEMENT,
-    achievement = 40762
-})
+-- ns.groups.KHAZ_ALGAR_LORE_HUNTER = Group('khaz_algar_lore_hunter', 4419344, {
+--     defaults = ns.GROUP_HIDDEN,
+--     type = ns.group_types.ACHIEVEMENT,
+--     achievement = 40762
+-- })
 
 ns.groups.LOST_AND_FOUND = Group('lost_and_found', 4635200, {
     defaults = ns.GROUP_HIDDEN,
@@ -179,12 +185,12 @@ ns.groups.DRAGONRACE = Group('dragonrace', 1100022, {
 ---------------------------- KHAZ ALGAR LORE HUNTER ---------------------------
 -------------------------------------------------------------------------------
 
-local LoreObject = Class('LoreObject', Collectible, {
-    icon = 4419344,
-    group = ns.groups.KHAZ_ALGAR_LORE_HUNTER
-})
+-- local LoreObject = Class('LoreObject', Collectible, {
+--     icon = 4419344,
+--     group = ns.groups.KHAZ_ALGAR_LORE_HUNTER
+-- })
 
-ns.node.LoreObject = LoreObject
+-- ns.node.LoreObject = LoreObject
 
 -------------------------------------------------------------------------------
 ------------------------------- SKYRIDING GLYPH -------------------------------
@@ -268,6 +274,18 @@ ns.node.DisturbedEarth = Class('Disturbed_earth', ns.node.Node, {
     }
 }) -- Disturbed Earth - Not on Minimap but quite visible from some distance
 -- first loot triggered quest 84543 probably not relevant
+
+-------------------------------------------------------------------------------
+-------------------- ACHIEVEMENT: KHAZ ALGAR FLIGHT MASTER --------------------
+-------------------------------------------------------------------------------
+
+local FlightMaster = Class('FlightMaster', Collectible, {
+    icon = 'flight_point_y',
+    scale = 2,
+    group = ns.groups.FLIGHT_MASTER
+}) -- Flight Point
+
+ns.node.FlightMaster = FlightMaster
 
 -------------------------------------------------------------------------------
 ------------------------------ KHAZ ALGAR SAFARI ------------------------------
