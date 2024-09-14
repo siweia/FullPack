@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2608, "DBM-Raids-WarWithin", 1, 1273)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240911070243")
+mod:SetRevision("20240913005613")
 mod:SetCreatureID(217489, 217491)--Anub'arash, Skeinspinner Takazj
 mod:SetEncounterID(2921)
 mod:SetUsedIcons(6, 7, 8)
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 438218 438801 440246 440504 438343 439838 450045 451016 438677 452231 441626 450129 441782 450483 438355 443068 451327 442994 441791",
 --	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON 438249",
-	"SPELL_AURA_APPLIED 455849 455850 438218 455080 449857 440001 450980 438708 456252 450728 451277 443598 438656 440179 456245 438200 456235",--451611, 440503
+	"SPELL_AURA_APPLIED 455849 455850 438218 455080 449857 440001 450980 438708 456252 450728 451277 443598 440179 456245 438200 456235",--451611, 440503, 438656
 	"SPELL_AURA_APPLIED_DOSE 438218 438200",
 	"SPELL_AURA_REMOVED 455080 450980 451277 440001"--451611, 440503, 438656
 --	"SPELL_PERIODIC_DAMAGE",
@@ -73,7 +73,7 @@ mod:AddSetIconOption("SetIconOnScarab", 438801, true, 5, {6, 7, 8})
 ----Skeinspinner Takazj
 mod:AddTimerLine(takazj)
 local warnPoisonBolt						= mod:NewStackAnnounce(438200, 2, nil, "Tank|Healer")
-local warnVenomousRain						= mod:NewCountAnnounce(438656, 2, nil, nil, 44933)
+--local warnVenomousRain					= mod:NewCountAnnounce(438656, 2, nil, nil, 44933)
 local warnWebBomb							= mod:NewCountAnnounce(439838, 3)--General announce for everyone, personal special announce to target
 local warnSkitteringLeap					= mod:NewCountAnnounce(450045, 2, nil, nil, 47482)
 local warnBindingWeb						= mod:NewFadesAnnounce(440001, 1)
@@ -82,7 +82,7 @@ local warnBindingWeb						= mod:NewFadesAnnounce(440001, 1)
 --local yellWebBomb							= mod:NewShortYell(439838)
 --local yellWebBombFades					= mod:NewShortFadesYell(439838)
 local specWarnBindingWebs					= mod:NewSpecialWarningYou(440001, nil, nil, nil, 1, 2)
-local specWarnVenomousRain					= mod:NewSpecialWarningYou(438656, nil, 44933, nil, 1, 2)--Change to moveto if this is one that removes ground webs?
+local specWarnVenomousRain					= mod:NewSpecialWarningMoveAwayCount(438656, nil, 44933, nil, 1, 2)--Change to moveto if this is one that removes ground webs?
 
 local timerVenomousRainCD					= mod:NewCDCountTimer(49, 438656, 44933, nil, nil, 3)--Shortname "Rain"
 local timerWebBombCD						= mod:NewCDCountTimer(49, 439838, nil, nil, nil, 3)
@@ -182,29 +182,29 @@ local allTimers = {
 			-- Cataclysmic Entropy
 			[438355] = {45.8, 54.7},--Updated Sept 11
 		},
-		[3] = {
+		[3] = {--Data looped 2nd time for now, will clean up once make sure it doesn't change after RWF
 			-- Piercing Strike
-			[438218] = {25, 23, 40, 23, 36, 20, 20, 40.4, 23, 40, 23, 36, 20},--Updated Sept 11
+			[438218] = {25, 23, 40, 23, 36, 20, 20, 40.4, 23, 40, 23, 36, 20, 20, 40.4, 23, 40, 23, 36, 20, 20, 40.4, 23, 40, 23, 36, 20, 20},--Updated Sept 11 (40.4, 23, 40, 23, 36, 20, 20 looping)
 			-- Burrowed Eruption (precursor to Reckless Charge)
-			[441791] = {55.0, 75, 127.5, 75},--Updated Sept 11
+			[441791] = {55.0, 75, 127.5, 75, 127.5, 75, 127.5, 75},--Updated Sept 11 (127.5, 75 looping)
 			-- Reckless Charge
-			[440246] = {58.8, 75, 127.5, 75},--Updated Sept 11
+			[440246] = {58.8, 75, 127.5, 75, 127.5, 75, 127.5, 75},--Updated Sept 11 (127.5, 75 looping)
 			-- Stinging Swarm
-			[438677] = {75.0, 100.0, 102.5, 100},--Updated Sept 11
+			[438677] = {75.0, 100.0, 102.5, 100, 102.5, 100, 102.5, 100},--Updated Sept 11 (102.5, 100 looping)
 			-- Web Vortex
-			[441626] = {42, 75.8, 126.4, 75.8},--Updated Sept 11
+			[441626] = {42, 75.8, 126.4, 75.8, 126.4, 75.8, 126.4, 75.8},--Updated Sept 11 (126.4, 75.8 looping)
 			-- Entropic Desolation
-			[450129] = {44.8, 75.8, 126.4, 75.8},--Updated Sept 11
+			[450129] = {44.8, 75.8, 126.4, 75.8, 126.4, 75.8, 126.4, 75.8},--Updated Sept 11 (126.4, 75.8 looping)
 			-- Strands of Reality
-			[441782] = {26.4, 153.9, 48.4, 153.8},--Updated Sept 11
+			[441782] = {26.4, 153.9, 48.4, 153.8, 48.4, 153.8, 48.4, 153.8},--Updated Sept 11 (48.4, 153.8 looping)
 			-- Void Step
-			[450483] = {63, 25.1, 24.5, 26.1, 48.8, 77.6, 25.2, 24.5, 26.1, 48.8},--Updated Sept 11
+			[450483] = {63, 25.1, 24.5, 26.1, 48.8, 77.6, 25.2, 24.5, 26.1, 48.8, 77.6, 25.2, 24.5, 26.1, 48.8, 77.6, 25.2, 24.5, 26.1, 48.8},--Updated Sept 11 (77.6, 25.2, 24.5, 26.1, 48.8 looping)
 			-- Cataclysmic Entropy
-			[438355] = {91.2, 99.5, 102.9, 99.5},--Updated Sept 11
+			[438355] = {91.2, 99.5, 102.9, 99.5, 102.9, 99.5, 102.9, 99.5},--Updated Sept 11 (102.9, 99.5 looping)
 			-- Spike Eruption
-			[443068] = {45.0, 62.9, 62.9, 76.6, 62.9, 62.9},--Updated Sept 11
+			[443068] = {45.0, 62.9, 62.9, 76.6, 62.9, 62.9, 76.6, 62.9, 62.9, 76.6, 62.9, 62.9},--Updated Sept 11 (76.6, 62.9, 62.9 looping)
 			-- Unleashed Swarm
-			[442994] = {30.0, 118.9, 83.5},--Updated Sept 11
+			[442994] = {30.0, 118.9, 83.5, 119, 83.5, 119, 83.5, 119},--Updated Sept 12 (83.5, 119 looping)
 		}
 	},
 	["heroic"] = {
@@ -246,29 +246,29 @@ local allTimers = {
 			-- Cataclysmic Entropy
 			[438355] = {41.2, 59.2},--Updated Sept 11
 		},
-		[3] = {
+		[3] = {--12:14 (all tables doubled for now, will code actual clean coded loops once make sure they don't change after RWF)
 			-- Piercing Strike
-			[438218] = {20, 48, 20, 23, 20, 35},--Updated Sept 11
+			[438218] = {20, 48, 20, 23, 20, 35, 34, 48, 20, 23, 20, 35, 34, 48, 20, 23, 20, 35, 34, 48, 20, 23, 20, 35},--Updated Sept 12 (34, 48, 20, 23, 20, 35 looping)
 			-- Burrowed Eruption (precursor to Reckless Charge)
-			[441791] = {43, 98},--Updated Sept 11
+			[441791] = {43, 98, 82, 98, 82, 98, 82, 98},--Updated Sept 12 (82, 98 looping)
 			-- Reckless Charge
-			[440246] = {46.2, 98},--Updated Sept 11
+			[440246] = {46.2, 98, 82, 98, 82, 98, 82, 98},--Updated Sept 12 (82, 98 looping)
 			-- Stinging Swarm
-			[438677] = {81, 57},--Updated Sept 11
+			[438677] = {81, 57, 123, 57, 123, 57, 123, 57},--Updated Sept 12 (123, 57 looping)
 			-- Web Vortex
-			[441626] = {33.5, 97.5},--Updated Sept 11
+			[441626] = {33.5, 97.5, 82.3, 97.5, 82.3, 97.5, 82.3, 97.5},--Updated Sept 12 (82.3, 97.5 looping)
 			-- Entropic Desolation
-			[450129] = {36.3, 97.4},--Updated Sept 11
+			[450129] = {36.3, 97.4, 82.3, 97.5, 82.3, 97.5, 82.3, 97.5},--Updated Sept 12 (82.3, 97.5 looping)
 			-- Strands of Reality
-			[441782] = {22.3, 33.1, 21.3, 47.1},--Updated Sept 11
+			[441782] = {22.3, 32.7, 21.3, 47.1, 78.7, 32.7, 21.1, 47.1},--Updated Sept 12 (78.7, 32.7, 21.1, 47.1 looping)
 			-- Void Step
-			[450483] = {50.8, 38.5, 29.1, 29.4, 2.5},--Updated Sept 11
+			[450483] = {50.8, 38.5, 29.1, 29.4, 2.5, 79.6, 38.9, 29.1, 29.5, 2.5, 79.6, 38.9, 29.1, 29.5, 2.5, 79.6, 38.9, 29.1, 29.5, 2.5},--Updated Sept 12 (79.6, 38.9, 29.1, 29.5, 2.5 looping)
 			-- Cataclysmic Entropy
-			[438355] = {92.6, 61.2},--Updated Sept 11
+			[438355] = {92.6, 61.2, 118.5, 61.3, 118.5, 61.3, 118.5, 61.3},--Updated Sept 12 (118.5, 61.3 looping)
 			-- Spike Eruption
-			[443068] = {40, 31, 64},--Updated Sept 11
+			[443068] = {40, 31, 64, 85, 31, 64, 85, 31, 64, 85, 31, 64},--Updated Sept 12 (85, 31, 64 looping)
 			-- Unleashed Swarm
-			[442994] = {23, 75, 70},--Updated Sept 11
+			[442994] = {23, 75, 70, 35, 75, 70, 35, 75, 70, 35, 75, 70},--Updated Sept 12 (35, 75, 70 looping)
 		}
 	},
 	["mythic"] = {--OLD beta timers, probably changed
@@ -468,7 +468,8 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 438343 then
 		self.vb.rainCount = self.vb.rainCount + 1
-		warnVenomousRain:Show(self.vb.rainCount)
+		specWarnVenomousRain:Show(self.vb.rainCount)
+		specWarnVenomousRain:Play("scatter")
 		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.phase, 438343, self.vb.rainCount+1)
 		if timer then
 			timerVenomousRainCD:Start(timer, self.vb.rainCount+1)
@@ -674,11 +675,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			local uId = DBM:GetUnitIdFromGUID(args.destGUID, true)
 			DBM.InfoFrame:Show(2, "enemyabsorb", nil, args.amount, uId)
 		end
-	elseif spellId == 438656 then
-		if args:IsPlayer() then
-			specWarnVenomousRain:Show()
-			specWarnVenomousRain:Play("targetyou")
-		end
+	--elseif spellId == 438656 then
+	--	if args:IsPlayer() then
+	--		specWarnVenomousRain:Show()
+	--		specWarnVenomousRain:Play("targetyou")
+	--	end
 	elseif spellId == 440179 then
 		warnEntangled:Show(args.destName)
 	elseif spellId == 456245 or spellId == 456235 then
