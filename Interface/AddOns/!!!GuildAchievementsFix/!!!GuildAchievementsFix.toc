@@ -1,0 +1,13 @@
+## Interface: 110002
+## Title: |cff5385edG|r|cff528becu|r|cff5192ebi|r|cff4f98e9l|r|cff4e9fe8d|r |cff4bace5A|r|cff4ab2e4c|r|cff49b8e3h|r|cff48bce2i|r|cff47c1e1e|r|cff46c5e0v|r|cff44cadfe|r|cff43cfdem|r|cff42d3dde|r|cff41d7ddn|r|cff41d7ddt|r|cff41d7dds|r |cff41d7ddF|r|cff41d7ddi|r|cff41d7ddx|r
+## Title-zhCN: |cff5385ed公|r|cff4f9ce8会|r|cff4ab4e4成|r|cff46c5e0就|r|cff41d7dd修|r|cff41d7dd复|r
+## Title-zhTW: |cff5385ed公|r|cff4f9ce8會|r|cff4ab4e4成|r|cff46c5e0就|r|cff41d7dd修|r|cff41d7dd復|r
+## Notes: Remove Ambassadors and Diplomacy spams.
+## Notes-zhCN: 移除大使和外交手段的频繁提示。
+## Notes-zhTW: 移除大使和外交手段的頻繁提示。
+## IconTexture: Interface\Addons\!!!GuildAchievementsFix\icon.png
+## Version: 1.1.1
+## Author: fang2hou
+## OptionalDeps: MyLua
+
+core.lua
