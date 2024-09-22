@@ -1,24 +1,16 @@
 # DBM - Core
 
-## [11.0.13](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/11.0.13) (2024-09-17)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/11.0.11...11.0.13) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [11.0.15](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/11.0.15) (2024-09-21)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/11.0.14...11.0.15) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- disable that last minute change for now, it has load order issues  
-- bump alpha  
-- Add option to disable built in music options. Closes https://github.com/DeadlyBossMods/DBM-SoundEventsPack/issues/5  
-- Update localization.ru.lua (#1244)  
-- Update koKR (#1243)  
-- Fixed a few places short names weren't being applied.  
-- Queen Ansurek Update:  
-     - Improved Wrest a little bit  
-     - Changed Reactive Toxin target message to give count and no longer be filtered  
-     - Added icon setting and yell ptions to reactive toxin that support both matching BW or doing it ascended method or disabling globally  
-     - Changed icons for Royal Condemnation to be more compatible  
-     - Added queens summon icon marking using remaining icons  
-     - Fixed bug where Gloom Eruption announce/timer was started in wrong spot.  
-    Blood Twister Ovinax Update:  
-     - Fixed variable names that caused raid leader overide to not be set correctly.  
-    Both of above:  
-     - Icon dropdown override menus are now categorized as "icon" options and not "misc" so they are grouped properly if user is using the "show icons as separate category" option.  
-- messaging tweaks  
+- bump version  
+- Fix significant bugs in sikran that made almost all the timers to be non functional after first sweep due to failure to retest the mod with test tools after it was refactored to no longer reset counts. All the timer conditionals were coded relying on counts resetting after each sweep, but since they weren't anymore, it resulted in most timers to stop being functional after first sweep. This is quite frankly, an unacceptable failure in my test processes and peoples time and progress shouldn't suffer as a result of it. As such, anyone that requests a refund for last months patreon pledge, will be given one out of my own pocket  
+- Fix mask trigger not working correctly on kyveza mythic  
+    tweak option defaults for mythic Kyveza  
+- Update localization.fr.lua (#1256)  
+- Update commonlocal.es.lua (#1257)  
+- Update commonlocal.fr.lua (#1258)  
+- Update commonlocal.br.lua (#1259)  
+- Update localization.es.lua (#1255)  
+- Add ulgrax berserk timer  
 - bump alpha  
