@@ -143,6 +143,10 @@ local function isTradeGoods(item)
 	return item.classID == Enum.ItemClass.Tradegoods
 end
 
+local function hasReagentBagEquipped()
+	return ContainerFrame_GetContainerNumSlots(5) > 0
+end
+
 local function isQuestItem(item)
 	if not C.db["Bags"]["ItemFilter"] then return end
 	if not C.db["Bags"]["FilterQuest"] then return end
@@ -153,27 +157,6 @@ local function isAnimaItem(item)
 	if not C.db["Bags"]["ItemFilter"] then return end
 	if not C.db["Bags"]["FilterAnima"] then return end
 	return item.id and C_Item_IsAnimaItemByID(item.id)
-end
-
-local relicSpellIDs = {
-	[356931] = true,
-	[356933] = true,
-	[356934] = true,
-	[356935] = true,
-	[356936] = true,
-	[356937] = true,
-	[356938] = true,
-	[356939] = true,
-	[356940] = true,
-}
-local function isKorthiaRelicByID(itemID)
-	local _, spellID = C_Item.GetItemSpell(itemID)
-	return spellID and relicSpellIDs[spellID]
-end
-local function isKorthiaRelic(item)
-	if not C.db["Bags"]["ItemFilter"] then return end
-	if not C.db["Bags"]["FilterRelic"] then return end
-	return item.id and isKorthiaRelicByID(item.id)
 end
 
 local primordialStones = {}
@@ -205,7 +188,6 @@ function module:GetFilters()
 	filters.bagGoods = function(item) return isItemInBag(item) and isTradeGoods(item) end
 	filters.bagQuest = function(item) return isItemInBag(item) and isQuestItem(item) end
 	filters.bagAnima = function(item) return isItemInBag(item) and isAnimaItem(item) end
-	filters.bagRelic = function(item) return isItemInBag(item) and isKorthiaRelic(item) end
 	filters.bagStone = function(item) return isItemInBag(item) and isPrimordialStone(item) end
 	filters.bagAOE = function(item) return isItemInBag(item) and isWarboundUntilEquipped(item) end
 
@@ -222,7 +204,7 @@ function module:GetFilters()
 	filters.bankAOE = function(item) return isItemInBank(item) and isWarboundUntilEquipped(item) end
 
 	filters.onlyReagent = function(item) return item.bagId == -3 and not isEmptySlot(item) end -- reagent bank
-	filters.onlyBagReagent = function(item) return (isItemInBagReagent(item) and not isEmptySlot(item)) or (isItemInBag(item) and isTradeGoods(item)) end -- reagent bagslot
+	filters.onlyBagReagent = function(item) return (isItemInBagReagent(item) and not isEmptySlot(item)) or (hasReagentBagEquipped() and isItemInBag(item) and isTradeGoods(item)) end -- reagent bagslot
 
 	filters.accountbank = function(item) return isItemInAccountBank(item) and not isEmptySlot(item) end
 	filters.accountEquipment = function(item) return isItemInAccountBank(item) and isItemEquipment(item) end

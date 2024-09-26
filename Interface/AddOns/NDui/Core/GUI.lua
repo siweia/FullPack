@@ -32,6 +32,9 @@ G.DefaultSettings = {
 		MicroMenu = true,
 		ShowStance = true,
 		EquipColor = false,
+		ShowGlow = true,
+		KeyDown = true,
+		ButtonLock = true,
 
 		Bar1 = true,
 		Bar1Flyout = 1,
@@ -127,7 +130,6 @@ G.DefaultSettings = {
 		FilterQuest = false,
 		FilterEquipSet = false,
 		FilterAnima = false,
-		FilterRelic = false,
 		FilterStone = false,
 		FilterAOE = true,
 	},
@@ -841,6 +843,10 @@ local function updateHotkeys()
 	B:GetModule("Actionbar"):UpdateBarConfig()
 end
 
+local function updateOverlays()
+	B:GetModule("Actionbar"):UpdateOverlays()
+end
+
 local function updateEquipColor()
 	local Bar = B:GetModule("Actionbar")
 	for _, button in pairs(Bar.buttons) do
@@ -1128,17 +1134,17 @@ local function AddNewTag(parent, anchor)
 end
 
 G.TabList = {
-	L["Actionbar"],
+	IsNew..L["Actionbar"],
 	L["Bags"],
 	L["Unitframes"],
-	IsNew..L["RaidFrame"],
+	L["RaidFrame"],
 	IsNew..L["Nameplate"],
 	L["PlayerPlate"],
 	L["Auras"],
 	IsNew..L["Raid Tools"],
-	IsNew..L["ChatFrame"],
+	L["ChatFrame"],
 	L["Maps"],
-	IsNew..L["Skins"],
+	L["Skins"],
 	IsNew..L["Tooltip"],
 	L["Misc"],
 	L["UI Settings"],
@@ -1157,6 +1163,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{3, "Actionbar", "MmssTH", L["MmssThreshold"].."*", nil, {60, 600, 1}, nil, L["MmssThresholdTip"]},
 		{3, "Actionbar", "TenthTH", L["TenthThreshold"].."*", true, {0, 60, 1}, nil, L["TenthThresholdTip"]},
 		{},--blank
+		{1, "Actionbar", "KeyDown", IsNew..L["KeyDown"].."*", nil, nil, updateHotkeys, L["KeyDownTip"]},
+		{1, "Actionbar", "ButtonLock", IsNew..L["ButtonLock"].."*", true, nil, updateHotkeys, L["ButtonLockTip"]},
 		{1, "Actionbar", "Hotkeys", L["Actionbar Hotkey"].."*", nil, nil, updateHotkeys},
 		{1, "Actionbar", "Macro", L["Actionbar Macro"].."*", true, nil, updateHotkeys},
 		{1, "Actionbar", "Grid", L["Actionbar Grid"].."*", nil, nil, updateHotkeys},
@@ -1164,6 +1172,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Actionbar", "EquipColor", L["EquipColor"].."*", nil, nil, updateHotkeys},
 		{1, "Misc", "SendActionCD", HeaderTag..L["SendActionCD"].."*", nil, nil, nil, L["SendActionCDTip"]},
 		{4, "ACCOUNT", "GlowMode", L["GlowMode"].."*", true, {"Pixel", "Autocast", "Action Button", "Proc Glow"}},
+		{1, "Actionbar", "ShowGlow", L["ShowGlow"].."*", nil, nil, updateOverlays},
 	},
 	[2] = {
 		{1, "Bags", "Enable", HeaderTag..L["Enable Bags"]},
@@ -1174,7 +1183,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Bags", "ShowNewItem", L["Bags ShowNewItem"], true},
 		{1, "Bags", "BagsiLvl", L["Bags Itemlevel"].."*", nil, nil, updateBagStatus},
 		{1, "Bags", "PetTrash", L["PetTrash"], true, nil, nil, L["PetTrashTip"]},
-		{3, "Bags", "iLvlToShow", L["iLvlToShow"].."*", nil, {1, 500, 1}, nil, L["iLvlToShowTip"]},
+		{3, "Bags", "iLvlToShow", L["iLvlToShow"].."*", nil, {1, 800, 1}, nil, L["iLvlToShowTip"]},
 		{4, "Bags", "BagSortMode", L["BagSortMode"].."*", true, {L["Forward"], L["Backward"], DISABLE}, updateBagSortOrder, L["BagSortTip"]},
 		{},--blank
 		{3, "Bags", "BagsPerRow", L["BagsPerRow"].."*", nil, {1, 20, 1}, updateBagAnchor, L["BagsPerRowTip"]},
@@ -1237,7 +1246,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{},--blank
 		{4, "UFs", "RaidHealthColor", L["HealthColor"].."*", nil, {L["Default Dark"], L["ClassColorHP"], L["GradientHP"], L["ClearHealth"], L["ClearClass"]}, updateRaidTextScale},
 		{4, "UFs", "RaidHPMode", L["HealthValueType"].."*", true, {DISABLE, L["ShowHealthPercent"], L["ShowHealthCurrent"], L["ShowHealthLoss"], L["ShowHealthLossPercent"]}, updateRaidTextScale, L["100PercentTip"]},
-		{4, "UFs", "ShowRoleMode", IsNew..L["ShowRoleMode"], nil, {ALL, DISABLE, L["HideDPSRole"]}},
+		{4, "UFs", "ShowRoleMode", L["ShowRoleMode"], nil, {ALL, DISABLE, L["HideDPSRole"]}},
 		{3, "UFs", "RaidTextScale", L["UFTextScale"].."*", true, {.8, 1.5, .05}, updateRaidTextScale},
 		{1, "UFs", "ShowSolo", L["ShowSolo"].."*", nil, nil, updateAllHeaders, L["ShowSoloTip"]},
 		{1, "UFs", "SmartRaid", HeaderTag..L["SmartRaid"].."*", true, nil, updateAllHeaders, L["SmartRaidTip"]},
@@ -1325,7 +1334,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "AuraWatch", "DeprecatedAuras", L["DeprecatedAuras"], true},
 		{1, "AuraWatch", "ClickThrough", L["AuraWatch ClickThrough"], nil, nil, nil, L["ClickThroughTip"]},
 		{3, "AuraWatch", "IconScale", L["AuraWatch IconScale"], nil, {.8, 2, .1}},
-		{3, "AuraWatch", "MinCD", IsNew..L["AuraWatch MinCD"].."*", true, {1, 60, 1}, nil, L["MinCDTip"]},
+		{3, "AuraWatch", "MinCD", L["AuraWatch MinCD"].."*", true, {1, 60, 1}, nil, L["MinCDTip"]},
 		{},--blank
 		{1, "Auras", "Totems", HeaderTag..L["Enable Totembar"]},
 		{1, "Auras", "VerticalTotems", L["VerticalTotems"].."*", nil, nil, refreshTotemBar},
@@ -1370,7 +1379,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{4, "Chat", "ChatBGType", L["ChatBGType"].."*", true, {DISABLE, L["Default Dark"], L["Gradient"]}, toggleChatBackground},
 		{1, "Chat", "Oldname", L["Default Channel"]},
 		{1, "Chat", "Sticky", L["Chat Sticky"].."*", nil, nil, updateChatSticky},
-		{3, "Chat", "EditFont", IsNew..L["EditFont"].."*", true, {10, 30, 1}, toggleEditBoxAnchor},
+		{3, "Chat", "EditFont", L["EditFont"].."*", true, {10, 30, 1}, toggleEditBoxAnchor},
 		{1, "Chat", "Chatbar", L["ShowChatbar"]},
 		{1, "Chat", "WhisperColor", L["Differ WhisperColor"].."*", true},
 		{1, "Chat", "ChatItemLevel", L["ShowChatItemLevel"]},
@@ -1412,7 +1421,7 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 	[11] = {
 		{1, "Skins", "BlizzardSkins", HeaderTag..L["BlizzardSkins"], nil, nil, nil, L["BlizzardSkinsTips"]},
 		{1, "Skins", "AlertFrames", L["ReskinAlertFrames"], true},
-		{1, "Skins", "QuestTracker", IsNew..L["QuestTracker"]},
+		{1, "Skins", "QuestTracker", L["QuestTracker"]},
 		{1, "Skins", "Loot", L["Loot"], true},
 		{1, "Skins", "PetBattle", L["PetBattle Skin"]},
 		{1, "Skins", "FlatMode", L["FlatMode"], true},
