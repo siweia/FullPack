@@ -33,6 +33,8 @@ if not L then return end
 
 L["CONDUIT_ITEMS"] = "导灵器"
 L["config_characterConfig"] = "为角色进行独立的配置"
+--[[Translation missing --]]
+L["config_colorWarbandBonus"] = "Color World Quests with Warband bonus blue"
 L["config_enableDebugging"] = "Enable debugging (requires DebugLog addon installed)"
 L["config_enabledFilters"] = "启用过滤"
 --[[Translation missing --]]

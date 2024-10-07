@@ -1,3 +1,20 @@
+## 11.0.2-20241003-2
+
+* Added workaround for World Quest untracking causing taints.
+
+## 11.0.2-20241003-1
+
+* Fixed incorrect call to ConfigModule:Get
+
+## 11.0.2-20240912-2
+
+* Raise the width for TagText, provided by siweia on github.
+* Github actions fixes.
+
+## 11.0.2-20240912-1
+
+* Added color world quests with warband bonus different color option.
+
 ## 11.0.2-20240911-1
 
 * Change options to store bool values as strings.

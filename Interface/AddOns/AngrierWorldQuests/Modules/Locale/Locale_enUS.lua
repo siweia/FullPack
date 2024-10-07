@@ -32,6 +32,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true, true)
 
 L["CONDUIT_ITEMS"] = "Conduit items"
 L["config_characterConfig"] = "Per-character configuration"
+L["config_colorWarbandBonus"] = "Color World Quests with Warband bonus blue"
 L["config_enableDebugging"] = "Enable debugging (requires DebugLog addon installed)"
 L["config_enabledFilters"] = "Enabled Filters"
 L["config_enableTaintWorkarounds"] = "Enable taint workarounds - Reloads UI (might have unknown effects)"

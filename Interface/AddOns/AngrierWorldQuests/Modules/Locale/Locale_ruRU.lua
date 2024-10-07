@@ -33,6 +33,8 @@ if not L then return end
 
 L["CONDUIT_ITEMS"] = "Предметы медиума"
 L["config_characterConfig"] = "Настройки персонажа"
+--[[Translation missing --]]
+L["config_colorWarbandBonus"] = "Color World Quests with Warband bonus blue"
 L["config_enableDebugging"] = "Enable debugging (requires DebugLog addon installed)"
 L["config_enabledFilters"] = "Включенные фильтры"
 --[[Translation missing --]]

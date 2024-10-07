@@ -34,6 +34,8 @@ if not L then return end
 --[[Translation missing --]]
 L["CONDUIT_ITEMS"] = "Conduit items"
 L["config_characterConfig"] = "Configuración por personaje"
+--[[Translation missing --]]
+L["config_colorWarbandBonus"] = "Color World Quests with Warband bonus blue"
 L["config_enableDebugging"] = "Enable debugging (requires DebugLog addon installed)"
 L["config_enabledFilters"] = "Filtros activos"
 --[[Translation missing --]]
