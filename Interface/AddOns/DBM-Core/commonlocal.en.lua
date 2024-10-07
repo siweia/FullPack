@@ -42,6 +42,8 @@ CL.NORTHEAST						= "North-East"
 CL.SOUTHEAST						= "South-East"
 CL.SOUTHWEST						= "South-West"
 CL.NORTHWEST						= "North-West"
+CL.OUTSIDE							= "Outside"
+CL.INSIDE							= "Inside"
 CL.SHIELD							= "Shield"--Usually auto localized but kept around in case it needs to be used in a place that's not auto localized such as MoveTo or Use alert
 CL.PILLAR							= "Pillar"
 CL.SHELTER							= "Shelter"
@@ -153,3 +155,10 @@ CL.MOON_ICON_SMALL					= "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp
 CL.SQUARE_ICON_SMALL				= "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:16:32:16:32|t" -- NO TRANSLATE
 CL.CROSS_ICON_SMALL					= "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:32:48:16:32|t" -- NO TRANSLATE
 CL.SKULL_ICON_SMALL					= "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:13:13:0:0:64:64:48:64:16:32|t" -- NO TRANSLATE
+
+-- Colors
+CL.BLACK	= "Black"
+CL.BLUE		= "Blue"
+CL.GREEN	= "Green"
+CL.RED		= "Red"
+CL.BRONZE	= "Bronze"

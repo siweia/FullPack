@@ -12,6 +12,7 @@ local bossModPrototype = private:GetPrototype("DBMMod")
 
 ---@class Difficulties
 local difficulties = private:GetPrototype("Difficulties")
+DBM.Difficulties = difficulties
 
 local test = private:GetPrototype("DBMTest")
 
@@ -37,7 +38,7 @@ if private.isRetail then
 		[1643] = {50, 1}, [1642] = {50, 1}, [1718] = {50, 1}, [1943] = {50, 1}, [1876] = {50, 1}, [2105] = {50, 1}, [2111] = {50, 1}, [2275] = {50, 1},--Bfa World bosses and warfronts
 		[2222] = {60, 1}, [2374] = {60, 1},--Shadowlands World Bosses
 		[2444] = {70, 1}, [2512] = {70, 1}, [2574] = {70, 1}, [2454] = {70, 1}, [2548] = {70, 1},--Dragonflight World Bosses
-		[2774] = {80, 1},--War Within World Bosses
+		[2774] = {80, 1}, [2552] = {80, 1}, [2601] = {80, 1},--War Within World Bosses
 		--Raids
 		[509] = {30, 3}, [531] = {30, 3}, [469] = {30, 3}, [409] = {30, 3},--Classic Raids
 		[564] = {30, 3}, [534] = {30, 3}, [532] = {30, 3}, [565] = {30, 3}, [544] = {30, 3}, [548] = {30, 3}, [580] = {30, 3}, [550] = {30, 3},--BC Raids
@@ -277,6 +278,12 @@ function bossModPrototype:IsMythicPlus()
 	return diff == "challenge5"
 end
 
+-- Check if the SoD "Black Essence" buff in BWL is enabled. Do not use outside of SoD BWL.
+function bossModPrototype:IsBwlBlackEssenceEnabled()
+	-- I don't really like having something specific to SoD BWL in here, but it's cleaner than putting that logic in BWL mods
+	return difficulties.difficultyModifier and difficulties.difficultyModifier % 2 == 1
+end
+
 function bossModPrototype:IsEvent()
 	local diff = difficulties.savedDifficulty or DBM:GetCurrentInstanceDifficulty()
 	return diff == "event5" or diff == "event20" or diff == "event40"
@@ -302,10 +309,15 @@ function bossModPrototype:IsDelve()
 	return diff == "delves"
 end
 
+difficulties.SOD_BWL_TRIAL_BLACK  = 1
+difficulties.SOD_BWL_TRIAL_GREEN  = 2
+difficulties.SOD_BWL_TRIAL_BLUE	  = 4
+difficulties.SOD_BWL_TRIAL_BRONZE = 8
+difficulties.SOD_BWL_TRIAL_RED    = 16
 
 --TODO C_IslandsQueue.GetIslandDifficultyInfo(), if 38-40 don't work
 function DBM:GetCurrentInstanceDifficulty()
-	local _, instanceType, difficulty, difficultyName, _, _, _, _, instanceGroupSize = private.GetInstanceInfo()
+	local _, instanceType, difficulty, difficultyName, _, _, _, instanceID, instanceGroupSize = private.GetInstanceInfo()
 	if difficulty == 0 or difficulty == 172 or (difficulty == 1 and instanceType == "none") or (C_Garrison and C_Garrison:IsOnGarrisonMap()) then--draenor field returns 1, causing world boss mod bug.
 		return "worldboss", RAID_INFO_WORLD_BOSS .. " - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 1 or difficulty == 173 or difficulty == 184 or difficulty == 150 or difficulty == 201 then--5 man Normal Dungeon / 201 is SoD 5 man ID for a dungeon that's also a 10/20 man SoD Raid.
@@ -325,9 +337,19 @@ function DBM:GetCurrentInstanceDifficulty()
 	elseif difficulty == 8 then--Dungeon, Mythic+ (Challenge modes in mists and wod)
 		local keystoneLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() or 0
 		return "challenge5", PLAYER_DIFFICULTY6 .. "+ (" .. keystoneLevel .. ") - ", difficulty, instanceGroupSize, keystoneLevel
-	elseif difficulty == 148 or difficulty == 185 or difficulty == 215 or difficulty == 226 then--20 man classic raid / 226 is SoD 20
+	 --20 man classic raids:
+	 -- 226 is SoD 20 (and 10/20 flex)
+	 -- 186 is era 40 and SoD 20/40 flex, only SoD 186 is handled here because they are considered 20 player raids
+	elseif difficulty == 148 or difficulty == 185 or difficulty == 215 or difficulty == 226 or (difficulty == 186 and DBM:IsSeasonal("SeasonOfDiscovery")) then
+		if instanceID == 309 then --ZG, force return 10 man
+			return "normal10", difficultyName .. " - ", difficulty, instanceGroupSize, 0
+		end
 		local modifierLevel = 0
-		if difficulty == 226 then--Molten Core SoD
+		local difficultyId = "normal20" -- Keep as "normal20" here even though some are technically 40 in SoD to not mess with old stats before the 20/40 mess was added
+		local modifierName = ""
+		if DBM:IsSeasonal("SeasonOfDiscovery") and (difficulty == 226 or difficulty == 186) then -- SoD difficulties
+			-- Note: not necessary to check for actual instance, the buffs are only active in the instances anyways
+			-- Molten Core heat levels
 			if self:UnitDebuff("player", 458841) then--Sweltering Heat
 				modifierLevel = 1
 			elseif self:UnitDebuff("player", 458842) then--Blistering Heat
@@ -335,11 +357,52 @@ function DBM:GetCurrentInstanceDifficulty()
 			elseif self:UnitDebuff("player", 458843) then--Molten Heat
 				modifierLevel = 3
 			end
+			-- BWL trials: we follow the definition from Warcraft Logs: https://www.archon.gg/classic-sod/articles/news/phase-5-bwl-and-zg-on-warcraft-logs
+			-- That unfortunately means that you can have something that is considered Heroic but does not include the extra mechanics from Black Essence
+			-- So mods will need to check explicitly for this modifier instead of relying on :IsHeroic()/:IsMythic() :()
+			-- Trials are stored by using difficultyModifier as bit field, see definitions of SOD_BWL_TRIAL_* above
+			local trialCount = 0 -- bit.popcount() would be great to have
+			if self:UnitBuff("player", 467047) then
+				modifierLevel = modifierLevel + difficulties.SOD_BWL_TRIAL_BLACK
+				modifierName = modifierName .. CL.BLACK .. " + "
+				trialCount = trialCount + 1
+			end
+			if self:UnitBuff("player", 466416) then -- Green
+				modifierLevel = modifierLevel + difficulties.SOD_BWL_TRIAL_GREEN
+				modifierName = modifierName .. CL.GREEN .. " + "
+				trialCount = trialCount + 1
+			end
+			if self:UnitBuff("player", 466277) then
+				modifierLevel = modifierLevel + difficulties.SOD_BWL_TRIAL_BLUE
+				modifierName = modifierName .. CL.BLUE .. " + "
+				trialCount = trialCount + 1
+			end
+			if self:UnitBuff("player", 466071) then
+				modifierLevel = modifierLevel + difficulties.SOD_BWL_TRIAL_BRONZE
+				modifierName = modifierName .. CL.BRONZE .. " + "
+				trialCount = trialCount + 1
+			end
+			if self:UnitBuff("player", 466261) then
+				modifierLevel = modifierLevel + difficulties.SOD_BWL_TRIAL_RED
+				modifierName = modifierName .. CL.RED .. " + "
+				trialCount = trialCount + 1
+			end
+			modifierName = modifierName:sub(0, -4)
+			-- BWL Heroic: "1-2 trials, or 3-4 trials without Black" (Warcraft Logs)
+			if trialCount == 1 or trialCount == 2 or (trialCount >= 3 and modifierLevel % 2 == 0) then
+				difficultyId = "heroic" -- Just use heroic/mythic without player qualifiers like flex raids would do
+				difficultyName = PLAYER_DIFFICULTY2
+			-- BWL Mythic: "3+ trials with Black required" (Warcraft Logs)
+			elseif trialCount >= 3 and modifierLevel % 2 == 1 then
+				difficultyId = "mythic"
+				difficultyName = PLAYER_DIFFICULTY6
+			end
 		end
 		if modifierLevel == 0 then
-			return "normal20", difficultyName .. " - ", difficulty, instanceGroupSize, 0
+			return difficultyId, difficultyName .. " - ", difficulty, instanceGroupSize, 0
 		else
-			return "normal20", difficultyName .. "(" .. modifierLevel .. ") - ", difficulty, instanceGroupSize, modifierLevel
+			modifierName = modifierName == "" and tostring(modifierLevel) or modifierName
+			return difficultyId, difficultyName .. " (" .. modifierName .. ") - ", difficulty, instanceGroupSize, modifierLevel
 		end
 	elseif difficulty == 9 or difficulty == 186 then--Legacy 40 man raids, no longer returned as index 3 (normal 10man raids)
 		return "normal40", difficultyName .. " - ", difficulty, instanceGroupSize, 0
@@ -394,16 +457,25 @@ function DBM:GetCurrentInstanceDifficulty()
 	elseif difficulty == 207 then--SoD 1 player dungeon? Assigning as follower for now but will sort it out later
 		return "follower", difficultyName .. " - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 208 then--Delves (War Within 11.0.0+)
-		local delveInfo = C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6183)
+		local delveInfo, delveInfo2, delveInfo3 = C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6183), C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6184), C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6185)
+		local usedDelveInfo
+		if delveInfo and delveInfo.shownState and delveInfo.shownState == 1 then
+			usedDelveInfo = C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6183)
+		elseif delveInfo2 and delveInfo2.shownState and delveInfo2.shownState == 1 then
+			usedDelveInfo = C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6184)
+		elseif delveInfo3 and delveInfo3.shownState and delveInfo3.shownState == 1 then
+			usedDelveInfo = C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6185)
+		end
 		local delveTier = 0
-		if delveInfo and delveInfo and delveInfo.tierText then
-			if delveInfo.tierText == "?" then
-				return "normal", difficultyName .. "(?) - ", difficulty, instanceGroupSize
-			elseif delveInfo.tierText == "??" then
-				return "mythic", difficultyName .. "(??) - ", difficulty, instanceGroupSize
+		if usedDelveInfo and usedDelveInfo.tierText then
+			--Zekvir Hack to normal/mythic since his tiers aren't numbers
+			if usedDelveInfo.tierText == "?" then
+				return "normal", difficultyName .. "(?) - ", difficulty, instanceGroupSize, 0
+			elseif usedDelveInfo.tierText == "??" then
+				return "mythic", difficultyName .. "(??) - ", difficulty, instanceGroupSize, 0
 			end
 			---@diagnostic disable-next-line: cast-local-type
-			delveTier = tonumber(delveInfo.tierText)
+			delveTier = tonumber(usedDelveInfo.tierText)
 		end
 		return "delves", difficultyName .. "(" .. delveTier .. ") - ", difficulty, instanceGroupSize, delveTier
 	elseif difficulty == 213 then--Infinite Dungeon (timewalking in sod?)
@@ -412,6 +484,18 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "quest", difficultyName .. " - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 220 then--Story (Raid Dungeon - War Within 11.0.0+)
 		return "story", difficultyName .. " - ", difficulty, instanceGroupSize, 0
+	elseif difficulty == 231 then--SoD BWL (and other raids?)
+		--Do fancy stuff here, TODO for paul :D
+		--if Enum.SeasonID and private.currentSeason == Enum.SeasonID.SeasonOfDiscovery then--Molten Core SoD
+		--	if self:UnitDebuff("player", 458841) then--Sweltering Heat
+		--		return "normal", difficultyName .. " - ", difficulty, instanceGroupSize, 0
+		--	elseif self:UnitDebuff("player", 458842) then--Blistering Heat
+		--		return "heroic", difficultyName .. " - ", difficulty, instanceGroupSize, 0
+		--	elseif self:UnitDebuff("player", 458843) then--Molten Heat
+		--		return "mythic", difficultyName .. " - ", difficulty, instanceGroupSize, 0
+		--	end
+		--end
+		return "normal", "", difficulty, instanceGroupSize, 0
 	else--failsafe
 		return "normal", "", difficulty, instanceGroupSize, 0
 	end
