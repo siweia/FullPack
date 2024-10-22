@@ -99,7 +99,11 @@ L:SetGeneralLocalization({
 -----------------------------
 --  Forge Speakers  --
 -----------------------------
---L = DBM:GetModLocalization(2590)
+L = DBM:GetModLocalization(2590)
+
+L:SetMiscLocalization{
+	SafeVent		= "안전한 배기구"
+}
 
 -----------------------------
 --  High Speaker Eirich  --
@@ -216,7 +220,11 @@ L:SetOptionLocalization({
 -----------------------------
 --  Fangs of the Queen  --
 -----------------------------
---L = DBM:GetModLocalization(2595)
+L = DBM:GetModLocalization(2595)
+
+L:SetMiscLocalization{
+	RolePlay		= "변신소는 원래 신성한 진화의 본산이었다."
+}
 
 -----------------------------
 --  The Coaglamation  --
