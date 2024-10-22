@@ -4,7 +4,10 @@ local L = MDT.L
 
 local dungeonIndex = 110
 MDT.dungeonList[dungeonIndex] = L["The Stonevault"]
-MDT.mapInfo[dungeonIndex] = {}
+MDT.mapInfo[dungeonIndex] = {
+  teleportId = 445269,
+  shortName = L["stoneVaultShortName"]
+}
 
 local zones = { 2214, 2341 }
 for _, zone in ipairs(zones) do
@@ -22,7 +25,22 @@ MDT.dungeonSubLevels[dungeonIndex] = {
 
 MDT.dungeonTotalCount[dungeonIndex] = { normal = 489, teeming = 1000, teemingEnabled = true }
 
-MDT.mapPOIs[dungeonIndex] = {}
+MDT.mapPOIs[dungeonIndex] = {
+  [1] = {
+    [1] = {
+      ["template"] = "MapLinkPinTemplate",
+      ["type"] = "stonevaultItem",
+      ["x"] = 247.47244222345,
+      ["y"] = -307.41345271418,
+    },
+    [2] = {
+      ["template"] = "MapLinkPinTemplate",
+      ["type"] = "dungeonEntrance",
+      ["x"] = 420.12609193429,
+      ["y"] = -67.862389219205,
+    },
+  },
+};
 
 MDT.dungeonEnemies[dungeonIndex] = {
   [1] = {
@@ -146,6 +164,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["scale"] = 1,
     ["displayId"] = 117402,
     ["creatureType"] = "Mechanical",
+    ["stealthDetect"] = true,
     ["level"] = 80,
     ["characteristics"] = {
       ["Taunt"] = true,
@@ -336,6 +355,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["scale"] = 1.3,
     ["displayId"] = 117973,
     ["creatureType"] = "Humanoid",
+    ["stealthDetect"] = true,
     ["level"] = 80,
     ["characteristics"] = {
       ["Taunt"] = true,
@@ -1073,6 +1093,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["scale"] = 1.4,
     ["displayId"] = 116911,
     ["creatureType"] = "Mechanical",
+    ["stealthDetect"] = true,
     ["level"] = 80,
     ["characteristics"] = {
       ["Taunt"] = true,
@@ -1165,6 +1186,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["scale"] = 1,
     ["displayId"] = 115944,
     ["creatureType"] = "Humanoid",
+    ["stealthDetect"] = true,
     ["level"] = 80,
     ["characteristics"] = {
       ["Taunt"] = true,
@@ -1287,6 +1309,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["scale"] = 1.5,
     ["displayId"] = 117855,
     ["creatureType"] = "Elemental",
+    ["stealthDetect"] = true,
     ["level"] = 80,
     ["characteristics"] = {
       ["Taunt"] = true,
@@ -1493,6 +1516,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       [1] = {
         ["x"] = 699.74817113159,
         ["y"] = -173.1586521009,
+        ["g"] = 25,
         ["sublevel"] = 1,
       },
     },
@@ -1549,6 +1573,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       [1] = {
         ["x"] = 80.546507183685,
         ["y"] = -466.14107485364,
+        ["g"] = 27,
         ["sublevel"] = 1,
       },
     },
@@ -1591,6 +1616,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       [1] = {
         ["x"] = 102.30037882388,
         ["y"] = -506.10925249048,
+        ["g"] = 27,
         ["sublevel"] = 1,
       },
     },
@@ -1789,6 +1815,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       [1] = {
         ["x"] = 714.45914191942,
         ["y"] = -206.13900400225,
+        ["g"] = 25,
         ["sublevel"] = 1,
       },
     },

@@ -1,3 +1,4 @@
-## 5.1.0 (2024-10-05)
-  - Removed Legacy Dungeons. Old dungeons are available via the MDT Legacy Addon.
-  - Added assignable Necrotic Wake weapons
+## 5.1.9 (2024-10-20)
+  - Siege of Boralus: Added missing enemies G36
+  - Fix Xalatath's Guile HP scaling
+  - CN Localization fix

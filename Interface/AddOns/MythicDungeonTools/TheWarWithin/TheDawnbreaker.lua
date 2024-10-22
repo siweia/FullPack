@@ -4,7 +4,10 @@ local L = MDT.L
 
 local dungeonIndex = 111
 MDT.dungeonList[dungeonIndex] = L["The Dawnbreaker"]
-MDT.mapInfo[dungeonIndex] = {}
+MDT.mapInfo[dungeonIndex] = {
+  teleportId = 445414,
+  shortName = L["dawnBreakerShortName"]
+}
 
 local zones = { 2215, 2215, 2359 } -- TODO remove 2215 WHEN DAWNBREAKER IS GONE FROM ROTATION
 for _, zone in ipairs(zones) do
@@ -22,7 +25,16 @@ MDT.dungeonSubLevels[dungeonIndex] = {
 
 MDT.dungeonTotalCount[dungeonIndex] = { normal = 460, teeming = 1000, teemingEnabled = true }
 
-MDT.mapPOIs[dungeonIndex] = {}
+MDT.mapPOIs[dungeonIndex] = {
+  [1] = {
+    [1] = {
+      ["template"] = "MapLinkPinTemplate",
+      ["type"] = "dungeonEntrance",
+      ["x"] = 594.33722436621,
+      ["y"] = -518.43239200431,
+    },
+  },
+};
 
 MDT.dungeonEnemies[dungeonIndex] = {
   [1] = {
@@ -125,8 +137,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [12] = {
-        ["x"] = 243.9911992445,
-        ["y"] = -360.29950419542,
+        ["x"] = 244.66971736573,
+        ["y"] = -359.39473139546,
         ["g"] = 36,
         ["sublevel"] = 1,
       },
@@ -200,8 +212,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [5] = {
-        ["x"] = 203.03893338696,
-        ["y"] = -355.97023696792,
+        ["x"] = 208.69376015096,
+        ["y"] = -351.67252410374,
         ["g"] = 35,
         ["sublevel"] = 1,
       },
@@ -209,6 +221,12 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["x"] = 238.75593229031,
         ["y"] = -349.16925030321,
         ["g"] = 36,
+        ["sublevel"] = 1,
+      },
+      [7] = {
+        ["x"] = 53.239666437928,
+        ["y"] = -206.21951709087,
+        ["g"] = 17,
         ["sublevel"] = 1,
       },
     },
@@ -219,6 +237,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["count"] = 12,
     ["health"] = 33815270,
     ["scale"] = 1.4,
+    ["stealthDetect"] = true,
     ["displayId"] = 115526,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -257,6 +276,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["count"] = 12,
     ["health"] = 33815270,
     ["scale"] = 1.4,
+    ["stealthDetect"] = true,
     ["displayId"] = 115535,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -292,6 +312,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["count"] = 12,
     ["health"] = 39782670,
     ["scale"] = 1.4,
+    ["stealthDetect"] = true,
     ["displayId"] = 117315,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -376,8 +397,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     },
     ["clones"] = {
       [1] = {
-        ["x"] = 244.49232869702,
-        ["y"] = -431.18552609931,
+        ["x"] = 246.5280642612,
+        ["y"] = -434.57841439197,
         ["g"] = 42,
         ["sublevel"] = 1,
       },
@@ -459,12 +480,6 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["g"] = 16,
         ["sublevel"] = 1,
       },
-      [15] = {
-        ["x"] = 53.273833829455,
-        ["y"] = -207.20308415945,
-        ["g"] = 17,
-        ["sublevel"] = 1,
-      },
       [17] = {
         ["x"] = 17.266500468957,
         ["y"] = -164.67861756171,
@@ -526,8 +541,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [28] = {
-        ["x"] = 215.47475980035,
-        ["y"] = -355.99523349953,
+        ["x"] = 219.320092736,
+        ["y"] = -348.98324106416,
         ["g"] = 35,
         ["sublevel"] = 1,
       },
@@ -562,8 +577,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [35] = {
-        ["x"] = 202.18695774258,
-        ["y"] = -412.48041705521,
+        ["x"] = 210.10376180658,
+        ["y"] = -412.25425297673,
         ["g"] = 43,
         ["sublevel"] = 1,
       },
@@ -574,26 +589,26 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [37] = {
-        ["x"] = 215.78095207892,
-        ["y"] = -393.44091407132,
+        ["x"] = 226.4120615999,
+        ["y"] = -397.51238519967,
         ["g"] = 44,
         ["sublevel"] = 1,
       },
       [38] = {
-        ["x"] = 228.82496629163,
-        ["y"] = -392.88459244804,
+        ["x"] = 226.33690257049,
+        ["y"] = -385.19401717698,
         ["g"] = 44,
         ["sublevel"] = 1,
       },
       [39] = {
-        ["x"] = 249.77922699446,
-        ["y"] = -398.93615375222,
+        ["x"] = 249.55298525863,
+        ["y"] = -392.82892117391,
         ["g"] = 45,
         ["sublevel"] = 1,
       },
       [40] = {
-        ["x"] = 250.27318749123,
-        ["y"] = -386.59066657016,
+        ["x"] = 253.21370879825,
+        ["y"] = -385.0073368203,
         ["g"] = 45,
         ["sublevel"] = 1,
       },
@@ -661,8 +676,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [5] = {
-        ["x"] = 233.87621565861,
-        ["y"] = -436.75709083502,
+        ["x"] = 237.49528097265,
+        ["y"] = -439.9238150492,
         ["g"] = 42,
         ["sublevel"] = 1,
       },
@@ -823,16 +838,82 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [36] = {
-        ["x"] = 209.43360797603,
-        ["y"] = -420.93273008464,
+        ["x"] = 217.80276608278,
+        ["y"] = -421.8375028846,
         ["g"] = 43,
         ["sublevel"] = 1,
       },
       [37] = {
-        ["x"] = 222.83654265199,
-        ["y"] = -402.73952011064,
+        ["x"] = 217.18169000221,
+        ["y"] = -390.97744782544,
         ["g"] = 44,
         ["sublevel"] = 1,
+        ["patrol"] = {
+          [1] = {
+            ["x"] = 220.34842715928,
+            ["y"] = -393.91794324668,
+          },
+          [2] = {
+            ["x"] = 212.87427400311,
+            ["y"] = -389.19827383709,
+          },
+          [3] = {
+            ["x"] = 208.12420709618,
+            ["y"] = -382.86485129452,
+          },
+          [4] = {
+            ["x"] = 207.67187893921,
+            ["y"] = -378.79335428038,
+          },
+          [5] = {
+            ["x"] = 208.12420709618,
+            ["y"] = -382.86485129452,
+          },
+          [6] = {
+            ["x"] = 212.87427400311,
+            ["y"] = -389.19827383709,
+          },
+          [7] = {
+            ["x"] = 220.34842715928,
+            ["y"] = -393.91794324668,
+          },
+          [8] = {
+            ["x"] = 230.51737595947,
+            ["y"] = -395.75786045815,
+          },
+          [9] = {
+            ["x"] = 240.01748388755,
+            ["y"] = -392.13876925833,
+          },
+          [10] = {
+            ["x"] = 246.57709639439,
+            ["y"] = -385.12678976585,
+          },
+          [11] = {
+            ["x"] = 253.8153305656,
+            ["y"] = -377.43622743768,
+          },
+          [12] = {
+            ["x"] = 253.8153305656,
+            ["y"] = -366.12653508101,
+          },
+          [13] = {
+            ["x"] = 253.8153305656,
+            ["y"] = -377.43622743768,
+          },
+          [14] = {
+            ["x"] = 246.57709639439,
+            ["y"] = -385.12678976585,
+          },
+          [15] = {
+            ["x"] = 240.01748388755,
+            ["y"] = -392.13876925833,
+          },
+          [16] = {
+            ["x"] = 230.51737595947,
+            ["y"] = -395.75786045815,
+          },
+        },
       },
       [38] = {
         ["x"] = 62.042731047953,
@@ -860,6 +941,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["count"] = 16,
     ["health"] = 27847869,
     ["scale"] = 1.4,
+    ["stealthDetect"] = true,
     ["displayId"] = 117518,
     ["creatureType"] = "Elemental",
     ["level"] = 80,
@@ -977,6 +1059,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["count"] = 12,
     ["health"] = 32754194,
     ["scale"] = 1.8,
+    ["stealthDetect"] = true,
     ["displayId"] = 116834,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -1031,6 +1114,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["count"] = 10,
     ["health"] = 33815270,
     ["scale"] = 1.3,
+    ["stealthDetect"] = true,
     ["displayId"] = 115534,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -1058,8 +1142,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [3] = {
-        ["x"] = 244.10392403334,
-        ["y"] = -443.52290976925,
+        ["x"] = 245.68727966898,
+        ["y"] = -446.68960809765,
         ["g"] = 42,
         ["sublevel"] = 1,
       },
@@ -1160,8 +1244,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1,
       },
       [22] = {
-        ["x"] = 210.06170528682,
-        ["y"] = -366.35076528952,
+        ["x"] = 216.39510194361,
+        ["y"] = -359.11258288988,
         ["g"] = 35,
         ["sublevel"] = 1,
       },
@@ -1214,7 +1298,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 211261,
     ["count"] = 25,
     ["health"] = 56690306,
-    ["scale"] = 3,
+    ["scale"] = 2.5,
+    ["stealthDetect"] = true,
     ["displayId"] = 115760,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -1245,7 +1330,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 211263,
     ["count"] = 25,
     ["health"] = 53706605,
-    ["scale"] = 3,
+    ["scale"] = 2.5,
+    ["stealthDetect"] = true,
     ["displayId"] = 115759,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -1269,8 +1355,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     },
     ["clones"] = {
       [1] = {
-        ["x"] = 265.79740691883,
-        ["y"] = -438.31001373705,
+        ["x"] = 247.92811499821,
+        ["y"] = -412.75017243115,
         ["sublevel"] = 1,
       },
     },
@@ -1280,7 +1366,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 211262,
     ["count"] = 25,
     ["health"] = 65641406,
-    ["scale"] = 3,
+    ["scale"] = 2.5,
+    ["stealthDetect"] = true,
     ["displayId"] = 119262,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,
@@ -1313,7 +1400,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["id"] = 213885,
     ["count"] = 30,
     ["health"] = 55695738,
-    ["scale"] = 3,
+    ["scale"] = 2.5,
+    ["stealthDetect"] = true,
     ["displayId"] = 120116,
     ["creatureType"] = "Humanoid",
     ["level"] = 80,

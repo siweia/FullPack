@@ -1252,7 +1252,7 @@ function MDT:MakeSidePanel(frame)
     GameTooltip:Hide()
   end)
 
-  frame.sidePanel.WidgetGroup:AddChild(affixDropdown)
+  -- frame.sidePanel.WidgetGroup:AddChild(affixDropdown)
 
   --affix not current week warning
   frame.sidePanel.affixWeekWarning = AceGUI:Create("Icon")
@@ -2162,10 +2162,10 @@ function MDT:CalculateEnemyHealth(boss, baseHealth, level, ignoreFortified)
     if boss == false then mult = mult * 1.2 end
     if boss == true then mult = mult * 1.25 end
   elseif level >= 12 then
-    -- For levels 12 and above, apply an additional 20% health increase
-    -- Xal'atath's Guile:Xal'atath betrays players, revoking her bargains and increasing the health and damage of enemies by 20%
-    if boss == false then mult = mult * 1.2 * 1.2 end
-    if boss == true then mult = mult * 1.25 * 1.2 end
+    -- For levels 12 and above, apply an additional 10% health increase
+    -- Xal'atath's Guile:Xal'atath betrays players, revoking her bargains and increasing the health and damage of enemies by 10%
+    if boss == false then mult = mult * 1.2 * 1.1 end
+    if boss == true then mult = mult * 1.25 * 1.1 end
   end
 
 
@@ -2200,10 +2200,10 @@ function MDT:ReverseCalcEnemyHealth(health, level, boss, fortified, tyrannical, 
     if boss == false then mult = mult * 1.2 end
     if boss == true then mult = mult * 1.25 end
   elseif level >= 12 then
-    -- For levels 12 and above, apply an additional 20% health increase
+    -- For levels 12 and above, apply an additional 10% health increase
     -- Source: https://www.wowhead.com/blue-tracker/topic/us/affix-system-updates-in-the-war-within-1882601
-    if boss == false then mult = mult * 1.2 * 1.2 end
-    if boss == true then mult = mult * 1.25 * 1.2 end
+    if boss == false then mult = mult * 1.2 * 1.1 end
+    if boss == true then mult = mult * 1.25 * 1.1 end
   end
 
   -- Apply thundering multiplier if present
@@ -2616,12 +2616,12 @@ function MDT:UpdateMap(ignoreSetSelection, ignoreReloadPullButtons, ignoreUpdate
     MDT:DrawAllAnimatedLines()
     if not framesInitialized then coroutine.yield() end
     MDT:UpdateProgressbar()
-    MDT:FixDungeonDropDownList()
   end, "UpdateMap", true)
 end
 
 ---Updates the map to the specified dungeon
 function MDT:UpdateToDungeon(dungeonIdx, ignoreUpdateMap, init)
+  if dungeonIdx == db.currentDungeonIdx then return end
   db.currentDungeonIdx = dungeonIdx
   if not db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentSublevel then
     db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentSublevel = 1
@@ -4778,7 +4778,7 @@ function initFrames()
   main_frame:SetSize(sizex * db.scale, sizey * db.scale)
   main_frame:SetResizable(true)
   local _, _, fullscreenScale = MDT:GetFullScreenSizes()
-  main_frame:SetResizeBounds(sizex * 0.75, sizey * 0.75, sizex * fullscreenScale, sizey * fullscreenScale)
+  main_frame:SetResizeBounds(sizex * 0.9, sizey * 0.9, sizex * fullscreenScale, sizey * fullscreenScale)
   MDT.main_frame = main_frame
 
   main_frame.mainFrametex = main_frame:CreateTexture(nil, "BACKGROUND", nil, 0)
@@ -4809,8 +4809,8 @@ function initFrames()
   MDT:MakePresetImportFrame(main_frame)
   coroutine.yield()
   MDT:DungeonEnemies_CreateFramePools()
-  --MDT:UpdateDungeonEnemies(main_frame)
-  MDT:CreateDungeonSelectDropdown(main_frame)
+  MDT:CreateSeasonDropdown(main_frame)
+  MDT:CreateSublevelDropdown(main_frame)
   coroutine.yield()
   MDT:MakePullSelectionButtons(main_frame.sidePanel)
   coroutine.yield()
