@@ -19,8 +19,9 @@ local GetSpellInfo, strsplit, GetTime, UnitPower, UnitGetTotalAbsorbs, UnitClass
 local pairs, ipairs, bit, string_gmatch, tremove, pcall, format, wipe, type, select, loadstring, next, max, bit_band, unpack = pairs, ipairs, bit, string.gmatch, tremove, pcall, format, wipe, type, select, loadstring, next, math.max, bit.band, unpack
 
 local senderVersion = 4
-local addonVersion = 43
+local addonVersion = 47
 
+local options = module.options
 
 module.db.timers = {}
 module.db.reminders = {}
@@ -30,6 +31,7 @@ module.db.eventsToTriggers = {}
 module.db.showedReminders = {}
 module.db.historyNow = {}
 module.db.history = {{}}
+module.db.historySession = {{}}
 local IsHistoryEnabled
 
 module.db.nameplateFrames = {}
@@ -89,27 +91,6 @@ frame:SetScript("OnDragStop", function(self)
 	VMRT.Reminder2.Top = self:GetTop()
 end)
 
-frame.textBig = frame:CreateFontString(nil,"ARTWORK")
-frame.textBig:SetPoint("TOP")
-frame.textBig:SetFont(ExRT.F.defFont, 80, "")
-frame.textBig:SetShadowOffset(1,-1)
-frame.textBig:SetTextColor(1,1,1,1)
-frame.textBig:SetText(" ")
-
-frame.text = frame:CreateFontString(nil,"ARTWORK")
-frame.text:SetPoint("TOP",frame.textBig,"BOTTOM",0,0)
-frame.text:SetFont(ExRT.F.defFont, 40, "")
-frame.text:SetShadowOffset(1,-1)
-frame.text:SetTextColor(1,1,1,1)
-frame.text:SetText(" ")
-
-frame.textSmall = frame:CreateFontString(nil,"ARTWORK")
-frame.textSmall:SetPoint("TOP",frame.text,"BOTTOM",0,0)
-frame.textSmall:SetFont(ExRT.F.defFont, 20, "")
-frame.textSmall:SetShadowOffset(1,-1)
-frame.textSmall:SetTextColor(1,1,1,1)
-frame.textSmall:SetText(" ")
-
 frame.dot = frame:CreateTexture(nil, "BACKGROUND",nil,-6)
 frame.dot:SetTexture("Interface\\AddOns\\MRT\\media\\circle256")
 frame.dot:SetAllPoints()
@@ -118,6 +99,116 @@ frame.dot:SetVertexColor(1,0,0,1)
 frame:Hide()
 frame.dot:Hide()
 
+frame.textBigD = {}
+frame.textD = {}
+frame.textSmallD = {}
+
+frame.textBig = {}
+frame.text = {}
+frame.textSmall = {}
+function frame:CreateText(t,i,textSizeScale)
+	local text = t[i]
+	if text then
+		return text
+	end
+
+	text = self:CreateFontString(nil,"ARTWORK")
+	t[i] = text
+	text:SetShadowOffset(1,-1)
+	text:SetTextColor(1,1,1,1)
+
+	text.tss = textSizeScale == 1 and 1.5 or textSizeScale == 2 and 1 or 0.5
+
+	text.tmr = self:CreateFontString(nil,"ARTWORK")
+	text.tmr:SetShadowOffset(1,-1)
+	text.tmr:SetTextColor(1,1,1,1)
+	text.tmr:SetPoint("LEFT",text,"RIGHT",floor(text.tss * 6 + 0.5),0)
+
+
+	self:UpdateTextStyle(text)
+
+	return text
+end
+
+function frame:UpdateTextStyle(obj)
+	if not VMRT then
+		return
+	end
+	local font = VMRT.Reminder2.Font or ExRT.F.defFont
+	local outline = VMRT.Reminder2.FontOutline and "OUTLINE" or ""
+	local fontSize = VMRT.Reminder2.FontSize or 50
+
+	local ahText = (VMRT.Reminder2.FontAdj == 1 and "LEFT") or (VMRT.Reminder2.FontAdj == 2 and "RIGHT") or ""
+	local avTextT,avTextB = "TOP","BOTTOM"
+	if VMRT.Reminder2.GrowUp then
+		avTextT,avTextB = avTextB,avTextT
+	end
+	local te = VMRT.Reminder2.FontTimerExcluded
+
+	local rpf = avTextT..ahText
+	local rpt = avTextB..ahText
+
+	for o,t in pairs(obj and {{obj}} or {self.textBigD,self.textD,self.textSmallD}) do
+		for ci,text in pairs(t) do
+			text:SetFont(font, fontSize*text.tss, outline)
+			text.tmr:SetFont(font, fontSize*text.tss, outline)
+
+			text.te = te
+
+			text.rpf = rpf
+			text.rpt = rpt
+
+			text.point = nil
+		end
+	end
+end
+
+do
+	local pd = {"textBig","text","textSmall"}
+	local p = {"textBigD","textD","textSmallD"}
+	function frame:Update()
+		local lastT
+		for j,t in ipairs(pd) do
+			local fp = self[t]
+			local f = self[ p[j] ]
+			local c = 0
+			for i=#fp,1,-2 do
+				c = c + 1
+				local text = f[c]
+				if not text then
+					text = self:CreateText(f,c,j)
+				end
+		
+				if text.te then
+					text:SetText((fp[i-1] or "").." "..(fp[i] or ""))
+					text.tmr:SetText("")				
+				else
+					text:SetText(fp[i-1])
+					text.tmr:SetText((fp[i] or "").." ")
+				end
+
+				if text.point ~= (lastT or self) then
+					text:ClearAllPoints()
+					if lastT then
+						text:SetPoint(text.rpf or "TOP",lastT,text.rpt or "BOTTOM",0,0)
+						text.point = lastT
+					else
+						text:SetPoint(text.rpf or "TOP",self,"CENTER",0,0)
+						text.point = self
+					end
+				end
+
+				lastT = text
+			end
+			for i=c+1,#f do
+				local text = f[i]
+
+				text:SetText("")
+				text.tmr:SetText("")
+			end
+		end
+	end
+end
 
 
 local frameBars = CreateFrame('Frame',nil,UIParent)
@@ -416,28 +507,7 @@ function frameBars:StopAllBars()
 end
 
 function module:UpdateVisual(onlyFont)
-	local outline = VMRT.Reminder2.FontOutline and "OUTLINE" or ""
-	frame.text:SetFont(VMRT.Reminder2.Font or ExRT.F.defFont, VMRT.Reminder2.FontSize or 50, outline)
-	frame.textBig:SetFont(VMRT.Reminder2.Font or ExRT.F.defFont, (VMRT.Reminder2.FontSize or 50)*1.5, outline)
-	frame.textSmall:SetFont(VMRT.Reminder2.Font or ExRT.F.defFont, (VMRT.Reminder2.FontSize or 50)/2, outline)
-
-	frame.textBig:ClearAllPoints()
-	frame.text:ClearAllPoints()
-	frame.textSmall:ClearAllPoints()
-	
-	if VMRT.Reminder2.FontAdj == 1 then
-		frame.textBig:SetPoint("TOPLEFT")
-		frame.text:SetPoint("TOPLEFT",frame.textBig,"BOTTOMLEFT",0,0)
-		frame.textSmall:SetPoint("TOPLEFT",frame.text,"BOTTOMLEFT",0,0)
-	elseif VMRT.Reminder2.FontAdj == 2 then
-		frame.textBig:SetPoint("TOPRIGHT")
-		frame.text:SetPoint("TOPRIGHT",frame.textBig,"BOTTOMRIGHT",0,0)
-		frame.textSmall:SetPoint("TOPRIGHT",frame.text,"BOTTOMRIGHT",0,0)
-	else
-		frame.textBig:SetPoint("TOP")
-		frame.text:SetPoint("TOP",frame.textBig,"BOTTOM",0,0)
-		frame.textSmall:SetPoint("TOP",frame.text,"BOTTOM",0,0)
-	end
+	frame:UpdateTextStyle()
 
 	local width = VMRT.Reminder2.BarWidth or 450
 	local height = VMRT.Reminder2.BarHeight or 40
@@ -472,9 +542,16 @@ function module:UpdateVisual(onlyFont)
 		frame.dot:Show()
 		frame:EnableMouse(true)
 		frame:SetMovable(true)
-		frame.text:SetText(L.ReminderDefText)
-		frame.textBig:SetText(L.ReminderBigText)
-		frame.textSmall:SetText(L.ReminderSmallText)
+		wipe(frame.text)
+		wipe(frame.textBig)
+		wipe(frame.textSmall)
+		frame.text[#frame.text+1] = L.ReminderDefText
+		frame.text[#frame.text+1] = "2.3"
+		frame.textBig[#frame.textBig+1] = L.ReminderBigText
+		frame.textBig[#frame.textBig+1] = "4.5"
+		frame.textSmall[#frame.textSmall+1] = L.ReminderSmallText
+		frame.textSmall[#frame.textSmall+1] = "6.7"
+		frame:Update()
 		frame:Show()
 
 		frameBars.dot:Show()
@@ -489,10 +566,13 @@ function module:UpdateVisual(onlyFont)
 		frame.dot:Hide()
 		frame:EnableMouse(false)
 		frame:SetMovable(false)
-		frame.text:SetText("")
-		frame.textBig:SetText("")
-		frame.textSmall:SetText("")
-		frame:Hide()
+		if frame.text[1] == L.ReminderDefText then
+			wipe(frame.text)
+			wipe(frame.textBig)
+			wipe(frame.textSmall)
+			frame:Update()
+			frame:Hide()
+		end
 
 		frameBars.dot:Hide()
 		frameBars:EnableMouse(false)
@@ -504,9 +584,9 @@ end
 
 ELib:FixPreloadFont(frame,function() 
 	if VMRT then
-		frame.text:SetFont(GameFontWhite:GetFont(),11, "")
-		frame.textBig:SetFont(GameFontWhite:GetFont(),11, "")
-		frame.textSmall:SetFont(GameFontWhite:GetFont(),11, "")
+		--frame.text:SetFont(GameFontWhite:GetFont(),11, "")
+		--frame.textBig:SetFont(GameFontWhite:GetFont(),11, "")
+		--frame.textSmall:SetFont(GameFontWhite:GetFont(),11, "")
 		module:UpdateVisual(true)
 		return true
 	end
@@ -778,6 +858,7 @@ local function GSUB_ExRTNote(patt)
 		for i=1,#lines do
 			if lines[i]:find(patt) then
 				return lines[i]
+				--return lines[i]:gsub("[{}]",""), nil
 			end
 		end
 	end
@@ -856,10 +937,11 @@ local function GSUB_Status(str)
 end
 
 local function GSUB_YesNoCondition(condition,str)
+	condition = condition:gsub(" +OR +"," OR "):gsub(" +AND +"," AND ")
+
 	local res = 1
 	local pnow = 1
 	local isORnow = false
-	condition = condition:gsub(";"," OR "):gsub(" +OR +"," OR "):gsub(" +AND +"," AND ")
 	while true do
 		local andps,andpe = condition:find(" AND ",pnow)
 		local orps,orpe = condition:find(" OR ",pnow)
@@ -1371,7 +1453,21 @@ do
 		trim = GSUB_Trim,
 	}
 
+	local handlers_closer = {
+		num = GSUB_NumCondition,
+		up = GSUB_Upper,
+		lower = GSUB_Lower,
+		rep = GSUB_Repeat,
+		len = GSUB_Length,
+		["0"] = GSUB_None,
+		cond = GSUB_YesNoCondition,
+		find = GSUB_Find,
+		replace = GSUB_Replace,
+		set = GSUB_Set,
+	}
+
 	local function replace_nocloser(mword,word,num,fullArg,arg)
+		--if module.db.debug then print('replace_nocloser','mword',mword,'word',word,'num',num,'fullArg',fullArg,'arg',arg) end
 		local handler = handlers_nocloser[word]
 		if handler then
 			--print('nc',word,arg)
@@ -1391,26 +1487,21 @@ do
 		end 
 	end
 
-	local handlers_closer = {
-		num = GSUB_NumCondition,
-		up = GSUB_Upper,
-		lower = GSUB_Lower,
-		rep = GSUB_Repeat,
-		len = GSUB_Length,
-		["0"] = GSUB_None,
-		cond = GSUB_YesNoCondition,
-		find = GSUB_Find,
-		replace = GSUB_Replace,
-		set = GSUB_Set,
-	}
-
 	local function replace_closer(word,arg,data)
+		--if module.db.debug then print('replace_closer',word,'arg',arg,'data',data) end
 		local handler = handlers_closer[word]
 		if handler then
 			replace_counter = true
 			--print('c',word,arg,data)
 			return handler(arg,data) or ""
 		end 
+	end
+
+	local function replace_other(word)
+		if not handlers_nocloser[word] and not handlers_closer[word] then
+			replace_counter = true
+			return ""
+		end
 	end
 
 	function module:FormatMsg(msg,params,isForChat,printLog)
@@ -1429,14 +1520,17 @@ do
 		local subcount = 0
 		while true do
 			replace_counter = false
-			subcount = subcount + 1
-			--print('sc',subcount,msg)
-			if module.db.debug then	print('FormatMsg',msg) end
 			if printLog then 
 				print('Iteration',subcount,"|cffaaaaaa"..msg.."|r")
 			end
+			subcount = subcount + 1
+			--print('sc',subcount,msg)
+			if module.db.debug then	print('FormatMsg',msg) end
 			msg = msg:gsub("{(([A-Za-z]+)(%d*))(:?([^{}]*))}",replace_nocloser)
 				:gsub("{([^:{}]+):?([^{}]*)}([^{}]-){/%1}",replace_closer)
+			if not replace_counter then
+				msg = msg:gsub("{/?([^{}:]*)[^{}]*}",replace_other)
+			end			
 			if not replace_counter or subcount > 100 then
 				if not set_update_req then
 					msg = msg:gsub("%%set(%d+)",GSUB_SetBack)
@@ -1461,6 +1555,11 @@ end
 
 function module:FormatMsgForChat(msg)
 	return msg:gsub("|c........",""):gsub("|[rn]",""):gsub("|[TA][^|]+|[ta]","")
+end
+
+function module:FormatTime(t)
+	t = tonumber(t or 0) or 0
+	return format("%d:%02d",t/60,t%60)
 end
 
 function module:ExtraCheckParams(extraCheck,params,printLog)
@@ -1530,7 +1629,7 @@ module.datas = {
 		{8,L.ReminderMHEALER,"MHEALER",64},
 	},
 	events = {
-		1,2,3,6,7,4,5,11,8,9,10,12,13,14,15,16,17,20,18,19,21,
+		1,2,3,6,7,4,5,11,8,9,10,12,13,14,15,16,17,20,18,19,21,22,
 	},
 	counterBehavior = {
 		{nil,L.ReminderGlobalCounter,L.ReminderGlobalCounterTip},
@@ -2161,6 +2260,15 @@ module.C = {
 		help = L.ReminderNoteTimersAllTip,
 		replaceres = {"text",text=L.ReminderReplacertextnotetimers,"textLeft","textModIcon:X:Y",value=L.ReminderReplacerlistmobrange,"fullLine","fullLineClear","phase"},
 	},
+	[22] = {
+		id = 22,
+		name = "MPLUS_START",
+		lname = L.ReminderMplusPull,
+		isUntimed = false,
+		isUnits = false,
+		triggerFields = {"delayTime","activeTime","invert"},
+		triggerSynqFields = {"delayTime","activeTime","invert"},
+	},
 }
 
 CreateListOfReplacers()
@@ -2297,7 +2405,7 @@ function module:ConvertTo36Bit(num)
 	return ConvertNumToBit(num or 0, 36)
 end
 
-function module.options:Load()
+function options:Load()
 	self:CreateTilte()
 
 	ExRT.lib:Text(self,"v."..addonVersion.." beta",10):Point("BOTTOMLEFT",self.title,"BOTTOMRIGHT",5,2)
@@ -2326,7 +2434,7 @@ function module.options:Load()
 				event = 3,
 			},
 		},
-		dur = 2,
+		dur = 3,
 		players = {},
 		allPlayers = true,
 	}
@@ -2415,33 +2523,3211 @@ function module.options:Load()
 		end
 	end)
 
-	self.tab = ELib:Tabs(self,0,L.ReminderGlobal,L.ReminderPersonal,L.minimapmenuset):Point(0,-45):Size(698,570):SetTo(1)
+	self.tab = ELib:Tabs(self,0,L.ReminderGlobal,L.ReminderPersonal,L.minimapmenuset,"Timeline"):Point(0,-45):Size(698,570):SetTo(1):ChangeTabPos({1,2,4,3})
 	self.tab:SetBackdropBorderColor(0,0,0,0)
 	self.tab:SetBackdropColor(0,0,0,0)
 
 	function self.tab:buttonAdditionalFunc()
+		VMRT.Reminder2.OptSavedTabNum = self.selected
+
+		if self.selected == 4 then
+			options.isWide = 1000
+		else
+			options.isWide = nil
+		end
+		ExRT.Options.Frame:SetPage(ExRT.Options.Frame.CurrentFrame)
+
+		options.profileDropDown:SetShown(self.selected == 1 or self.selected == 2 or self.selected == 4)
+		if self.selected == 4 then
+			options.timeLine:Update()
+		end
 		if self.selected == 1 or self.selected == 2 then
-			local prev = module.options.isPersonalTab
-			module.options.isPersonalTab = nil
+			local prev = options.isPersonalTab
+			options.isPersonalTab = nil
 			if self.selected == 2 then
-				module.options.isPersonalTab = true
+				options.isPersonalTab = true
 
 				self.tabs[2]:Hide()
 				self.tabs[1]:Show()
 			end
-			if prev ~= module.options.isPersonalTab then
-				module.options:UpdateData()
-				module.options.scrollList.ScrollBar.slider:SetValue(0)
+			if prev ~= options.isPersonalTab then
+				options:UpdateData()
+				options.scrollList.ScrollBar.slider:SetValue(0)
 
-				module.options.SyncButton:SetShown(self.selected == 1)
-				module.options.ExportButton:SetShown(self.selected == 1)
-				module.options.ImportButton:SetShown(self.selected == 1)
-				module.options.CopyToButton:SetShown(self.selected == 1)
-				module.options.ResetButton:SetShown(self.selected == 1)
-				module.options.lastUpdate:SetShown(self.selected == 1)
+				options.SyncButton:SetShown(self.selected == 1)
+				options.ExportButton:SetShown(self.selected == 1)
+				options.ImportButton:SetShown(self.selected == 1)
+				options.CopyToButton:SetShown(self.selected == 1)
+				options.ResetButton:SetShown(self.selected == 1)
+				options.lastUpdate:SetShown(self.selected == 1)
 			end
 		end
 	end
+
+
+	options.timeLine = {
+		Data = ExRT.Data.ReminderTimeline,
+
+		BOSS_ID = 0,
+
+		TIMELINE_SCALE = 80,
+		TIMELINE_ADJUST_NUM = 3,
+		TIMELINE_ADJUST = 100,
+		TIMELINE_ADJUST_DATA = {},
+
+		TL_LINESIZE = 20,
+		TL_REMSIZE = 24,	
+		TL_HEADER_COLOR_OFF = {.2,.2,.2,1},
+		TL_HEADER_COLOR_ON = {1,1,1,1},
+		TL_HEADER_COLOR_HOVER = {1,1,0,1},
+
+		spell_status = {},
+		spell_dur = {},
+		custom_phase = {},
+
+		saved_colors = {}
+	}
+
+	function options.timeLine.util_sort_by2(a,b) return a[2]<b[2] end
+
+	function options.timeLine:GetPosFromTime(t)
+		local s = self.TIMELINE_SCALE
+		if s < 100 then
+			if s > 0 then
+				s = 2^(-math.ceil((100-s)/10)+1) - (2^(-math.ceil((100-s)/10)))/10*(10-(s%10))
+			else
+				s = 1
+			end
+		elseif s > 100 then
+			s = (s-90)/10
+		else
+			s = 1
+		end
+		return t/s
+	end
+	function options.timeLine:GetTimeFromPos(x)
+		local s = self.TIMELINE_SCALE
+		if s < 100 then
+			if s > 0 then
+				s = 2^(-math.ceil((100-s)/10)+1) - (2^(-math.ceil((100-s)/10)))/10*(10-(s%10))
+			else
+				s = 1
+			end
+		elseif s > 100 then
+			s = (s-90)/10
+		else
+			s = 1
+		end
+		return x*s
+	end
+	function options.timeLine:GetTimeAdjust(t,reverse)
+		if not reverse then t = t * (self.TIMELINE_ADJUST / 100) end
+		for i=1,self.TIMELINE_ADJUST_NUM do
+			local adj = self.TIMELINE_ADJUST_DATA[ i ]
+			if adj[1] and adj[2] and t >= adj[1] then
+				t = t + adj[2] * (reverse and -1 or 1)
+			end
+		end
+		if reverse then t = t / (self.TIMELINE_ADJUST / 100) end
+		return t
+	end
+	function options.timeLine:IsRemovedByTimeAdjust(t)
+		t = t * (self.TIMELINE_ADJUST / 100)
+		for i=1,self.TIMELINE_ADJUST_NUM do
+			local adj = self.TIMELINE_ADJUST_DATA[ i ]
+			if adj[1] and adj[2] then
+				if adj[2] < 0 and t >= adj[1]+adj[2] and t < adj[1] then
+					return true
+				end
+				if t >= adj[1] then
+					t = t + adj[2]
+				end
+			end
+		end
+	end
+
+	function options.timeLine:GetPhaseCounter(phaseNum)
+		local timeLineData = self.timeLineData
+		local c = {[1]=1}
+		local f, fc
+		for i=1,#timeLineData.p do
+			local p = self.custom_phase[i] or (timeLineData.p.n and timeLineData.p.n[i]) or i+1
+			c[p] = (c[p] or 0) + 1
+			if phaseNum == i then
+				f = p
+				fc = c[p]
+			end
+		end
+		if f and (fc ~= 1 or c[f] > 1) then
+			return fc
+		end
+	end
+
+	function options.timeLine:GetPhaseFromTime(time)
+		local timeLineData = self.timeLineData
+		if not timeLineData or not timeLineData.p then return end
+
+		local res
+		local res_time
+		for i=1,#timeLineData.p do
+			local phase_time = self:GetTimeAdjust(timeLineData.p[i])
+			if time > phase_time then
+				--do this for wrong ordered phases
+				if not res_time or res_time < phase_time then
+					res = i
+					res_time = phase_time	
+				end
+			end
+		end
+		if res then
+			return (self.custom_phase[res] or timeLineData.p.n and timeLineData.p.n[res]) or res+1, time-self:GetTimeAdjust(timeLineData.p[res]), self:GetPhaseCounter(res), res
+		end
+	end
+	function options.timeLine:GetTimeOnPhase(time,phase,phaseCount)
+		local timeLineData = self.timeLineData
+		if not timeLineData or not timeLineData.p then return end
+
+		for i=1,#timeLineData.p do
+			if (tostring(self.custom_phase[i] or (timeLineData.p.n and timeLineData.p.n[i]) or i+1) == tostring(phase)) and (not phaseCount or tostring(self:GetPhaseCounter(i)) == tostring(phaseCount)) then
+				return time + self:GetTimeAdjust(timeLineData.p[i]), i+1
+			end
+		end
+	end
+
+	function options.timeLine:GetTimeUntilPhaseEnd(time)
+		local timeLineData = self.timeLineData
+		if not timeLineData.p then return end
+		for i=1,#timeLineData.p do
+			if time < self:GetTimeAdjust(timeLineData.p[i]) then
+				return self:GetTimeAdjust(timeLineData.p[i]) - time
+			end
+		end
+	end
+	function options.timeLine:GetSpellFromTime(time,spell,afterEnd)
+		local timeLineData = self.timeLineData
+		if not timeLineData then return end
+
+		if timeLineData[spell] then
+			local spellData = timeLineData[spell]
+			local counter = 0
+			local res_time, res_counter
+			for i=1,#spellData do
+				local spell_time_og = (type(spellData[i])=="table" and spellData[i][1] or spellData[i])
+				if not self:IsRemovedByTimeAdjust(spell_time_og) then
+					counter = counter + 1
+
+					local spell_time = self:GetTimeAdjust(spell_time_og)
+
+					local dur = (afterEnd and (type(spellData[i])=="table" and spellData[i].d or spellData.d or 2) or 0)
+					if dur == "p" then dur = self:GetTimeUntilPhaseEnd(spell_time) or 2 end
+
+					if time > spell_time and (not afterEnd or (time - spell_time) > dur) then
+						res_time = time - spell_time - dur
+						res_counter = counter
+					end
+				end
+			end
+
+			return res_time, res_counter
+		end
+	end
+	function options.timeLine:GetTimeForSpell(time,spell,counter,afterEnd)
+		local timeLineData = self.timeLineData
+		if not timeLineData then return end
+
+		if timeLineData[spell] then
+			local spellData = timeLineData[spell]
+			if spellData[counter] then
+				local spell_time = type(spellData[counter])=="table" and spellData[counter][1] or spellData[counter]
+				spell_time = self:GetTimeAdjust(spell_time)
+
+				local dur = (afterEnd and (type(spellData[counter])=="table" and spellData[counter].d or spellData.d or 2) or 0)
+				if dur == "p" then dur = self:GetTimeUntilPhaseEnd(spell_time) or 2 end
+
+				return time + spell_time + dur
+			end
+		end
+	end
+
+	function options.timeLine:IsPassFilterSpellType(spellData,spell)
+		if 
+			(
+			 ((spellData.spellType or 1) == 1 and not self.FILTER_CAST) or
+			 (spellData.spellType == 2 and not self.FILTER_AURA)
+			) and
+			(not self.FILTER_SPELL or self.FILTER_SPELL[spell])
+		then
+			return true
+		end
+	end
+
+	function options.timeLine:GetTimeLineData()
+		local timeLineData = self.CUSTOM_TIMELINE or (self.BOSS_ID and self.Data[self.BOSS_ID]) or (self.ZONE_ID and self.Data[-self.ZONE_ID])
+		if timeLineData and timeLineData.m then return end
+		return timeLineData
+	end
+
+	function options.timeLine:GetRemindersList()
+		local timeLineData = self.timeLineData
+
+		local bossList
+		if timeLineData and timeLineData.p and timeLineData.p.n then
+			for i=1,#timeLineData.p.n do
+				if timeLineData.p.n[i] < 0 and timeLineData.p.n[i]>-10000 then
+					if not bossList then bossList = {} end
+					bossList[ -timeLineData.p.n[i] ] = timeLineData.p[i]
+				end
+			end
+		end
+
+		local data_list = {}
+
+		for uid,data in pairs(CURRENT_DATA) do
+			local bossID = data.bossID
+			local zoneID = tostring(data.zoneID)
+
+			local roptions = VMRT.Reminder2.options[uid] or 0
+			local ignoreTimelime = bit.band(roptions,bit.lshift(1,5)) > 0
+			if 
+				not ignoreTimelime and
+				(not self.BOSS_ID or bossID == self.BOSS_ID) and
+				(
+				 (not bossList or (bossID and bossList[bossID])) or
+				 (not self.ZONE_ID or module:FindNumberInString(self.ZONE_ID,zoneID))
+				) and
+				#data.triggers >= 1 and
+				(
+					data.triggers[1].event == 3 or 
+					data.triggers[1].event == 2 or 
+					data.triggers[1].event == 22 or 
+					(data.triggers[1].event == 1 and data.triggers[1].counter and tonumber(data.triggers[1].counter) and (
+						data.triggers[1].eventCLEU == "SPELL_CAST_SUCCESS" or
+						data.triggers[1].eventCLEU == "SPELL_CAST_START" or
+						data.triggers[1].eventCLEU == "SPELL_AURA_REMOVED" or 
+						data.triggers[1].eventCLEU == "SPELL_AURA_APPLIED"
+					))
+				) and
+				(not self.FILTER_REM_ONLYMY or module:CheckPlayerCondition(data))
+			then
+				local time = module:ConvertMinuteStrToNum(data.triggers[1].delayTime)
+				time = time and time[1] or 0
+
+				if bossList and bossList[bossID] then
+					time = time + bossList[bossID]
+				end
+
+				local timeOnPhase, customData
+				if data.triggers[1].event == 2 then
+					timeOnPhase = time
+					time, customData = self:GetTimeOnPhase(time,data.triggers[1].pattFind,data.triggers[1].counter)
+					if customData then customData = {p = customData} end
+				elseif data.triggers[1].event == 1 then
+					timeOnPhase = time
+					local isAfterEnd = data.triggers[1].eventCLEU == "SPELL_AURA_REMOVED"
+					time = self:GetTimeForSpell(time,data.triggers[1].spellID,tonumber(data.triggers[1].counter),isAfterEnd) or 0
+					customData = {s = data.triggers[1].spellID, c = tonumber(data.triggers[1].counter), e = data.triggers[1].eventCLEU == "SPELL_CAST_SUCCESS" and "SCC" or data.triggers[1].eventCLEU == "SPELL_CAST_START" and "SCS" or data.triggers[1].eventCLEU == "SPELL_AURA_REMOVED" and "SAR" or data.triggers[1].eventCLEU == "SPELL_AURA_APPLIED" and "SAA"}
+				end
+
+				if time then
+					data_list[#data_list+1] = {data, time, customData, timeOnPhase}
+				end
+			end
+		end
+
+		sort(data_list,self.util_sort_by2)
+
+		return data_list
+	end
+	function options.timeLine:ExportToString()
+		local data_list = self:GetRemindersList()
+
+		local str = ""
+		for i=1,#data_list do
+			local data, time, customData, timeOnPhase = unpack(data_list[i])
+
+			local msg = data.msg or ""
+			local pmsg
+			for k in pairs(data.players) do 
+				pmsg = (pmsg or "").."||cffffffff"..k.."||r "..msg.." " 
+			end
+
+			if module:GetReminderType(data.msgSize) == REM.TYPE_TEXT then
+
+				str = str .. "{time:"..module:FormatTime(timeOnPhase or time)..
+					(customData and customData.p and ",p"..customData.p or "")..
+					(customData and customData.s and ","..customData.e..":"..customData.s..":"..customData.c or "")..
+					"} "..(pmsg and pmsg:trim() or msg) .."\n"
+
+			end
+
+		end
+
+		return str
+	end
+
+	function options.timeLine:ResetAdjust()
+		self.TIMELINE_ADJUST = 100
+		wipe(self.TIMELINE_ADJUST_DATA)
+		options.timeLineAdjustFL.subframe.timeScale.lock = true
+		options.timeLineAdjustFL.subframe.timeScale:SetValue(self.TIMELINE_ADJUST)
+		options.timeLineAdjustFL.subframe.timeScale.lock = false
+		for i=1,self.TIMELINE_ADJUST_NUM do
+			self.TIMELINE_ADJUST_DATA[i] = {0,0}
+			options.timeLineAdjustFL.subframe["tpos"..i]:SetText("0")
+			options.timeLineAdjustFL.subframe["addtime"..i]:SetText("0")
+		end
+	end
+
+	function options.timeLine:CreateCustomTimelineFromHistory(fight)
+		local data = {}
+
+		local var = {spell = {}, aura = {}}
+
+		local function add(spell,spellType,time,dur,cast)
+			if not data[spell] then 
+				data[spell] = {spellType = spellType} 
+			end
+			local r = time
+			if dur or cast then r = {r} end
+			if dur then r.d = dur end
+			if cast then r.c = cast end
+			data[spell][ #data[spell]+1 ] = r
+		end
+
+		local start = fight[1] and fight[1][1]
+		local isChallenge = fight[1] and fight[1][2] == 22
+		for i=1,#fight do
+			local hline = fight[i]
+			if hline[2] == 1 and false then
+				if 
+				 (hline[3] == "SPELL_CAST_SUCCESS" or hline[3] == "SPELL_CAST_START") or
+				 (hline[3] == "SPELL_AURA_APPLIED" or hline[3] == "SPELL_AURA_REMOVED")
+				then
+					local spell = hline[12]
+					if not data[spell] then data[spell] = {} end
+					data[spell][ #data[spell]+1 ] = hline[1] - start
+				end
+			elseif hline[2] == 1 then
+				if hline[3] == "SPELL_CAST_START" then
+					var.spell[#var.spell+1] = hline
+				elseif hline[3] == "SPELL_CAST_SUCCESS" then
+					local s, cast, dur = hline[1] - start
+					for j=#var.spell,1,-1 do
+						if var.spell[j][4] == hline[4] and var.spell[j][12] == hline[12] then
+							cast = hline[1]-var.spell[j][1]
+							if cast >= 10 then
+								dur, cast = cast
+								s = var.spell[j][1] - start
+							end
+							tremove(var.spell,j)
+							break
+						end
+					end
+					add(hline[12],1,s,dur,cast)
+				elseif hline[3] == "SPELL_AURA_APPLIED" then
+					var.aura[#var.aura+1] = hline
+				elseif hline[3] == "SPELL_AURA_REMOVED" then
+					local s, dur = hline[1] - start
+					for j=1,#var.aura do
+						if var.aura[j][4] == hline[4] and var.aura[j][8] == hline[8] and var.aura[j][12] == hline[12] then
+							dur = hline[1]-var.aura[j][1]
+							s = var.aura[j][1] - start
+							tremove(var.aura,j)
+							break
+						end
+					end
+					add(hline[12],2,s,dur)
+				end
+			elseif hline[2] == 2 and not isChallenge then
+				if (hline[1] - start) > 2 then	--filter stage on pull
+					if not data.p then data.p = {} end
+					data.p[ #data.p+1 ] = hline[1] - start
+				end
+			elseif hline[2] == 3 and isChallenge then
+				if not data.p then data.p = {n={}} end
+				data.p[ #data.p+1 ] = hline[1] - start
+				data.p.n[ #data.p ] = -hline[3]
+			elseif hline[2] == 0 and isChallenge then
+				if not data.p then data.p = {n={}} end
+				data.p[ #data.p+1 ] = hline[1] - start
+				data.p.n[ #data.p ] = 0
+			end
+		end
+		for i=1,#var.spell do add(var.spell[i][12],1,var.spell[i][1] - start) end
+		for i=1,#var.aura do add(var.aura[i][12],2,var.aura[i][1] - start) end
+		for _,list in pairs(data) do
+			sort(list,function(a,b)
+				if type(a) == type(b) and type(a) == "table" then
+					return a[1] < b[1]
+				elseif type(a) == type(b) then
+					return a < b
+				elseif type(a) == "table" then
+					return a[1] < b
+				else
+					return a < b[1]
+				end
+			end)
+		end
+		return data
+	end
+
+	options.timeLine.historyImportWindow, options.timeLine.historyExportWindow = ExRT.F.CreateImportExportWindows()
+	options.timeLine.historyImportWindow:SetFrameStrata("FULLSCREEN")
+	options.timeLine.historyExportWindow:SetFrameStrata("FULLSCREEN")
+
+	function options.timeLine.historyImportWindow:ImportFunc(str)
+		local header = str:sub(1,8)
+		if header:sub(1,7) ~= "MRTREMH" or (header:sub(8,8) ~= "0" and header:sub(8,8) ~= "1") then
+			print("Import: wrong format")
+			return
+		end
+
+		options.timeLine.historyImportWindow:TextToHistory(str:sub(9),header:sub(8,8)=="0")
+	end
+
+	function options:ImportToHistory(res)
+		wipe(module.db.historySession)
+		if not VMRT.Reminder2.HistoryMPlusSessionEnabled then
+			for i=#res,1,-1 do
+				if #res[i] > 0 and res[i][1][2] == 22 then
+					tinsert(module.db.historySession, 1, res[i])
+					tremove(res, i)
+				end
+			end
+		end
+
+		module.db.history = res
+		if VMRT.Reminder2.HistorySession then
+			VMRT.Reminder2.history = module.db.history
+		end
+	end
+
+	function options.timeLine.historyImportWindow:TextToHistory(str,uncompressed)
+		local decoded = LibDeflate:DecodeForPrint(str)
+		local decompressed
+		if uncompressed then
+			decompressed = decoded
+		else
+			decompressed = LibDeflate:DecompressDeflate(decoded)
+		end
+		decoded = nil
+
+		local successful, res = pcall(ExRT.F.TextToTable,decompressed)
+		decompressed = nil
+		if successful and res then
+			options:ImportToHistory(res)
+		else
+			print("Import error")
+		end
+	end
+
+
+	self.timeLineBoss = ELib:DropDown(self.tab.tabs[4],250,-1):Point("TOPLEFT",10,-10):Size(220):SetText(L.ReminderSelectBoss)
+	self.timeLineBoss.SetValue = function(_,arg1,arg2,arg3,arg4)
+		ELib:DropDownClose()
+		options.timeLine.frame.bigBossButtons:Hide()
+
+		module.db.simrun = nil
+		wipe(options.timeLine.custom_phase)
+
+		options.timeLine:ResetAdjust()
+
+		options.timeLine.BOSS_ID = nil
+		options.timeLine.ZONE_ID = nil
+		options.timeLine.CUSTOM_TIMELINE = nil
+		VMRT.Reminder2.TLBoss = nil
+		options.timeLine.FILTER_SPELL = nil
+		options.timeLine.FILTER_CAST = nil
+		options.timeLine.FILTER_AURA = nil
+
+
+		options.timeLineBoss:SetText(arg2)
+		if arg3 == 2 then
+			options.timeLine.BOSS_ID = arg1[1] and arg1[1][3]
+			options.timeLine.CUSTOM_TIMELINE = options.timeLine:CreateCustomTimelineFromHistory(arg1)
+			VMRT.Reminder2.TLBoss = nil
+		elseif arg3 == 5 then
+			options.timeLine.ZONE_ID = arg1[1] and arg1[1][3]
+			options.timeLine.CUSTOM_TIMELINE = options.timeLine:CreateCustomTimelineFromHistory(arg1)
+			VMRT.Reminder2.TLBoss = nil
+		elseif arg3 == 3 then
+			options.timeLine.BOSS_ID = arg1
+			options.timeLine.CUSTOM_TIMELINE = arg4.tl
+			VMRT.Reminder2.TLBoss = arg4.id
+		elseif arg3 == 4 then
+			options.timeLine.ZONE_ID = arg1
+			options.timeLine.CUSTOM_TIMELINE = arg4 and arg4.tl
+		else
+			options.timeLine.BOSS_ID = arg1
+			VMRT.Reminder2.TLBoss = arg1
+		end
+
+		options.timeLine:Update()
+	end
+
+	function self.timeLineBoss:PreUpdate()
+		wipe(self.List)
+		local subMenu = {}
+		local res
+
+		for _, h_key in pairs({"history","historySession"}) do
+			local sepAdded
+			for i=1,#module.db[h_key] do
+				local fight = module.db[h_key][i]
+				local fightLen = #fight > 1 and fight[#fight][1] - fight[1][1]
+				local text = (#fight > 0 and fight[1][4] or L.ReminderFight.." "..i)..(fightLen and format(" %d:%02d",fightLen/60,fightLen%60) or "")
+				local boss_list = {
+					text = text,
+					arg1 = fight,
+					arg2 = text,
+					arg3 = 2,
+					func = self.SetValue,
+				}
+				if #fight > 0 and fight[1][2] == 22 then
+					boss_list.arg3 = 5
+					boss_list.text = boss_list.text:gsub(" %d+:"," +"..(fight[1][5] or 0).."%1")
+				elseif #fight > 0 and fight[1][2] == 3 then
+					local ej = ExRT.GDB.encounterIDtoEJ[ fight[1][3] ]
+					if ej and EJ_GetCreatureInfo then
+						boss_list.icon = select(5, EJ_GetCreatureInfo(1, ej))
+						boss_list.iconsize = 32
+					end
+				end
+				if fightLen then
+					if not sepAdded then
+						sepAdded = true
+						if #subMenu > 0 then
+							subMenu[#subMenu+1] = {
+								text = " ",
+								isTitle = true,
+							}
+						end
+					end
+
+					subMenu[#subMenu+1] = boss_list
+				end
+			end
+		end
+
+		if #subMenu == 0 then
+			subMenu[#subMenu+1] = {
+				text = L.ReminderRecordsYet,
+				isTitle = true,
+			}
+		end
+
+		subMenu[#subMenu+1] = {
+			text = " ",
+			isTitle = true,
+		}
+		subMenu[#subMenu+1] = {
+			text = L.ReminderFightExport,
+			func = function()
+				ELib:DropDownClose()
+
+				local str = options:GetHistoryString()
+
+				local compressed
+				if #str < 1000000 then
+					compressed = LibDeflate:CompressDeflate(str,{level = 5})
+				end
+				local encoded = "MRTREMH"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+
+				options.timeLine.historyExportWindow.Edit:SetText(encoded)
+				options.timeLine.historyExportWindow:Show()
+			end,
+		}
+		subMenu[#subMenu+1] = {
+			text = L.ReminderFightImport,
+			func = function()
+				ELib:DropDownClose()
+
+				options.timeLine.historyImportWindow:NewPoint("CENTER",UIParent,0,0)
+				options.timeLine.historyImportWindow:Show()
+			end,
+		}
+
+		self.List[ #self.List+1 ] = {
+			text = L.ReminderFightSaved,
+			subMenu = subMenu,
+			prio = 100000,
+		}
+
+		for bossID,bossData in pairs(options.timeLine.Data) do
+			local toadd
+			local isZone
+			if bossID > 0 then
+				local zone
+				for i=1,#ExRT.GDB.EncountersList do
+					local z = ExRT.GDB.EncountersList[i]
+					for j=2,#z do
+						if z[j] == bossID then
+							zone = z
+							break
+						end
+					end
+				end
+				if zone then
+					toadd = ExRT.F.table_find3(self.List,zone[1],"arg3")
+					if not toadd then
+						local text = GetMapNameByID(zone[1])
+
+						local zoneImg
+						local ej_bossID = ExRT.GDB.encounterIDtoEJ[bossID]
+						if ej_bossID and EJ_GetEncounterInfo then
+							local name, description, journalEncounterID, rootSectionID, link, journalInstanceID, dungeonEncounterID, instanceID = EJ_GetEncounterInfo(ej_bossID)
+							if journalInstanceID then
+								local name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link, shouldDisplayDifficulty, mapID = EJ_GetInstanceInfo(journalInstanceID)
+								zoneImg = buttonImage1
+								text = name or text
+							end
+						end
+
+						toadd = {text = text, arg3 = zone[1], subMenu = {}, zonemd = zone, prio = 40000+zone[1], icon = zoneImg}
+						self.List[#self.List+1] = toadd
+					end
+					toadd = toadd.subMenu
+				end
+			else
+				isZone = true
+				toadd = ExRT.F.table_find3(self.List,"m+","arg3")
+				if not toadd then
+					toadd = {text = PLAYER_DIFFICULTY_MYTHIC_PLUS or "M+", arg3 = "m+", subMenu = {}, prio = 40000-1, isHidden = ExRT.isClassic}
+					self.List[#self.List+1] = toadd
+				end
+				toadd = toadd.subMenu
+			end
+			if not toadd then
+				toadd = self.List
+			end
+
+			local bossImg
+			if not isZone and ExRT.GDB.encounterIDtoEJ[bossID] and EJ_GetCreatureInfo then
+				bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
+			end
+
+			local boss_list = {
+				arg1 = bossID,
+				arg2 = ExRT.L.bossName[bossID],
+				text = ExRT.L.bossName[bossID],
+				func = self.SetValue,
+				prio = bossID,
+				icon = bossImg,
+				iconsize = 32,
+			}
+			if isZone then
+				boss_list.arg1 = -bossID
+				boss_list.arg3 = 4
+				local name = VMRT.Reminder2.zoneNames[-bossID] or "Zone ID "..(-bossID)
+				local journalInstance = ExRT.GDB.MapIDToJournalInstance[-bossID]
+				if journalInstance and EJ_GetInstanceInfo then
+					local iname = EJ_GetInstanceInfo(journalInstance)
+					if iname then
+						name = iname
+					end
+				end
+				boss_list.text = name
+				boss_list.arg2 = name
+				boss_list.prio = -10000-bossID
+			end
+			if not (boss_list.text == "" and ExRT.isClassic) then
+				toadd[#toadd+1] = boss_list
+			end
+			if boss_list.text == "" then
+				boss_list.text = "Boss "..bossID
+			end
+
+			if bossData.m then
+				local subMenu = {}
+				boss_list.subMenu = subMenu
+				for i=1,#bossData do
+					local bossData_i = bossData[i]
+					local text = (bossData_i.d[1] == 4 and (PLAYER_DIFFICULTY6 or "Mythic") or bossData_i.d[1] == 3 and (PLAYER_DIFFICULTY2 or "Heroic") or bossData_i.d[1] == 2 and (PLAYER_DIFFICULTY1 or "Normal") or "") .. (bossData_i.d.k and "+"..bossData_i.d.k or "") .. " ".. module:FormatTime(bossData_i.d[2])
+					local newEntry = {
+						arg1 = bossID,
+						arg2 = boss_list.text .. " ".. module:FormatTime(bossData_i.d[2]),
+						text = text,
+						func = self.SetValue,
+						prio = bossData_i.d[1] + bossData_i.d[2] / 10000,
+						arg3 = 3,
+						arg4 = {id = bossID + i/100, tl = bossData_i},
+					}
+					subMenu[#subMenu+1] = newEntry
+					if isZone then
+						newEntry.arg1 = -bossID
+						newEntry.arg3 = 4
+					end
+					if not boss_list.prio2 or boss_list.prio2 < newEntry.prio then
+						boss_list.arg3 = newEntry.arg3
+						boss_list.arg4 = newEntry.arg4
+						boss_list.prio2 = newEntry.prio
+					end
+				end
+				sort(subMenu,function(a,b)
+					return (a.prio or 0) > (b.prio or 0) 
+				end)
+			elseif bossData.d then
+				boss_list.tooltip = (bossData.d[1] == 4 and (PLAYER_DIFFICULTY6 or "Mythic") or bossData.d[1] == 3 and (PLAYER_DIFFICULTY2 or "Heroic") or bossData.d[1] == 2 and (PLAYER_DIFFICULTY1 or "Normal") or "") .. " ".. module:FormatTime(bossData.d[2])
+			end
+	
+			if module.db.lastEncounterID == bossID then
+	 			res = function() self:SetValue(bossID,ExRT.L.bossName[bossID]) end
+			elseif not module.db.lastEncounterID and VMRT.Reminder2.TLBoss and (VMRT.Reminder2.TLBoss == bossID or (type(VMRT.Reminder2.TLBoss == "number") and floor(VMRT.Reminder2.TLBoss) == bossID)) then
+				if VMRT.Reminder2.TLBoss % 1 ~= 0 then
+					local n = floor( (VMRT.Reminder2.TLBoss % 1) * 100 + 0.5 )
+					res = function() self:SetValue(bossID,ExRT.L.bossName[bossID],3,{id = VMRT.Reminder2.TLBoss, tl = bossData.m and (bossData[n] or bossData[1]) or bossData}) end
+				else
+					res = function() self:SetValue(bossID,ExRT.L.bossName[bossID]) end
+				end
+			end
+		end
+		for i=1,#self.List do
+			local list = self.List[i]
+			if list.zonemd then
+				sort(list.subMenu,function(a,b) return (ExRT.F.table_find(list.zonemd,a.arg1) or 0) > (ExRT.F.table_find(list.zonemd,b.arg1) or 0) end)
+			end
+		end
+		self.List[#self.List+1] = {
+			text = L.ReminderCustom,
+			func = function() ELib:DropDownClose() ExRT.F.ShowInput(L.ReminderEncounterID,function(_,id) id=tonumber(id) if not id then return end self:SetValue(id,L.bossName[id]) end,nil,true) end,
+			prio = -990000,
+		}
+		sort(self.List,function(a,b)
+			return (a.prio or 0) > (b.prio or 0) 
+		end)
+
+
+		if options.timeLine.frame.bigBossButtons:IsShown() then
+			local list = self.List[2]	--most recent tier
+			if list.zonemd then
+				options.timeLine.frame.bigBossButtons:Reset()
+				for i=2,#list.zonemd do
+					local encounterID = list.zonemd[i]
+					local inlist = ExRT.F.table_find3(list.subMenu,encounterID,"arg1")
+					if inlist then
+						options.timeLine.frame.bigBossButtons:Add(encounterID,function() inlist.func(self,inlist.arg1,inlist.arg2,inlist.arg3,inlist.arg4) end)
+					end
+				end
+			end
+		end
+
+		if res then
+			return res
+		end
+	end
+
+	for bossID,bossData in pairs(options.timeLine.Data) do
+		if bossData.m then
+			for i=1,#bossData do
+				if bossData[i].p and bossData[i].p[1] < 0 then
+					local spell = -bossData[i].p[1]
+					local diff = bossData[i].p[2] and bossData[i].p[2] > 0 and bossData[i].p[2] or 0
+					for j=1,#bossData[i][spell] do
+						bossData[i].p[j] = bossData[i][spell][j] + diff
+					end
+				end
+			end
+		end
+	end
+
+	self.timeLineTestRun = ELib:Button(self.tab.tabs[4],L.ReminderTest):Point("TOP",self.tab.tabs[4],0,-10):Point("RIGHT",self,-10,0):Size(140,20):Tooltip(L.ReminderTestTip):OnClick(function()
+		if module.db.simrun then
+			module.db.simrun = nil
+			return
+		end
+		module:LoadReminders(options.timeLine.BOSS_ID,-1,options.timeLine.ZONE_ID)
+		module.db.simrun = GetTime()
+		if options.timeLine.ZONE_ID then 
+			module:TriggerMplusStart() 
+		else
+			module:TriggerBossPull()
+		end
+
+		local timeLineData = options.timeLine:GetTimeLineData()
+		if timeLineData and not options.timeLine.ZONE_ID and timeLineData.p then
+			for i=1,#timeLineData.p do
+				local t = ScheduleTimer(function() module:TriggerBossPhase(tostring(i+1),i+1) end, timeLineData.p[i])
+				module.db.timers[#module.db.timers+1] = t
+			end
+		end
+
+		local ts = module.db.simrun
+		C_Timer.NewTicker(1,function(self)
+			if not module.db.simrun or not options:IsVisible() then
+				options.timeLineTestRun:SetText(L.ReminderTest)
+				self:Cancel()
+				print("Test run ended on "..module:FormatTime(GetTime()-ts))
+				module:ReloadAll()
+				return
+			end
+			options.timeLineTestRun:SetText(L.ReminderTest..": "..module:FormatTime(GetTime()-ts))
+		end)
+	end)
+
+	self.timeLineImportFromNoteFrame = ELib:Popup(" "):Size(600,400+175)
+	ELib:Border(self.timeLineImportFromNoteFrame,1,.4,.4,.4,.9)
+
+	self.timeLineImportFromNoteFrame.Edit = ELib:MultiEdit(self.timeLineImportFromNoteFrame):Point("TOP",0,-15):Size(590,355)
+	self.timeLineImportFromNoteFrame.Import = ELib:Button(self.timeLineImportFromNoteFrame,L.ReminderImportAdd):Point("BOTTOM",0,5):Size(590,20):OnClick(function()
+		local text = self.timeLineImportFromNoteFrame.Edit:GetText()
+		local timeLineData =  options.timeLine:GetTimeLineData()
+		if not timeLineData then return end
+
+		options.timeLine.undoimportlist = {remove={},repair={}}
+
+		if options.timeLineImportFromNoteFrame.opt_removebefore then
+			local currentlist = options.timeLine:GetRemindersList()
+
+			for i=1,#currentlist do
+				local uid = currentlist[i][1].uid
+				options.timeLine.undoimportlist.repair[uid] = CURRENT_DATA[uid]
+				CURRENT_DATA[uid] = nil
+			end
+		end
+
+		local lines = {strsplit("\n",text)}
+		for i=1,#lines do
+			local line = lines[i]
+			if line:find("{time:") then
+				local time = line:match("{time:([^,}]+)")
+				local p = line:match("{time:[^,}]+,p(%d+)")
+				local cleu = line:match("{time:[^,}]+,(S[^},]+)")
+				if time then
+					local x = module:ConvertMinuteStrToNum(time)
+					x = x and x[1]
+					if x then
+						local data = ExRT.F.table_copy2(newRemainderTemplate)
+						data.bossID = options.timeLine.BOSS_ID
+						data.zoneID = options.timeLine.ZONE_ID
+						data.uid = options:GetNewUID()
+						data.dur = 3
+				
+						local toadd = true
+
+						--manual fixes
+						if cleu == "SAR:447207:1" then cleu = nil p = "3"
+						elseif cleu == "SCS:449986:1" then cleu = nil p = "4"
+
+						elseif cleu == "SCS:450483:1" then cleu = nil p = "2"
+						--elseif cleu == "SAR:450980:1" then cleu = nil p = "3"
+						--elseif cleu == "SAR:451277:1" then cleu = nil p = "5"
+
+						elseif cleu == "SAA:447207:1" then cleu = nil p = "2"
+						elseif cleu == "SAA:442432:1" then cleu = nil p = "2"
+						elseif cleu == "SAA:442432:2" then cleu = nil p = "3"
+						elseif cleu == "SAA:442432:3" then cleu = nil p = "4"
+
+						--elseif cleu == "SCS:439795:1" then cleu = nil p = "2"
+						--elseif cleu == "SCS:439795:2" then cleu = nil p = "3"
+						--elseif cleu == "SCS:439795:3" then cleu = nil p = "4"
+						--elseif cleu == "SCS:439795:4" then cleu = nil p = "5"
+						end
+
+						if not data.triggers[1] then
+							data.triggers[1] = {}
+						end
+						data.triggers[1].event = data.zoneID and 22 or 3
+						if p and p~=1 and timeLineData then
+							data.triggers[1].event = 2
+							data.triggers[1].pattFind = timeLineData.p and timeLineData.p.n and tonumber(p) and tostring(timeLineData.p.n[tonumber(p)-1]) or tostring(p)
+							if timeLineData.p and timeLineData.p.nc and tonumber(p) then
+								data.triggers[1].counter = tostring(timeLineData.p.nc[tonumber(p)-1])
+							end
+							if not timeLineData.p then
+								toadd = false
+							end
+						end
+
+						if cleu then
+							local isValid = false
+
+							local cleu_event,cleu_spell,cleu_count = strsplit(":",cleu)
+							if cleu_event and cleu_spell and cleu_count then
+								cleu_spell = tonumber(cleu_spell)
+								cleu_count = tonumber(cleu_count)
+
+								if not cleu_spell or not cleu_count or cleu_count <= 0 then
+								elseif cleu_event == "SCC" or cleu_event == "SAA" or cleu_event == "SAR" or cleu_event == "SCS" then
+									data.triggers[1].event = 1
+									data.triggers[1].eventCLEU = cleu_event == "SCC" and "SPELL_CAST_SUCCESS" or cleu_event == "SCS" and "SPELL_CAST_START" or cleu_event == "SAR" and "SPELL_AURA_REMOVED" or "SPELL_AURA_APPLIED"
+									data.triggers[1].spellID = cleu_spell
+									data.triggers[1].counter = tostring(cleu_count)
+									isValid = true
+								end
+							end
+							if not isValid then
+								toadd = false
+							end
+						end
+
+						local t=floor(x*10)/10
+						data.triggers[1].delayTime = format("%d:%02d.%d",t/60,t%60,(t*10)%10)
+
+						local msg = line:gsub("{time:[^}]+}",""):trim()
+
+						if options.timeLineImportFromNoteFrame.opt_filter_names then
+							local ability,names = strsplit("-",msg,2)
+							if names then
+								names = names:gsub("%b{}","")
+								for n in names:gmatch("[^ ]+") do
+									if not n:find("[%d_#]") then
+										n = n:gsub("|+c........",""):gsub("|+r","")
+										data.players[n] = true
+									end
+								end
+
+								if ability then
+									msg = ability
+								end
+							end
+						end
+						local everylist
+						if options.timeLineImportFromNoteFrame.opt_everyplayer then
+							for player,spell in msg:gmatch("([^ _]+) *{spell:(%d+)}") do
+								player = player:gsub("||c........",""):gsub("||r","")
+								if not player:find("[%d:]") and #player > 1 then
+									if not everylist then everylist = {} end
+
+									local msg1 = "{spell:"..spell.."}"
+									spell = tonumber(spell)
+									local name = GetSpellInfo(spell)
+									if name then
+										msg1 = msg1 .. " " .. name
+									end
+	
+									everylist[#everylist+1] = {player,msg1}
+								end
+							end
+						end
+						if options.timeLineImportFromNoteFrame.opt_linesmy then
+							local playerName = UnitName'player'
+							if not msg:find( playerName ) then
+								toadd = false
+							end
+						end
+						if options.timeLineImportFromNoteFrame.opt_wordmy then
+							local playerName = UnitName'player'
+							if not msg:find( playerName ) then
+								toadd = false
+							else
+								msg = msg:match(playerName.."[^ ]* ([^ ]+)")
+								if not msg then
+									toadd = false
+								end
+								if msg and msg:gsub("%b{}",""):trim() == "" and msg:find("{spell:%d+") then
+									local spell = msg:match("{spell:(%d+)")
+									spell = tonumber(spell)
+									local name = GetSpellInfo(spell)
+									if name then
+										msg = msg .. " " .. name
+									end
+								end
+							end
+						end
+						if options.timeLineImportFromNoteFrame.opt_rev then
+							data.durrev = true
+						end
+
+						data.msg = msg
+
+						if toadd and (not p or timeLineData) then
+							if everylist then
+								for i=1,#everylist do
+									local player,msg = everylist[i][1],everylist[i][2]
+									
+									local data3 = ExRT.F.table_copy2(data)
+									data3.uid = options:GetNewUID()
+
+									data3.msg = msg
+									data3.players[player] = true
+									data3.allPlayers = nil
+
+									CURRENT_DATA[data3.uid] = data3
+
+									options.timeLine.undoimportlist.remove[data3.uid] = true
+									print("Added line with player filter",data3.triggers[1].delayTime,player,msg)
+								end
+							else
+								CURRENT_DATA[data.uid] = data
+								print("Added line",data.triggers[1].delayTime,msg)
+								options.timeLine.undoimportlist.remove[data.uid] = true
+							end
+
+
+						end
+					end
+				end
+			end
+		end
+
+		options.timeLineImportFromNoteFrame:Hide()
+		options:UpdateData()
+		options.timeLine:Update()
+		module:ReloadAll()
+
+		options.timeLineImportFromNoteUndo:Show()
+	end)
+	self.timeLineImportFromNoteFrame.Copy = ELib:Button(self.timeLineImportFromNoteFrame,L.ReminderImportTextFromNote):Point("BOTTOM",0,30+25*6):Size(590,20):OnClick(function()
+		self.timeLineImportFromNoteFrame.Edit:SetText(GMRT.F:GetNote())
+	end)
+
+	options.timeLineImportFromNoteFrame.opt_rev = true
+	self.timeLineImportFromNoteFrame.durRevCheck = ELib:Check(self.timeLineImportFromNoteFrame,L.ReminderDurRev,true):Tooltip(L.ReminderDurRevTooltip2):Point("BOTTOMLEFT",self.timeLineImportFromNoteFrame.Import,0,25):OnClick(function(self)
+		if self:GetChecked() then
+			options.timeLineImportFromNoteFrame.opt_rev = true
+		else
+			options.timeLineImportFromNoteFrame.opt_rev = nil
+		end
+	end)
+
+	self.timeLineImportFromNoteFrame.removeBefore = ELib:Check(self.timeLineImportFromNoteFrame,L.ReminderRemoveBeforeExport):Tooltip(L.ReminderRemoveBeforeExportTip):Point("BOTTOMLEFT",self.timeLineImportFromNoteFrame.durRevCheck,0,25):OnClick(function(self)
+		if self:GetChecked() then
+			options.timeLineImportFromNoteFrame.opt_removebefore = true
+		else
+			options.timeLineImportFromNoteFrame.opt_removebefore = nil
+		end
+	end)
+
+	self.timeLineImportFromNoteFrame.forEveryPlayer = ELib:Check(self.timeLineImportFromNoteFrame,L.ReminderForEveryPlayer):Tooltip(L.ReminderForEveryPlayerTip):Point("BOTTOMLEFT",self.timeLineImportFromNoteFrame.removeBefore,0,25):OnClick(function(self)
+		if self:GetChecked() then
+			options.timeLineImportFromNoteFrame.opt_everyplayer = true
+		else
+			options.timeLineImportFromNoteFrame.opt_everyplayer = nil
+		end
+	end)
+
+	self.timeLineImportFromNoteFrame.useFilterNames = ELib:Check(self.timeLineImportFromNoteFrame,L.ReminderImportNameAsFilter):Tooltip(L.ReminderImportNameAsFilterTip):Point("BOTTOMLEFT",self.timeLineImportFromNoteFrame.forEveryPlayer,0,25):OnClick(function(self)
+		if self:GetChecked() then
+			options.timeLineImportFromNoteFrame.opt_filter_names = true
+		else
+			options.timeLineImportFromNoteFrame.opt_filter_names = nil
+		end
+	end)
+
+
+	self.timeLineImportFromNoteFrame.onlyMyAbility = ELib:Check(self.timeLineImportFromNoteFrame,L.ReminderImportNoteWordMy):Point("BOTTOMLEFT",self.timeLineImportFromNoteFrame.useFilterNames,0,25):OnClick(function(self)
+		if self:GetChecked() then
+			options.timeLineImportFromNoteFrame.opt_wordmy = true
+		else
+			options.timeLineImportFromNoteFrame.opt_wordmy = nil
+		end
+	end)
+
+	self.timeLineImportFromNoteFrame.onlyMyNameLines = ELib:Check(self.timeLineImportFromNoteFrame,L.ReminderImportNoteLinesMy):Point("BOTTOMLEFT",self.timeLineImportFromNoteFrame.onlyMyAbility,0,25):OnClick(function(self)
+		if self:GetChecked() then
+			options.timeLineImportFromNoteFrame.opt_linesmy = true
+		else
+			options.timeLineImportFromNoteFrame.opt_linesmy = nil
+		end
+	end)
+
+
+
+
+
+	self.timeLineImportFromNote = ELib:Button(self.tab.tabs[4],L.ReminderImportFromNote):Point("RIGHT",self.timeLineTestRun,"LEFT",-5,0):Size(140,20):OnClick(function()
+		self.timeLineImportFromNoteFrame:Show()
+	end)
+	self.timeLineImportFromNoteUndo = ELib:Button(self.tab.tabs[4],L.ReminderUndo):Tooltip(L.ReminderUndoTip):Point("TOP",self.timeLineImportFromNote,"BOTTOM",0,0):Shown(false):Size(140,20):OnClick(function(self)
+		for uid in pairs(options.timeLine.undoimportlist.remove) do
+			CURRENT_DATA[uid] = nil
+		end
+		for uid,data in pairs(options.timeLine.undoimportlist.repair) do
+			CURRENT_DATA[uid] = data
+		end
+		options:UpdateData()
+		options.timeLine:Update()
+		module:ReloadAll()
+		self:Hide()
+	end):OnShow(function(self)
+		if self.tmr then
+			self.tmr:Cancel()
+		end
+		self.tmr = C_Timer.NewTimer(30,function() self:Hide() end)
+	end,true)
+
+
+	self.timeLineExportToNote = ELib:Button(self.tab.tabs[4],L.ReminderExportToNote):Point("RIGHT",self.timeLineImportFromNote,"LEFT",-5,0):Size(140,20):OnClick(function()
+		local str = options.timeLine:ExportToString()
+
+		ExRT.F:Export(str,true)
+	end)
+
+	self.timeLineAdjustFL = ELib:Button(self.tab.tabs[4],L.ReminderAdjustFL):Point("RIGHT",self.timeLineExportToNote,"LEFT",-5,0):Size(140,20):OnEnter(function(self)
+		self.subframe:Show()
+	end)
+
+	self.timeLineAdjustFL.subframe = CreateFrame("Frame",nil,self.timeLineAdjustFL)
+	self.timeLineAdjustFL.subframe:SetPoint("TOPLEFT",self.timeLineAdjustFL,"BOTTOMLEFT",-40,2)
+	self.timeLineAdjustFL.subframe:SetPoint("TOPRIGHT",self.timeLineAdjustFL,"BOTTOMRIGHT",40,2)
+	self.timeLineAdjustFL.subframe:SetHeight(25+25*options.timeLine.TIMELINE_ADJUST_NUM)
+	self.timeLineAdjustFL.subframe:Hide()
+	self.timeLineAdjustFL.subframe:SetScript("OnUpdate",function(self)
+		if not self:IsMouseOver() and not self:GetParent():IsMouseOver() then
+			self:Hide()
+		end
+	end)
+	self.timeLineAdjustFL.subframe.bg = self.timeLineAdjustFL.subframe:CreateTexture(nil,"BACKGROUND")
+	self.timeLineAdjustFL.subframe.bg:SetAllPoints()
+	self.timeLineAdjustFL.subframe.bg:SetColorTexture(0,0,0,1)
+
+	self.timeLineAdjustFL.subframe.timeScale = ELib:Slider(self.timeLineAdjustFL.subframe):Size(100):Point("TOP",0,-5):Range(10,200,true):SetTo(options.timeLine.TIMELINE_ADJUST):OnChange(function(self,val)
+		options.timeLine.TIMELINE_ADJUST = floor(val+0.5)
+		if not self.lock then
+			options.timeLine:Update()
+			options.timeLine:UpdateTimeText()
+		end
+		self.tooltipText = L.ReminderGlobalTimeScale..": "..options.timeLine.TIMELINE_ADJUST .. "%"
+		self:tooltipReload(self)
+	end)
+	self.timeLineAdjustFL.subframe.timeScale.tooltipText = L.ReminderGlobalTimeScale..": "..options.timeLine.TIMELINE_ADJUST .. "%"
+
+	for i=1,options.timeLine.TIMELINE_ADJUST_NUM do
+		options.timeLine.TIMELINE_ADJUST_DATA[i] = {0,0}
+		self.timeLineAdjustFL.subframe["tpos"..i] = ELib:Edit(self.timeLineAdjustFL.subframe,"0"):Size(40,20):Point("TOPLEFT",35,-20-(i-1)*25):LeftText(L.ReminderTimeScaleT1):Tooltip(L.ReminderTimeScaleTip1):OnChange(function(self,isUser)
+			if not isUser then return end
+			local t = self:GetText() or ""
+			t = module:ConvertMinuteStrToNum(t)
+			options.timeLine.TIMELINE_ADJUST_DATA[i][1] = t and t[1] or nil
+
+			options.timeLine:Update()
+			options.timeLine:UpdateTimeText()
+		end)
+
+		self.timeLineAdjustFL.subframe["addtime"..i] = ELib:Edit(self.timeLineAdjustFL.subframe,"0"):Size(40,20):Point("LEFT",self.timeLineAdjustFL.subframe["tpos"..i],"RIGHT",55,0):LeftText(L.ReminderTimeScaleT2):RightText(L.ReminderTimeScaleT3):Tooltip(L.ReminderTimeScaleTip2):OnChange(function(self,isUser)
+			if not isUser then return end
+			options.timeLine.TIMELINE_ADJUST_DATA[i][2] = tonumber(self:GetText() or "")
+
+			options.timeLine:Update()
+			options.timeLine:UpdateTimeText()
+		end)
+	end
+
+	self.timeLineFilterButton = ELib:DropDownButton(self.tab.tabs[4],FILTER,160,-1):Point("RIGHT",self.timeLineAdjustFL,"LEFT",-5,0):Size(140,20)
+	function self.timeLineFilterButton:SetValue(arg1)
+		ELib:DropDownClose()
+		options.timeLine[arg1] = not options.timeLine[arg1]
+		options.timeLine:Update()
+	end
+	function self.timeLineFilterButton:SetValueTable(arg1)
+		ELib:DropDownClose()
+		if options.timeLine[arg1] then
+			options.timeLine[arg1] = nil
+		elseif arg1 == "FILTER_SPELL" then
+			local filter = {}
+			local data = options.timeLine.Data[options.timeLine.BOSS_ID]
+			for _,e in pairs(data.m and data or {data}) do
+				if type(e) == "table" then
+					for k in pairs(e) do
+						filter[k] = true
+					end
+				end
+			end
+			options.timeLine[arg1] = filter
+		end
+		options.timeLine:Update()
+	end
+	self.timeLineFilterButton.List = {
+		{
+			text = L.ReminderFilterCasts,
+			checkable = true,
+			func = self.timeLineFilterButton.SetValue,
+			checkFunc = self.timeLineFilterButton.SetValue,
+			arg1 = "FILTER_CAST",
+			alter = true,
+		},{
+			text = L.ReminderFilterAuras,
+			checkable = true,
+			func = self.timeLineFilterButton.SetValue,
+			checkFunc = self.timeLineFilterButton.SetValue,
+			arg1 = "FILTER_AURA",
+			alter = true,
+		},{
+			text = "Preset encounter filter",
+			checkable = true,
+			func = self.timeLineFilterButton.SetValueTable,
+			checkFunc = self.timeLineFilterButton.SetValueTable,
+			arg1 = "FILTER_SPELL",
+			hidF = function() if options.timeLine.Data[options.timeLine.BOSS_ID] then return true end end,
+		},{
+			text = " ",
+			isTitle = true,
+		},{
+			text = L.ReminderReminders,
+			isTitle = true,
+		},{
+			text = L.ReminderOnlyForMe,
+			checkable = true,
+			func = self.timeLineFilterButton.SetValue,
+			checkFunc = self.timeLineFilterButton.SetValue,
+			arg1 = "FILTER_REM_ONLYMY",
+		}
+	}
+	function self.timeLineFilterButton:PreUpdate()
+		for i=1,#self.List do
+			local line = self.List[i]
+			line.checkState = (line.alter and not options.timeLine[line.arg1]) or (not line.alter and options.timeLine[line.arg1])
+			if line.hidF then
+				line.isHidden = not line.hidF()
+			end
+		end
+	end
+	
+
+	options.timeLine.frame = ELib:ScrollFrame(self.tab.tabs[4]):Size(780,520):Height(520):AddHorizontal(true):Width(1000)
+	ELib:Border(options.timeLine.frame,0)
+	options.timeLine.frame.headers = ELib:ScrollFrame(self.tab.tabs[4]):Point("TOPLEFT",0,-50):Size(220,520):Height(500)
+	ELib:Border(options.timeLine.frame.headers,0)
+	options.timeLine.frame:Point("TOPLEFT",options.timeLine.frame.headers,"TOPRIGHT",0,0)
+	options.timeLine.frame.D = CreateFrame("Frame",nil,options.timeLine.frame.C)
+	options.timeLine.frame.D:SetAllPoints()
+	options.timeLine.frame.D:SetFrameLevel(8000)
+
+	options.timeLine.frame.ScrollBar:Hide()
+	options.timeLine.frame.headers.ScrollBar:NewPoint("TOPLEFT",3,-3):Point("BOTTOMLEFT",3,3)
+	options.timeLine.frame.headers.ScrollBar:Hide()
+
+	options.timeLine.frame.lines = {}
+	options.timeLine.frame.buttons = {}
+	options.timeLine.frame.pcursors = {}
+
+	function options.timeLine:UpdateScale(val,forMid)
+		local x,y = ExRT.F.GetCursorPos(self.frame)
+		if forMid then x = self.frame:GetWidth() / 2 end
+		local htime = self:GetTimeFromPos(x + self.frame:GetHorizontalScroll())
+
+		self.TIMELINE_SCALE = val
+		self:Update()
+		self:UpdateTimeText()
+
+		local htime2 = self:GetTimeFromPos(x + self.frame:GetHorizontalScroll())
+
+		local newVal = self.frame.ScrollBarHorizontal:GetValue() - self:GetPosFromTime(htime2-htime)
+		local min,max = self.frame.ScrollBarHorizontal:GetMinMaxValues()
+		if newVal < min then newVal = min end
+		if newVal > max then newVal = max end
+		self.frame.ScrollBarHorizontal:SetValue(newVal)
+
+		self.frame.zoomSlider:SetTo(self.TIMELINE_SCALE)
+	end
+
+	options.timeLine.frame.zoomSlider = ELib:Slider(options.timeLine.frame,"",true):Size(40):Point("BOTTOMRIGHT",-5,-15):Range(50,110):SetTo(options.timeLine.TIMELINE_SCALE):OnChange(function(self,val)
+		if self.lock then return end
+		self.lock = true
+		options.timeLine:UpdateScale( floor(val+0.5),true )
+		self.lock = nil
+	end):OnEnter(function() options.timeLine.HideCursor = true end):OnLeave(function() options.timeLine.HideCursor = false end)
+
+	options.timeLine.frame:SetScript("OnMouseWheel", function(self,delta)
+		options.timeLine:UpdateScale( options.timeLine.TIMELINE_SCALE - delta )
+	end)
+
+	options.timeLine.frame.headers:SetScript("OnVerticalScroll", function(self)
+		options.timeLine.frame:SetVerticalScroll( self:GetVerticalScroll() )
+	end)
+
+	options.timeLine.frame.timeLeft = ELib:Text(self.tab.tabs[4],"0:00",14):Point("BOTTOMLEFT",options.timeLine.frame,"TOPLEFT",0,2)
+	options.timeLine.frame.timeRight = ELib:Text(self.tab.tabs[4],"1:00",14):Point("BOTTOMRIGHT",options.timeLine.frame,"TOPRIGHT",0,2):Right()
+
+	options.timeLine.frame.cursor = options.timeLine.frame.D:CreateTexture(nil,"BACKGROUND")
+	options.timeLine.frame.cursor:SetWidth(2)
+	options.timeLine.frame.cursor:SetPoint("BOTTOM",0,0)
+	options.timeLine.frame.cursor:SetColorTexture(1,1,1,.7)
+	options.timeLine.frame.cursor:Hide()
+
+	options.timeLine.frame.cursorH = options.timeLine.frame.C:CreateTexture(nil,"BACKGROUND")
+	options.timeLine.frame.cursorH:SetSize(1000,2)
+	options.timeLine.frame.cursorH:SetColorTexture(.2,.2,.2,1)
+
+	options.timeLine.frame.cursorHT2 = self.tab.tabs[4]:CreateTexture(nil,"BACKGROUND")
+	options.timeLine.frame.cursorHT2:SetHeight(2)
+	options.timeLine.frame.cursorHT2:SetPoint("LEFT",options,0,0)
+	options.timeLine.frame.cursorHT2:SetPoint("RIGHT",options,0,0)
+	options.timeLine.frame.cursorHT2:SetPoint("BOTTOM",options.timeLine.frame,"TOP",0,0)
+	options.timeLine.frame.cursorHT2:SetColorTexture(.2,.2,.2,1)
+
+	options.timeLine.frame.runLine = options.timeLine.frame.D:CreateTexture(nil,"ARTWORK",nil,3)
+	options.timeLine.frame.runLine:SetWidth(2)
+	options.timeLine.frame.runLine:SetPoint("TOP",options.timeLine.frame.cursorHT2,"BOTTOM",0,0)
+	options.timeLine.frame.runLine:SetPoint("BOTTOM",options.timeLine.frame.cursorH,"TOP",0,0)
+	options.timeLine.frame.runLine:SetColorTexture(1,0,0,1)
+	options.timeLine.frame.runLine:Hide()
+
+	options.timeLine.frame.bg = options.timeLine.frame.C:CreateTexture(nil,"BACKGROUND",nil,-8)
+	options.timeLine.frame.bg:SetColorTexture(23/255, 31/255, 33/255, 1)
+	options.timeLine.frame.bg:SetPoint("TOPLEFT",0,0)
+	--options.timeLine.frame.bg:SetPoint("BOTTOMRIGHT",options.timeLine.frame.cursorH,"TOPRIGHT",0,0)
+	--options.timeLine.frame.bg:SetPoint("BOTTOMRIGHT",0,0)
+	options.timeLine.frame.bg:SetPoint("BOTTOM",0,0)
+	options.timeLine.frame.bg:SetPoint("RIGHT",options,0,0)
+
+	options.timeLine.frame.bg2 = options.timeLine.frame.C:CreateTexture(nil,"BACKGROUND",nil,-7)
+	options.timeLine.frame.bg2:SetPoint("LEFT",options.timeLine.frame.bg,0,0)
+	options.timeLine.frame.bg2:SetPoint("RIGHT",options.timeLine.frame.bg,0,0)
+	options.timeLine.frame.bg2:SetPoint("TOP",options.timeLine.frame.cursorHT2,"BOTTOM",0,0)
+	options.timeLine.frame.bg2:SetPoint("BOTTOM",options.timeLine.frame.cursorH,"TOP",0,0)
+	options.timeLine.frame.bg2:SetColorTexture(1,1,1, 1)
+	options.timeLine.frame.bg2:SetGradient("VERTICAL",CreateColor(0,0,0,.2), CreateColor(0,0,0,0))
+
+
+	options.timeLine.frame.timeCursor = ELib:Text(self.tab.tabs[4],"1:00",14):Point("CENTER",options.timeLine.frame.cursor,"TOP",0,0):Point("BOTTOM",options.timeLine.frame,"TOP",0,2):Shown(false)
+
+	options.timeLine.frame:SetScript("OnUpdate",function(self)
+		local x,y = ExRT.F.GetCursorPos(self)
+
+		if self.saved_x and self.saved_y then
+			if abs(x - self.saved_x) > 5 then
+				local newVal = self.saved_scroll - (x - self.saved_x)
+				local min,max = self.ScrollBarHorizontal:GetMinMaxValues()
+				if newVal < min then newVal = min end
+				if newVal > max then newVal = max end
+				self.ScrollBarHorizontal:SetValue(newVal)
+
+				self.moveSpotted = true
+			end
+			if self.headers.ScrollBar:IsShown() and abs(y - self.saved_y) > 5 then
+				local newVal = self.saved_scroll_v - (y - self.saved_y)
+				local min,max = self.headers.ScrollBar:GetMinMaxValues()
+				if newVal < min then newVal = min end
+				if newVal > max then newVal = max end
+				self.headers.ScrollBar:SetValue(newVal)
+
+				self.moveSpotted = true
+			end
+		end
+
+		if self:IsMouseOver() and (not options.quickSetupFrame:IsShown() or not options.quickSetupFrame:IsMouseOver()) and not self.moveSpotted then
+			if x <= 40 and self.timeLeft:IsShown() then
+				self.timeLeft:Hide()
+			elseif x > 40 and not self.timeLeft:IsShown() then
+				self.timeLeft:Show()
+			end
+
+			if x >= self:GetWidth()-40 and self.timeRight:IsShown() then
+				self.timeRight:Hide()
+			elseif x < self:GetWidth()-40 and not self.timeRight:IsShown() then
+				self.timeRight:Show()
+			end
+
+			x = x + self:GetHorizontalScroll()
+			self.cursor:SetPoint("TOPLEFT",x,0)
+
+			x = options.timeLine:GetTimeFromPos(x)
+			self.timeCursor:SetText(module:FormatTime(x))
+			if not self.cursor:IsShown() then
+				self.cursor:Show()
+				self.timeCursor:Show()
+			end
+		elseif self.cursor:IsShown() then
+			self.cursor:Hide()
+			self.timeCursor:Hide()
+			if not self.timeLeft:IsShown() then
+				self.timeLeft:Show()
+			end
+			if not self.timeRight:IsShown() then
+				self.timeRight:Show()
+			end
+		end
+
+		if options.timeLine.HideCursor and self.cursor:IsShown() then
+			self.cursor:Hide()
+		end
+
+		if module.db.simrun then
+			local t = GetTime() - module.db.simrun
+			local x = options.timeLine:GetPosFromTime(t)
+			self.runLine:SetPoint("LEFT",x,0)
+			if not self.runLine:IsShown() then
+				self.runLine:Show()
+			end
+		elseif self.runLine:IsShown() then
+			self.runLine:Hide()
+		end
+	end)
+
+	options.timeLine.frame:SetScript("OnMouseDown",function(self)
+		local x,y = ExRT.F.GetCursorPos(self)
+		self.saved_x = x
+		self.saved_y = y
+		self.saved_scroll = self.ScrollBarHorizontal:GetValue()
+		self.saved_scroll_v = self.headers.ScrollBar:GetValue()
+		self.moveSpotted = nil
+
+	end)
+
+	options.timeLine.frame:SetScript("OnMouseUp",function(self, button)
+		self.saved_x = nil
+		self.saved_y = nil
+		if self.moveSpotted then
+			self.moveSpotted = nil
+			return
+		end
+
+		local x,y = ExRT.F.GetCursorPos(self)
+		x = x + self:GetHorizontalScroll()
+		y = y + self:GetVerticalScroll()
+		options.timeLine:ProcessClick(x, y, button)
+	end)
+
+	options.timeLine.frame.HighlighSpellLine = function(self,id,show)
+		for i=1,#self.lines do
+			local line = self.lines[i]
+			if (line.header.spell == id and show) or not show then
+				line:SetAlpha(1)
+			else
+				line:SetAlpha(.3)
+			end
+		end
+	end
+
+	function options.timeLine:UpdateTimeText()
+		local x = self:GetTimeFromPos(self.frame:GetHorizontalScroll())
+		self.frame.timeLeft:SetText(module:FormatTime(x))
+
+		local x2 = self:GetTimeFromPos(self.frame:GetHorizontalScroll() + self.frame:GetWidth())
+		self.frame.timeRight:SetText(module:FormatTime(x2))
+
+		local p,s = self:GetPosFromTime(30), self:GetPosFromTime(x)
+		local c = 0
+		for i=ceil(s/p)*p,s + self.frame:GetWidth(),p do
+			c = c + 1
+			local tc = self.frame.timeCursor[c]
+			if not tc then
+				tc = options.tab.tabs[4]:CreateTexture(nil,"BACKGROUND")
+				self.frame.timeCursor[c] = tc
+				tc:SetSize(2,4)
+				tc:SetPoint("BOTTOM",self.frame.cursorHT2,"TOP",0,0)
+				tc:SetColorTexture(.2,.2,.2,1)
+				tc:Hide()
+			end
+			tc:SetPoint("LEFT",self.frame,i - s,0)
+			tc:Show()
+		end
+		for i=c+1,#self.frame.timeCursor do
+			self.frame.timeCursor[i]:Hide()
+		end
+		
+	end
+	options.timeLine.frame:SetScript("OnScrollRangeChanged",function(self)
+		options.timeLine:UpdateTimeText()
+	end)
+	options.timeLine.frame:SetScript("OnHorizontalScroll",function(self)
+		options.timeLine:UpdateTimeText()
+	end)
+
+	options.timeLine.frame.bigBossButtons = CreateFrame("Button",nil,options.timeLine.frame)
+	options.timeLine.frame.bigBossButtons:SetPoint("TOPLEFT",options.timeLine.frame.headers,0,0)
+	options.timeLine.frame.bigBossButtons:SetPoint("BOTTOMRIGHT",options,0,0)
+	options.timeLine.frame.bigBossButtons:SetFrameLevel(9000)
+	options.timeLine.frame.bigBossButtons:SetFrameStrata("DIALOG")
+
+	options.timeLine.frame.bigBossButtons.bg = options.timeLine.frame.bigBossButtons:CreateTexture(nil,"BACKGROUND",nil,-8)
+	options.timeLine.frame.bigBossButtons.bg:SetColorTexture(0,0,0, 1)
+	options.timeLine.frame.bigBossButtons.bg:SetAllPoints()
+
+	options.timeLine.frame.bigBossButtons.buttons = {}
+	function options.timeLine.frame.bigBossButtons:Reset()
+		for i=1,#self.buttons do
+			self.buttons[i]:Hide()
+		end
+	end
+	function options.timeLine.frame.bigBossButtons:Repos(t)
+		local SIZE_W = 200 * (t.mini and 0.75 or 1)
+		local SIZE_H = 200 * (t.mini and 0.75 or 1)
+		for i=1,#t do
+			for j=1,#t[i] do
+				local button = self.buttons[ t[i][j] ]
+				button:ClearAllPoints()
+				button:SetPoint("CENTER",-SIZE_W*(#t[i]-1)/2+(j-1)*SIZE_W,SIZE_H*(#t-1)/2-(i-1)*SIZE_H)
+			end
+		end
+	end
+
+	function options.timeLine.frame.bigBossButtons.Util_BottonOnEnter(self)
+		self.text:Color(1,1,0,1)
+	end
+	function options.timeLine.frame.bigBossButtons.Util_BottonOnLeave(self)
+		self.text:Color()
+	end
+	function options.timeLine.frame.bigBossButtons.Util_BottonOnClick(self)
+		self.click()
+		options.timeLine.frame.bigBossButtons:Hide()
+	end
+
+	function options.timeLine.frame.bigBossButtons:Add(encounterID,clickFunc)
+		local button
+		for i=1,#self.buttons do
+			if not self.buttons[i]:IsShown() then
+				button = self.buttons[i]
+				break
+			end
+		end
+		if not button then
+			button = CreateFrame("Button",nil,self)
+			self.buttons[#self.buttons+1] = button
+
+			button._i = #self.buttons
+			
+			button:SetSize(150,100)
+
+			button.bg = button:CreateTexture()
+			button.bg:SetSize(128,64)
+			button.bg:SetPoint("CENTER",0,20)
+
+			button.text = ELib:Text(button,"",16):Point("TOP",button.bg,"BOTTOM",0,-5):Color():Center()
+			button.text:SetWidth(150)
+
+			button:SetScript("OnEnter",self.Util_BottonOnEnter)
+			button:SetScript("OnLeave",self.Util_BottonOnLeave)
+			button:SetScript("OnClick",self.Util_BottonOnClick)
+		end
+
+		local bossImg
+		if ExRT.GDB.encounterIDtoEJ[encounterID] and EJ_GetCreatureInfo then
+			bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[encounterID]))
+		end
+
+		button.text:SetText(ExRT.L.bossName[encounterID])
+
+		button.bg:SetTexture(bossImg)
+		button.click = clickFunc
+		
+		button:Show()
+
+		local tr
+		if button._i <= 3 then
+			tr = {{}}
+			for i=1,button._i do tinsert(tr[1],i) end
+		elseif button._i <= 8 then
+			tr = {{},{}}
+			local m = ceil(button._i / 2)
+			for i=1,button._i do tinsert(tr[floor((i-1)/m)+1],i) end
+		elseif button._i <= 12 then
+			tr = {{},{},{}}
+			local m = ceil(button._i / 3)
+			for i=1,button._i do tinsert(tr[floor((i-1)/m)+1],i) end
+		elseif button._i <= 16 then
+			tr = {{},{},{},{},mini=true}
+			local m = ceil(button._i / 4)
+			for i=1,button._i do tinsert(tr[floor((i-1)/m)+1],i) end
+		end
+		options.timeLine.frame.bigBossButtons:Repos(tr)
+	end
+
+
+	self.quickSetupFrame = ELib:Popup(" "):Size(510,405)
+	ELib:Border(self.quickSetupFrame,1,.4,.4,.4,.9)
+
+	self.quickSetupFrame.saveButton = ELib:Button(self.quickSetupFrame,L.ReminderSave):Point("BOTTOMRIGHT",self.quickSetupFrame,"BOTTOM",-5,10):Size(200,20):OnClick(function()
+		local data = self.quickSetupFrame.data
+		self.quickSetupFrame:Hide()
+		local uid = data.uid or self:GetNewUID()
+		data.uid = uid
+
+		local removeTrigger2 = true
+		if data.tmp_tl_glow and data.tmp_tl_glow:trim() ~= "" then
+			data.triggers[2] = {
+				event = 16,
+				targetName = data.tmp_tl_glow:trim():gsub(" +",";")
+			}
+			data.msgSize = 9
+			data.glowThick = 3
+			if data.triggers[1].event == 1 then
+				data.specialTarget = "%target2"
+			else
+				data.specialTarget = nil
+			end
+			removeTrigger2 = false
+		elseif data.tmp_tl_cd then
+			local msg = data.msg
+			if msg then
+				local spellID = msg:match("{spell:(%d+)}")
+				if spellID then
+					data.triggers[2] = {
+						event = 13,
+						spellID = tonumber(spellID),
+						invert = true,
+					}
+					data.hideTextChanged = true
+
+					removeTrigger2 = false
+				end
+			end
+		end
+		data.tmp_tl_glow = nil
+
+		if removeTrigger2 and data.triggers[2] and ((data.triggers[2].event == 13 and data.hideTextChanged) or data.triggers[2].event == 16) then
+			tremove(data.triggers, 2)
+			data.hideTextChanged = nil
+			data.specialTarget = nil
+		end
+		if module:GetReminderType(data.msgSize) == REM.TYPE_RAIDFRAME and (not data.triggers[2] or data.triggers[2].event ~= 16) then
+			data.msgSize = nil
+			data.specialTarget = nil
+		end
+		CURRENT_DATA[uid] = data
+		options:UpdateData()
+		options.timeLine:Update()
+		module:ReloadAll()
+
+		options.quickSetupFrame.prev = options.quickSetupFrame.data
+		options.quickSetupFrame:Hide()
+	end)
+	self.quickSetupFrame.saveButton.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.15,0.07,1), CreateColor(0.15,0.31,0.15,1))
+
+	self.quickSetupFrame.removeButton = ELib:Button(self.quickSetupFrame,L.ReminderRemove):Point("BOTTOMRIGHT",self.quickSetupFrame,"BOTTOM",-5,10):Size(200,20):OnClick(function()
+		local uid = self.quickSetupFrame.data.uid
+		options:RemoveReminder(uid)
+	end)
+	self.quickSetupFrame.removeButton.Texture:SetGradient("VERTICAL",CreateColor(0.15,0.06,0.09,1), CreateColor(0.30,0.21,0.25,1))
+
+	self.quickSetupFrame.copyButton = ELib:Button(self.quickSetupFrame,L.ReminderCopyPrev):Point("BOTTOM",0,35):Size(410,20):OnClick(function()
+		local prev = self.quickSetupFrame.prev
+		if not prev then
+			return
+		end
+		local data = options.quickSetupFrame.data
+
+		data.dur = prev.dur
+		data.durrev = prev.durrev
+		data.countdown = prev.countdown
+		data.msg = prev.msg
+		data.countdown = prev.countdown
+		data.countdownVoice = prev.countdownVoice
+		data.sound = prev.sound
+		data.allPlayers = prev.allPlayers
+		data.tmp_tl_cd = prev.tmp_tl_cd
+
+		if prev.triggers[2] and prev.triggers[2].event == 16 and module:GetReminderType(prev.msgSize) == REM.TYPE_RAIDFRAME then
+			data.triggers[2] = ExRT.F.table_copy2(prev.triggers[2])
+			data.msgSize = prev.msgSize
+		end
+		data.glowColor = prev.glowColor
+
+		for k in pairs(data.players) do data.players[k]=nil end
+		for k in pairs(prev.players) do data.players[k]=true end
+
+		for k,v in pairs(data) do if type(k)=="string" and k:find("^role") then data[k]=nil end end
+		for k,v in pairs(data) do if type(k)=="string" and k:find("^class") then data[k]=nil end end
+
+		for k,v in pairs(prev) do if type(k)=="string" and k:find("^role") then data[k]=v end end
+		for k,v in pairs(prev) do if type(k)=="string" and k:find("^class") then data[k]=v end end
+		
+		options.quickSetupFrame:Update(data)
+	end)
+
+	self.quickSetupFrame.quickFilter = ELib:DropDown(self.quickSetupFrame,220,-1):AddText("|cffffd100"..L.ReminderQuickFilter..":"):Size(270):Point("TOPLEFT",180,-10)
+	do
+		self.quickSetupFrame.quickFilter.List[#self.quickSetupFrame.quickFilter.List+1] = {
+			text = L.ReminderAllPlayers,
+			func = function()
+				options.quickSetupFrame.data.allPlayers = true
+				for k,v in pairs(options.quickSetupFrame.data.players) do options.quickSetupFrame.data.players[k]=nil end
+				for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^role") then options.quickSetupFrame.data[k]=nil end end
+				for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^class") then options.quickSetupFrame.data[k]=nil end end
+				ELib:DropDownClose()
+				self.quickSetupFrame.quickFilter:Update()
+			end
+		}
+
+		self.quickSetupFrame.quickFilter.List[#self.quickSetupFrame.quickFilter.List+1] = {
+			text = L.ReminderPlayerNames,
+			func = function()
+				options.quickSetupFrame.quickFilter:SetText(L.ReminderPlayerNames)
+				options.quickSetupFrame.playersEdit:SetText("")
+				options.quickSetupFrame.playersEdit:ExtraShow()
+				ELib:DropDownClose()
+			end,
+		}
+		local PLAYER = (ExRT.F.utf8sub(PLAYER, 1, 1)):upper() .. ExRT.F.utf8sub(PLAYER, 2)
+		self.quickSetupFrame.quickFilter.List[#self.quickSetupFrame.quickFilter.List+1] = {
+			text = PLAYER,
+			func = function()
+				options.quickSetupFrame.data.allPlayers = nil
+				for k,v in pairs(options.quickSetupFrame.data.players) do options.quickSetupFrame.data.players[k]=nil end
+				for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^role") then options.quickSetupFrame.data[k]=nil end end
+				for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^class") then options.quickSetupFrame.data[k]=nil end end
+				options.quickSetupFrame.quickFilter:SetText(PLAYER)
+				options.quickSetupFrame.data.players[ UnitName'player' ] = true
+				options.quickSetupFrame.playersEdit:SetText(UnitName'player')
+				options.quickSetupFrame.playersEdit:ExtraShow()
+				ELib:DropDownClose()
+			end,
+		}
+
+		local listNow = {}
+		self.quickSetupFrame.quickFilter.List[#self.quickSetupFrame.quickFilter.List+1] = {
+			text = L.ReminderRoles,
+			subMenu = listNow,
+		}
+		for i=1,#module.datas.rolesList do
+			local token = module.datas.rolesList[i][1]
+			listNow[#listNow+1] = {
+				text = module.datas.rolesList[i][2],
+				func = function()
+					for k,v in pairs(options.quickSetupFrame.data.players) do options.quickSetupFrame.data.players[k]=nil end
+					for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^role") then options.quickSetupFrame.data[k]=nil end end
+					for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^class") then options.quickSetupFrame.data[k]=nil end end
+					options.quickSetupFrame.data["role"..token] = true
+					options.quickSetupFrame.data.allPlayers = nil
+					ELib:DropDownClose()
+					self.quickSetupFrame.quickFilter:Update()
+				end
+			}
+		end
+
+		local listNow = {}
+		self.quickSetupFrame.quickFilter.List[#self.quickSetupFrame.quickFilter.List+1] = {
+			text = CLASS or "Class",
+			subMenu = listNow,
+		}
+		for i=1,#ExRT.GDB.ClassList do
+			local class = ExRT.GDB.ClassList[i]
+			listNow[#listNow+1] = {
+				text = (RAID_CLASS_COLORS[class] and RAID_CLASS_COLORS[class].colorStr and "|c"..RAID_CLASS_COLORS[class].colorStr or "")..L.classLocalizate[class],
+				func = function()
+					for k,v in pairs(options.quickSetupFrame.data.players) do options.quickSetupFrame.data.players[k]=nil end
+					for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^role") then options.quickSetupFrame.data[k]=nil end end
+					for k,v in pairs(options.quickSetupFrame.data) do if type(k)=="string" and k:find("^class") then options.quickSetupFrame.data[k]=nil end end
+					options.quickSetupFrame.data["class"..class] = true
+					options.quickSetupFrame.data.allPlayers = nil
+					ELib:DropDownClose()
+					self.quickSetupFrame.quickFilter:Update()
+				end
+			}
+		end
+
+		self.quickSetupFrame.quickFilter.Update = function(self)
+			local res = ""
+
+			options.quickSetupFrame.playersEdit:ExtraShow(true)
+			if options.quickSetupFrame.data.allPlayers then
+				res = res .. L.ReminderAllPlayers .. ","
+			end
+			local pnames_title_added
+			for k in pairs(options.quickSetupFrame.data.players) do 
+				if not pnames_title_added then
+					res = res .. L.ReminderPlayerNames .. ","
+					pnames_title_added = true
+				end
+
+				local str = ""
+				for k in pairs(options.quickSetupFrame.data.players) do 
+					str = str .. k .. " "
+				end
+				options.quickSetupFrame.playersEdit:SetText(str:trim())
+				options.quickSetupFrame.playersEdit:ExtraShow()
+			end
+			for k,v in pairs(options.quickSetupFrame.data) do 
+				if type(k)=="string" and k:find("^role") then 
+					local token = k:match("^role(.-)$")
+					for i=1,#module.datas.rolesList do
+						if tostring(module.datas.rolesList[i][1]) == token then
+							res = res .. module.datas.rolesList[i][2] .. ","
+						end
+					end
+				elseif type(k)=="string" and k:find("^class") then 
+					local class = k:match("^class(.-)$")
+					for i=1,#ExRT.GDB.ClassList do
+						if ExRT.GDB.ClassList[i] == class then
+							res = res .. (RAID_CLASS_COLORS[class] and RAID_CLASS_COLORS[class].colorStr and "|c"..RAID_CLASS_COLORS[class].colorStr or "")..L.classLocalizate[class] .. "|r,"
+						end
+					end
+				end 
+			end
+
+			res = res:gsub(",$","")
+			self:SetText(res)
+		end
+	end
+	self.quickSetupFrame.playersEdit = ELib:Edit(self.quickSetupFrame):Size(270,20):Point("TOPLEFT",self.quickSetupFrame.quickFilter,"BOTTOMLEFT",0,-5+25):Shown(false):LeftText(L.ReminderPlayerNames..":"):Tooltip(L.ReminderPlayerNamesTip):OnChange(function(self,isUser)
+		if not isUser then return end
+		for k,v in pairs(options.quickSetupFrame.data.players) do
+			options.quickSetupFrame.data.players[k] = nil
+		end
+		local names = {strsplit(" ",self:GetText():gsub(" +"," "):trim(),nil)}
+		for i=1,#names do
+			options.quickSetupFrame.data.players[ names[i] ]=true
+		end
+		if #names > 0 then
+			options.quickSetupFrame.data.allPlayers = nil
+		else
+			options.quickSetupFrame.data.allPlayers = true
+		end
+	end)
+	function self.quickSetupFrame.playersEdit:ExtraShow(isHide)
+		if isHide then
+			self:Point("TOPLEFT",options.quickSetupFrame.quickFilter,"BOTTOMLEFT",0,-5+25):Shown(false)
+		else
+			self:Point("TOPLEFT",options.quickSetupFrame.quickFilter,"BOTTOMLEFT",0,-5):Shown(true)
+		end
+	end
+
+	self.quickSetupFrame.spellDD = ELib:DropDown(self.quickSetupFrame,220,-1):AddText("|cffffd100"..L.cd2TextSpell..":"):Size(270):Point("TOPLEFT",self.quickSetupFrame.playersEdit,"BOTTOMLEFT",0,-5)
+
+	function self.quickSetupFrame.spellDD:ModText(isFromEdit)
+		local msg = options.quickSetupFrame.msgEdit:GetText() or ""
+		local spell = options.quickSetupFrame.spellDD.spell
+
+		if msg:trim() == "" and spell and not isFromEdit then
+			local spellName,_,spellTexture = GetSpellInfo(spell or 0)
+			if spellName then
+				msg = spellName
+			end
+		end
+
+		if spell then
+			msg = "{spell:"..spell.."} "..msg
+		end
+
+		if msg:trim() == "" then msg = nil end
+		options.quickSetupFrame.data.msg = msg
+
+		local showedText = msg and msg:gsub("^{spell:%d+} *","",1) or ""
+		if showedText ~= options.quickSetupFrame.msgEdit:GetText() then
+			options.quickSetupFrame.msgEdit:SetText(showedText)
+		end
+	end
+
+	self.quickSetupFrame.spellDD.SetValue = function(_,arg1)
+		local isCustom
+		if arg1 == -1 then
+			arg1 = nil
+			options.quickSetupFrame.spellDD_extra:Point("TOPLEFT",options.quickSetupFrame.spellDD,"BOTTOMLEFT",0,-5):Shown(true)
+			self.quickSetupFrame.spellDD:SetText(L.ReminderCustom)
+			local spell = (options.quickSetupFrame.data.msg or ""):match("{spell:(%d+)}")
+			options.quickSetupFrame.spellDD_extra:SetText(spell or "")
+			isCustom = true
+		else
+			options.quickSetupFrame.spellDD_extra:Point("TOPLEFT",options.quickSetupFrame.spellDD,"BOTTOMLEFT",0,-5+25):Shown(false)
+		end
+		self.quickSetupFrame.spellDD.spell = arg1
+		if arg1 then
+			local spellName,_,spellTexture = GetSpellInfo(arg1)
+			self.quickSetupFrame.spellDD:SetText( (spellTexture and "|T"..spellTexture..":20|t " or "")..(spellName or "spell:"..arg1) )
+		elseif not isCustom then
+			self.quickSetupFrame.spellDD:SetText("-")
+		end
+		options.quickSetupFrame.spellDD:ModText()
+
+		options.quickSetupFrame.msgEdit:UpdateColorBorder()
+		ELib:DropDownClose()
+	end
+	self.quickSetupFrame.cooldownCheck = ELib:Check(self.quickSetupFrame,""):Tooltip(L.ReminderHideMsgCheck):Point("LEFT",self.quickSetupFrame.spellDD,"RIGHT",5,0):OnClick(function(self)
+		if self:GetChecked() then
+			options.quickSetupFrame.data.tmp_tl_cd = true
+		else
+			options.quickSetupFrame.data.tmp_tl_cd = nil
+		end
+	end)
+	do
+		local cd_module = ExRT.A.ExCD2
+		local List = self.quickSetupFrame.spellDD.List
+		for i=1,#cd_module.db.AllSpells do
+			local line = cd_module.db.AllSpells[i]
+			local class = strsplit(",",line[2] or "")
+			if class and ExRT.GDB.ClassID[class] then
+				local l
+				for j=1,#List do
+					if List[j].arg1 == class then
+						l = List[j].subMenu
+						break
+					end
+				end
+				if not l then
+					l = {
+						text = L.classLocalizate[class],
+						colorCode = (RAID_CLASS_COLORS[class] and RAID_CLASS_COLORS[class].colorStr and "|c"..RAID_CLASS_COLORS[class].colorStr or ""),
+						arg1 = class,
+						subMenu = {},
+					}
+					List[#List+1] = l
+					l = l.subMenu
+				end
+
+				local name,_,texture = GetSpellInfo(line[1])
+				name = name or "spell:"..line[1]
+
+				for j=4,8 do
+					if line[j] then
+						local specSubMenu
+						if j > 4 then
+							for k=1,#l do
+								if l[k].s == j then
+									specSubMenu = l[k]
+									break
+								end
+							end 
+							if not specSubMenu then
+								local specID = ExRT.GDB.ClassSpecializationList[class] and ExRT.GDB.ClassSpecializationList[class][j-4]
+								specSubMenu = {
+									text = specID and L.specLocalizate[ cd_module.db.specInLocalizate[specID] ] or "Spec "..j,
+									s = j,
+									subMenu = {},
+									arg2 = "aaa"..string.char(64+j),
+									icon = specID and ExRT.GDB.ClassSpecializationIcons[specID],
+								}
+								l[#l+1] = specSubMenu
+							end
+							specSubMenu = specSubMenu.subMenu
+						else
+							specSubMenu = l
+						end
+
+						specSubMenu[#specSubMenu+1] = {
+							text = (texture and "|T"..texture..":20|t " or "")..name,
+							arg1 = line[1],
+							arg2 = name,
+							func = self.quickSetupFrame.spellDD.SetValue,
+						}
+					end
+				end
+			end
+		end
+		for i=1,#List do
+			if List[i].subMenu then
+				for j=1,#List[i].subMenu do
+					if List[i].subMenu[j].subMenu then
+						sort(List[i].subMenu[j].subMenu,function(a,b) return a.arg2 < b.arg2 end)
+					end
+				end
+				sort(List[i].subMenu,function(a,b) return a.arg2 < b.arg2 end)
+			end
+		end
+		List[#List+1] = {
+			text = L.ReminderBoss,
+			subMenu = {},
+		}
+		List[#List+1] = {
+			text = L.ReminderCustom,
+			arg1 = -1,
+			func = self.quickSetupFrame.spellDD.SetValue,
+		}
+		List[#List+1] = {
+			text = "-",
+			arg1 = nil,
+			func = self.quickSetupFrame.spellDD.SetValue,
+		}
+		function self.quickSetupFrame.spellDD:PreUpdate()
+			for i=1,#self.List do
+				if self.List[i].text == L.ReminderBoss then
+					local subMenu = self.List[i].subMenu
+					wipe(subMenu)
+				
+					if options.timeLine.timeLineData then
+						for k in pairs(options.timeLine.timeLineData) do
+							if type(k) == "number" then
+								local name,_,texture = GetSpellInfo(k)
+								if name then
+									subMenu[#subMenu+1] = {
+										text = (texture and "|T"..texture..":20|t " or "")..name,
+										arg1 = k,
+										arg2 = name,
+										func = self.SetValue,
+									}
+								end
+							end
+						end
+						sort(subMenu,function(a,b) return a.arg2 < b.arg2 end)
+						self.List[i].isHidden = false
+					else
+						self.List[i].isHidden = true
+					end
+					
+					break
+				end
+			end
+		end
+	end
+	self.quickSetupFrame.spellDD_extra = ELib:Edit(self.quickSetupFrame,nil,true):Size(270,20):Point("TOPLEFT",self.quickSetupFrame.spellDD,"BOTTOMLEFT",0,-5+25):LeftText(L.ReminderCustom.." "..L.cd2TextSpell..":"):Shown(false):OnChange(function(self,isUser)
+		local text = self:GetText():trim()
+		if text == "" then text = nil end
+		local _,_,texture = GetSpellInfo(text or "")
+		self:InsideIcon(texture)
+		if not isUser then return end
+		if texture then
+			options.quickSetupFrame.spellDD.spell = text
+		else
+			options.quickSetupFrame.spellDD.spell = nil
+		end
+		options.quickSetupFrame.spellDD:ModText(true)
+		options.quickSetupFrame.msgEdit:UpdateColorBorder()
+	end)
+	function self.quickSetupFrame.spellDD_extra:ExtraHide()
+		options.quickSetupFrame.spellDD_extra:Point("TOPLEFT",options.quickSetupFrame.spellDD,"BOTTOMLEFT",0,-5+25):Shown(false)
+	end
+
+	self.quickSetupFrame.msgEdit = ELib:Edit(self.quickSetupFrame):Size(270,20):Point("TOPLEFT",self.quickSetupFrame.spellDD_extra,"BOTTOMLEFT",0,-5):LeftText(L.ReminderMsg..":"):OnChange(function(self,isUser)
+		local text = self:GetText():trim()
+		if text == "" then text = nil end
+		self:UpdateColorBorder()
+		if not isUser then return end
+		options.quickSetupFrame.spellDD:ModText(true)
+		self:UpdateColorBorder()
+	end)
+	function self.quickSetupFrame.msgEdit:UpdateColorBorder()
+		local text = options.quickSetupFrame.data.msg
+		if text and text:trim() == "" then text = nil end
+		if not text and not options.quickSetupFrame.data.tmp_tl_glow then self:ColorBorder(true) else self:ColorBorder(false) end	  
+	end
+
+	self.quickSetupFrame.msgEdit.colorButton = CreateFrame("Button",nil,self.quickSetupFrame.msgEdit)
+	self.quickSetupFrame.msgEdit.colorButton:SetPoint("LEFT", self.quickSetupFrame.msgEdit, "RIGHT", 3, 0)
+	self.quickSetupFrame.msgEdit.colorButton:SetSize(24,24)
+	self.quickSetupFrame.msgEdit.colorButton:SetScript("OnClick",function(self)
+		if ColorPickerFrame.SetupColorPickerAndShow then
+			local info = {}
+			info.r, info.g, info.b = 1,1,1
+			if options.quickSetupFrame.msgEdit then
+				local at,rt,gt,bt = options.quickSetupFrame.msgEdit:GetText():match("|c(..)(..)(..)(..)")
+				if bt then
+					info.r, info.g, info.b = tonumber(rt,16)/255,tonumber(gt,16)/255,tonumber(bt,16)/255,tonumber(at,16)/255
+				end
+			end
+			info.opacity = 1
+			info.hasOpacity = false
+			info.swatchFunc = function()
+				local btn = ColorPickerFrame.Footer and ColorPickerFrame.Footer.OkayButton or ColorPickerOkayButton
+				if not MouseIsOver(btn) or IsMouseButtonDown() then return end
+				local r,g,b = ColorPickerFrame:GetColorRGB()
+				local code = format("%02x%02x%02x",r*255,g*255,b*255)
+				local hlstart,hlend = options.quickSetupFrame.msgEdit:GetTextHighlight()
+				if hlstart == hlend then
+					if options.quickSetupFrame.msgEdit:GetText():find("||cff") then
+						options.quickSetupFrame.msgEdit:SetText( options.quickSetupFrame.msgEdit:GetText():gsub("||cff......","||cff"..code) )
+					else
+						options.quickSetupFrame.msgEdit:SetText( "||cff"..code..options.quickSetupFrame.msgEdit:GetText().."||r" )
+					end
+				else
+					local text = options.quickSetupFrame.msgEdit:GetText()
+					text = text:sub(1, hlend) .. "||r" .. text:sub(hlend+1)
+					text = text:sub(1, hlstart) .. "||cff"..code .. text:sub(hlstart+1)
+					options.quickSetupFrame.msgEdit:SetText( text )
+				end
+				options.quickSetupFrame.msgEdit:GetScript("OnTextChanged")(options.quickSetupFrame.msgEdit,true)
+			end
+			info.cancelFunc = function()
+				local newR, newG, newB, newA = ColorPickerFrame:GetPreviousValues()
+			end
+			ColorPickerFrame:SetupColorPickerAndShow(info)
+		end
+	end)
+	self.quickSetupFrame.msgEdit.colorButton:SetScript("OnEnter",function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:AddLine(L.ReminderSelectColor)
+		GameTooltip:Show()
+	end)
+	self.quickSetupFrame.msgEdit.colorButton:SetScript("OnLeave",function(self)
+		GameTooltip_Hide()
+	end)
+	self.quickSetupFrame.msgEdit.colorButton.Texture = self.quickSetupFrame.msgEdit.colorButton:CreateTexture(nil,"ARTWORK")
+	self.quickSetupFrame.msgEdit.colorButton.Texture:SetPoint("CENTER")
+	self.quickSetupFrame.msgEdit.colorButton.Texture:SetSize(20,20)
+	self.quickSetupFrame.msgEdit.colorButton.Texture:SetTexture([[Interface\AddOns\MRT\media\wheeltexture]])
+
+
+	self.quickSetupFrame.eventDD = ELib:DropDown(self.quickSetupFrame,220,-1):AddText("|cffffd100"..L.ReminderCond..":"):Size(270):Point("TOPLEFT",self.quickSetupFrame.msgEdit,"BOTTOMLEFT",0,-5)
+	do
+		self.quickSetupFrame.eventDD.SliderHidden = true
+
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C[22].lname,
+			func = function()
+				if options.timeLine.SAVED_VAR_X then
+					local t=floor(options.timeLine.SAVED_VAR_X*10)/10
+					options.quickSetupFrame.data.triggers[1].delayTime = format("%d:%02d.%d",t/60,t%60,(t*10)%10)
+				end
+				options.quickSetupFrame.data.triggers[1].event = 22
+				options.quickSetupFrame.data.zoneID = options.timeLine.SAVED_VAR_ZONE
+				options.quickSetupFrame.data.bossID = nil
+				ELib:DropDownClose()
+				self.quickSetupFrame:Update(options.quickSetupFrame.data)
+			end
+		}
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C[3].lname,
+			func = function()
+				local saved = module.options.timeLine.ZONE_ID and options.timeLine.SAVED_VAR_XP or options.timeLine.SAVED_VAR_X
+				if saved then
+					local t=floor(saved*10)/10
+					options.quickSetupFrame.data.triggers[1].delayTime = format("%d:%02d.%d",t/60,t%60,(t*10)%10)
+				end
+				options.quickSetupFrame.data.triggers[1].event = 3
+				options.quickSetupFrame.data.zoneID = nil
+				options.quickSetupFrame.data.bossID = options.timeLine.SAVED_VAR_BOSS_ZONE or options.timeLine.SAVED_VAR_BOSS
+				ELib:DropDownClose()
+				self.quickSetupFrame:Update(options.quickSetupFrame.data)
+			end
+		}
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C[2].lname,
+			func = function()
+				if options.timeLine.SAVED_VAR_XP then
+					local t=floor(options.timeLine.SAVED_VAR_XP*10)/10
+					options.quickSetupFrame.data.triggers[1].delayTime = format("%d:%02d.%d",t/60,t%60,(t*10)%10)
+					options.quickSetupFrame.data.triggers[1].pattFind = options.timeLine.SAVED_VAR_P
+				else
+					options.quickSetupFrame.data.triggers[1].pattFind = "1"
+				end
+				if options.timeLine.SAVED_VAR_PC then
+					options.quickSetupFrame.data.triggers[1].counter = tostring(options.timeLine.SAVED_VAR_PC)
+				else
+					options.quickSetupFrame.data.triggers[1].counter = nil
+				end
+				options.quickSetupFrame.data.triggers[1].event = 2
+				options.quickSetupFrame.data.zoneID = nil
+				options.quickSetupFrame.data.bossID = options.timeLine.SAVED_VAR_BOSS
+				ELib:DropDownClose()
+				self.quickSetupFrame:Update(options.quickSetupFrame.data)
+			end
+		}
+		local function SetCLEU(_,event)
+			local t=floor(options.timeLine.SAVED_VAR_S*10)/10
+			options.quickSetupFrame.data.triggers[1].event = 1
+			options.quickSetupFrame.data.triggers[1].eventCLEU = event
+			options.quickSetupFrame.data.triggers[1].spellID = tonumber(options.timeLine.SAVED_VAR_SID)
+			options.quickSetupFrame.data.triggers[1].delayTime = format("%d:%02d.%d",t/60,t%60,(t*10)%10)
+			options.quickSetupFrame.data.triggers[1].counter = tostring(options.timeLine.SAVED_VAR_SC)
+			options.quickSetupFrame.data.zoneID = options.timeLine.SAVED_VAR_ZONE
+			options.quickSetupFrame.data.bossID = options.timeLine.SAVED_VAR_BOSS
+			ELib:DropDownClose()
+			self.quickSetupFrame:Update(options.quickSetupFrame.data)
+		end
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C["SPELL_CAST_SUCCESS"].lname,
+			func = SetCLEU,
+			arg1 = "SPELL_CAST_SUCCESS",
+		}
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C["SPELL_AURA_REMOVED"].lname,
+			func = SetCLEU,
+			arg1 = "SPELL_AURA_REMOVED",
+		}
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C["SPELL_AURA_APPLIED"].lname,
+			func = SetCLEU,
+			arg1 = "SPELL_AURA_APPLIED",
+		}
+		self.quickSetupFrame.eventDD.List[#self.quickSetupFrame.eventDD.List+1] = {
+			text = module.C["SPELL_CAST_START"].lname,
+			func = SetCLEU,
+			arg1 = "SPELL_CAST_START",
+		}
+		function self.quickSetupFrame.eventDD:PreUpdate()
+			self.List[1].isHidden = (not options.timeLine.ZONE_ID) and true or false
+			self.List[3].isHidden = options.timeLine.ZONE_ID and true or false
+			self.List[4].isHidden = (not options.timeLine.SAVED_VAR_S or (options.timeLine.timeLineData[options.timeLine.SAVED_VAR_SID].spellType or 1) ~= 1) and true or false
+			self.List[5].isHidden = (not options.timeLine.SAVED_VAR_S or (options.timeLine.timeLineData[options.timeLine.SAVED_VAR_SID].spellType or 1) ~= 2) and true or false
+			self.List[6].isHidden = options.quickSetupFrame.data.triggers[1].eventCLEU ~= "SPELL_AURA_APPLIED"
+			self.List[7].isHidden = options.quickSetupFrame.data.triggers[1].eventCLEU ~= "SPELL_CAST_START"
+
+			self.List[4].isTitle = not options.timeLine.SAVED_VAR_S and true or false
+			self.List[5].isTitle = not options.timeLine.SAVED_VAR_S and true or false
+			self.List[6].isTitle = not options.timeLine.SAVED_VAR_S and true or false
+			self.List[7].isTitle = not options.timeLine.SAVED_VAR_S and true or false
+		end
+
+		self.quickSetupFrame.eventDD.Update = function(self)
+			local trigger = options.quickSetupFrame.data.triggers[1]
+			if trigger.event == 2 then
+				options.quickSetupFrame.eventDD_extra:Point("TOPLEFT",options.quickSetupFrame.eventDD,"BOTTOMLEFT",0,-5):Shown(true)
+
+				options.quickSetupFrame.eventDD_extra:ExtraText(trigger.counter and "["..trigger.counter.."]" or "")
+			else
+				options.quickSetupFrame.eventDD_extra:Point("TOPLEFT",options.quickSetupFrame.eventDD,"BOTTOMLEFT",0,-5+25):Shown(false)
+			end
+			if trigger.event == 1 then
+				local name,_,texture = GetSpellInfo(trigger.spellID or 0)
+				self:TextInside((trigger.counter and "["..trigger.counter.."]" or "")..(texture and "|T"..texture..":0|t" or "")..(name or ""),10)
+			else
+				self:TextInside("",10)
+			end
+			for n,e in pairs(module.C) do
+				if (e.id == trigger.event and trigger.event ~= 1) or (trigger.event == 1 and n == trigger.eventCLEU) then
+					self:SetText(e.lname)
+					return
+				end
+			end
+			self:SetText("Event "..trigger.event)
+		end
+	end
+	self.quickSetupFrame.eventDD_extra = ELib:Edit(self.quickSetupFrame):Size(270,20):Point("TOPLEFT",self.quickSetupFrame.eventDD,"BOTTOMLEFT",0,-5+25):LeftText(L.ReminderBossPhaseLabel):Shown(false):OnChange(function(self,isUser)
+		if not isUser then return end
+		local text = self:GetText():trim()
+		if text == "" then text = nil end
+		options.quickSetupFrame.data.triggers[1].pattFind = text
+	end)
+
+
+	self.quickSetupFrame.timeEdit = ELib:Edit(self.quickSetupFrame):Size(200,20):Point("TOPLEFT",self.quickSetupFrame.eventDD_extra,"BOTTOMLEFT",0,-5):LeftText(L.ReminderDelay..":"):OnChange(function(self,isUser)
+		if not isUser then return end
+		local text = self:GetText():trim()
+		if text == "" then text = nil end
+		options.quickSetupFrame.data.triggers[1].delayTime = text
+	end)
+
+	self.quickSetupFrame.timeEdit.mod = ELib:DropDown(self.quickSetupFrame.timeEdit,100,-1):Point("LEFT",self.quickSetupFrame.timeEdit,"RIGHT",5,0):Size(65):SetText("Mod")
+	function self.quickSetupFrame.timeEdit.mod:SetValue(arg1)
+		local dt = module:ConvertMinuteStrToNum(options.quickSetupFrame.data.triggers[1].delayTime)
+		if not dt or not dt[1] then
+			return
+		end
+		dt = dt[1] + arg1
+		if dt < 0 then dt = 0 end
+		options.quickSetupFrame.data.triggers[1].delayTime = module:FormatTime(dt)
+		options.quickSetupFrame.timeEdit:SetText(options.quickSetupFrame.data.triggers[1].delayTime)
+		ELib:DropDownClose()
+	end
+	for i=-20,20 do
+		if (abs(i)<=10 or abs(i)%5 == 0) and i ~= 0 then
+			self.quickSetupFrame.timeEdit.mod.List[#self.quickSetupFrame.timeEdit.mod.List+1] = {
+				text = (i>0 and "+" or "")..i,
+				arg1 = i,
+				func = self.quickSetupFrame.timeEdit.mod.SetValue,
+			}
+		end
+	end
+	self.quickSetupFrame.timeEdit.mod.List[#self.quickSetupFrame.timeEdit.mod.List+1] = {
+		text = "Round",
+		func = function()
+			local dt = module:ConvertMinuteStrToNum(options.quickSetupFrame.data.triggers[1].delayTime)
+			if not dt or not dt[1] then
+				return
+			end
+			dt = floor(dt[1] + 0.5)
+			if dt < 0 then dt = 0 end
+			options.quickSetupFrame.data.triggers[1].delayTime = module:FormatTime(dt)
+			options.quickSetupFrame.timeEdit:SetText(options.quickSetupFrame.data.triggers[1].delayTime)
+			ELib:DropDownClose()
+		end,
+	}
+
+
+	self.quickSetupFrame.durEdit = ELib:Edit(self.quickSetupFrame):Size(135,20):Point("TOPLEFT",self.quickSetupFrame.timeEdit,"BOTTOMLEFT",0,-5):LeftText(L.ReminderDuration..":"):OnChange(function(self,isUser)
+		if not isUser then return end
+		local text = self:GetText():trim()
+		if text == "" then text = nil end
+		if text then text = tonumber(text) end
+		options.quickSetupFrame.data.dur = text
+	end)
+
+	self.quickSetupFrame.durRevese = ELib:Check(self.quickSetupFrame,L.ReminderDurRev):Tooltip(L.ReminderDurRevTooltip):Point("LEFT",self.quickSetupFrame.durEdit,"RIGHT",5,0):OnClick(function(self)
+		if self:GetChecked() then
+			options.quickSetupFrame.data.durrev = true
+		else
+			options.quickSetupFrame.data.durrev = nil
+		end
+	end)
+
+
+	self.quickSetupFrame.countdownCheck = ELib:Check(self.quickSetupFrame,L.ReminderCountdown..":"):Left(5):Tooltip(L.ReminderCountdownTooltip):Point("TOPLEFT",self.quickSetupFrame.durEdit,"BOTTOMLEFT",0,-5):OnClick(function(self)
+		if self:GetChecked() then
+			options.quickSetupFrame.data.countdown = true
+		else
+			options.quickSetupFrame.data.countdown = nil
+		end
+		options.quickSetupFrame.countdownVoice:Update()
+	end)
+
+	self.quickSetupFrame.countdownVoice = ELib:DropDown(self.quickSetupFrame,220,10):AddText("|cffffd100"..L.ReminderCountdownVoice..":"):Point("TOPLEFT",self.quickSetupFrame.countdownCheck,"BOTTOMLEFT",0,-5+25):Shown(false):Size(270)
+	do
+		local function countdownVoice_SetValue(_,arg1)
+			ELib:DropDownClose()
+			options.quickSetupFrame.data.countdownVoice = arg1
+			local val = ExRT.F.table_find3(module.datas.vcountdowns,arg1,1)
+			if val then
+				self.quickSetupFrame.countdownVoice:SetText(val[2])
+			else
+				self.quickSetupFrame.countdownVoice:SetText("-")
+			end
+		end
+		self.quickSetupFrame.countdownVoice.SetValue = countdownVoice_SetValue
+
+		local List = self.quickSetupFrame.countdownVoice.List
+		for i=1,#module.datas.vcountdowns do
+			List[#List+1] = {
+				text = module.datas.vcountdowns[i][2],
+				arg1 = module.datas.vcountdowns[i][1],
+				func = countdownVoice_SetValue,
+			}
+		end
+
+		function self.quickSetupFrame.countdownVoice:Update()
+			if options.quickSetupFrame.data.countdown then
+				options.quickSetupFrame.countdownVoice:Point("TOPLEFT",options.quickSetupFrame.countdownCheck,"BOTTOMLEFT",0,-5):Shown(true)
+			else
+				options.quickSetupFrame.countdownVoice:Point("TOPLEFT",options.quickSetupFrame.countdownCheck,"BOTTOMLEFT",0,-5+25):Shown(false)
+			end
+		end
+	end
+
+
+	self.quickSetupFrame.soundList = ELib:DropDown(self.quickSetupFrame,270,15):AddText("|cffffd100"..L.ReminderSound..":"):Size(270):Point("TOPLEFT",self.quickSetupFrame.countdownVoice,"BOTTOMLEFT",0,-5)
+	function self.quickSetupFrame.soundList.func_SetValue(_,arg1)
+		self.quickSetupFrame.soundCustom.tts = false
+		self.quickSetupFrame.soundList.lastOpt = arg1
+		if arg1 == 0 then
+			if not options.quickSetupFrame.setup then
+				options.quickSetupFrame.data.sound = nil
+			end
+
+			self.quickSetupFrame.soundList:SetText(L.ReminderCustom)
+		elseif not arg1 then
+			if not options.quickSetupFrame.setup then
+				options.quickSetupFrame.data.sound = nil
+			end
+
+			self.quickSetupFrame.soundList:SetText("-")
+		else
+			if not options.quickSetupFrame.setup then
+				options.quickSetupFrame.data.sound = arg1
+			end
+
+			local val = ExRT.F.table_find3(self.quickSetupFrame.soundList.List,arg1,"arg1")
+			if val then
+				self.quickSetupFrame.soundList:SetText(val.text)
+			else
+				self.quickSetupFrame.soundList:SetText(arg1)
+			end
+
+			if arg1 == "TTS2" then
+				self.quickSetupFrame.soundCustom.tts = true
+				if not options.quickSetupFrame.setup then
+					options.quickSetupFrame.data.sound = "TTS:"
+					self.quickSetupFrame.soundCustom:SetText("")
+				end
+			end
+		end
+		if options.quickSetupFrame.soundCustom:ExtraShown() then
+			options.quickSetupFrame.soundCustom:Point("TOPLEFT",options.quickSetupFrame.soundList,"BOTTOMLEFT",0,-5):Shown(true)
+		else
+			options.quickSetupFrame.soundCustom:Point("TOPLEFT",options.quickSetupFrame.soundList,"BOTTOMLEFT",0,-5+25):Shown(false)
+		end
+		ELib:DropDownClose()
+		if not options.quickSetupFrame.setup and arg1 and arg1 ~= 0 then
+			module:PlaySound(arg1)
+		end
+	end
+	function self.quickSetupFrame.soundList.Update()
+		local data = options.quickSetupFrame.data
+		if data.sound then
+			self.quickSetupFrame.soundList:PreUpdate()
+			local val = ExRT.F.table_find3(self.quickSetupFrame.soundList.List,data.sound,"arg1")
+			if val then
+				self.quickSetupFrame.soundList:func_SetValue(data.sound)
+			elseif type(data.sound)=='string' and data.sound:find("^TTS:") then
+				self.quickSetupFrame.soundList:func_SetValue("TTS2")
+				self.quickSetupFrame.soundCustom:SetText(type(data.sound)=="string" and data.sound:gsub("^TTS:","") or "")
+			else
+				self.quickSetupFrame.soundList:func_SetValue(0)
+				self.quickSetupFrame.soundCustom:SetText(data.sound or "")
+			end
+		else
+			self.quickSetupFrame.soundList:func_SetValue(data.sound)
+		end
+	end
+	function self.quickSetupFrame.soundList:PreUpdate()
+		local List = self.List
+		wipe(List)
+		for i=1,#module.datas.sounds do
+			List[#List+1] = {
+				text = module.datas.sounds[i][2],
+				arg1 = module.datas.sounds[i][1],
+				func = self.func_SetValue,
+				prio = 1,
+			}
+		end
+		for name, path in ExRT.F.IterateMediaData("sound") do
+			List[#List+1] = {
+				text = name,
+				arg1 = path,
+				func = self.func_SetValue,
+			}
+		end
+		sort(List,function(a,b) if a.prio == b.prio then return a.text < b.text else return (a.prio or 0) > (b.prio or 0) end end)
+		tinsert(List,1,{
+			text = "-",
+			func = self.func_SetValue,
+		})
+		List[#List+1] = {
+			text = L.ReminderCustom,
+			arg1 = 0,
+			func = self.func_SetValue,
+		}
+	end
+
+	self.quickSetupFrame.soundCustom = ELib:Edit(self.quickSetupFrame):Size(270,20):LeftText(L.ReminderCustomSound..":"):Shown(false):Point("TOPLEFT",self.quickSetupFrame.soundList,"BOTTOMLEFT",0,-5+25):OnChange(function(self,isUser)
+		if not isUser then return end
+		local text = self:GetText():trim()
+		if text == "" then text = nil end
+		if self.tts and text then text = "TTS:" .. text end
+		options.quickSetupFrame.data.sound = text
+	end)
+	function self.quickSetupFrame.soundCustom:ExtraShown()
+		if options.quickSetupFrame.soundList:IsShown() and 
+		(
+			(type(options.quickSetupFrame.data.sound)=='string' and options.quickSetupFrame.data.sound:find("^TTS:")) or
+			(options.quickSetupFrame.data.sound and not ExRT.F.table_find3(options.quickSetupFrame.soundList.List,options.quickSetupFrame.data.sound,"arg1")) or
+			options.quickSetupFrame.soundList.lastOpt == 0
+		) then
+			return true
+		end
+	end
+
+	self.quickSetupFrame.soundList.playButton = ELib:Icon(self.quickSetupFrame.soundList,"Interface\\AddOns\\MRT\\media\\DiesalGUIcons16x256x128",20,true):Point("LEFT",self.quickSetupFrame.soundList,"RIGHT",5,0)
+	self.quickSetupFrame.soundList.playButton.texture:SetTexCoord(0.375,0.4375,0.5,0.625)
+	self.quickSetupFrame.soundList.playButton:SetScript("OnClick",function()
+		if options.quickSetupFrame.data.sound == "TTS" then
+			module:PlaySound(options.quickSetupFrame.data.sound, {data={msg=(options.quickSetupFrame.data.msg or "")},params={}})
+		elseif type(options.quickSetupFrame.data.sound) == "string" and options.quickSetupFrame.data.sound:find("^TTS:") then
+			module:PlaySound(options.quickSetupFrame.data.sound, {data={msg=(options.quickSetupFrame.data.msg or "")},params={}})
+		else
+			module:PlaySound(options.quickSetupFrame.data.sound)
+		end
+	end)
+
+	self.quickSetupFrame.glowCheck = ELib:Check(self.quickSetupFrame,L.ReminderGlow..":"):Left(5):Tooltip(L.ReminderGlowQSFTip):Point("TOPLEFT",self.quickSetupFrame.soundCustom,"BOTTOMLEFT",0,-5):OnClick(function(self)
+		if self:GetChecked() then
+			options.quickSetupFrame.data.tmp_tl_glow = ""
+		else
+			options.quickSetupFrame.data.tmp_tl_glow = nil
+		end
+		options.quickSetupFrame.glowCheckEdit:Update()
+	end)
+
+	self.quickSetupFrame.glowCheckEdit = ELib:Edit(self.quickSetupFrame):Size(220,20):Point("LEFT",self.quickSetupFrame.glowCheck,"RIGHT",5,0):Tooltip(L.ReminderGlowQSFTip2):Shown(false):OnChange(function(self,isUser)
+		if not isUser then return end
+		options.quickSetupFrame.data.tmp_tl_glow = self:GetText() or ""
+	end)
+	function options.quickSetupFrame.glowCheckEdit:Update()
+		self:SetText(options.quickSetupFrame.data.tmp_tl_glow or "")
+		options.quickSetupFrame.msgEdit:UpdateColorBorder()
+		if options.quickSetupFrame.data.tmp_tl_glow then
+			self:Show()
+		else
+			self:Hide()
+		end
+	end
+
+	self.quickSetupFrame.glowCheckEdit.preview = ELib:Texture(self.quickSetupFrame.glowCheckEdit,1,1,1,1):Point("LEFT",'x',"RIGHT",5,0):Size(20,20)
+	self.quickSetupFrame.glowCheckEdit.preview.Update = function(self)
+		local t = options.quickSetupFrame.data.glowColor or ""
+		local at,rt,gt,bt = t:match("(..)(..)(..)(..)")
+		if bt then
+			local r,g,b,a = tonumber(rt,16),tonumber(gt,16),tonumber(bt,16),tonumber(at,16)
+			self:SetColorTexture(r/255,g/255,b/255,a/255)
+		else
+			self:SetColorTexture(1,1,1,1)
+		end
+	end
+
+	self.quickSetupFrame.glowCheckEdit.colorButton = CreateFrame("Button",nil,self.quickSetupFrame.glowCheckEdit)
+	self.quickSetupFrame.glowCheckEdit.colorButton:SetPoint("LEFT", self.quickSetupFrame.glowCheckEdit.preview, "RIGHT", 5, 0)
+	self.quickSetupFrame.glowCheckEdit.colorButton:SetSize(24,24)
+	self.quickSetupFrame.glowCheckEdit.colorButton:SetScript("OnClick",function(self)
+		local r,g,b,a
+		if options.quickSetupFrame.data.glowColor then
+			local at,rt,gt,bt = options.quickSetupFrame.data.glowColor:match("(..)(..)(..)(..)")
+			if bt then
+				r,g,b,a = tonumber(rt,16)/255,tonumber(gt,16)/255,tonumber(bt,16)/255,tonumber(at,16)/255
+			end
+		end
+		r,g,b,a = r or 1,g or 1,b or 1,a or 1
+
+		if not ColorPickerFrame.SetupColorPickerAndShow then
+			ColorPickerFrame.previousValues = {r,g,b,a}
+			ColorPickerFrame.hasOpacity = true
+	
+			local nilFunc = ExRT.NULLfunc
+			local function changedCallback(restore)
+				local newR, newG, newB, newA
+				if restore then
+					newR, newG, newB, newA = unpack(restore)
+				else
+					newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
+				end
+				options.quickSetupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
+	
+				options.quickSetupFrame.glowCheckEdit.preview:Update()
+			end
+			ColorPickerFrame.func, ColorPickerFrame.cancelFunc, ColorPickerFrame.opacityFunc = nilFunc, nilFunc, nilFunc
+			ColorPickerFrame.opacity = a
+			ColorPickerFrame:SetColorRGB(r,g,b)
+			ColorPickerFrame.opacityFunc = changedCallback
+			ColorPickerFrame:Show()
+		else
+			local info = {}
+			info.r, info.g, info.b = r,g,b
+			info.opacity = a
+			info.hasOpacity = true
+			info.swatchFunc = function()
+				local newR, newG, newB = ColorPickerFrame:GetColorRGB()
+				local newA = ColorPickerFrame:GetColorAlpha()
+				options.quickSetupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
+	
+				options.quickSetupFrame.glowCheckEdit.preview:Update()
+			end
+			info.cancelFunc = function()
+				local newR, newG, newB, newA = ColorPickerFrame:GetPreviousValues()
+				options.quickSetupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
+	
+				options.quickSetupFrame.glowCheckEdit.preview:Update()
+			end
+			ColorPickerFrame:SetupColorPickerAndShow(info)
+		end
+	end)
+	self.quickSetupFrame.glowCheckEdit.colorButton:SetScript("OnEnter",function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:AddLine(L.ReminderSelectColor)
+		GameTooltip:Show()
+	end)
+	self.quickSetupFrame.glowCheckEdit.colorButton:SetScript("OnLeave",function(self)
+		GameTooltip_Hide()
+	end)
+	self.quickSetupFrame.glowCheckEdit.colorButton.Texture = self.quickSetupFrame.glowCheckEdit.colorButton:CreateTexture(nil,"ARTWORK")
+	self.quickSetupFrame.glowCheckEdit.colorButton.Texture:SetPoint("CENTER")
+	self.quickSetupFrame.glowCheckEdit.colorButton.Texture:SetSize(20,20)
+	self.quickSetupFrame.glowCheckEdit.colorButton.Texture:SetTexture([[Interface\AddOns\MRT\media\wheeltexture]])
+
+
+
+
+	function self.quickSetupFrame:Update(data)
+		self.data = data
+
+		self.setup = true
+
+		self.durEdit:SetText(data.dur or "")
+
+		local msg = data.msg or ""
+		if msg:find("^{spell:%d+}") then
+			local spell = tonumber( msg:match("^{spell:(%d+)}"),nil )
+			local name,_,texture = GetSpellInfo(spell or 0)
+			self.spellDD:SetText( (texture and "|T"..texture..":20|t " or "")..(name or "spell:"..spell) )
+			self.spellDD.spell = spell
+			msg = msg:gsub("{spell:%d+} *","",1)
+		else
+			self.spellDD:SetText( "-" )
+			self.spellDD.spell = nil
+		end
+		self.spellDD_extra:ExtraHide()
+		self.msgEdit:SetText(msg)
+		self.msgEdit:UpdateColorBorder()
+		self.countdownCheck:SetChecked(data.countdown)
+		self.countdownVoice:SetValue(data.countdownVoice)
+		self.countdownVoice:Update()
+		self.quickFilter:Update()
+		self.durRevese:SetChecked(data.durrev)
+		self.cooldownCheck:SetChecked(data.tmp_tl_cd)
+
+		for i=1,1 do
+			local trigger = data.triggers[i]
+
+			self.timeEdit:SetText(trigger.delayTime or "")
+			self.eventDD_extra:SetText(trigger.pattFind or "")
+		end
+
+		if data.triggers[2] and data.triggers[2].event == 16 and module:GetReminderType(data.msgSize) == REM.TYPE_RAIDFRAME then
+			data.tmp_tl_glow = data.triggers[2].targetName:gsub(";"," ")
+		end
+		self.glowCheck:SetChecked(data.tmp_tl_glow and true or false)
+		self.glowCheckEdit:Update()
+		self.glowCheckEdit.preview:Update()
+
+		self.eventDD:Update()
+
+		self.soundList:Update()
+
+		if data.uid and CURRENT_DATA[data.uid] then
+			self.removeButton:Show()
+			self.saveButton:NewPoint("BOTTOMLEFT",self,"BOTTOM",5,10):Size(200,20)
+		else
+			self.removeButton:Hide()
+			self.saveButton:NewPoint("BOTTOM",self,"BOTTOM",0,10):Size(410,20)
+		end
+
+		if not self.prev then
+			self.copyButton:Disable()
+		else
+			self.copyButton:Enable()
+		end
+
+		self.setup = false
+	end
+
+
+	function options.timeLine:ResetSavedVars()
+		self.SAVED_VAR_X = nil
+		self.SAVED_VAR_XP = nil
+		self.SAVED_VAR_P = nil
+		self.SAVED_VAR_PC = nil
+		self.SAVED_VAR_SID = nil
+		self.SAVED_VAR_S = nil
+		self.SAVED_VAR_SC = nil
+
+		self.SAVED_VAR_BOSS = nil
+		self.SAVED_VAR_ZONE = nil
+		self.SAVED_VAR_BOSS_ZONE = nil
+	end
+	function options.timeLine:ProcessClick(x, y, button)
+		x = self:GetTimeFromPos(x)
+
+		y = ceil(y / self.TL_LINESIZE)
+		local line = self.frame.lines[y]
+		local spell_time, spell_counter, spell_id
+		if line and line.spell then
+			spell_id = line.spell
+			spell_time, spell_counter = self:GetSpellFromTime(x, spell_id, self.timeLineData and self.timeLineData[spell_id].spellType == 2)
+		end
+
+		local phase, x_phase, phaseCount, phaseNum = self:GetPhaseFromTime(x)
+		--phaseNum is here for data array, actual num is +1
+		if phase == 0 then
+			phase, x_phase, phaseCount = nil
+		end
+
+		if button == "RightButton" and phase and x_phase <= 3 and y and y <= 2 then
+			ExRT.F.ShowInput("Change phase (use numbers, x.5 for intermissions)",function(_,p) 
+				options.timeLine.custom_phase[phaseNum] = tonumber(p)
+				options.timeLine:Update()
+			end)
+			return
+		end
+
+		self.SAVED_VAR_X = x
+		self.SAVED_VAR_XP = x_phase
+		self.SAVED_VAR_P = phase
+		self.SAVED_VAR_PC = phaseCount
+		self.SAVED_VAR_SID = spell_id
+		self.SAVED_VAR_S = spell_time
+		self.SAVED_VAR_SC = spell_counter
+
+		local data
+		if options.quickSetupFrame:IsShown() then
+			data = options.quickSetupFrame.data
+		else
+			data = ExRT.F.table_copy2(newRemainderTemplate)
+			data.uid = options:GetNewUID()
+			data.durrev = true
+		end
+
+		if self.ZONE_ID then
+			data.bossID = nil
+			data.zoneID = self.ZONE_ID
+		else
+			data.bossID = self.BOSS_ID
+			data.zoneID = nil
+		end
+
+		self.SAVED_VAR_BOSS = data.bossID
+		self.SAVED_VAR_ZONE = data.zoneID
+		self.SAVED_VAR_BOSS_ZONE = nil
+
+		if not data.triggers[1] then
+			data.triggers[1] = {}
+		end
+		data.triggers[1].event = self.ZONE_ID and 22 or 3
+
+		if phase and phase > 0 and (phase ~= 1 or phaseCount) then
+			data.triggers[1].event = 2
+			data.triggers[1].pattFind = tostring(phase)
+			if phaseCount then
+				data.triggers[1].counter = tostring(phaseCount)
+			else		
+				data.triggers[1].counter = nil
+			end
+
+			x = x_phase
+		elseif phase and phase < 0 and phase > -10000 then
+			data.triggers[1].event = 3
+			data.bossID = -phase
+			data.zoneID = nil
+			x = x_phase
+
+			self.SAVED_VAR_BOSS_ZONE = data.bossID
+		end
+
+		if button == "RightButton" and self.SAVED_VAR_S then
+			data.triggers[1].event = 1
+			data.triggers[1].eventCLEU = (self.timeLineData[self.SAVED_VAR_SID].spellType or 1) == 1 and "SPELL_CAST_SUCCESS" or "SPELL_AURA_REMOVED"
+			data.triggers[1].counter = tostring(self.SAVED_VAR_SC)
+			data.triggers[1].spellID = tonumber(self.SAVED_VAR_SID)
+			x = spell_time
+
+			data.zoneID = self.SAVED_VAR_ZONE
+			data.bossID = self.SAVED_VAR_BOSS
+		end
+
+		local t=floor(x*10)/10
+		data.triggers[1].delayTime = format("%d:%02d.%d",t/60,t%60,(t*10)%10)
+
+		options.quickSetupFrame:Update(data)
+		options.quickSetupFrame:Show()
+	end
+
+	options.timeLine.Util_SetLineTexture = function(self,line,c,data,color)
+		local texture = line.textures[c]
+		if not texture then
+			texture = line:CreateTexture(nil,"ARTWORK",nil,2)
+			line.textures[c] = texture
+			texture:SetHeight(options.timeLine.TL_LINESIZE)
+
+			texture.cast = line:CreateTexture(nil,"ARTWORK",nil,2)
+			texture.cast:SetSize(2,14)
+			texture.cast:Hide()
+
+			texture.l = line:CreateTexture(nil,"ARTWORK",nil,2)
+			texture.l:SetHeight(2)
+			texture.l:SetPoint("LEFT",texture.cast,"RIGHT",0,0)
+			texture.l:SetPoint("RIGHT",texture,"LEFT",0,0)
+			texture.l:Hide()
+
+		end
+		if color then
+			texture:SetColorTexture(unpack(color))
+			texture.cast:SetColorTexture(unpack(color))
+			texture.l:SetColorTexture(unpack(color))
+		else
+			texture:SetColorTexture(1,1,1,.7)
+			texture.cast:SetColorTexture(1,1,1,.7)
+			texture.l:SetColorTexture(1,1,1,.7)
+		end
+		texture:SetPoint("LEFT",self:GetPosFromTime(data.pos),0)
+		texture:SetWidth(self:GetPosFromTime(data.len))
+		texture:Show()
+		if data.cast then
+			texture.cast:SetPoint("LEFT",self:GetPosFromTime(data.pos-data.cast),0)
+			texture.cast:Show()
+			texture.l:Show()
+		else
+			texture.cast:Hide()
+			texture.l:Hide()
+		end
+	end
+	options.timeLine.Util_ButtonOnClick = function(self,button)
+		if button == "RightButton" then
+			local menu = {
+				{ text = L.ReminderAdvanced, func = function() 
+					ELib.ScrollDropDown.Close()
+					local data = ExRT.F.table_copy2(self.data)
+					options.setupFrame:Update(data)
+					options.setupFrame:Show()
+				end, notCheckable = true },
+				{ text = L.ReminderSendOne, func = function() ELib.ScrollDropDown.Close() module:Sync(false,nil,nil,self.data.uid) end, notCheckable = true, isTitle = IsInRaid() and not ExRT.F.IsPlayerRLorOfficer("player") },
+				{ text = DELETE, func = function() ELib.ScrollDropDown.Close() options:RemoveReminder(self.data.uid) end, notCheckable = true },
+				{ text = CLOSE, func = function() ELib.ScrollDropDown.Close() end, notCheckable = true },
+			}
+			ELib.ScrollDropDown.EasyMenu(self,menu,150)
+		else
+			options.timeLine:ResetSavedVars()
+
+			local data = ExRT.F.table_copy2(self.data)
+			options.quickSetupFrame:Update(data)
+			options.quickSetupFrame:Show()
+		end
+	end
+	options.timeLine.Util_ButtonOnEnter = function(self)
+		local data = self.data
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		local p,pc,pd
+		local dt = module:ConvertMinuteStrToNum(data.triggers[1].delayTime)
+		if data.triggers[1].event == 2 then
+			p = data.triggers[1].pattFind
+			pc = data.triggers[1].counter
+			pd = dt and options.timeLine:GetTimeOnPhase(dt[1],p,pc)
+		end
+		if dt then
+			GameTooltip:AddLine((p and "Phase "..p..(pc and " (#"..pc..")" or "")..": " or "")..module:FormatTime(dt[1]))
+		end
+		local filter = ""
+		for k,v in pairs(data.players) do 
+			if UnitClass(k) then
+				filter = filter .. "|c" .. RAID_CLASS_COLORS[select(2,UnitClass(name))].colorStr .. k
+			else
+				filter = filter .. k .. " " 
+			end
+		end
+		for k,v in pairs(data) do 
+			if type(k)=="string" and k:find("^role") then 
+				local token = k:match("^role(.-)$")
+				for i=1,#module.datas.rolesList do
+					if tostring(module.datas.rolesList[i][1]) == token then
+						filter = filter .. module.datas.rolesList[i][2] .. " "
+					end
+				end
+			elseif type(k)=="string" and k:find("^class") then 
+				local token = k:match("^class(.-)$")
+				for i=1,#ExRT.GDB.ClassList do
+					if ExRT.GDB.ClassList[i] == token then
+						filter = (RAID_CLASS_COLORS[token] and RAID_CLASS_COLORS[token].colorStr and "|c"..RAID_CLASS_COLORS[token].colorStr or "")..L.classLocalizate[token].."|r "
+					end
+				end
+			end
+		end
+		if filter ~= "" then
+			GameTooltip:AddLine("Filter: "..filter)
+		end
+		if pd then
+			GameTooltip:AddLine("From start: "..module:FormatTime(pd))
+		end
+		GameTooltip:AddLine(module:FormatMsg(data.msg or ""))
+		GameTooltip:Show()
+		
+		self:SetAlpha(.7)
+
+		options.timeLine.HideCursor = true
+		self.cursor:SetColorTexture(1,1,0,1)
+		self.cursorToSpell:SetColorTexture(1,1,0,1)
+	end
+	options.timeLine.Util_ButtonOnLeave = function(self)
+		options.timeLine.HideCursor = false
+		GameTooltip_Hide()
+		self:SetAlpha(1)
+		self.cursor:SetColorTexture(1,1,1,.5)
+		self.cursorToSpell:SetColorTexture(1,1,1,.5)
+	end
+
+	options.timeLine.Util_HeaderOnEnter = function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetHyperlink("spell:"..self.spell )
+		GameTooltip:Show()
+
+		options.timeLine.frame:HighlighSpellLine(self.spell,true)
+
+		if not self.isOff then
+			self.name:Color(unpack(options.timeLine.TL_HEADER_COLOR_HOVER))
+		end
+	end
+	options.timeLine.Util_HeaderOnLeave = function(self)
+		GameTooltip_Hide()
+
+		options.timeLine.frame:HighlighSpellLine(self.spell,false)
+
+		self.name:Color(unpack(self.isOff and options.timeLine.TL_HEADER_COLOR_OFF or options.timeLine.TL_HEADER_COLOR_ON))
+	end
+
+	options.timeLine.Util_LineOnEnter = function(self)
+		if not self.header.isOff then
+			self.header.name:Color(unpack(options.timeLine.TL_HEADER_COLOR_HOVER))
+		end
+	end
+	options.timeLine.Util_LineOnLeave = function(self)
+		self.header.name:Color(unpack(self.header.isOff and options.timeLine.TL_HEADER_COLOR_OFF or options.timeLine.TL_HEADER_COLOR_ON))
+	end
+
+	options.timeLine.Util_HeaderOnClick = function(self,button)
+		if button == "RightButton" then
+			local menu = {
+				{ text = L.ReminderCustomDurationLen, func = function() 
+					ELib.ScrollDropDown.Close()
+					ExRT.F.ShowInput(L.ReminderCustomDurationLenMore:format(GetSpellInfo(self.spell) or "spell"..self.spell),function(spell,dur) 
+						options.timeLine.spell_dur[spell]=tonumber(dur) 
+						options.timeLine:Update()
+					end,self.spell,true,2)
+				end, notCheckable = true },
+				{ text = L.ReminderChangeColorRng, func = function() 
+					ELib.ScrollDropDown.Close()
+					options.timeLine.saved_colors[self.spell]={math.random(1,100)/100,math.random(1,100)/100,math.random(1,100)/100,1}
+					options.timeLine:Update()
+				end, notCheckable = true },
+				{ text = CLOSE, func = function() ELib.ScrollDropDown.Close() end, notCheckable = true },
+			}
+			ELib.ScrollDropDown.EasyMenu(self,menu,200)
+		else
+			options.timeLine.spell_status[self.spell] = not options.timeLine.spell_status[self.spell]
+			options.timeLine:Update()
+		end
+	end
+
+
+	function options.timeLine:Update()
+		local timeLineData = self:GetTimeLineData()
+		self.timeLineData = timeLineData
+
+		local data_list = self:GetRemindersList()
+		local max_delay = #data_list > 0 and data_list[#data_list][2] or 0
+
+		local width = self:GetPosFromTime(self:GetTimeAdjust(max_delay)+10)
+
+		local line_c = 0
+		local line_p = 0
+		if timeLineData then
+			local spells_sorted = {}
+			for spell,spell_times in pairs(timeLineData) do
+				if type(spell) == "number" and self:IsPassFilterSpellType(spell_times,spell) then
+					spells_sorted[#spells_sorted+1] = {id = spell, name = GetSpellInfo(spell) or "spell"..spell,isOff = self.spell_status[spell],prio = self.spell_status[spell] and 0 or 1,first = type(spell_times[1])=="table" and spell_times[1][1] or spell_times[1] or 0}
+				end
+				for i=1,#spell_times do
+					local t = type(spell_times[i])=="table" and spell_times[i][1] or spell_times[i]
+					if t > max_delay then
+						max_delay = t
+					end
+				end
+			end
+			local sortByFirst = #spells_sorted >= 0
+			sort(spells_sorted,function(a,b) 
+				if a.prio ~= b.prio then
+					return a.prio > b.prio
+				elseif sortByFirst and a.first ~= b.first then
+					return a.first < b.first
+				else
+					return a.name < b.name 
+				end
+			end)
+			width = self:GetPosFromTime(self:GetTimeAdjust(max_delay)+10)
+
+			for j=1,#spells_sorted do
+				local spell = spells_sorted[j].id
+				local spell_times = timeLineData[ spell ]
+				local isOff = spells_sorted[j].isOff
+				line_c = line_c + 1
+				local line = self.frame.lines[line_c]
+				if not line then
+					line = CreateFrame("Frame",nil,self.frame.C)
+					self.frame.lines[line_c] = line
+					line:SetPoint("TOPLEFT",0,-self.TL_LINESIZE*(line_c-1))
+					line:SetSize(1000,self.TL_LINESIZE)
+					if line.SetPropagateMouseClicks then	--not working on classic client rn
+						line:SetScript("OnEnter",self.Util_LineOnEnter)
+						line:SetScript("OnLeave",self.Util_LineOnLeave)
+						line:SetPropagateMouseClicks(true)
+					end
+	
+					line.textures = {}
+	
+					line.header = CreateFrame("Button",nil,self.frame.headers.C)
+					line.header:SetPoint("TOPLEFT",0,-self.TL_LINESIZE*(line_c-1))
+					line.header:SetSize(220,self.TL_LINESIZE)
+					line.header:RegisterForClicks("LeftButtonUp","RightButtonUp")
+					line.header:SetScript("OnClick",self.Util_HeaderOnClick)
+					line.header:SetScript("OnEnter",self.Util_HeaderOnEnter)
+					line.header:SetScript("OnLeave",self.Util_HeaderOnLeave)
+	
+					line.header.icon = line.header:CreateTexture()
+					line.header.icon:SetPoint("RIGHT",0,0)
+					line.header.icon:SetSize(self.TL_LINESIZE,self.TL_LINESIZE)
+	
+					line.header.name = ELib:Text(line.header,"Spell Name",12):Point("RIGHT",-22,0):Right()
+
+					if line_c%2 == 1 then
+						line.bg = line:CreateTexture(nil,"BACKGROUND")
+						line.bg:SetAllPoints()
+						line.bg:SetColorTexture(1,1,1,.005)
+
+						line.header.bg = line.header:CreateTexture(nil,"BACKGROUND")
+						line.header.bg:SetAllPoints()
+						line.header.bg:SetColorTexture(1,1,1,.03)
+					end
+	
+				end
+				local color = spell_times.c or self.saved_colors[spell] or {math.random(1,100)/100,math.random(1,100)/100,math.random(1,100)/100,1}
+				self.saved_colors[spell] = color
+				local t_c = 0
+				if not isOff then
+					for i=1,#spell_times do
+						local st = spell_times[i]
+						local len = self.spell_dur[spell] or (type(st) == "table" and st.d) or spell_times.d or 2
+						local cast = (type(st) == "table" and st.c)
+						st = type(st) == "table" and st[1] or st
+						if not self:IsRemovedByTimeAdjust(st) then
+							st = self:GetTimeAdjust(st)
+							if len == "p" then len = self:GetTimeUntilPhaseEnd(st) or 2 end
+							t_c = t_c + 1
+							self:Util_SetLineTexture(line,t_c,{pos=st,len=len,cast=cast},color)
+						end
+					end
+				end
+				for i=t_c+1,#line.textures do
+					local t = line.textures[i]
+					t:Hide()
+					t.cast:Hide()
+					t.l:Hide()
+				end
+				local name,_,texture = GetSpellInfo(spell)
+				line.header.name:SetText(name or "spell"..spell)
+				line.header.icon:SetTexture(texture)
+				if isOff then
+					line.header.isOff = true
+					line.header.name:SetTextColor(unpack(self.TL_HEADER_COLOR_OFF))
+				else
+					line.header.isOff = false
+					line.header.name:SetTextColor(unpack(self.TL_HEADER_COLOR_ON))
+				end
+				line.header.spell = spell
+				line.spell = spell
+
+				line:SetWidth(width)
+
+				line:Show()
+				line.header:Show()
+			end
+
+			if timeLineData.p then
+				for i=1,#timeLineData.p do
+					local x = timeLineData.p[i]
+
+					line_p = line_p + 1
+					local pcursor = self.frame.pcursors[line_p]
+					if not pcursor then
+						pcursor = self.frame.D:CreateTexture(nil,"ARTWORK", nil, 4)
+						self.frame.pcursors[i] = pcursor
+						pcursor:SetWidth(1)
+						pcursor:SetPoint("TOP")
+						pcursor:SetPoint("BOTTOM",self.frame.cursorH,"TOP",0,0)
+						pcursor:SetColorTexture(0,1,0,.7)
+
+						pcursor.text = ELib:Text(self.frame.D,"Phase "..(i+1),10):Point("RIGHT",pcursor,"TOPRIGHT",1,0):Point("TOP",self.frame.cursorHT2,"BOTTOM",0,-1):Right():Color(0,1,0,.7)
+						pcursor.text:SetRotation(90*math.pi/180)
+						pcursor.text:SetDrawLayer("ARTWORK", 4)
+					end
+
+					local pn = self.custom_phase[i] or (timeLineData.p.n and timeLineData.p.n[i]) or (i+1)
+					local phase_time = self:GetTimeOnPhase(0,pn,self:GetPhaseCounter(i))
+					x = self:GetPosFromTime(phase_time)
+					pcursor:SetPoint("LEFT",x,0)
+					local text = "Phase "..pn
+					if tostring(pn):find("%d%.%d") then
+						text = "Intermission "..tostring(pn):match("^%d+")
+					elseif pn == 0 then
+						text = ""
+					elseif pn and type(pn)=="number" and pn < 0 and pn > -10000 then
+						text = L.bossName[ -pn ]
+					end
+					pcursor.text:SetText(text)
+					pcursor:Show()
+					pcursor.text:Show()
+				end
+			end
+		end
+		for i=line_c+1,#self.frame.lines do
+			local line = self.frame.lines[i]
+			line:Hide()
+			line.header:Hide()
+		end
+		for i=line_p+1,#self.frame.pcursors do
+			local line = self.frame.pcursors[i]
+			line:Hide()
+			line.text:Hide()
+		end
+		if line_c == 0 then
+			line_c = 1
+		end
+
+		self.frame.cursorH:SetPoint("TOPLEFT",0,-self.TL_LINESIZE*(line_c))
+
+		self.frame.cursorH:SetSize(width,2)
+
+		self.frame:Width(width)
+
+
+		local max_y = (line_c+1)*self.TL_LINESIZE
+		local prevButton = -100
+		local prevY = 0
+		sort(data_list,self.util_sort_by2)
+		for i=1,#data_list do
+			local data = data_list[i][1]
+
+			local button = self.frame.buttons[i]
+			if not button then
+				button = CreateFrame("Button",nil,self.frame.C)
+				self.frame.buttons[i] = button
+				button:SetSize(self.TL_REMSIZE,self.TL_REMSIZE)
+
+				button.cursor = button:CreateTexture(nil,"ARTWORK",nil,3)
+				button.cursor:SetWidth(1)
+				button.cursor:SetPoint("TOP",self.frame.cursorHT2,"BOTTOM",0,0)
+				button.cursor:SetPoint("BOTTOMLEFT",button,"TOPLEFT",0,0)
+				button.cursor:SetColorTexture(1,1,1,.5)
+
+				button.cursorToSpell = button:CreateTexture(nil,"ARTWORK",nil,3)
+				button.cursorToSpell:SetHeight(1)
+				button.cursorToSpell:SetPoint("RIGHT",button.cursor,"TOP",0,0)
+				button.cursorToSpell:SetColorTexture(1,1,1,.5)
+				button.cursorToSpell:Hide()
+
+				button.icon = button:CreateTexture()
+				button.icon:SetAllPoints()
+				button:RegisterForClicks("LeftButtonUp","RightButtonUp")
+				button:SetScript("OnClick",self.Util_ButtonOnClick)
+				button:SetScript("OnEnter",self.Util_ButtonOnEnter)
+				button:SetScript("OnLeave",self.Util_ButtonOnLeave)
+			end
+
+			local x = data_list[i][2]
+
+			local pos = self:GetPosFromTime(x)
+			local anchorLeft = not data.durrev
+
+			if pos < (anchorLeft and 0 or self.TL_REMSIZE) then
+				pos = (anchorLeft and 0 or self.TL_REMSIZE)
+			end
+
+			if prevButton >= (pos - (anchorLeft and 0 or self.TL_REMSIZE)) then
+				prevY = prevY + self.TL_REMSIZE
+			else
+				prevY = 0
+			end
+			button:ClearAllPoints()
+
+			prevButton = max(pos + (anchorLeft and self.TL_REMSIZE or 0),prevButton)
+
+			button:SetPoint(anchorLeft and "TOPLEFT" or "TOPRIGHT",self.frame.C,"TOPLEFT",pos,-(line_c+1)*self.TL_LINESIZE-prevY)
+
+			button.cursor:ClearAllPoints()
+			button.cursor:SetPoint(anchorLeft and "BOTTOMLEFT" or "BOTTOMRIGHT",button,anchorLeft and "TOPLEFT" or "TOPRIGHT",0,0)
+			button.cursor:SetPoint("TOP",self.frame.cursorHT2,"BOTTOM",0,0)
+			button.cursor:Show()
+
+			button.cursorToSpell:Hide()
+			if data_list[i][3] and data_list[i][3].s then
+				local spell = data_list[i][3].s
+				local found = false
+				for j=1,#self.frame.lines do
+					local line = self.frame.lines[j]
+					if line.spell == spell and line:IsShown() then
+						button.cursor:SetPoint("TOP",line,"RIGHT",0,0)
+
+						button.cursorToSpell:SetWidth( self:GetPosFromTime(data_list[i][4]) )
+						button.cursorToSpell:Show()
+
+						found = true
+						break
+					end
+				end
+				if not found then
+					button.cursor:Hide()
+				end
+			end
+
+			local texture = 134938
+			if module:GetReminderType(data.msgSize) == REM.TYPE_RAIDFRAME then
+				texture = ExRT.isClassic and 134993 or 878211
+			end
+			if type(data.msg) == "string" and data.msg:find("{spell:%d+}") then
+				texture = select(3,GetSpellInfo( tonumber(data.msg:match("{spell:(%d+)}"),10) )) or texture
+			end
+			button.icon:SetTexture(texture)
+			button.data = data
+			button:Show()
+
+			if max_y < (line_c+1)*self.TL_LINESIZE + prevY + self.TL_REMSIZE*2 then
+				max_y = (line_c+1)*self.TL_LINESIZE + prevY + self.TL_REMSIZE*2
+			end
+		end
+		for i=#data_list+1,#self.frame.buttons do
+			self.frame.buttons[i]:Hide()
+		end
+
+		if max_y > self.frame:GetHeight() then
+			self.frame:Height(max_y)
+			self.frame.headers:Height(max_y)
+			self.frame.headers.ScrollBar:Show()
+		elseif self.frame.headers.ScrollBar:IsShown() then
+			self.frame.headers.ScrollBar:SetValue(0)
+			self.frame.headers.ScrollBar:Hide()
+		end
+	end
+	self.timeLine:Update()
 
 
 	self.scrollList = ELib:ScrollButtonsList(self.tab.tabs[1]):Point("TOP",0,-5):Size(690,530)
@@ -2456,21 +5742,21 @@ function module.options:Load()
 		if text == "" then
 			text = nil
 		end
-		module.options.search = text
+		options.search = text
 
 		if self.scheduledUpdate then
 			return
 		end
 		self.scheduledUpdate = C_Timer.NewTimer(.3,function()
 			self.scheduledUpdate = nil
-			module.options.scrollList.ScrollBar.slider:SetValue(0)
-			module.options:UpdateData()
+			options.scrollList.ScrollBar.slider:SetValue(0)
+			options:UpdateData()
 		end)
 	end):Tooltip(SEARCH)
 	self.searchEditBox:SetTextColor(0,1,0,1)
 
 
-	self.profileDropDown = ELib:DropDown(self.scrollList,250,#profilesSorted+1):Point("BOTTOMLEFT",self.searchEditBox,"TOPLEFT",0,10):Size(160):SetText(profiles[VMRT.Reminder2.Profile]):AddText(L.InterruptsProfile..":")
+	self.profileDropDown = ELib:DropDown(self,250,#profilesSorted+1):Point("BOTTOMLEFT",self.searchEditBox,"TOPLEFT",0,10):Size(160):SetText(profiles[VMRT.Reminder2.Profile]):AddText(L.InterruptsProfile..":")
 	self.profileDropDown.leftText:SetFontObject("GameFontNormalSmall")
 	self.profileDropDown.leftText:SetTextColor(1,.82,0)
 	self.profileDropDown.leftText:SetFont(self.profileDropDown.leftText:GetFont(),10)
@@ -2496,16 +5782,16 @@ function module.options:Load()
 
 	local function UpdateOption(uid,enable,optionBit)
 		if not uid then return end
-		local options = VMRT.Reminder2.options[uid] or 0
+		local roptions = VMRT.Reminder2.options[uid] or 0
 		if enable then
-			if bit.band(options,optionBit) > 0 then
-				options = bit.bxor(options,optionBit)
+			if bit.band(roptions,optionBit) > 0 then
+				roptions = bit.bxor(options,optionBit)
 			end
 		else
-			options = bit.bor(options,optionBit)
+			roptions = bit.bor(options,optionBit)
 		end
-		if options == 0 then options = nil end
-		VMRT.Reminder2.options[uid] = options
+		if roptions == 0 then roptions = nil end
+		VMRT.Reminder2.options[uid] = roptions
 	end
 
 	local function CopyOneReminder(_,profile,data)
@@ -2527,7 +5813,7 @@ function module.options:Load()
 				local menu = {
 					{ text = data.name or "~"..L.ReminderNoName, isTitle = true, notCheckable = true, notClickable = true },
 					{ text = L.InterruptsCopyTo.."...", subMenu = copySubMenu},
-					{ text = DELETE, func = function() ELib.ScrollDropDown.Close() module.options:RemoveReminder(data.data.uid) end, notCheckable = true },
+					{ text = DELETE, func = function() ELib.ScrollDropDown.Close() options:RemoveReminder(data.data.uid) end, notCheckable = true },
 					{ text = CLOSE, func = function() ELib.ScrollDropDown.Close() end, notCheckable = true },
 				}
 				ELib.ScrollDropDown.EasyMenu(self,menu,150)
@@ -2539,15 +5825,15 @@ function module.options:Load()
 			data2 = ExRT.F.table_copy2(newRemainderTemplate)
 			data2.bossID = data.bossIDnew
 			data2.zoneID = data.zoneIDnew
-			data2.uid = module.options:GetNewUID()
+			data2.uid = options:GetNewUID()
 			if data.isPersonal then
 				UpdateOption(data2.uid,false,bit.bor(bit.lshift(1,3),bit.lshift(1,2)))
 			end
 		else
 			data2 = ExRT.F.table_copy2(data.data)
 		end
-		module.options.setupFrame:Update(data2)
-		module.options.setupFrame:Show()
+		options.setupFrame:Update(data2)
+		options.setupFrame:Show()
 	end
 
 	local function Button_OnOff_Click(self)
@@ -2733,8 +6019,8 @@ function module.options:Load()
 					if 
 						bit.band(VMRT.Reminder2.options[uid] or 0,bit.lshift(1,2)) == 0 and
 						(
-						 (bit.band(VMRT.Reminder2.options[uid] or 0,bit.lshift(1,3)) == 0 and not module.options.isPersonalTab) or
-						 (bit.band(VMRT.Reminder2.options[uid] or 0,bit.lshift(1,3)) > 0 and module.options.isPersonalTab)
+						 (bit.band(VMRT.Reminder2.options[uid] or 0,bit.lshift(1,3)) == 0 and not options.isPersonalTab) or
+						 (bit.band(VMRT.Reminder2.options[uid] or 0,bit.lshift(1,3)) > 0 and options.isPersonalTab)
 						) and
 						(
 						 (self.bossID and data.bossID == self.bossID) or 
@@ -2746,7 +6032,7 @@ function module.options:Load()
 						VMRT.Reminder2.removed[uid] = time()
 					end
 				end
-				module.options:UpdateData()
+				options:UpdateData()
 				module:ReloadAll()
 			end,
 			timeout = 0,
@@ -2759,7 +6045,7 @@ function module.options:Load()
 	local function Button_Lvl1_Export(self)
 		local export = module:Sync(true,self.bossID,self.zoneID)
 
-		module.options:ExportStr(export)
+		options:ExportStr(export)
 	end
 	local function Button_Lvl1_Send(self)
 		module:Sync(false,self.bossID,self.zoneID)
@@ -2942,7 +6228,7 @@ function module.options:Load()
 				button.remove:Hide()
 			end
 
-			if module.options.isPersonalTab then
+			if options.isPersonalTab then
 				button.export:Hide()
 				button.send:Hide()
 			end
@@ -2962,15 +6248,15 @@ function module.options:Load()
 				button.ishudhidden = false
 			end
 
-			local options = VMRT.Reminder2.options[data.data and data.data.uid or 0] or 0
-			if bit.band(options,bit.lshift(1,0)) == 0 then
+			local roptions = VMRT.Reminder2.options[data.data and data.data.uid or 0] or 0
+			if bit.band(roptions,bit.lshift(1,0)) == 0 then
 				button.onoff.status = 1
 			else
 				button.onoff.status = 2
 			end
 			button.onoff:Update(button.onoff.status)
 
-			if bit.band(options,bit.lshift(1,1)) == 0 then
+			if bit.band(roptions,bit.lshift(1,1)) == 0 then
 				button.sound.status = 1
 			else
 				button.sound.status = 2
@@ -2984,7 +6270,7 @@ function module.options:Load()
 				end
 			end
 
-			if bit.band(options,bit.lshift(1,2)) == 0 then
+			if bit.band(roptions,bit.lshift(1,2)) == 0 then
 				button.lock.status = 1
 			else
 				button.lock.status = 2
@@ -3074,11 +6360,11 @@ function module.options:Load()
 				return zoneData
 			end
 
-			local options = VMRT.Reminder2.options[uid] or 0
-			local isPersonal = bit.band(options,bit.lshift(1,3)) > 0
+			local roptions = VMRT.Reminder2.options[uid] or 0
+			local isPersonal = bit.band(roptions,bit.lshift(1,3)) > 0
 			if 
-				((isPersonal and module.options.isPersonalTab) or (not isPersonal and not module.options.isPersonalTab)) and
-				(not module.options.search or (data.name and data.name:lower():find(module.options.search,1,true)) or (data.msg and data.msg:lower():find(module.options.search,1,true)))
+				((isPersonal and options.isPersonalTab) or (not isPersonal and not options.isPersonalTab)) and
+				(not options.search or (data.name and data.name:lower():find(options.search,1,true)) or (data.msg and data.msg:lower():find(options.search,1,true)))
 			then
 				if bossID then
 					local bossData = ExRT.F.table_find3(Mdata,bossID,"bossID")
@@ -3202,11 +6488,11 @@ function module.options:Load()
 			end)
 			t[#t+1] = 0
 			t[#t+1] = {
-				name = "|cffffffff  +"..(module.options.isPersonalTab and L.ReminderNewPersonal or L.ReminderNew),
+				name = "|cffffffff  +"..(options.isPersonalTab and L.ReminderNewPersonal or L.ReminderNew),
 				uid = "new"..i,
 				nohud = true,
 				isNew = true,
-				isPersonal = module.options.isPersonalTab,
+				isPersonal = options.isPersonalTab,
 				bossIDnew = Mdata[i].bossID,
 				zoneIDnew = Mdata[i].zoneID,
 			}
@@ -3235,19 +6521,19 @@ function module.options:Load()
 		self.scrollList.data = Mdata
 		self.scrollList:Update(true)
 
-		module.options:UpdateSenderDataText()
+		options:UpdateSenderDataText()
 	end
 
 	self.AddButton = ELib:Button(self.tab.tabs[1],ADD):Point("TOPLEFT",self.scrollList,"BOTTOMLEFT",2,-5):Size(100,20):OnClick(function()
 		local new = ExRT.F.table_copy2(newRemainderTemplate)
-		new.uid = module.options:GetNewUID()
+		new.uid = options:GetNewUID()
 
-		if module.options.isPersonalTab then
+		if options.isPersonalTab then
 			UpdateOption(new.uid,false,bit.bor(bit.lshift(1,3),bit.lshift(1,2)))
 		end
 
-		module.options.setupFrame:Update(new)
-		module.options.setupFrame:Show()
+		options.setupFrame:Update(new)
+		options.setupFrame:Show()
 	end)
 
 	self.lastUpdate = ELib:Text(self.tab.tabs[1],"",11):Point("LEFT",self.AddButton,"RIGHT",10,0):Color()
@@ -3378,7 +6664,7 @@ function module.options:Load()
 						CURRENT_DATA[uid] = nil
 					end
 				end
-				module.options:UpdateData()
+				options:UpdateData()
 				module:ReloadAll()
 			end,
 			timeout = 0,
@@ -3450,7 +6736,7 @@ function module.options:Load()
 	end)
 
 	function self:ExportStr(export)
-		module.options.exportWindow:NewPoint("CENTER",UIParent,0,0)
+		options.exportWindow:NewPoint("CENTER",UIParent,0,0)
 
 		local compressed
 		if #export < 1000000 then
@@ -3463,8 +6749,8 @@ function module.options:Load()
 		if IsShiftKeyDown() and IsControlKeyDown() then
 			--encoded = "EXRTREMD".."2"..export
 		end
-		module.options.exportWindow.Edit:SetText(encoded)
-		module.options.exportWindow:Show()
+		options.exportWindow.Edit:SetText(encoded)
+		options.exportWindow:Show()
 	end
 
 	self.ImportButton = ELib:Button(self.tab.tabs[1],L.Import):Point("RIGHT",self.ExportButton,"LEFT",-5,0):Size(100,20):OnClick(function()
@@ -3503,7 +6789,7 @@ function module.options:Load()
 
 	self.CopyToButton = ELib:Button(self.tab.tabs[1],L.InterruptsCopyTo.."..."):Point("RIGHT",self.ImportButton,"LEFT",-5,0):Size(100,20):OnClick(function()
 		for i=1,#profilesSorted do
-			local line = module.options.copyClickDropDown.List[i]
+			local line = options.copyClickDropDown.List[i]
 			if line.arg1 == VMRT.Reminder2.Profile then
 				line.isTitle = true
 			else
@@ -3512,8 +6798,8 @@ function module.options:Load()
 		end
 
 		local x,y = ExRT.F.GetCursorPos(self)
-		module.options.copyClickDropDown:SetPoint("TOPLEFT",self,x,-y)
-		module.options.copyClickDropDown:Click()
+		options.copyClickDropDown:SetPoint("TOPLEFT",self,x,-y)
+		options.copyClickDropDown:Click()
 	end)
 
 	--[[
@@ -3529,7 +6815,16 @@ function module.options:Load()
 
 	function self:GetNewUID()
 		local _,sid,pid = strsplit("-",UnitGUID("player"),nil)
-		local t = module:ConvertTo36Bit((time() + GetTime() % 1) * 1000)
+		local t
+		local cn = 0
+		while true do
+			t = module:ConvertTo36Bit((time() + GetTime() % 1) * 1000 + cn)
+		  	if CURRENT_DATA[sid .. "-" .. pid .. "-" .. t] then
+				cn = cn + 1
+			else
+				break
+			end
+		end
 		return sid .. "-" .. pid .. "-" .. t
 	end
 
@@ -3546,7 +6841,7 @@ function module.options:Load()
 	self.setupFrame.tab.tabs[3].button.alert:SetScale(.8)
 	self.setupFrame.tab.tabs[3].button.alert:SetPoint("CENTER",self.setupFrame.tab.tabs[3].button,"TOPRIGHT",-10,-10)
 	self.setupFrame.tab.tabs[3].button.alert.Update = function(self)
-		if not module.options.setupFrame.data.bossID and not module.options.setupFrame.data.zoneID then
+		if not options.setupFrame.data.bossID and not options.setupFrame.data.zoneID then
 			self:Show()
 		else
 			self:Hide()
@@ -3587,7 +6882,8 @@ function module.options:Load()
 		CURRENT_DATA[uid] = self.setupFrame.data
 		self.setupFrame.data.updatedName = ExRT.SDB.charName
 		self.setupFrame.data.updatedTime = time()
-		module.options:UpdateData()
+		options:UpdateData()
+		options.timeLine:Update()
 		module:ReloadAll()
 	end)
 
@@ -3616,39 +6912,55 @@ function module.options:Load()
 			UpdateOption(uid,false,bit.lshift(1,3))
 		end
 
-		module.options:UpdateData()
+		options:UpdateData()
+		options.timeLine:Update()
 		module:ReloadAll()
 	end)
 
 	function self:RemoveReminder(uid)
-		StaticPopupDialogs["EXRT_REMINDER_REMOVE_ONE"] = {
-			text = L.ReminderRemove.."?",
-			button1 = L.YesText,
-			button2 = L.NoText,
-			OnAccept = function()
-				self.setupFrame:Hide()
-				if uid then
-					CURRENT_DATA[uid] = nil
-				end
-				VMRT.Reminder2.removed[uid] = time()
-				module.options:UpdateData()
-				module:ReloadAll()
-			end,
-			timeout = 0,
-			whileDead = true,
-			hideOnEscape = true,
-			preferredIndex = 3,
-		}
-		StaticPopup_Show("EXRT_REMINDER_REMOVE_ONE")
+		local remove = function()
+			self.setupFrame:Hide()
+			self.quickSetupFrame:Hide()
+			if uid then
+				CURRENT_DATA[uid] = nil
+			end
+			VMRT.Reminder2.removed[uid] = time()
+			options:UpdateData()
+			options.timeLine:Update()
+			module:ReloadAll()
+		end
+		if module.db.removeIgnorePopup then
+			remove()
+		else
+			StaticPopupDialogs["EXRT_REMINDER_REMOVE_ONE"] = {
+				text = L.ReminderRemove.."?",
+				button1 = L.YesText,
+				button2 = L.ReminderYesNoAfter,
+				button3 = L.NoText,
+				OnAccept = function()
+					remove()
+				end,
+				OnAlt = function() end,
+				OnCancel = function() 
+					module.db.removeIgnorePopup = true
+					remove()
+				end,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+			StaticPopup_Show("EXRT_REMINDER_REMOVE_ONE")
+		end
 	end
 
 	self.setupFrame.removeButton = ELib:Button(self.setupFrame.tab.tabs[1],L.ReminderRemove):Point("BOTTOMLEFT",self.setupFrame.saveButton,"TOP",5,5):Size(200,20):OnClick(function()
 		local uid = self.setupFrame.data.uid
-		module.options:RemoveReminder(uid)
+		options:RemoveReminder(uid)
 	end)
 
 	self.setupFrame.sendOneButton = ELib:Button(self.setupFrame.tab.tabs[1],L.ReminderSendOne):Point("BOTTOM",self.setupFrame.copyButton,"TOP",0,5):Size(200,20):OnClick(function(self)
-		if not module.options.setupFrame.data.uid then
+		if not options.setupFrame.data.uid then
 			print(L.ReminderAlertSaveB4Sending)
 			return
 		end
@@ -3658,7 +6970,7 @@ function module.options:Load()
 				return
 			end
 		end
-		if ExRT.F.table_compare(module.options.setupFrame.data,CURRENT_DATA[module.options.setupFrame.data.uid]) ~= 1 then
+		if ExRT.F.table_compare(options.setupFrame.data,CURRENT_DATA[options.setupFrame.data.uid]) ~= 1 then
 			print(L.ReminderAlertSaveB4Sending)
 			return
 		end
@@ -3668,7 +6980,7 @@ function module.options:Load()
 			self:Enable()
 			self:SetText(L.ReminderSendOne)
 		end, 0.5)
-		module:Sync(false,nil,nil,module.options.setupFrame.data.uid)
+		module:Sync(false,nil,nil,options.setupFrame.data.uid)
 	end)
 
 	self.setupFrame.exportOneButton = ELib:Button(self.setupFrame.tab.tabs[1],L.ReminderExportToString):Point("BOTTOM",self.setupFrame.removeButton,"TOP",0,5):Size(200,20):OnClick(function()
@@ -3687,15 +6999,15 @@ function module.options:Load()
 		if not isUser then return end
 		local text = self:GetText():trim()
 		if text == "" then text = nil end
-		module.options.setupFrame.data.name = text
+		options.setupFrame.data.name = text
 	end)
 
 	self.setupFrame.msgSize = ELib:DropDown(self.setupFrame.tab.tabs[1],220,#module.datas.messageSize):AddText("|cffffd100"..L.ReminderMsgType..":"):Size(270)
 	do
 		local function msgSize_SetValue(_,arg1)
 			ELib:DropDownClose()
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.msgSize = arg1
+			if not options.setupFrame.setup then
+				options.setupFrame.data.msgSize = arg1
 			end
 			local val = ExRT.F.table_find3(module.datas.messageSize,arg1,1)
 			if val then
@@ -3704,7 +7016,7 @@ function module.options:Load()
 				self.setupFrame.msgSize:SetText("?")
 			end
 
-			module.options.setupFrame:RebuildSetupPage()
+			options.setupFrame:RebuildSetupPage()
 		end
 		self.setupFrame.msgSize.SetValue = msgSize_SetValue
 
@@ -3720,11 +7032,11 @@ function module.options:Load()
 	end
 
 	self.setupFrame.msgEdit = ELib:MultiEdit(self.setupFrame.tab.tabs[1]):Size(270,80):HideScrollOnNoScroll():OnChange(function(self,isUser)
-		module.options.setupFrame.msgPreview:SetText( module:FormatMsg(self:GetText():gsub("\n",""), {}) or "" )
+		options.setupFrame.msgPreview:SetText( module:FormatMsg(self:GetText():gsub("\n",""), {}) or "" )
 		if not isUser then return end
 		local text = self:GetText():gsub("\n",""):trim()
 		if text == "" then text = nil end
-		module.options.setupFrame.data.msg = text
+		options.setupFrame.data.msg = text
 	end)
 	self.setupFrame.nameEdit.LeftText(self.setupFrame.msgEdit,L.ReminderMsg..":")
 	ELib:Border(self.setupFrame.msgEdit,1,.24,.25,.30,1)
@@ -3808,7 +7120,7 @@ function module.options:Load()
 		GameTooltip:AddLine("|cff00ff00{find:PATT:TEXT}YES;NO{/find}|r - "..L.ReminderFormatTipFind)
 		GameTooltip:AddLine("|cff00ff00{replace:FROM:TO}TEXT{/replace}|r - "..L.ReminderFormatTipReplace)
 
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_RAIDFRAME then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_RAIDFRAME then
 			GameTooltip:AddLine(" ")
 			GameTooltip:AddLine(L.ReminderFormatTipFrame)
 			GameTooltip:AddLine(L.ReminderFormatTipFrameText)
@@ -3842,16 +7154,16 @@ function module.options:Load()
 			local function changedCallback(restore)
 				local r,g,b = ColorPickerFrame:GetColorRGB()
 				local code = format("%02x%02x%02x",r*255,g*255,b*255)
-				local hlstart,hlend = module.options.setupFrame.msgEdit:GetTextHighlight()
+				local hlstart,hlend = options.setupFrame.msgEdit:GetTextHighlight()
 				if hlstart == hlend then
-					module.options.setupFrame.msgEdit:SetText( "||cff"..code..module.options.setupFrame.msgEdit:GetText().."||r" )
+					options.setupFrame.msgEdit:SetText( "||cff"..code..options.setupFrame.msgEdit:GetText().."||r" )
 				else
-					local text = module.options.setupFrame.msgEdit:GetText()
+					local text = options.setupFrame.msgEdit:GetText()
 					text = text:sub(1, hlend) .. "||r" .. text:sub(hlend+1)
 					text = text:sub(1, hlstart) .. "||cff"..code .. text:sub(hlstart+1)
-					module.options.setupFrame.msgEdit:SetText( text )
+					options.setupFrame.msgEdit:SetText( text )
 				end
-				module.options.setupFrame.msgEdit.EditBox:GetScript("OnTextChanged")(module.options.setupFrame.msgEdit.EditBox,true)
+				options.setupFrame.msgEdit.EditBox:GetScript("OnTextChanged")(options.setupFrame.msgEdit.EditBox,true)
 			end
 			ColorPickerFrame.func, ColorPickerFrame.cancelFunc, ColorPickerFrame.opacityFunc = nilFunc, nilFunc, nilFunc
 			ColorPickerFrame:SetColorRGB(1,1,1)
@@ -3868,16 +7180,16 @@ function module.options:Load()
 				if not MouseIsOver(btn) or IsMouseButtonDown() then return end
 				local r,g,b = ColorPickerFrame:GetColorRGB()
 				local code = format("%02x%02x%02x",r*255,g*255,b*255)
-				local hlstart,hlend = module.options.setupFrame.msgEdit:GetTextHighlight()
+				local hlstart,hlend = options.setupFrame.msgEdit:GetTextHighlight()
 				if hlstart == hlend then
-					module.options.setupFrame.msgEdit:SetText( "||cff"..code..module.options.setupFrame.msgEdit:GetText().."||r" )
+					options.setupFrame.msgEdit:SetText( "||cff"..code..options.setupFrame.msgEdit:GetText().."||r" )
 				else
-					local text = module.options.setupFrame.msgEdit:GetText()
+					local text = options.setupFrame.msgEdit:GetText()
 					text = text:sub(1, hlend) .. "||r" .. text:sub(hlend+1)
 					text = text:sub(1, hlstart) .. "||cff"..code .. text:sub(hlstart+1)
-					module.options.setupFrame.msgEdit:SetText( text )
+					options.setupFrame.msgEdit:SetText( text )
 				end
-				module.options.setupFrame.msgEdit.EditBox:GetScript("OnTextChanged")(module.options.setupFrame.msgEdit.EditBox,true)
+				options.setupFrame.msgEdit.EditBox:GetScript("OnTextChanged")(options.setupFrame.msgEdit.EditBox,true)
 			end
 			info.cancelFunc = function()
 				local newR, newG, newB, newA = ColorPickerFrame:GetPreviousValues()
@@ -3903,20 +7215,33 @@ function module.options:Load()
 
 	self.setupFrame.durEdit = ELib:Edit(self.setupFrame.tab.tabs[1]):Size(270,20):LeftText(L.ReminderDuration..":"):OnChange(function(self,isUser)
 		if not isUser then return end
-		module.options.setupFrame.data.dur = tonumber( self:GetText() )
+		options.setupFrame.data.dur = tonumber( self:GetText() )
 	end):Tooltip(function(self)
 		self.lockTooltipText = true
 
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:AddLine(L.ReminderDuration)
 		GameTooltip:AddLine(L.ReminderDurationTooltip)
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_CHAT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_CHAT then
 			GameTooltip:AddLine(L.ReminderDurationTooltipMsg)
 		end
 		GameTooltip:Show()
 	end)
 	function self.setupFrame.durEdit:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) ~= REM.TYPE_WA then
+		if module:GetReminderType(options.setupFrame.data.msgSize) ~= REM.TYPE_WA then
+			return true
+		end
+	end
+
+	self.setupFrame.durRevese = ELib:Check(self.setupFrame.tab.tabs[1],L.ReminderDurRev..":"):Left(5):Tooltip(L.ReminderDurRevTooltip):OnClick(function(self)
+		if self:GetChecked() then
+			options.setupFrame.data.durrev = true
+		else
+			options.setupFrame.data.durrev = nil
+		end
+	end)
+	function self.setupFrame.durRevese:ExtraShown()
+		if module:GetReminderType(options.setupFrame.data.msgSize) ~= REM.TYPE_WA then
 			return true
 		end
 	end
@@ -3926,20 +7251,20 @@ function module.options:Load()
 		self.setupFrame.soundCustom.tts = false
 		self.setupFrame.soundList.lastOpt = arg1
 		if arg1 == 0 then
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.sound = nil
+			if not options.setupFrame.setup then
+				options.setupFrame.data.sound = nil
 			end
 
 			self.setupFrame.soundList:SetText(L.ReminderCustom)
 		elseif not arg1 then
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.sound = nil
+			if not options.setupFrame.setup then
+				options.setupFrame.data.sound = nil
 			end
 
 			self.setupFrame.soundList:SetText("-")
 		else
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.sound = arg1
+			if not options.setupFrame.setup then
+				options.setupFrame.data.sound = arg1
 			end
 
 			local val = ExRT.F.table_find3(self.setupFrame.soundList.List,arg1,"arg1")
@@ -3951,20 +7276,20 @@ function module.options:Load()
 
 			if arg1 == "TTS2" then
 				self.setupFrame.soundCustom.tts = true
-				if not module.options.setupFrame.setup then
-					module.options.setupFrame.data.sound = "TTS:"
+				if not options.setupFrame.setup then
+					options.setupFrame.data.sound = "TTS:"
 					self.setupFrame.soundCustom:SetText("")
 				end
 			end
 		end
-		module.options.setupFrame:RebuildSetupPage()
+		options.setupFrame:RebuildSetupPage()
 		ELib:DropDownClose()
-		if not module.options.setupFrame.setup and arg1 and arg1 ~= 0 then
+		if not options.setupFrame.setup and arg1 and arg1 ~= 0 then
 			module:PlaySound(arg1)
 		end
 	end
 	function self.setupFrame.soundList.Update()
-		local data = module.options.setupFrame.data
+		local data = options.setupFrame.data
 		if data.sound then
 			self.setupFrame.soundList:PreUpdate()
 			local val = ExRT.F.table_find3(self.setupFrame.soundList.List,data.sound,"arg1")
@@ -4016,14 +7341,14 @@ function module.options:Load()
 		local text = self:GetText():trim()
 		if text == "" then text = nil end
 		if self.tts and text then text = "TTS:" .. text end
-		module.options.setupFrame.data.sound = text
+		options.setupFrame.data.sound = text
 	end)
 	function self.setupFrame.soundCustom:ExtraShown()
-		if module.options.setupFrame.soundList:IsShown() and 
+		if options.setupFrame.soundList:IsShown() and 
 		(
-			(type(module.options.setupFrame.data.sound)=='string' and module.options.setupFrame.data.sound:find("^TTS:")) or
-			(module.options.setupFrame.data.sound and not ExRT.F.table_find3(module.options.setupFrame.soundList.List,module.options.setupFrame.data.sound,"arg1")) or
-			module.options.setupFrame.soundList.lastOpt == 0
+			(type(options.setupFrame.data.sound)=='string' and options.setupFrame.data.sound:find("^TTS:")) or
+			(options.setupFrame.data.sound and not ExRT.F.table_find3(options.setupFrame.soundList.List,options.setupFrame.data.sound,"arg1")) or
+			options.setupFrame.soundList.lastOpt == 0
 		) then
 			return true
 		end
@@ -4032,34 +7357,34 @@ function module.options:Load()
 	self.setupFrame.soundList.playButton = ELib:Icon(self.setupFrame.soundList,"Interface\\AddOns\\MRT\\media\\DiesalGUIcons16x256x128",20,true):Point("LEFT",self.setupFrame.soundList,"RIGHT",5,0)
 	self.setupFrame.soundList.playButton.texture:SetTexCoord(0.375,0.4375,0.5,0.625)
 	self.setupFrame.soundList.playButton:SetScript("OnClick",function()
-		if module.options.setupFrame.data.sound == "TTS" then
-			module:PlaySound(module.options.setupFrame.data.sound, {data={msg=(module.options.setupFrame.data.msg or "")},params={}})
-		elseif type(module.options.setupFrame.data.sound) == "string" and module.options.setupFrame.data.sound:find("^TTS:") then
-			module:PlaySound(module.options.setupFrame.data.sound, {data={msg=(module.options.setupFrame.data.msg or "")},params={}})
+		if options.setupFrame.data.sound == "TTS" then
+			module:PlaySound(options.setupFrame.data.sound, {data={msg=(options.setupFrame.data.msg or "")},params={}})
+		elseif type(options.setupFrame.data.sound) == "string" and options.setupFrame.data.sound:find("^TTS:") then
+			module:PlaySound(options.setupFrame.data.sound, {data={msg=(options.setupFrame.data.msg or "")},params={}})
 		else
-			module:PlaySound(module.options.setupFrame.data.sound)
+			module:PlaySound(options.setupFrame.data.sound)
 		end
 	end)
 
-	self.setupFrame.soundAfterList = ELib:DropDown(self.setupFrame.tab.tabs[1],270,15):AddText("|cffffd100".."Sound after ending"..":"):Size(270)
+	self.setupFrame.soundAfterList = ELib:DropDown(self.setupFrame.tab.tabs[1],270,15):AddText("|cffffd100"..L.ReminderSoundAfter..":"):Size(270)
 	function self.setupFrame.soundAfterList.func_SetValue(_,arg1)
 		self.setupFrame.soundAfterCustom.tts = false
 		self.setupFrame.soundAfterList.lastOpt = arg1
 		if arg1 == 0 then
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.soundafter = nil
+			if not options.setupFrame.setup then
+				options.setupFrame.data.soundafter = nil
 			end
 
 			self.setupFrame.soundAfterList:SetText(L.ReminderCustom)
 		elseif not arg1 then
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.soundafter = nil
+			if not options.setupFrame.setup then
+				options.setupFrame.data.soundafter = nil
 			end
 
 			self.setupFrame.soundAfterList:SetText("-")
 		else
-			if not module.options.setupFrame.setup then
-				module.options.setupFrame.data.soundafter = arg1
+			if not options.setupFrame.setup then
+				options.setupFrame.data.soundafter = arg1
 			end
 
 			local val = ExRT.F.table_find3(self.setupFrame.soundAfterList.List,arg1,"arg1")
@@ -4071,27 +7396,27 @@ function module.options:Load()
 
 			if arg1 == "TTS2" then
 				self.setupFrame.soundAfterCustom.tts = true
-				if not module.options.setupFrame.setup then
-					module.options.setupFrame.data.soundafter = "TTS:"
+				if not options.setupFrame.setup then
+					options.setupFrame.data.soundafter = "TTS:"
 					self.setupFrame.soundAfterCustom:SetText("")
 				end
 			end
 		end
-		module.options.setupFrame:RebuildSetupPage()
+		options.setupFrame:RebuildSetupPage()
 		ELib:DropDownClose()
-		if not module.options.setupFrame.setup and arg1 and arg1 ~= 0 then
+		if not options.setupFrame.setup and arg1 and arg1 ~= 0 then
 			module:PlaySound(arg1)
 		end
 	end
 	self.setupFrame.soundAfterList.PreUpdate = self.setupFrame.soundList.PreUpdate
 	function self.setupFrame.soundAfterList:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
 			return true
 		end
 	end
 
 	function self.setupFrame.soundAfterList.Update(_,blockUpdate)
-		local data = module.options.setupFrame.data
+		local data = options.setupFrame.data
 		if blockUpdate then
 			self.setupFrame.soundAfterList.blockUpdate = true
 		end
@@ -4118,14 +7443,14 @@ function module.options:Load()
 		local text = self:GetText():trim()
 		if text == "" then text = nil end
 		if self.tts and text then text = "TTS:" .. text end
-		module.options.setupFrame.data.soundafter = text
+		options.setupFrame.data.soundafter = text
 	end)
 	function self.setupFrame.soundAfterCustom:ExtraShown()
-		if module.options.setupFrame.soundAfterList:IsShown() and 
+		if options.setupFrame.soundAfterList:IsShown() and 
 		(
-			(type(module.options.setupFrame.data.soundafter)=='string' and module.options.setupFrame.data.soundafter:find("^TTS:")) or
-			(module.options.setupFrame.data.soundafter and not ExRT.F.table_find3(module.options.setupFrame.soundAfterList.List,module.options.setupFrame.data.soundafter,"arg1")) or
-			module.options.setupFrame.soundAfterList.lastOpt == 0
+			(type(options.setupFrame.data.soundafter)=='string' and options.setupFrame.data.soundafter:find("^TTS:")) or
+			(options.setupFrame.data.soundafter and not ExRT.F.table_find3(options.setupFrame.soundAfterList.List,options.setupFrame.data.soundafter,"arg1")) or
+			options.setupFrame.soundAfterList.lastOpt == 0
 		) then
 			return true
 		end
@@ -4134,27 +7459,27 @@ function module.options:Load()
 	self.setupFrame.soundAfterList.playButton = ELib:Icon(self.setupFrame.soundAfterList,"Interface\\AddOns\\MRT\\media\\DiesalGUIcons16x256x128",20,true):Point("LEFT",self.setupFrame.soundAfterList,"RIGHT",5,0)
 	self.setupFrame.soundAfterList.playButton.texture:SetTexCoord(0.375,0.4375,0.5,0.625)
 	self.setupFrame.soundAfterList.playButton:SetScript("OnClick",function()
-		if module.options.setupFrame.data.soundafter == "TTS" then
-			module:PlaySound(module.options.setupFrame.data.soundafter, {data={msg=(module.options.setupFrame.data.msg or "")},params={}})
-		elseif type(module.options.setupFrame.data.soundafter) == "string" and module.options.setupFrame.data.soundafter:find("^TTS:") then
-			module:PlaySound(module.options.setupFrame.data.soundafter, {data={msg=(module.options.setupFrame.data.msg or "")},params={}})
+		if options.setupFrame.data.soundafter == "TTS" then
+			module:PlaySound(options.setupFrame.data.soundafter, {data={msg=(options.setupFrame.data.msg or "")},params={}})
+		elseif type(options.setupFrame.data.soundafter) == "string" and options.setupFrame.data.soundafter:find("^TTS:") then
+			module:PlaySound(options.setupFrame.data.soundafter, {data={msg=(options.setupFrame.data.msg or "")},params={}})
 		else
-			module:PlaySound(module.options.setupFrame.data.soundafter)
+			module:PlaySound(options.setupFrame.data.soundafter)
 		end
 	end)
 
 	self.setupFrame.countdownCheck = ELib:Check(self.setupFrame.tab.tabs[1],L.ReminderCountdown..":"):Left(5):Tooltip(L.ReminderCountdownTooltip):OnClick(function(self)
-		if not module.options.setupFrame.setup then
+		if not options.setupFrame.setup then
 			if self:GetChecked() then
-				module.options.setupFrame.data.countdown = true
+				options.setupFrame.data.countdown = true
 			else
-				module.options.setupFrame.data.countdown = nil
+				options.setupFrame.data.countdown = nil
 			end
 		end
-		module.options.setupFrame:RebuildSetupPage()
+		options.setupFrame:RebuildSetupPage()
 	end)
 	function self.setupFrame.countdownCheck:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_CHAT or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_CHAT or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
 			return true
 		end
 	end
@@ -4163,7 +7488,7 @@ function module.options:Load()
 	do
 		local function countdownType_SetValue(_,arg1)
 			ELib:DropDownClose()
-			module.options.setupFrame.data.countdownType = arg1
+			options.setupFrame.data.countdownType = arg1
 			local val = ExRT.F.table_find3(module.datas.countdownType,arg1,1)
 			if val then
 				self.setupFrame.countdownType:SetText(val[2])
@@ -4190,8 +7515,8 @@ function module.options:Load()
 		end
 	end
 	function self.setupFrame.countdownType:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR or 
-			(module.options.setupFrame.countdownCheck:IsShown() and module.options.setupFrame.data.countdown and module:GetReminderType(module.options.setupFrame.data.msgSize) ~= REM.TYPE_CHAT) 
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR or 
+			(options.setupFrame.countdownCheck:IsShown() and options.setupFrame.data.countdown and module:GetReminderType(options.setupFrame.data.msgSize) ~= REM.TYPE_CHAT) 
 		then
 			return true
 		end
@@ -4214,7 +7539,7 @@ function module.options:Load()
 		end
 	end
 	function self.setupFrame.countdownTypeText:ExtraShown()
-		if module.options.setupFrame.countdownCheck:IsShown() and module.options.setupFrame.data.countdown and module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_CHAT then
+		if options.setupFrame.countdownCheck:IsShown() and options.setupFrame.data.countdown and module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_CHAT then
 			return true
 		end
 	end
@@ -4223,7 +7548,7 @@ function module.options:Load()
 	do
 		local function countdownVoice_SetValue(_,arg1)
 			ELib:DropDownClose()
-			module.options.setupFrame.data.countdownVoice = arg1
+			options.setupFrame.data.countdownVoice = arg1
 			local val = ExRT.F.table_find3(module.datas.vcountdowns,arg1,1)
 			if val then
 				self.setupFrame.countdownVoice:SetText(val[2])
@@ -4243,46 +7568,46 @@ function module.options:Load()
 		end
 	end
 	function self.setupFrame.countdownVoice:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
 			return true
 		end
 	end
 
 	self.setupFrame.copyCheck = ELib:Check(self.setupFrame.tab.tabs[1],L.ReminderCopyLabel..":"):Left(5):Tooltip(L.ReminderCopyLabelTooltip):OnClick(function(self)
 		if self:GetChecked() then
-			module.options.setupFrame.data.copy = true
+			options.setupFrame.data.copy = true
 		else
-			module.options.setupFrame.data.copy = nil
+			options.setupFrame.data.copy = nil
 		end
 	end)
 	function self.setupFrame.copyCheck:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
 			return true
 		end
 	end
 
 	self.setupFrame.disableRewrite = ELib:Check(self.setupFrame.tab.tabs[1],L.ReminderDisableRewrite..":"):Left(5):Tooltip(L.ReminderDisableRewriteTooltip):OnClick(function(self)
 		if self:GetChecked() then
-			module.options.setupFrame.data.norewrite = true
+			options.setupFrame.data.norewrite = true
 		else
-			module.options.setupFrame.data.norewrite = nil
+			options.setupFrame.data.norewrite = nil
 		end
 	end)
 	function self.setupFrame.disableRewrite:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_TEXT then
 			return true
 		end
 	end
 
 	self.setupFrame.disableDynamicUpdates = ELib:Check(self.setupFrame.tab.tabs[1],L.ReminderDisableDynamicUpdates..":"):Left(5):Tooltip(L.ReminderDisableDynamicUpdatesTooltip):OnClick(function(self)
 		if self:GetChecked() then
-			module.options.setupFrame.data.dynamicdisable = true
+			options.setupFrame.data.dynamicdisable = true
 		else
-			module.options.setupFrame.data.dynamicdisable = nil
+			options.setupFrame.data.dynamicdisable = nil
 		end
 	end)
 	function self.setupFrame.disableDynamicUpdates:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) ~= REM.TYPE_WA and module:GetReminderType(module.options.setupFrame.data.msgSize) ~= REM.TYPE_CHAT then
+		if module:GetReminderType(options.setupFrame.data.msgSize) ~= REM.TYPE_WA and module:GetReminderType(options.setupFrame.data.msgSize) ~= REM.TYPE_CHAT then
 			return true
 		end
 	end
@@ -4290,7 +7615,7 @@ function module.options:Load()
 	self.setupFrame.glowTypeEdit = ELib:DropDown(self.setupFrame.tab.tabs[1],220,#module.datas.glowTypes):AddText("|cffffd100"..L.ReminderGlowType..":"):Size(270)
 	do
 		local function glowType_SetValue(_,glowType)
-			module.options.setupFrame.data.glowType = glowType
+			options.setupFrame.data.glowType = glowType
 			local glow = ExRT.F.table_find3(module.datas.glowTypes,glowType,1)
 			if glow then
 				self.setupFrame.glowTypeEdit:SetText(glow[2])
@@ -4300,15 +7625,15 @@ function module.options:Load()
 			ELib:DropDownClose()
 
 			if glowType == 6 then
-				module.options.setupFrame.glowImage:SetValue(module.options.setupFrame.data.glowImage)
+				options.setupFrame.glowImage:SetValue(options.setupFrame.data.glowImage)
 			end
 
 			if not glowType or glowType == 1 or glowType == 3 or glowType == 7 then
-				module.options.setupFrame.glowNEdit.leftText:SetText(glowType == 7 and "HP, %:" or L.ReminderGlowParticles..":")
-				module.options.setupFrame.glowNEdit:Tooltip(glowType == 7 and L.ReminderExample..": |cff00ff0035|r" or L.ReminderFormatTipNameplateGlowAutocastSize)
+				options.setupFrame.glowNEdit.leftText:SetText(glowType == 7 and "HP, %:" or L.ReminderGlowParticles..":")
+				options.setupFrame.glowNEdit:Tooltip(glowType == 7 and L.ReminderExample..": |cff00ff0035|r" or L.ReminderFormatTipNameplateGlowAutocastSize)
 			end
 
-			module.options.setupFrame:RebuildSetupPage()
+			options.setupFrame:RebuildSetupPage()
 		end
 		self.setupFrame.glowTypeEdit.SetValue = glowType_SetValue
 
@@ -4322,7 +7647,7 @@ function module.options:Load()
 		end
 	end
 	function self.setupFrame.glowTypeEdit:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_NAMEPLATE or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_RAIDFRAME then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_NAMEPLATE or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_RAIDFRAME then
 			return true
 		end
 	end
@@ -4330,15 +7655,15 @@ function module.options:Load()
 	self.setupFrame.glowImage = ELib:DropDown(self.setupFrame.tab.tabs[1],220,#module.datas.glowImages):AddText("|cffffd100"..L.ReminderGlowImage..":"):Size(270):Shown(false)
 	do
 		local function glowImage_SetValue(_,glowImage)
-			module.options.setupFrame.glowImage.preview:SetTexture()
-			module.options.setupFrame.glowImage.lastOpt = glowImage
+			options.setupFrame.glowImage.preview:SetTexture()
+			options.setupFrame.glowImage.lastOpt = glowImage
 
 			local isCustomImg
 			if glowImage == 0 or type(glowImage) == 'string' then
 				isCustomImg = true
 				glowImage = glowImage ~= 0 and glowImage or nil
 			end
-			module.options.setupFrame.data.glowImage = glowImage
+			options.setupFrame.data.glowImage = glowImage
 			local glow = ExRT.F.table_find3(module.datas.glowImages,glowImage,1)
 			if isCustomImg then
 				self.setupFrame.glowImage:SetText(L.ReminderCustom)
@@ -4348,8 +7673,8 @@ function module.options:Load()
 			else
 				self.setupFrame.glowImage:SetText("Glow image "..(glowImage or 0))
 			end
-			module.options.setupFrame.glowImage.preview:Update()
-			module.options.setupFrame:RebuildSetupPage()
+			options.setupFrame.glowImage.preview:Update()
+			options.setupFrame:RebuildSetupPage()
 			ELib:DropDownClose()
 		end
 		self.setupFrame.glowImage.SetValue = glowImage_SetValue
@@ -4367,11 +7692,11 @@ function module.options:Load()
 
 		self.setupFrame.glowImage:SetScript("OnHide",function()
 			self.setupFrame.glowImageCustomEdit:Hide()
-			module.options.setupFrame:RebuildSetupPage()
+			options.setupFrame:RebuildSetupPage()
 		end)
 	end
 	function self.setupFrame.glowImage:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR or (module.options.setupFrame.glowTypeEdit:IsShown() and module.options.setupFrame.data.glowType == 6) then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR or (options.setupFrame.glowTypeEdit:IsShown() and options.setupFrame.data.glowType == 6) then
 			return true
 		end
 	end
@@ -4380,7 +7705,7 @@ function module.options:Load()
 	self.setupFrame.glowImage.preview:SetPoint("LEFT",self.setupFrame.glowImage,"RIGHT",5,0)
 	self.setupFrame.glowImage.preview:SetSize(30,30)
 	self.setupFrame.glowImage.preview.Update = function(self)
-		local glowImage = module.options.setupFrame.data.glowImage
+		local glowImage = options.setupFrame.data.glowImage
 		if type(glowImage) == 'string' then
 			if glowImage:find("^A:") then
 				self:SetTexCoord(0,1,0,1)
@@ -4408,11 +7733,11 @@ function module.options:Load()
 		if not isUser then return end
 		local text = self:GetText():trim()
 		if text == "" then text = nil end
-		module.options.setupFrame.data.glowImage = text
-		module.options.setupFrame.glowImage.preview:Update()
+		options.setupFrame.data.glowImage = text
+		options.setupFrame.glowImage.preview:Update()
 	end):Shown(false)
 	function self.setupFrame.glowImageCustomEdit:ExtraShown()
-		if module.options.setupFrame.glowImage:IsShown() and (type(module.options.setupFrame.data.glowImage) == "string" or module.options.setupFrame.glowImage.lastOpt == 0) then
+		if options.setupFrame.glowImage:IsShown() and (type(options.setupFrame.data.glowImage) == "string" or options.setupFrame.glowImage.lastOpt == 0) then
 			return true
 		end
 	end
@@ -4430,16 +7755,16 @@ function module.options:Load()
 		end
 		local text = self:GetText()
 		if text == "" then
-			module.options.setupFrame.data.glowColor = nil
-			module.options.setupFrame.glowColorEdit.preview:Update()
+			options.setupFrame.data.glowColor = nil
+			options.setupFrame.glowColorEdit.preview:Update()
 		elseif text:find("^[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]$") then
-			module.options.setupFrame.data.glowColor = text
-			module.options.setupFrame.glowColorEdit.preview:Update()
+			options.setupFrame.data.glowColor = text
+			options.setupFrame.glowColorEdit.preview:Update()
 			self:Disable()
 		end
 	end)
 	function self.setupFrame.glowColorEdit:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_NAMEPLATE or module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_RAIDFRAME then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_NAMEPLATE or module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_RAIDFRAME then
 			return true
 		end
 	end
@@ -4461,8 +7786,8 @@ function module.options:Load()
 	self.setupFrame.glowColorEdit.colorButton:SetSize(24,24)
 	self.setupFrame.glowColorEdit.colorButton:SetScript("OnClick",function(self)
 		local r,g,b,a
-		if module.options.setupFrame.data.glowColor then
-			local at,rt,gt,bt = module.options.setupFrame.data.glowColor:match("(..)(..)(..)(..)")
+		if options.setupFrame.data.glowColor then
+			local at,rt,gt,bt = options.setupFrame.data.glowColor:match("(..)(..)(..)(..)")
 			if bt then
 				r,g,b,a = tonumber(rt,16)/255,tonumber(gt,16)/255,tonumber(bt,16)/255,tonumber(at,16)/255
 			end
@@ -4481,11 +7806,11 @@ function module.options:Load()
 				else
 					newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
 				end
-				module.options.setupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
+				options.setupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
 	
-				module.options.setupFrame.glowColorEdit:SetText(module.options.setupFrame.data.glowColor)
-				module.options.setupFrame.glowColorEdit:Disable()
-				module.options.setupFrame.glowColorEdit.preview:Update()
+				options.setupFrame.glowColorEdit:SetText(options.setupFrame.data.glowColor)
+				options.setupFrame.glowColorEdit:Disable()
+				options.setupFrame.glowColorEdit.preview:Update()
 			end
 			ColorPickerFrame.func, ColorPickerFrame.cancelFunc, ColorPickerFrame.opacityFunc = nilFunc, nilFunc, nilFunc
 			ColorPickerFrame.opacity = a
@@ -4500,19 +7825,19 @@ function module.options:Load()
 			info.swatchFunc = function()
 				local newR, newG, newB = ColorPickerFrame:GetColorRGB()
 				local newA = ColorPickerFrame:GetColorAlpha()
-				module.options.setupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
+				options.setupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
 	
-				module.options.setupFrame.glowColorEdit:SetText(module.options.setupFrame.data.glowColor)
-				module.options.setupFrame.glowColorEdit:Disable()
-				module.options.setupFrame.glowColorEdit.preview:Update()
+				options.setupFrame.glowColorEdit:SetText(options.setupFrame.data.glowColor)
+				options.setupFrame.glowColorEdit:Disable()
+				options.setupFrame.glowColorEdit.preview:Update()
 			end
 			info.cancelFunc = function()
 				local newR, newG, newB, newA = ColorPickerFrame:GetPreviousValues()
-				module.options.setupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
+				options.setupFrame.data.glowColor = format("%02x%02x%02x%02x",newA*255,newR*255,newG*255,newB*255)
 	
-				module.options.setupFrame.glowColorEdit:SetText(module.options.setupFrame.data.glowColor)
-				module.options.setupFrame.glowColorEdit:Disable()
-				module.options.setupFrame.glowColorEdit.preview:Update()
+				options.setupFrame.glowColorEdit:SetText(options.setupFrame.data.glowColor)
+				options.setupFrame.glowColorEdit:Disable()
+				options.setupFrame.glowColorEdit.preview:Update()
 			end
 			ColorPickerFrame:SetupColorPickerAndShow(info)
 		end
@@ -4533,30 +7858,30 @@ function module.options:Load()
 
 	self.setupFrame.glowThickEdit = ELib:Edit(self.setupFrame.tab.tabs[1]):Size(270,20):LeftText(L.ReminderGlowThick..":"):OnChange(function(self,isUser)
 		if not isUser then return end
-		module.options.setupFrame.data.glowThick = tonumber( self:GetText() )
+		options.setupFrame.data.glowThick = tonumber( self:GetText() )
 	end):Tooltip(L.ReminderFormatTipNameplateGlowSize)
 	function self.setupFrame.glowThickEdit:ExtraShown()
-		if module.options.setupFrame.glowTypeEdit:IsShown() and (module.options.setupFrame.data.glowType == 1 or module.options.setupFrame.data.glowType == 4 or module.options.setupFrame.data.glowType == 7 or not module.options.setupFrame.data.glowType) then
+		if options.setupFrame.glowTypeEdit:IsShown() and (options.setupFrame.data.glowType == 1 or options.setupFrame.data.glowType == 4 or options.setupFrame.data.glowType == 7 or not options.setupFrame.data.glowType) then
 			return true
 		end
 	end
 
 	self.setupFrame.glowScaleEdit = ELib:Edit(self.setupFrame.tab.tabs[1]):Size(270,20):LeftText(L.ReminderGlowScale..":"):OnChange(function(self,isUser)
 		if not isUser then return end
-		module.options.setupFrame.data.glowScale = tonumber( self:GetText() )
+		options.setupFrame.data.glowScale = tonumber( self:GetText() )
 	end):Tooltip(L.ReminderFormatTipNameplateGlowScale)
 	function self.setupFrame.glowScaleEdit:ExtraShown()
-		if module.options.setupFrame.glowTypeEdit:IsShown() and (module.options.setupFrame.data.glowType == 1 or module.options.setupFrame.data.glowType == 2 or module.options.setupFrame.data.glowType == 3 or module.options.setupFrame.data.glowType == 6 or not module.options.setupFrame.data.glowType) then
+		if options.setupFrame.glowTypeEdit:IsShown() and (options.setupFrame.data.glowType == 1 or options.setupFrame.data.glowType == 2 or options.setupFrame.data.glowType == 3 or options.setupFrame.data.glowType == 6 or not options.setupFrame.data.glowType) then
 			return true
 		end
 	end
 
 	self.setupFrame.glowNEdit = ELib:Edit(self.setupFrame.tab.tabs[1]):Size(270,20):LeftText(L.ReminderGlowParticles..":"):OnChange(function(self,isUser)
 		if not isUser then return end
-		module.options.setupFrame.data.glowN = tonumber( self:GetText() )
+		options.setupFrame.data.glowN = tonumber( self:GetText() )
 	end):Tooltip(L.ReminderFormatTipNameplateGlowAutocastSize)
 	function self.setupFrame.glowNEdit:ExtraShown()
-		if module.options.setupFrame.glowTypeEdit:IsShown() and (module.options.setupFrame.data.glowType == 1 or module.options.setupFrame.data.glowType == 3 or module.options.setupFrame.data.glowType == 7 or not module.options.setupFrame.data.glowType) then
+		if options.setupFrame.glowTypeEdit:IsShown() and (options.setupFrame.data.glowType == 1 or options.setupFrame.data.glowType == 3 or options.setupFrame.data.glowType == 7 or not options.setupFrame.data.glowType) then
 			return true
 		end
 	end
@@ -4565,22 +7890,22 @@ function module.options:Load()
 		if not isUser then return end
 		local text = self:GetText():trim()
 		if text == "" then text = nil end
-		module.options.setupFrame.data.customOpt1 = text
+		options.setupFrame.data.customOpt1 = text
 	end):Shown(false)
 	function self.setupFrame.customOpt1:ExtraShown()
-		if module:GetReminderType(module.options.setupFrame.data.msgSize) == REM.TYPE_BAR then
+		if module:GetReminderType(options.setupFrame.data.msgSize) == REM.TYPE_BAR then
 			return true
 		end
 	end
 
 	self.setupFrame.debugCheck = ELib:Check(self.setupFrame.tab.tabs[1],"Debug:"):Left(5):OnClick(function(self)
 		if self:GetChecked() then
-			module.options.setupFrame.data.debug = true
+			options.setupFrame.data.debug = true
 			if not module.db.debug then
 				module:ToggleDebugMode()
 			end
 		else
-			module.options.setupFrame.data.debug = nil
+			options.setupFrame.data.debug = nil
 		end
 	end):Shown(module.db.debug)
 	function self.setupFrame.debugCheck:ExtraShown()
@@ -4596,6 +7921,7 @@ function module.options:Load()
 			[self.setupFrame.msgSize] = 20,
 			[self.setupFrame.msgEdit] = 30,
 			[self.setupFrame.durEdit] = 40,
+			[self.setupFrame.durRevese] = 45,
 			[self.setupFrame.soundList] = 50,
 			[self.setupFrame.soundCustom] = 60,
 			[self.setupFrame.soundAfterList] = 70,
@@ -4660,23 +7986,27 @@ function module.options:Load()
 
 
 	self.setupFrame.disableCheck = ELib:Check(self.setupFrame.tab.tabs[4],L.ReminderPersonalDisable..":"):Point("TOPLEFT",350,-10):Left(5):OnClick(function(self)
-		UpdateOption(module.options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,0))
+		UpdateOption(options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,0))
 	end)
 
 	self.setupFrame.disableSound = ELib:Check(self.setupFrame.tab.tabs[4],L.ReminderPersonalSoundDisable..":"):Point("TOPLEFT",self.setupFrame.disableCheck,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
-		UpdateOption(module.options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,1))
+		UpdateOption(options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,1))
 	end)
 
 	self.setupFrame.disableUpdates = ELib:Check(self.setupFrame.tab.tabs[4],L.ReminderPersonalUpdateDisable..":"):Point("TOPLEFT",self.setupFrame.disableSound,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
-		UpdateOption(module.options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,2))
+		UpdateOption(options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,2))
 	end)
 
 	self.setupFrame.disableUpdatesSound = ELib:Check(self.setupFrame.tab.tabs[4],L.ReminderPersonalUpdateSoundDisable..":"):Point("TOPLEFT",self.setupFrame.disableUpdates,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
-		UpdateOption(module.options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,4))
+		UpdateOption(options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,4))
 	end)
 
 	self.setupFrame.disableSynq = ELib:Check(self.setupFrame.tab.tabs[4],L.ReminderPersonalSendDisable..":"):Point("TOPLEFT",self.setupFrame.disableUpdatesSound,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
-		UpdateOption(module.options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,3))
+		UpdateOption(options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,3))
+	end)
+
+	self.setupFrame.disableTimeLine = ELib:Check(self.setupFrame.tab.tabs[4],L.ReminderNotShowOnTimeline..":"):Point("TOPLEFT",self.setupFrame.disableSynq,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
+		UpdateOption(options.setupFrame.data.uid,not self:GetChecked(),bit.lshift(1,5))
 	end)
 
 
@@ -4696,9 +8026,9 @@ function module.options:Load()
 				self.setupFrame.bossList:SetText(L.ReminderCustomEncounterID)
 			end
 			if encounterID ~= 0 then
-				module.options.setupFrame.data.bossID = encounterID
+				options.setupFrame.data.bossID = encounterID
 			end
-			module.options.setupFrame.tab.tabs[3].button.alert:Update()
+			options.setupFrame.tab.tabs[3].button.alert:Update()
 			ELib:DropDownClose()
 		end
 		self.setupFrame.bossList.SetValue = bossList_SetValue
@@ -4714,10 +8044,16 @@ function module.options:Load()
 				isTitle = true,
 			}
 			for j=2,#instance do
+				local bossID, bossImg = instance[j]
+				if ExRT.GDB.encounterIDtoEJ[bossID] and EJ_GetCreatureInfo then
+					bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
+				end
 				List[#List+1] = {
-					text = L.bossName[ instance[j] ],
-					arg1 = instance[j],
+					text = L.bossName[ bossID ],
+					arg1 = bossID,
 					func = bossList_SetValue,
+					icon = bossImg,
+					iconsize = 32,
 				}
 			end
 		end
@@ -4733,9 +8069,13 @@ function module.options:Load()
 	end
 
 	self.setupFrame.bossCustom = ELib:Edit(self.setupFrame.tab.tabs[3]):Size(270,20):Point("TOPLEFT",self.setupFrame.bossList,"TOPLEFT",0,0):LeftText(L.ReminderEncounterID..":"):Shown(false):OnChange(function(self,isUser)
-		if not isUser then return end
-		module.options.setupFrame.data.bossID = tonumber(self:GetText())
-		module.options.setupFrame.tab.tabs[3].button.alert:Update()
+		if isUser then
+			options.setupFrame.data.bossID = tonumber(self:GetText())
+		end
+		self:ExtraText(L.bossName[options.setupFrame.data.bossID or 0] or "")
+		if isUser then
+			options.setupFrame.tab.tabs[3].button.alert:Update()
+		end
 	end):Tooltip(function()
 		if module.db.lastEncounterID then
 			return L.ReminderEncounterIDLast..": "..module.db.lastEncounterID
@@ -4745,8 +8085,8 @@ function module.options:Load()
 	end)
 
 	self.setupFrame.bossList.auto = ELib:Button(self.setupFrame.tab.tabs[3],L.ReminderAuto):Tooltip(L.ReminderEncounterIDLastAutoTip):Point("LEFT",self.setupFrame.bossList,"RIGHT",5,0):Size(40,20):OnClick(function()
-		module.options.setupFrame.data.bossID = module.db.lastEncounterID
-		module.options.setupFrame.tab.tabs[3].button.alert:Update()
+		options.setupFrame.data.bossID = module.db.lastEncounterID
+		options.setupFrame.tab.tabs[3].button.alert:Update()
 		self.setupFrame:Update(self.setupFrame.data)
 	end):OnShow(function(self)
 		if module.db.lastEncounterID then
@@ -4759,7 +8099,7 @@ function module.options:Load()
 	self.setupFrame.bossDiff = ELib:DropDown(self.setupFrame.tab.tabs[3],220,#module.datas.bossDiff):AddText("|cffffd100"..L.ReminderRaidDiff..":"):Size(270):Point("TOPLEFT",self.setupFrame.bossCustom,"BOTTOMLEFT",0,-5)
 	do
 		local function bossDiff_SetValue(_,diffID)
-			module.options.setupFrame.data.diffID = diffID
+			options.setupFrame.data.diffID = diffID
 			local diff = ExRT.F.table_find3(module.datas.bossDiff,diffID,1)
 			if diff then
 				self.setupFrame.bossDiff:SetText(diff[2])
@@ -4802,8 +8142,8 @@ function module.options:Load()
 			self:ExtraText("")
 		end
 		if not isUser then return end
-		module.options.setupFrame.data.zoneID = zoneID
-		module.options.setupFrame.tab.tabs[3].button.alert:Update()
+		options.setupFrame.data.zoneID = zoneID
+		options.setupFrame.tab.tabs[3].button.alert:Update()
 	end):Tooltip(function()
 		local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
 		return L.ReminderZoneIDTip1..(name or "")..L.ReminderZoneIDTip2..(instanceID or 0)
@@ -4813,9 +8153,9 @@ function module.options:Load()
 	self.setupFrame.zoneID.dd.isModern = true
 	do
 		local function SetZone(_,arg)
-			module.options.setupFrame.data.zoneID = tostring(arg)
+			options.setupFrame.data.zoneID = tostring(arg)
 			ELib:DropDownClose()
-			module.options.setupFrame.tab.tabs[3].button.alert:Update()
+			options.setupFrame.tab.tabs[3].button.alert:Update()
 			self.setupFrame:Update(self.setupFrame.data)
 		end
 		self.setupFrame.zoneID.dd.List = {
@@ -4849,19 +8189,13 @@ function module.options:Load()
 						end
 					end
 				end
-				tinsert(self.setupFrame.zoneID.dd.List, 2, {text = (line[1] == -1 and (EXPANSION_SEASON_NAME or "%s Season %d"):format(EXPANSION_NAME9,999):gsub("999",""):gsub("%-й *","") or line[1] == -2 and "New" or _G["EXPANSION_NAME"..line[1]] or "Expansion "..line[1]),subMenu = subMenu})
+				tinsert(self.setupFrame.zoneID.dd.List, 2, {text = (line[1] == -1 and (EXPANSION_SEASON_NAME or "%s Season %d"):format(line.n or "?",line.s) or line[1] == -2 and "New" or _G["EXPANSION_NAME"..line[1]] or "Expansion "..line[1]),subMenu = subMenu})
 			end
 		end
 	end
 	self.setupFrame.zoneID.dd:Hide()
 
 	self.setupFrame.zoneID.auto = ELib:Button(self.setupFrame.tab.tabs[3],LFG_LIST_SELECT or "Select"):Tooltip(L.ReminderZoneIDAutoTip):Point("LEFT",self.setupFrame.zoneID,"RIGHT",5,0):Size(40,20):OnClick(function()
-		--[[
-		local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
-		module.options.setupFrame.data.zoneID = tostring(instanceID)
-		module.options.setupFrame.tab.tabs[3].button.alert:Update()
-		self.setupFrame:Update(self.setupFrame.data)
-		]]
 		self.setupFrame.zoneID.dd:Click()
 	end)
 
@@ -4871,9 +8205,9 @@ function module.options:Load()
 
 	self.setupFrame.allPlayersCheck = ELib:Check(self.setupFrame.tab.tabs[3],L.ReminderAllPlayers..":"):Point("TOPLEFT",self.setupFrame.zoneID,"BOTTOMLEFT",0,-10):Left(5):OnClick(function(self)
 		if self:GetChecked() then
-			module.options.setupFrame.data.allPlayers = true
+			options.setupFrame.data.allPlayers = true
 		else
-			module.options.setupFrame.data.allPlayers = nil
+			options.setupFrame.data.allPlayers = nil
 		end
 	end)
 
@@ -4883,12 +8217,12 @@ function module.options:Load()
 		for j=1,5 do
 			local chk = ELib:Check(self.setupFrame.tab.tabs[3],"Player "..((i-1)*5+j)):Point("LEFT",10+(j-1)*100,0):Point("TOP",self.setupFrame.allPlayersCheck,"BOTTOM",0,-5 -(i-1)*25):OnClick(function(self)
 				if self:GetChecked() then
-					module.options.setupFrame.data.players[self.playerName] = true
+					options.setupFrame.data.players[self.playerName] = true
 				else
-					module.options.setupFrame.data.players[self.playerName] = nil
+					options.setupFrame.data.players[self.playerName] = nil
 				end
-				module.options.setupFrame.data.allPlayers = nil
-				module.options.setupFrame.allPlayersCheck:SetChecked(false)
+				options.setupFrame.data.allPlayers = nil
+				options.setupFrame.allPlayersCheck:SetChecked(false)
 			end)
 			self.setupFrame.playersChecks[i][j] = chk
 			chk.text:SetWidth(80)
@@ -4933,18 +8267,18 @@ function module.options:Load()
 		for _,name in ExRT.F.IterateRoster do
 			inRaid[ExRT.F.delUnitNameServer(name)] = true
 		end
-		for k,v in pairs(module.options.setupFrame.data.players) do
+		for k,v in pairs(options.setupFrame.data.players) do
 			if not inRaid[k] then
-				module.options.setupFrame.data.players[k] = nil
+				options.setupFrame.data.players[k] = nil
 			end
 		end
 		local names = {strsplit(" ",self:GetText():gsub(" +"," "):trim(),nil)}
 		for i=1,#names do
-			module.options.setupFrame.data.players[ names[i] ]=true
+			options.setupFrame.data.players[ names[i] ]=true
 		end
 		if #names > 0 then
-			module.options.setupFrame.data.allPlayers = nil
-			module.options.setupFrame.allPlayersCheck:SetChecked(false)
+			options.setupFrame.data.allPlayers = nil
+			options.setupFrame.allPlayersCheck:SetChecked(false)
 		end
 	end):Tooltip(L.ReminderPlayerNamesTip)
 
@@ -4952,14 +8286,14 @@ function module.options:Load()
 		if not isUser then return end
 		local text = self:GetText():trim()
 		if text == "" then text = nil end
-		module.options.setupFrame.data.notePattern = text
+		options.setupFrame.data.notePattern = text
 		if text ~= nil then
-			module.options.setupFrame.data.allPlayers = nil
-			module.options.setupFrame.allPlayersCheck:SetChecked(false)
+			options.setupFrame.data.allPlayers = nil
+			options.setupFrame.allPlayersCheck:SetChecked(false)
 		end
 	end):Tooltip(function()
 		local str = L.ReminderNotePattTip1
-		local isOkay,list = pcall(module.FindPlayersListInNote,0,module.options.setupFrame.data.notePattern)
+		local isOkay,list = pcall(module.FindPlayersListInNote,0,options.setupFrame.data.notePattern)
 		if isOkay and list then
 			str = str .. L.ReminderNotePattTip2..list:gsub("([%S]+)",function(name)
 				if not UnitName(name) then
@@ -4976,12 +8310,12 @@ function module.options:Load()
 	for i=1,#module.datas.rolesList do
 		local chk = ELib:Check(self.setupFrame.tab.tabs[3],module.datas.rolesList[i][2]):Point("LEFT",10+((i-1)%5)*100,0):Point("TOP",self.setupFrame.notePatternEdit,"BOTTOM",0,-10-floor((i-1)/5)*25):OnClick(function(self)
 			if self:GetChecked() then
-				module.options.setupFrame.data["role"..self.token] = true
+				options.setupFrame.data["role"..self.token] = true
 			else
-				module.options.setupFrame.data["role"..self.token] = nil
+				options.setupFrame.data["role"..self.token] = nil
 			end
-			module.options.setupFrame.data.allPlayers = nil
-			module.options.setupFrame.allPlayersCheck:SetChecked(false)
+			options.setupFrame.data.allPlayers = nil
+			options.setupFrame.allPlayersCheck:SetChecked(false)
 		end)
 		self.setupFrame.rolesChecks[i] = chk
 		chk.text:SetWidth(80)
@@ -5000,12 +8334,12 @@ function module.options:Load()
 		local classColor = RAID_CLASS_COLORS[class] and RAID_CLASS_COLORS[class].colorStr and "|c"..RAID_CLASS_COLORS[class].colorStr or ""
 		local chk = ELib:Check(self.setupFrame.tab.tabs[3],classColor..className):Point("LEFT",10+(i-1)*100,0):Point("TOP",self.setupFrame.rolesChecks[1],"BOTTOM",0,-10-25-25*floor((j-1)/5)):OnClick(function(self)
 			if self:GetChecked() then
-				module.options.setupFrame.data["class"..self.token] = true
+				options.setupFrame.data["class"..self.token] = true
 			else
-				module.options.setupFrame.data["class"..self.token] = nil
+				options.setupFrame.data["class"..self.token] = nil
 			end
-			module.options.setupFrame.data.allPlayers = nil
-			module.options.setupFrame.allPlayersCheck:SetChecked(false)
+			options.setupFrame.data.allPlayers = nil
+			options.setupFrame.allPlayersCheck:SetChecked(false)
 		end)
 		self.setupFrame.classChecks[j] = chk
 		chk.text:SetWidth(80)
@@ -5018,9 +8352,9 @@ function module.options:Load()
 
 	self.setupFrame.neverCheck = ELib:Check(self.setupFrame.tab.tabs[3],L.ReminderDisable..":"):Point("LEFT",self.setupFrame.allPlayersCheck,"LEFT",0,0):Point("TOP",self.setupFrame.classChecks[1],"BOTTOM",0,-10-50):Left(5):OnClick(function(self)
 		if self:GetChecked() then
-			module.options.setupFrame.data.disabled = true
+			options.setupFrame.data.disabled = true
 		else
-			module.options.setupFrame.data.disabled = nil
+			options.setupFrame.data.disabled = nil
 		end
 	end):Tooltip(L.ReminderDisableTip)
 
@@ -5044,18 +8378,18 @@ function module.options:Load()
 			self.sub:SetHeight(self.HEIGHT or 10)
 		end
 
-		local heightNow = 5 + 30 + (30 + (module.options.setupFrame.triggersScrollFrame.generalOptions.sub:IsShown() and (module.options.setupFrame.triggersScrollFrame.generalOptions.HEIGHT or 10) or 1))
-		for _,t in pairs(module.options.setupFrame.triggersScrollFrame.triggers) do
+		local heightNow = 5 + 30 + (30 + (options.setupFrame.triggersScrollFrame.generalOptions.sub:IsShown() and (options.setupFrame.triggersScrollFrame.generalOptions.HEIGHT or 10) or 1))
+		for _,t in pairs(options.setupFrame.triggersScrollFrame.triggers) do
 			if t:IsShown() then
 				local height = t.HEIGHT or 10
 				heightNow = heightNow + 5 + 30 + (t.sub:IsShown() and height or 1)
 			end
 		end
-		module.options.setupFrame.triggersScrollFrame:Height(heightNow)
+		options.setupFrame.triggersScrollFrame:Height(heightNow)
 	end
 
 	function self.setupFrame.UpdateTriggerAlerts(button)
-		local triggerData = module.options.setupFrame.data.triggers[button.num]
+		local triggerData = options.setupFrame.data.triggers[button.num]
 		if not triggerData then
 			return
 		end
@@ -5217,7 +8551,7 @@ function module.options:Load()
 		button.state = 1
 		button:Update()
 
-		button.HEIGHT = 5 + 25 * 4
+		button.HEIGHT = 5 + 25 * 5
 
 		local function CheckDelayTimeText(text)
 			if not text then
@@ -5238,9 +8572,9 @@ function module.options:Load()
 				if not CheckDelayTimeText(text) then
 					text = nil
 				end
-				module.options.setupFrame.data.delayedActivation = text
+				options.setupFrame.data.delayedActivation = text
 			end
-			if module.options.setupFrame.data.delayedActivation then
+			if options.setupFrame.data.delayedActivation then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5248,13 +8582,23 @@ function module.options:Load()
 		end)
 		self.setupFrame.delayedActivation.Background:SetColorTexture(1,1,1,1)
 
-		self.setupFrame.sametargetsCheck = ELib:Check(button.sub,L.ReminderSameTarget..":"):Point("TOPLEFT",self.setupFrame.delayedActivation,"BOTTOMLEFT",0,-5):Left(5):Tooltip(L.ReminderSameTargetTooltip):OnClick(function(self)
+
+		self.setupFrame.hideTextChangedCheck = ELib:Check(button.sub,L.ReminderHideTextAfterStatus..":"):Point("TOPLEFT",self.setupFrame.delayedActivation,"BOTTOMLEFT",0,-5):Left(5):Tooltip(L.ReminderHideTextAfterStatusTip):OnClick(function(self)
 			if self:GetChecked() then
-				module.options.setupFrame.data.sametargets = true
+				options.setupFrame.data.hideTextChanged = true
 			else
-				module.options.setupFrame.data.sametargets = nil
+				options.setupFrame.data.hideTextChanged = nil
 			end
 		end)
+
+		self.setupFrame.sametargetsCheck = ELib:Check(button.sub,L.ReminderSameTarget..":"):Point("TOPLEFT",self.setupFrame.hideTextChangedCheck,"BOTTOMLEFT",0,-5):Left(5):Tooltip(L.ReminderSameTargetTooltip):OnClick(function(self)
+			if self:GetChecked() then
+				options.setupFrame.data.sametargets = true
+			else
+				options.setupFrame.data.sametargets = nil
+			end
+		end)
+
 	
 		self.setupFrame.specialTarget = ELib:Edit(button.sub):Size(270,20):Point("TOPLEFT",self.setupFrame.sametargetsCheck,"BOTTOMLEFT",0,-5):LeftText(L.ReminderSpecialTarget..":"):Tooltip(L.ReminderSpecialTargetTooltip):OnChange(function(self,isUser)
 			local text = self:GetText():trim()
@@ -5265,7 +8609,7 @@ function module.options:Load()
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			end
 			if not isUser then return end
-			module.options.setupFrame.data.specialTarget = text
+			options.setupFrame.data.specialTarget = text
 		end)
 		self.setupFrame.specialTarget.Background:SetColorTexture(1,1,1,1)
 
@@ -5282,7 +8626,7 @@ function module.options:Load()
 			end
 			if not isUser then return end
 			if text == "" then text = nil end
-			module.options.setupFrame.data.extraCheck = text
+			options.setupFrame.data.extraCheck = text
 		end)
 		self.setupFrame.extraCheck.Background:SetColorTexture(1,1,1,1)
 
@@ -5349,12 +8693,12 @@ function module.options:Load()
 			self.state = self.state == 1 and 2 or self.state == 2 and 3 or self.state == 3 and 4 or 1
 			self:Update()
 
-			module.options.setupFrame.data.triggers[button.num].andor = self.state
+			options.setupFrame.data.triggers[button.num].andor = self.state
 
 			self:GetScript("OnLeave")(self)
 			self:GetScript("OnEnter")(self)
 		end):OnEnter(function(self)
-			local triggers = module.options.setupFrame.data.triggers
+			local triggers = options.setupFrame.data.triggers
 			local triggersStr = ""
 			local opened = false
 			for i=#triggers,2,-1 do
@@ -5370,9 +8714,9 @@ function module.options:Load()
 					opened = true
 				end
 			end
-			triggersStr = (opened and "(" or "")..(module.options.setupFrame.data.triggers[1].invert and "!" or "").."1"..triggersStr
+			triggersStr = (opened and "(" or "")..(options.setupFrame.data.triggers[1].invert and "!" or "").."1"..triggersStr
 
-			if module.options.setupFrame.data.triggers[button.num].andor == 4 then
+			if options.setupFrame.data.triggers[button.num].andor == 4 then
 				triggersStr = L.ReminderTriggerTipIgnored:format(tostring(button.num)).."\n" .. triggersStr
 			end
 
@@ -5442,15 +8786,15 @@ function module.options:Load()
 		button.eventDropDown = ELib:DropDown(button.sub,220,#module.datas.events):AddText("|cffffd100"..L.ReminderCond..":"):Size(270):Point("TOPLEFT",180,-5)
 		do
 			local function events_SetValue(_,arg1)
-				module.options.setupFrame.data.triggers[button.num].event = arg1
+				options.setupFrame.data.triggers[button.num].event = arg1
 
 				if arg1 == 1 then
-					if not module.options.setupFrame.data.triggers[button.num].eventCLEU then
-						module.options.setupFrame.data.triggers[button.num].eventCLEU = "SPELL_CAST_SUCCESS"
+					if not options.setupFrame.data.triggers[button.num].eventCLEU then
+						options.setupFrame.data.triggers[button.num].eventCLEU = "SPELL_CAST_SUCCESS"
 					end
-					module.options.setupFrame:UpdateTriggerFieldsForEvent(button,module.options.setupFrame.data.triggers[button.num].eventCLEU or "SPELL_CAST_SUCCESS")
+					options.setupFrame:UpdateTriggerFieldsForEvent(button,options.setupFrame.data.triggers[button.num].eventCLEU or "SPELL_CAST_SUCCESS")
 				else
-					module.options.setupFrame:UpdateTriggerFieldsForEvent(button,arg1)
+					options.setupFrame:UpdateTriggerFieldsForEvent(button,arg1)
 				end
 				ELib:DropDownClose()
 			end
@@ -5487,8 +8831,8 @@ function module.options:Load()
 		button.eventCLEU = ELib:DropDown(button.sub,220,#module.C[1].subEvents):AddText("|cffffd100"..L.ReminderCombatLog..":"):Size(270):Point("TOPLEFT",button.eventDropDown,"BOTTOMLEFT",0,-5)
 		do
 			local function events_CLEU_SetValue(_,arg1)
-				module.options.setupFrame.data.triggers[button.num].eventCLEU = arg1
-				module.options.setupFrame:UpdateTriggerFieldsForEvent(button,arg1)
+				options.setupFrame.data.triggers[button.num].eventCLEU = arg1
+				options.setupFrame:UpdateTriggerFieldsForEvent(button,arg1)
 				ELib:DropDownClose()
 			end
 
@@ -5509,9 +8853,9 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].sourceName = text
+				options.setupFrame.data.triggers[button.num].sourceName = text
 			end
-			if module.options.setupFrame.data.triggers[button.num].sourceName then
+			if options.setupFrame.data.triggers[button.num].sourceName then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5523,9 +8867,9 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].sourceID = text
+				options.setupFrame.data.triggers[button.num].sourceID = text
 			end
-			if module.options.setupFrame.data.triggers[button.num].sourceID then
+			if options.setupFrame.data.triggers[button.num].sourceID then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5538,7 +8882,7 @@ function module.options:Load()
 		do
 			local function unit_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].sourceUnit = arg1
+				options.setupFrame.data.triggers[button.num].sourceUnit = arg1
 				local val = ExRT.F.table_find3(module.datas.units,arg1,1)
 				if type(arg1) == "number" and arg1 < 0 then
 					button.sourceUnit:SetText(L.ReminderSourceUnit1.." "..(-arg1))
@@ -5549,7 +8893,7 @@ function module.options:Load()
 				end
 				button:UpdateTriggerAlerts()
 
-				if module.options.setupFrame.data.triggers[button.num].sourceUnit then
+				if options.setupFrame.data.triggers[button.num].sourceUnit then
 					button.sourceUnit.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 				else
 					button.sourceUnit.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5571,7 +8915,7 @@ function module.options:Load()
 				for i=ListMaxDef+1,#List do
 					List[i] = nil
 				end
-				local triggers = module.options.setupFrame.data.triggers
+				local triggers = options.setupFrame.data.triggers
 				for i=1,#triggers do
 					if i ~= triggerNum then
 						List[#List+1] = {
@@ -5589,7 +8933,7 @@ function module.options:Load()
 		do
 			local function mark_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].sourceMark = arg1
+				options.setupFrame.data.triggers[button.num].sourceMark = arg1
 				local val = ExRT.F.table_find3(module.datas.marks,arg1,1)
 				if val then
 					button.sourceMark:SetText(val[2])
@@ -5597,7 +8941,7 @@ function module.options:Load()
 					button.sourceMark:SetText(arg1)
 				end
 
-				if module.options.setupFrame.data.triggers[button.num].sourceMark then
+				if options.setupFrame.data.triggers[button.num].sourceMark then
 					button.sourceMark.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 				else
 					button.sourceMark.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5619,9 +8963,9 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].targetName = text
+				options.setupFrame.data.triggers[button.num].targetName = text
 			end
-			if module.options.setupFrame.data.triggers[button.num].targetName then
+			if options.setupFrame.data.triggers[button.num].targetName then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5633,9 +8977,9 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].targetID = text
+				options.setupFrame.data.triggers[button.num].targetID = text
 			end
-			if module.options.setupFrame.data.triggers[button.num].targetID then
+			if options.setupFrame.data.triggers[button.num].targetID then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5648,7 +8992,7 @@ function module.options:Load()
 		do
 			local function unit_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].targetUnit = arg1
+				options.setupFrame.data.triggers[button.num].targetUnit = arg1
 				local val = ExRT.F.table_find3(module.datas.units,arg1,1)
 				if type(arg1) == "number" and arg1 < 0 then
 					button.targetUnit:SetText(L.ReminderSourceUnit1.." "..(-arg1))
@@ -5659,7 +9003,7 @@ function module.options:Load()
 				end
 				button:UpdateTriggerAlerts()
 
-				if module.options.setupFrame.data.triggers[button.num].targetUnit then
+				if options.setupFrame.data.triggers[button.num].targetUnit then
 					button.targetUnit.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 				else
 					button.targetUnit.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5681,7 +9025,7 @@ function module.options:Load()
 				for i=ListMaxDef+1,#List do
 					List[i] = nil
 				end
-				local triggers = module.options.setupFrame.data.triggers
+				local triggers = options.setupFrame.data.triggers
 				for i=1,#triggers do
 					if i ~= triggerNum then
 						List[#List+1] = {
@@ -5699,7 +9043,7 @@ function module.options:Load()
 		do
 			local function mark_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].targetMark = arg1
+				options.setupFrame.data.triggers[button.num].targetMark = arg1
 				local val = ExRT.F.table_find3(module.datas.marks,arg1,1)
 				if val then
 					button.targetMark:SetText(val[2])
@@ -5707,7 +9051,7 @@ function module.options:Load()
 					button.targetMark:SetText(arg1)
 				end
 
-				if module.options.setupFrame.data.triggers[button.num].targetMark then
+				if options.setupFrame.data.triggers[button.num].targetMark then
 					button.targetUnit.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 				else
 					button.targetMark.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5730,7 +9074,7 @@ function module.options:Load()
 		do
 			local function role_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].targetRole = arg1
+				options.setupFrame.data.triggers[button.num].targetRole = arg1
 				local val = ExRT.F.table_find3(module.datas.rolesList,arg1,1)
 				if type(arg1) == "number" and arg1 > 100 then
 					local text = ""
@@ -5757,7 +9101,7 @@ function module.options:Load()
 					end
 				end
 
-				if module.options.setupFrame.data.triggers[button.num].targetRole then
+				if options.setupFrame.data.triggers[button.num].targetRole then
 					button.targetRole.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 				else
 					button.targetRole.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5766,7 +9110,7 @@ function module.options:Load()
 			button.targetRole.SetValue = role_SetValue
 
 			local function role_SetCheck(self,checkState)
-				local val = module.options.setupFrame.data.triggers[button.num].targetRole or 0
+				local val = options.setupFrame.data.triggers[button.num].targetRole or 0
 				if val < 100 then
 					local t = ExRT.F.table_find3(module.datas.rolesList,val,1)
 					val = 100 + (t and t[4] or 0)
@@ -5812,7 +9156,7 @@ function module.options:Load()
 			if not spellID then
 				self.SIDtext:SetText("")
 			else
-				local t = module.options.setupFrame.data.triggers[button.num]
+				local t = options.setupFrame.data.triggers[button.num]
 				if t.event == 1 and t.eventCLEU == "ENVIRONMENTAL_DAMAGE" then
 					if spellID == 1 then spellID = 110122
 					elseif spellID == 2 then spellID = 68730
@@ -5825,16 +9169,16 @@ function module.options:Load()
 				self.SIDtext:SetText((spellTexture and "|T"..spellTexture..":16|t " or "")..(spellName or ""))
 			end
 			if isUser then
-				module.options.setupFrame.data.triggers[button.num].spellID = tonumber(self:GetText())
+				options.setupFrame.data.triggers[button.num].spellID = tonumber(self:GetText())
 				button:UpdateTriggerAlerts()
 			end
-			if module.options.setupFrame.data.triggers[button.num].spellID then
+			if options.setupFrame.data.triggers[button.num].spellID then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
 			end
 		end):Tooltip(function(self)
-			local t = module.options.setupFrame.data.triggers[button.num]
+			local t = options.setupFrame.data.triggers[button.num]
  			if t.event == 1 and t.eventCLEU == "ENVIRONMENTAL_DAMAGE" then
 				self.lockTooltipText = false
 				return "1 - "..STRING_ENVIRONMENTAL_DAMAGE_FALLING.."\n2 - "..STRING_ENVIRONMENTAL_DAMAGE_DROWNING.."\n3 - "..STRING_ENVIRONMENTAL_DAMAGE_FATIGUE.."\n4 - "..STRING_ENVIRONMENTAL_DAMAGE_FIRE.."\n5 - "..STRING_ENVIRONMENTAL_DAMAGE_LAVA.."\n6 - "..STRING_ENVIRONMENTAL_DAMAGE_SLIME
@@ -5853,10 +9197,10 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].spellName = text
+				options.setupFrame.data.triggers[button.num].spellName = text
 				button:UpdateTriggerAlerts()
 			end
-			if module.options.setupFrame.data.triggers[button.num].spellName then
+			if options.setupFrame.data.triggers[button.num].spellName then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5866,9 +9210,9 @@ function module.options:Load()
 
 		button.extraSpellID = ELib:Edit(button.sub):Size(270,20):Point("TOPLEFT",button.spellName,"BOTTOMLEFT",0,-5):LeftText(L.ReminderSpellIDExtra..":"):OnChange(function(self,isUser)
 			if isUser then
-				module.options.setupFrame.data.triggers[button.num].extraSpellID = tonumber(self:GetText())
+				options.setupFrame.data.triggers[button.num].extraSpellID = tonumber(self:GetText())
 			end
-			if module.options.setupFrame.data.triggers[button.num].extraSpellID then
+			if options.setupFrame.data.triggers[button.num].extraSpellID then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5880,10 +9224,10 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].stacks = text
+				options.setupFrame.data.triggers[button.num].stacks = text
 				button:UpdateTriggerAlerts()
 			end
-			if module.options.setupFrame.data.triggers[button.num].stacks then
+			if options.setupFrame.data.triggers[button.num].stacks then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5905,10 +9249,10 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].numberPercent = text
+				options.setupFrame.data.triggers[button.num].numberPercent = text
 				button:UpdateTriggerAlerts()
 			end
-			if module.options.setupFrame.data.triggers[button.num].numberPercent then
+			if options.setupFrame.data.triggers[button.num].numberPercent then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5929,16 +9273,16 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].pattFind = text
+				options.setupFrame.data.triggers[button.num].pattFind = text
 				button:UpdateTriggerAlerts()
 			end
-			if module.options.setupFrame.data.triggers[button.num].pattFind then
+			if options.setupFrame.data.triggers[button.num].pattFind then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
 			end
 		end):Tooltip(function(self)
-			local t = module.options.setupFrame.data.triggers[button.num]
+			local t = options.setupFrame.data.triggers[button.num]
  			if t.event == 1 and t.eventCLEU == "SPELL_MISSED" then
 				self.lockTooltipText = false
 				return L.ReminderMissTypeLabelTooltip..":\nABSORB, BLOCK, DEFLECT, DODGE, EVADE, IMMUNE, MISS, PARRY, REFLECT, RESIST"
@@ -5954,10 +9298,10 @@ function module.options:Load()
 
 		button.bwtimeleft = ELib:Edit(button.sub):Size(270,20):Point("TOPLEFT",button.pattFind,"BOTTOMLEFT",0,-5):LeftText(L.ReminderTimerLeft..":"):OnChange(function(self,isUser)
 			if isUser then
-				module.options.setupFrame.data.triggers[button.num].bwtimeleft = tonumber(self:GetText())
+				options.setupFrame.data.triggers[button.num].bwtimeleft = tonumber(self:GetText())
 				button:UpdateTriggerAlerts()
 			end
-			if module.options.setupFrame.data.triggers[button.num].bwtimeleft then
+			if options.setupFrame.data.triggers[button.num].bwtimeleft then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5969,9 +9313,9 @@ function module.options:Load()
 			if isUser then
 				local text = self:GetText():trim()
 				if text == "" then text = nil end
-				module.options.setupFrame.data.triggers[button.num].counter = text
+				options.setupFrame.data.triggers[button.num].counter = text
 			end
-			if module.options.setupFrame.data.triggers[button.num].counter then
+			if options.setupFrame.data.triggers[button.num].counter then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -5995,7 +9339,7 @@ function module.options:Load()
 		do
 			local function counterBehavior_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].cbehavior = arg1
+				options.setupFrame.data.triggers[button.num].cbehavior = arg1
 				local val = ExRT.F.table_find3(module.datas.counterBehavior,arg1,1)
 				if val then
 					button.cbehavior:SetText(val[2])
@@ -6046,9 +9390,9 @@ function module.options:Load()
 				if not CheckDelayTimeText(text) then
 					text = nil
 				end
-				module.options.setupFrame.data.triggers[button.num].delayTime = text
+				options.setupFrame.data.triggers[button.num].delayTime = text
 			end
-			if module.options.setupFrame.data.triggers[button.num].delayTime then
+			if options.setupFrame.data.triggers[button.num].delayTime then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -6058,9 +9402,9 @@ function module.options:Load()
 
 		button.activeTime = ELib:Edit(button.sub):Size(270,20):Point("TOPLEFT",button.delayTime,"BOTTOMLEFT",0,-5):LeftText(L.ReminderActiveTime..":"):OnChange(function(self,isUser)
 			if isUser then
-				module.options.setupFrame.data.triggers[button.num].activeTime = tonumber(self:GetText())
+				options.setupFrame.data.triggers[button.num].activeTime = tonumber(self:GetText())
 			end
-			if module.options.setupFrame.data.triggers[button.num].activeTime then
+			if options.setupFrame.data.triggers[button.num].activeTime then
 				self.Background:SetGradient("HORIZONTAL",unpack(COLOR_BORDER_FULL))
 			else
 				self.Background:SetVertexColor(unpack(COLOR_BORDER_EMPTY))
@@ -6070,9 +9414,9 @@ function module.options:Load()
 
 		button.invert = ELib:Check(button.sub,L.ReminderInvert..":"):Point("TOPLEFT",button.activeTime,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
 			if self:GetChecked() then
-				module.options.setupFrame.data.triggers[button.num].invert = true
+				options.setupFrame.data.triggers[button.num].invert = true
 			else
-				module.options.setupFrame.data.triggers[button.num].invert = nil
+				options.setupFrame.data.triggers[button.num].invert = nil
 			end
 		end):Tooltip(L.ReminderInvertTooltip)
 
@@ -6082,7 +9426,7 @@ function module.options:Load()
 		do
 			local function guidunit_SetValue(_,arg1)
 				ELib:DropDownClose()
-				module.options.setupFrame.data.triggers[button.num].guidunit = arg1
+				options.setupFrame.data.triggers[button.num].guidunit = arg1
 				button.guidunit:SetText(arg1 == 1 and L.ReminderSource or L.ReminderDest)
 			end
 			button.guidunit.SetValue = guidunit_SetValue
@@ -6102,9 +9446,9 @@ function module.options:Load()
 
 		button.onlyPlayer = ELib:Check(button.sub,L.ReminderTargetIsPlayer..":"):Point("TOPLEFT",button.activeTime,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self)
 			if self:GetChecked() then
-				module.options.setupFrame.data.triggers[button.num].onlyPlayer = true
+				options.setupFrame.data.triggers[button.num].onlyPlayer = true
 			else
-				module.options.setupFrame.data.triggers[button.num].onlyPlayer = nil
+				options.setupFrame.data.triggers[button.num].onlyPlayer = nil
 			end
 		end):Tooltip(L.ReminderTargetIsPlayerTip)
 
@@ -6114,11 +9458,11 @@ function module.options:Load()
 	end
 
 	self.setupFrame.triggersScrollFrame.addTrigger = ELib:Button(self.setupFrame.triggersScrollFrame.C,L.ReminderAddTrigger):Size(480,20):Point("BOTTOM",0,5):OnClick(function(self)
-		module.options.setupFrame.data.triggers[#module.options.setupFrame.data.triggers+1] = {
+		options.setupFrame.data.triggers[#options.setupFrame.data.triggers+1] = {
 			event = 1,
 			eventCLEU = "SPELL_CAST_SUCCESS",
 		}
-		module.options.setupFrame:Update(module.options.setupFrame.data)
+		options.setupFrame:Update(options.setupFrame.data)
 	end)
 
 	function self.setupFrame:Update(data)
@@ -6130,11 +9474,13 @@ function module.options:Load()
 		self.msgEdit:SetText(data.msg or "")
 		self.msgSize:SetValue(data.msgSize)
 		self.durEdit:SetText(data.dur or "")
+		self.durRevese:SetChecked(data.durrev)
 		self.countdownCheck:SetChecked(data.countdown)
 		self.countdownCheck:GetScript("OnClick")(self.countdownCheck)
 		self.countdownType:SetValue(data.countdownType)
 		self.copyCheck:SetChecked(data.copy)
 		self.sametargetsCheck:SetChecked(data.sametargets)
+		self.hideTextChangedCheck:SetChecked(data.hideTextChanged)
 		self.extraCheck:SetText(data.extraCheck or "")
 		self.specialTarget:SetText(data.specialTarget or "")
 		self.delayedActivation:SetText(data.delayedActivation or "")
@@ -6231,12 +9577,13 @@ function module.options:Load()
 			button:UpdateTriggerAlerts()
 		end
 
-		local options = VMRT.Reminder2.options[data.uid or 0] or 0
-		self.disableCheck:SetChecked(bit.band(options,bit.lshift(1,0)) > 0)
-		self.disableSound:SetChecked(bit.band(options,bit.lshift(1,1)) > 0)
-		self.disableUpdates:SetChecked(bit.band(options,bit.lshift(1,2)) > 0)
-		self.disableUpdatesSound:SetChecked(bit.band(options,bit.lshift(1,4)) > 0)
-		self.disableSynq:SetChecked(bit.band(options,bit.lshift(1,3)) > 0)
+		local roptions = VMRT.Reminder2.options[data.uid or 0] or 0
+		self.disableCheck:SetChecked(bit.band(roptions,bit.lshift(1,0)) > 0)
+		self.disableSound:SetChecked(bit.band(roptions,bit.lshift(1,1)) > 0)
+		self.disableUpdates:SetChecked(bit.band(roptions,bit.lshift(1,2)) > 0)
+		self.disableUpdatesSound:SetChecked(bit.band(roptions,bit.lshift(1,4)) > 0)
+		self.disableSynq:SetChecked(bit.band(roptions,bit.lshift(1,3)) > 0)
+		self.disableTimeLine:SetChecked(bit.band(roptions,bit.lshift(1,5)) > 0)
 
 		if not data.uid then
 			self.copyButton:Disable()
@@ -6283,13 +9630,14 @@ function module.options:Load()
 	self.setupFrame.historyFrame.exportWindow:SetFrameStrata("FULLSCREEN")
 
 	function self.setupFrame.historyFrame.importWindow:ImportFunc(str)
-		local header = str:sub(1,9)
-		if header:sub(1,8) ~= "EXRTREMH" or (header:sub(9,9) ~= "0" and header:sub(9,9) ~= "1") then
+		local l = str:sub(1,2) == "EX" and 9 or 8
+		local header = str:sub(1,l)
+		if not (header:sub(1,l) == "EXRTREMH" or header:sub(1,l) == "MRTREMH") or (header:sub(l,l) ~= "0" and header:sub(l,l) ~= "1") then
 			print("Import: wrong format")
 			return
 		end
 
-		module.options.setupFrame.historyFrame:TextToHistory(str:sub(10),header:sub(9,9)=="0")
+		options.setupFrame.historyFrame:TextToHistory(str:sub(l+1),header:sub(l,l)=="0")
 	end
 
 	function self.setupFrame.historyFrame:TextToHistory(str,uncompressed)
@@ -6305,10 +9653,7 @@ function module.options:Load()
 		local successful, res = pcall(ExRT.F.TextToTable,decompressed)
 		decompressed = nil
 		if successful and res then
-			module.db.history = res
-			if VMRT.Reminder2.HistorySession then
-				VMRT.Reminder2.history = module.db.history
-			end
+			options:ImportToHistory(res)
 		else
 			print("Import error")
 		end
@@ -6318,16 +9663,16 @@ function module.options:Load()
 	function self.setupFrame.historyFrame.trigger:PreUpdate()
 		local List = self.List
 		wipe(List)
-		for i=1,#module.options.setupFrame.data.triggers do
+		for i=1,#options.setupFrame.data.triggers do
 			List[#List+1] = {
 				text = L.ReminderTrigger.." "..i,
 				arg1 = i,
 				func = function(_,arg1)
 					ELib:DropDownClose()
-					module.options.setupFrame.historyFrame.trigger:SetText(arg1)
-					module.options.setupFrame.historyFrame.TRIGGER = i
+					options.setupFrame.historyFrame.trigger:SetText(arg1)
+					options.setupFrame.historyFrame.TRIGGER = i
 
-					module.options.setupFrame.historyFrame.tab.tabs[1].timelineScrollFrame:ResetActiveNavigation()
+					options.setupFrame.historyFrame.tab.tabs[1].timelineScrollFrame:ResetActiveNavigation()
 				end,
 			}
 		end
@@ -6342,15 +9687,15 @@ function module.options:Load()
 	function self.setupFrame.historyFrame.tab:buttonAdditionalFunc()
 		local tabID = self.selected
 		if tabID == 1 then
-			module.options.setupFrame.historyFrame:SetWidth(450)
+			options.setupFrame.historyFrame:SetWidth(450)
 			self.tabs[1].timelineScrollFrame.filterDropDown:SetParent(self.tabs[1])
 			self.tabs[1].timelineScrollFrame.filterDropDown:NewPoint("BOTTOMRIGHT",'x',"TOPRIGHT",-20,1)
 		elseif tabID == 2 then
-			module.options.setupFrame.historyFrame:SetWidth(580)
+			options.setupFrame.historyFrame:SetWidth(580)
 			self.tabs[1].timelineScrollFrame.filterDropDown:SetParent(self.tabs[2])
 			self.tabs[1].timelineScrollFrame.filterDropDown:NewPoint("BOTTOMRIGHT",'x',"TOPRIGHT",-20,1)
 		elseif tabID == 3 then
-			module.options.setupFrame.historyFrame:SetWidth(450)
+			options.setupFrame.historyFrame:SetWidth(450)
 			self.tabs[1].timelineScrollFrame.filterDropDown:SetParent(self.tabs[3])
 			self.tabs[1].timelineScrollFrame.filterDropDown:NewPoint("BOTTOMRIGHT",'x',"TOPRIGHT",-20,1)
 		end
@@ -6376,21 +9721,30 @@ function module.options:Load()
 	timelineFrame.filterDropDown = ELib:DropDown(self.setupFrame.historyFrame.tab.tabs[1],250,9):Point("BOTTOMRIGHT",'x',"TOPRIGHT",-20,1):Size(150):SetText(L.InspectViewerFilter)
 	timelineFrame.filterDropDown:_Size(140,18)
 	function timelineFrame.filterDropDown:PreUpdate()
-		local tabID = module.options.setupFrame.historyFrame.tab.selected
+		local tabID = options.setupFrame.historyFrame.tab.selected
 		local List = self.List
 		wipe(List)
 		local subMenu = {}
-		for i=1,#module.db.history do
-			local fight = module.db.history[i]
-			local fightLen = #fight > 1 and fight[#fight][1] - fight[1][1]
-			subMenu[#subMenu+1] = {
-				text = (#fight > 0 and fight[1][4] or L.ReminderFight.." "..i)..(fightLen and format(" %d:%02d",fightLen/60,fightLen%60) or ""),
-				arg1 = fight,
-				func = function(_,arg1)
-					ELib:DropDownClose()
-					timelineFrame:Update(arg1)
-				end,
-			}
+		for _, h_key in pairs({"history","historySession"}) do
+			for i=1,#module.db[h_key] do
+				if i==1 and #subMenu > 0 then
+					subMenu[#subMenu+1] = {
+						text = " ",
+						isTitle = true,
+					}
+				end
+
+				local fight = module.db[h_key][i]
+				local fightLen = #fight > 1 and fight[#fight][1] - fight[1][1]
+				subMenu[#subMenu+1] = {
+					text = (#fight > 0 and fight[1][4] or L.ReminderFight.." "..i)..(fightLen and format(" %d:%02d",fightLen/60,fightLen%60) or ""),
+					arg1 = fight,
+					func = function(_,arg1)
+						ELib:DropDownClose()
+						timelineFrame:Update(arg1)
+					end,
+				}
+			end
 		end
 		subMenu[#subMenu+1] = {
 			text = " ",
@@ -6401,16 +9755,16 @@ function module.options:Load()
 			func = function()
 				ELib:DropDownClose()
 
-				local str = module.options:GetHistoryString()
+				local str = options:GetHistoryString()
 
 				local compressed
 				if #str < 1000000 then
 					compressed = LibDeflate:CompressDeflate(str,{level = 5})
 				end
-				local encoded = "EXRTREMH"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+				local encoded = "MRTREMH"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
 
-				module.options.setupFrame.historyFrame.exportWindow.Edit:SetText(encoded)
-				module.options.setupFrame.historyFrame.exportWindow:Show()
+				options.setupFrame.historyFrame.exportWindow.Edit:SetText(encoded)
+				options.setupFrame.historyFrame.exportWindow:Show()
 			end,
 		}
 		subMenu[#subMenu+1] = {
@@ -6418,8 +9772,8 @@ function module.options:Load()
 			func = function()
 				ELib:DropDownClose()
 
-				module.options.setupFrame.historyFrame.importWindow:NewPoint("CENTER",UIParent,0,0)
-				module.options.setupFrame.historyFrame.importWindow:Show()
+				options.setupFrame.historyFrame.importWindow:NewPoint("CENTER",UIParent,0,0)
+				options.setupFrame.historyFrame.importWindow:Show()
 			end,
 		}
 		subMenu[#subMenu+1] = {
@@ -6432,7 +9786,9 @@ function module.options:Load()
 				ELib:DropDownClose()
 
 				wipe(module.db.history)
+				wipe(module.db.historySession)
 				module.db.history[1] = {}
+				module.db.historySession[1] = {}
 			end,
 		}
 		List[#List+1] = {
@@ -6451,7 +9807,7 @@ function module.options:Load()
 						if tabID == 1 then
 							timelineFrame:Update("prev",arg1)
 						elseif tabID == 2 then
-							module.options.setupFrame.historyFrame.tab.tabs[2].historyList:Update2("prev",arg1)
+							options.setupFrame.historyFrame.tab.tabs[2].historyList:Update2("prev",arg1)
 						end
 					end,
 				}
@@ -6464,7 +9820,7 @@ function module.options:Load()
 			}
 		end
 		if tabID == 1 or tabID == 2 then
-			local frame = tabID == 1 and timelineFrame or module.options.setupFrame.historyFrame.tab.tabs[2].historyList
+			local frame = tabID == 1 and timelineFrame or options.setupFrame.historyFrame.tab.tabs[2].historyList
 			List[#List+1] = {
 				text = L.ReminderFilterEvents..":",
 				isTitle = true,
@@ -6590,11 +9946,11 @@ function module.options:Load()
 		local x = ExRT.F.GetCursorPos(self)
 		local t = max((x - TIMELINE_FRAME_WIDTH / 2) / timelineFrame.PIX_PER_SEC,0)
 
-		local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+		local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 		if trigger then
 			trigger.event = 3
 			trigger.delayTime = t < 60 and (floor(t * 10)/10) or format("%d:%02d.%d",t/60,t%60,t%1*10)
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		end
 	end)
 
@@ -6644,14 +10000,14 @@ function module.options:Load()
 		local count = self.parent.phases[phasePos+2]
 		t = t - self.parent.phases[phasePos+1]
 
-		local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+		local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 		if trigger then
 			trigger.event = 2
 			trigger.delayTime = t < 60 and (floor(t * 10)/10) or format("%d:%02d.%d",t/60,t%60,t%1*10)
 			trigger.pattFind = tostring(phaseText)
 			trigger.counter = count and tostring(count) or nil
 			trigger.cbehavior = nil
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		end
 	end)
 
@@ -6758,14 +10114,14 @@ function module.options:Load()
 		end
 
 		if self.C.VERTICAL then
-			local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+			local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 			if trigger then
 				if t2 < 0 then
 					trigger.delayTime = nil
 				else
 					trigger.delayTime = t2 < 60 and (floor(t2 * 10)/10) or format("%d:%02d.%d",t2/60,t2%60,t2%1*10)
 				end
-				module.options.setupFrame:Update(module.options.setupFrame.data)
+				options.setupFrame:Update(options.setupFrame.data)
 			end
 		end
 	end
@@ -6852,7 +10208,7 @@ function module.options:Load()
 			end
 		end
 
-		local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+		local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 		if trigger then
 			trigger.event = 1
 			trigger.eventCLEU = self.data[3]
@@ -6873,7 +10229,7 @@ function module.options:Load()
 			trigger.counter = self.data2 and self.data2.count1 and tostring(self.data2.count1) or nil
 			trigger.cbehavior = 1
 
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		end
 	end
 
@@ -6901,7 +10257,7 @@ function module.options:Load()
 		timelineFrame.ScrollBarHorizontal:SetValue(self.data_time * timelineFrame.PIX_PER_SEC)
 		timelineContent:SetVertical(self.data_time)
 
-		local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+		local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 		if trigger then
 			trigger.event = 8
 			trigger.eventCLEU = nil
@@ -6916,7 +10272,7 @@ function module.options:Load()
 			trigger.counter = self.data2 and self.data2.count1 and tostring(self.data2.count1) or nil
 			trigger.cbehavior = nil
 
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		end
 	end
 
@@ -7290,7 +10646,7 @@ function module.options:Load()
 		end
 		local data = tdata.data
 
-		local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+		local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 		if not trigger then
 			return
 		end
@@ -7298,7 +10654,7 @@ function module.options:Load()
 			local t = tdata.timeFromStart
 			trigger.event = 3
 			trigger.delayTime = t < 60 and (floor(t * 10)/10) or format("%d:%02d.%d",t/60,t%60,t%1*10)
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		elseif index == 5 then
 			local t = tdata.timeFromPhase
 			trigger.event = 2
@@ -7306,7 +10662,7 @@ function module.options:Load()
 			trigger.pattFind = tostring(tdata.phase)
 			trigger.counter = tdata.phaseCount and tostring(tdata.phaseCount) or nil
 			trigger.cbehavior = nil
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		else
 			local t = tdata.timeFromPrev
 
@@ -7333,7 +10689,7 @@ function module.options:Load()
 			trigger.counter = tdata.data2 and index == 6 and tdata.timeFromPrev and tdata.data2.count1-1 and tostring(tdata.data2.count1-1) or tdata.data2 and tdata.data2.count1 and tostring(tdata.data2.count1) or nil
 			trigger.cbehavior = 1
 
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		end
 	end
 
@@ -7479,7 +10835,7 @@ function module.options:Load()
 		if not data then
 			return
 		end
-		local trigger = module.options.setupFrame.data.triggers[module.options.setupFrame.historyFrame.TRIGGER]
+		local trigger = options.setupFrame.data.triggers[options.setupFrame.historyFrame.TRIGGER]
 		if trigger then
 			trigger.event = 1
 			trigger.eventCLEU = data.event
@@ -7500,7 +10856,7 @@ function module.options:Load()
 			trigger.counter = nil
 			trigger.cbehavior = nil
 
-			module.options.setupFrame:Update(module.options.setupFrame.data)
+			options.setupFrame:Update(options.setupFrame.data)
 		end
 	end
 
@@ -7666,7 +11022,7 @@ function module.options:Load()
 	end
 
 	self.setupFrame.updateTestData = function()
-		local uid = module.options.setupFrame.data.uid
+		local uid = options.setupFrame.data.uid
 		if not uid then
 			for i=1,#self.setupFrame.triggerTestButtons do
 				local button = self.setupFrame.triggerTestButtons[i]
@@ -7712,7 +11068,7 @@ function module.options:Load()
 						button:Hide()
 					end
 				end
-				local isOutdated = ExRT.F.table_compare(module.options.setupFrame.data,reminders[i].data) ~= 1
+				local isOutdated = ExRT.F.table_compare(options.setupFrame.data,reminders[i].data) ~= 1
 				if self.setupFrame.testLoadButton.status ~= 2 and not isOutdated then 
 					self.setupFrame.testLoadButton:SetText("Already loaded")
 					self.setupFrame.testLoadButton:Disable()
@@ -7732,12 +11088,12 @@ function module.options:Load()
 				button:Hide()
 			end
 		end
-		if self.setupFrame.testLoadButton.status ~= 3 and not module.options.setupFrame.data.disabled then 
+		if self.setupFrame.testLoadButton.status ~= 3 and not options.setupFrame.data.disabled then 
 			self.setupFrame.testLoadButton:SetText("Load Reminder")
 			self.setupFrame.testLoadButton:Enable()
 			self.setupFrame.testLoadButton.status = 3
 		end
-		if self.setupFrame.testLoadButton.status ~= 5 and module.options.setupFrame.data.disabled then 
+		if self.setupFrame.testLoadButton.status ~= 5 and options.setupFrame.data.disabled then 
 			self.setupFrame.testLoadButton:SetText("Reminder Disabled")
 			self.setupFrame.testLoadButton:Disable()
 			self.setupFrame.testLoadButton.status = 5
@@ -7745,7 +11101,7 @@ function module.options:Load()
 	end
 
 	self.setupFrame.testLoadButton = ELib:Button(self.setupFrame.tab.tabs[5],"Load Reminder"):Point("TOPLEFT",10,-30):Size(490,20):OnClick(function()
-		local uid = module.options.setupFrame.data.uid
+		local uid = options.setupFrame.data.uid
 		if not uid then
 			print(L.ReminderAlertNoCopyEmpty)
 			return
@@ -7776,9 +11132,11 @@ function module.options:Load()
 	self.options_tab:SetBackdropBorderColor(0,0,0,0)
 	self.options_tab:SetBackdropColor(0,0,0,0)
 
-	self.chkLock = ELib:Check(self.options_tab.tabs[1],L.ReminderTestMode..":",false):Point(200,-10):Left(5):OnClick(function(self) 
+	self.chkLock = ELib:Check(self.options_tab.tabs[1],L.ReminderTestMode..":",false):Point(250,-10):Left(5):OnClick(function(self) 
 		frame.unlocked = self:GetChecked()
 		module:UpdateVisual()
+
+		options.chkLock2:SetChecked(self:GetChecked())
 	end)
 
 	self.ResetPosButton = ELib:Button(self.options_tab.tabs[1],L.MarksBarResetPos):Point("LEFT",self.chkLock,"RIGHT",100,0):Size(200,20):OnClick(function()
@@ -7882,6 +11240,17 @@ function module.options:Load()
 		module:UpdateVisual()
 	end)
 
+	self.optTimerExcluded = ELib:Check(self.optionWidgets.tabs[1],L.ReminderTimeExcluded,not VMRT.Reminder2.FontTimerExcluded):Point("LEFT",self.dropDownFontAdj,"RIGHT",5,0):OnClick(function(self) 
+		VMRT.Reminder2.FontTimerExcluded = not self:GetChecked()
+		module:UpdateVisual()
+	end)
+
+	self.optGrowUp = ELib:Check(self.optionWidgets.tabs[1],L.ReminderGrowUp..":",VMRT.Reminder2.GrowUp):Point("TOPLEFT",self.dropDownFontAdj,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self) 
+		VMRT.Reminder2.GrowUp = self:GetChecked()
+		module:UpdateVisual()
+	end)
+
+
 
 	local function HideNameplateGlows()
 		local LCG = LibStub("LibCustomGlow-1.0",true)
@@ -7893,6 +11262,13 @@ function module.options:Load()
 			end  
 		end
 	end
+
+	self.chkLock2 = ELib:Check(self.options_tab.tabs[2],L.ReminderTestMode,false):Point(330,20):OnClick(function(self) 
+		frame.unlocked = self:GetChecked()
+		module:UpdateVisual()
+
+		options.chkLock:SetChecked(self:GetChecked())
+	end)
 
 	self.nameplateTypeGlow1 = ELib:Radio(self.optionWidgets.tabs[2],""):Point(190,-10):OnClick(function() 
 		self.nameplateTypeGlow1:SetChecked(true)
@@ -8088,7 +11464,15 @@ function module.options:Load()
 		VMRT.Reminder2.HistoryEnabled = self:GetChecked()
 	end):Tooltip(L.ReminderSpellsHistoryTooltip)
 
-	self.chkHistorySession = ELib:Check(self.options_tab.tabs[1],L.ReminderSpellsHistorySaveSession..":",VMRT.Reminder2.HistorySession):Point("TOPLEFT",self.chkHistory,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self) 
+	self.chkHistoryMPlusDisabled = ELib:Check(self.options_tab.tabs[1],L.ReminderDisableMplusHistory..":",VMRT.Reminder2.HistoryMPlusDisabled):Point("TOPLEFT",self.chkHistory,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self) 
+		if self:GetChecked() then
+			VMRT.Reminder2.HistoryMPlusDisabled = true
+		else
+			VMRT.Reminder2.HistoryMPlusDisabled = nil
+		end
+	end)
+
+	self.chkHistorySession = ELib:Check(self.options_tab.tabs[1],L.ReminderSpellsHistorySaveSession..":",VMRT.Reminder2.HistorySession):Point("TOPLEFT",self.chkHistoryMPlusDisabled,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self) 
 		VMRT.Reminder2.HistorySession = self:GetChecked()
 		if VMRT.Reminder2.HistorySession then
 			VMRT.Reminder2.history = module.db.history
@@ -8097,7 +11481,16 @@ function module.options:Load()
 		end
 	end)
 
-	self.sliderHistoryNumSaved = ELib:Slider(self.options_tab.tabs[1],""):Size(320):Point("TOPLEFT",self.chkHistorySession,"BOTTOMLEFT",0,-10):Range(1,10):SetTo(VMRT.Reminder2.HistoryNumSaved or 1):SetObey(true):OnChange(function(self,event) 
+	self.chkHistoryMPlusSessionDisabled = ELib:Check(self.options_tab.tabs[1],L.ReminderDisableSavingMplusHistory..":",not VMRT.Reminder2.HistoryMPlusSessionEnabled):Tooltip(L.ReminderDisableSavingMplusHistoryTip):Point("TOPLEFT",self.chkHistorySession,"BOTTOMLEFT",0,-5):Left(5):OnClick(function(self) 
+		if self:GetChecked() then
+			VMRT.Reminder2.HistoryMPlusSessionEnabled = nil
+		else
+			VMRT.Reminder2.HistoryMPlusSessionEnabled = true
+		end
+	end)
+
+
+	self.sliderHistoryNumSaved = ELib:Slider(self.options_tab.tabs[1],""):Size(320):Point("TOPLEFT",self.chkHistoryMPlusSessionDisabled,"BOTTOMLEFT",0,-10):Range(1,10):SetTo(VMRT.Reminder2.HistoryNumSaved or 1):SetObey(true):OnChange(function(self,event) 
 		event = floor(event + .5)
 		VMRT.Reminder2.HistoryNumSaved = event
 		self.tooltipText = event
@@ -8258,9 +11651,9 @@ function module.options:Load()
 		if index == 3 then
 			local i = obj:GetParent().index
 			if i then
-				VMRT.Reminder2.SyncPlayers[ module.options.updatesPlayersList.L[i][1] ] = nil
-				tremove(module.options.updatesPlayersList.L,i)
-				module.options.updatesPlayersList:Update()
+				VMRT.Reminder2.SyncPlayers[ options.updatesPlayersList.L[i][1] ] = nil
+				tremove(options.updatesPlayersList.L,i)
+				options.updatesPlayersList:Update()
 			end
 		end
 	end
@@ -8325,14 +11718,15 @@ function module.options:Load()
 		end)
 	end)
 
-
 	self:UpdateData()
+	local r=self.timeLineBoss:PreUpdate() if r then r() end
+	self.tab:SetTo(VMRT.Reminder2.OptSavedTabNum or 1)
 end
 
 function module:Enable()
 	module.IsEnabled = true
 
-	module:RegisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA')
+	module:RegisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START','CHALLENGE_MODE_COMPLETED','CHALLENGE_MODE_RESET')
 
 	module:ResetPrevZone()
 	module:LoadForCurrentZone()
@@ -8347,13 +11741,16 @@ function module:Enable()
 			local zoneID = select(8,GetInstanceInfo())
 			ExRT.F.SendExMsg("rmd", "S\tE\tR\t"..(zoneID or 0))
 		end
+		if select(3,GetInstanceInfo()) == 8 and C_ChallengeMode and C_ChallengeMode.IsChallengeModeActive and C_ChallengeMode.IsChallengeModeActive() then
+			--module.main:CHALLENGE_MODE_START()
+		end
 	end)
 end
 
 function module:Disable()
 	module.IsEnabled = false
 
-	module:UnregisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA')
+	module:UnregisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START','CHALLENGE_MODE_COMPLETED','CHALLENGE_MODE_RESET')
 
 	module:UnregisterTimer()
 	module:UnloadAll()
@@ -8426,8 +11823,8 @@ do
 		module.db.debug = not module.db.debug
 		if module.db.debug then
 			module.db.debugLog = true
-			if module.options.setupFrame.debugCheck then
-				module.options.setupFrame.debugCheck:Show()
+			if options.setupFrame.debugCheck then
+				options.setupFrame.debugCheck:Show()
 			end
 			if not debugText then
 				debugText = ELib:Text(UIParent):Point("TOPLEFT",2,-2):Color()
@@ -8439,8 +11836,8 @@ do
 			print("Debug mode on")
 		else
 			module.db.debugLog = false
-			if module.options.setupFrame.debugCheck then
-				module.options.setupFrame.debugCheck:Hide()
+			if options.setupFrame.debugCheck then
+				options.setupFrame.debugCheck:Hide()
 			end
 			module.UnregisterTimer = oldUnreg
 			module:UnregisterTimer()
@@ -8642,6 +12039,69 @@ function module:CheckAllTriggers(trigger, printLog)
 			end
 		end
 	end
+
+	if remType == REM.TYPE_TEXT and not check and data.hideTextChanged then
+		for j=#module.db.showedReminders,1,-1 do
+			local showed = module.db.showedReminders[j]
+			if showed.data == data then
+				if showed.voice then
+					showed.voice:Cancel()
+				end
+				tremove(module.db.showedReminders,j)
+			end
+		end
+	end
+end
+
+function module:UnloadTrigger(trigger)
+	local data, reminder = trigger._data, trigger._reminder
+
+	trigger.unloaded = true
+
+	for j=#module.db.showedReminders,1,-1 do
+		local showed = module.db.showedReminders[j]
+		if showed.data == data then
+			if showed.voice then
+				showed.voice:Cancel()
+			end
+			tremove(module.db.showedReminders,j)
+		end
+	end
+	if reminder.nameplateguid then
+		module:NameplateRemoveHighlight(reminder.nameplateguid)
+		reminder.nameplateguid = nil
+	end
+	for guid,list in pairs(module.db.nameplateHL) do
+		for uid,t in pairs(list) do
+			if t.data == data then
+				module:NameplateRemoveHighlight(guid, uid)
+			end
+		end
+	end
+	if reminder.frameguid then
+		module:FrameRemoveHighlight(reminder.frameguid)
+		reminder.frameguid = nil
+	end
+	for guid,list in pairs(module.db.frameHL) do
+		for uid,t in pairs(list) do
+			if t.data == data then
+				module:FrameRemoveHighlight(guid, uid)
+			end
+		end
+	end
+	if reminder.textRepTmr then
+		reminder.textRepTmr:Cancel()
+		reminder.textRepTmr = nil
+	end
+
+	for j=#module.db.timers,1,-1 do
+		local t = module.db.timers[j]
+		if t.args[2] == trigger then
+			t:Cancel()
+			tremove(module.db.timers,j)
+		end
+	end
+	
 end
 
 
@@ -8750,6 +12210,8 @@ do
 	
 		if trigger._trigger.activeTime then
 			module.db.timers[#module.db.timers+1] = ScheduleTimer(module.DeactivateTrigger, max(trigger._trigger.activeTime, 0.01), 0, trigger, vars.uid or vars.guid or 1, true, printLog)
+		elseif not trigger.untimed and trigger._data.hideTextChanged and trigger._data.dur and tonumber(trigger._data.dur) > 0 then
+			module.db.timers[#module.db.timers+1] = ScheduleTimer(module.DeactivateTrigger, max(tonumber(trigger._data.dur), 0.01), 0, trigger, vars.uid or vars.guid or 1, true, printLog)
 		elseif not trigger.untimed then
 			module:DeactivateTrigger(trigger, vars.uid or vars.guid or 1, false, printLog)
 		end
@@ -8760,10 +12222,11 @@ function module:RunTrigger(trigger, vars, printLog)
 	if printLog then
 		print("|cffffff00MRT Reminder|r",trigger._data.name or "","Run trigger #"..trigger._i)
 	end
+	if trigger.unloaded then return end
 	local triggerData = trigger._trigger
 	if trigger.DdelayTime then
 		for i=1,#trigger.DdelayTime do
-			local t = ScheduleTimer(module.ActivateTrigger, trigger.DdelayTime[i], 0, trigger, vars, printLog)
+			local t = ScheduleTimer(module.ActivateTrigger, max(trigger.DdelayTime[i]-(trigger._data.durrev and (trigger._data.dur or 0) or 0),0.01), 0, trigger, vars, printLog)
 			module.db.timers[#module.db.timers+1] = t
 			if trigger.delays then
 				trigger.delays[#trigger.delays+1] = t
@@ -8987,7 +12450,7 @@ do
 			end
 		end
 
-		local reminderDuration = trigger.status and trigger.status._customDuration or data.dur or 2
+		local reminderDuration = trigger.status and trigger.status._customDuration or (data.dur and tonumber(data.dur)) or 2
 
 		--stop duplicates for untimed text reminders
 		if data.copy and reminderDuration == 0 then
@@ -9215,7 +12678,10 @@ do
 				return
 			end
 
-			local textBig,text,textSmall
+			for k in pairs(self.textBig) do self.textBig[k]=nil end
+			for k in pairs(self.text) do self.text[k]=nil end
+			for k in pairs(self.textSmall) do self.textSmall[k]=nil end
+			local total_c = 0
 			local now = GetTime()
 			for j=#showedReminders,1,-1 do
 				local showed = showedReminders[j]
@@ -9233,13 +12699,17 @@ do
 						countdownFormat = module.datas.countdownType[data.countdownType or 2][3]
 						showed.countdownFormat = countdownFormat
 					end
+					local table
 					if data.msgSize == 2 then
-						textBig = msg .. (showed.dur ~= 0 and data.countdown and format(countdownFormat,t - now) or "") .. (textBig and "\n" or "") .. (textBig or "")
+						table = self.textBig
 					elseif data.msgSize == 3 then
-						textSmall = msg .. (showed.dur ~= 0 and data.countdown and format(countdownFormat,t - now) or "") .. (textSmall and "\n" or "") .. (textSmall or "")
+						table = self.textSmall
 					else
-						text = msg .. (showed.dur ~= 0 and data.countdown and format(countdownFormat,t - now) or "") .. (text and "\n" or "") .. (text or "")
+						table = self.text
 					end
+					table[#table+1] = msg or ""
+					table[#table+1] = showed.dur ~= 0 and data.countdown and format(countdownFormat,t - now) or ""
+					total_c = total_c + 1
 				else
 					if data.soundafter and not VMRT.Reminder2.disableSound and bit.band(VMRT.Reminder2.options[data.uid or 0] or 0,bit.lshift(1,1)) == 0 then
 						module:PlaySound(data.soundafter, showed.reminder, now)
@@ -9251,19 +12721,8 @@ do
 				end
 			end
 
-			if textBig ~= self.textBig.prev then
-				self.textBig:SetText(textBig or "")
-				self.textBig.prev = textBig
-			end
-			if text ~= self.text.prev then
-				self.text:SetText(text or "")
-				self.text.prev = text
-			end
-			if textSmall ~= self.textSmall.prev then
-				self.textSmall:SetText(textSmall or "")
-				self.textSmall.prev = textSmall
-			end
-			if not textBig and not text and not textSmall then
+			self:Update()
+			if total_c == 0 then
 				self:Hide()
 			end
 		end
@@ -9365,7 +12824,7 @@ function module.main.COMBAT_LOG_EVENT_UNFILTERED(timestamp,event,hideCaster,sour
 		end
 	end
 
-	if IsHistoryEnabled and CLEUIsHistoryEvent[event] and bit_band(sourceFlags,0x000000F0) ~= 0x00000010 then
+	if IsHistoryEnabled and CLEUIsHistoryEvent[event] and bit_band(sourceFlags,0x000003F0) == 0x00000240 then	--0x000000F0 ~= 0x00000010
 		module:AddHistoryRecord(1,event,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID)
 	end
 end
@@ -9538,15 +12997,23 @@ function module:TriggerBossPull(encounterID, encounterName)
 										v.text = now.textRight
 										v.textLeft = now.textLeft
 										v.fullLine = now.fullLine
+										v.fullLineClear = (now.fullLine or ""):gsub("[{}]","")
 									end
 								elseif a == "count" then
 									dataTable.count = v
 									trigger.count = v
 								end
 							end})
+
+							local match = true
+							if triggerData.pattFind and ((triggerData.pattFind:find("^%-") and now.fullLine:find(triggerData.pattFind:sub(2),1,true)) or (not triggerData.pattFind:find("^%-") and not now.fullLine:find(triggerData.pattFind,1,true))) then
+								match = false
+							end
 		
-							tCOMBAT_LOG_EVENT_UNFILTERED[event] = tCOMBAT_LOG_EVENT_UNFILTERED[event] or {}
-							tCOMBAT_LOG_EVENT_UNFILTERED[event][#tCOMBAT_LOG_EVENT_UNFILTERED[event]+1] = new
+							if match then
+								tCOMBAT_LOG_EVENT_UNFILTERED[event] = tCOMBAT_LOG_EVENT_UNFILTERED[event] or {}
+								tCOMBAT_LOG_EVENT_UNFILTERED[event][#tCOMBAT_LOG_EVENT_UNFILTERED[event]+1] = new
+							end
 						end
 					end
 				end
@@ -9728,6 +13195,15 @@ function module:TriggerBossPhase(phaseText,globalPhaseNum)
 	end
 end
 --/run GExRT.A.Reminder2:TriggerBossPhase("1")
+
+function module:TriggerMplusStart()
+	local triggers = module.db.eventsToTriggers.MPLUS_START
+	if triggers then
+		for i=1,#triggers do
+			module:RunTrigger(triggers[i])
+		end
+	end
+end
 
 function module:TriggerBWMessage(key, text)
 	local triggers = module.db.eventsToTriggers.BW_MSG
@@ -11915,6 +15391,9 @@ function module:FrameRemoveHighlight(guid, uid)
 end
 
 function module:AddHistoryRecord(eventType, ...)
+	if module.db.simrun then
+		return
+	end
 	module.db.historyNow[#module.db.historyNow+1] = {
 		GetTime(),
 		eventType,
@@ -11925,14 +15404,15 @@ end
 
 function module:SetProfile(profile)
 	VMRT.Reminder2.Profile = profile
-	if module.options.profileDropDown then
-		module.options.profileDropDown:SetText(profiles[VMRT.Reminder2.Profile])
+	if options.profileDropDown then
+		options.profileDropDown:SetText(profiles[VMRT.Reminder2.Profile])
 	end
 	CURRENT_DATA = VMRT.Reminder2.data[VMRT.Reminder2.Profile]
 
-	if module.options.UpdateData then
-		module.options:UpdateData()
-		module.options.scrollList:ResetScroll()
+	if options.UpdateData then
+		options:UpdateData()
+		options.timeLine:Update()
+		options.scrollList:ResetScroll()
 	end
 	
 	if VMRT.Reminder2.enabled then
@@ -12014,6 +15494,37 @@ function module.main:ADDON_LOADED()
 	end
 end
 
+function module.main:CHALLENGE_MODE_START()
+	module.db.stayLoaded = true
+	module.db.InChallengeMode = true
+
+	module:PrepeareForHistoryRecording()
+
+	local t = ScheduleTimer(function() 
+		module:StartHistoryRecord(2)
+		if IsHistoryEnabled then
+			local zoneName, _, _, _, _, _, _, zoneID = GetInstanceInfo()
+			local level = C_ChallengeMode.GetActiveKeystoneInfo()
+			module:AddHistoryRecord(22,zoneID,zoneName,level)
+		end
+		if (module.db.eventsToTriggers.MPLUS_START) then
+			module:TriggerMplusStart() 
+		end
+	end,10)
+	module.db.timers[#module.db.timers+1] = t
+end
+function module.main:CHALLENGE_MODE_RESET()
+	module.db.stayLoaded = false
+	module.db.InChallengeMode = false
+
+	module:ResetPrevZone()
+	module:LoadForCurrentZone()
+
+	module:SaveHistorySegment()
+	IsHistoryEnabled = false
+end
+module.main.CHALLENGE_MODE_COMPLETED = module.main.CHALLENGE_MODE_RESET
+
 do
 	local scheduledUpdate
 	local prevZoneID
@@ -12022,9 +15533,21 @@ do
 		if module.db.encounterID then
 			return
 		end
-		local zoneName, _, _, _, _, _, _, zoneID = GetInstanceInfo()
+		local zoneName, _, difficultyID, _, _, _, _, zoneID = GetInstanceInfo()
 		if zoneID ~= prevZoneID then
 			prevZoneID = zoneID
+			if module.db.debug then print("Load Zone ID",zoneID,zoneName) end
+
+			if difficultyID ~= 8 then
+				if module.db.InChallengeMode then
+					module:SaveHistorySegment()
+					IsHistoryEnabled = false
+				end
+				module.db.stayLoaded = false
+				module.db.InChallengeMode = false
+			end
+
+			module.db.currentZoneID = zoneID
 			module:LoadReminders(nil,nil,zoneID,zoneName)
 		end
 	end
@@ -12040,17 +15563,14 @@ end
 
 function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, groupSize)
 	module.db.encounterID = encounterID
+	module.db.encounterDiff = difficultyID
 	module.db.lastEncounterID = encounterID
 	module.db.encounterPullTime = GetTime()
 
 	local zoneName, _, _, _, _, _, _, zoneID = GetInstanceInfo()
 	module:LoadReminders(encounterID, difficultyID, zoneID, zoneName)
 
-	if VMRT.Reminder2.HistoryEnabled then
-		IsHistoryEnabled = true
-	else
-		IsHistoryEnabled = false
-	end
+	module:StartHistoryRecord()
 
 	if (module.db.eventsToTriggers.BOSS_START or module.db.eventsToTriggers.NOTE_TIMERS or module.db.eventsToTriggers.NOTE_TIMERS_ALL) and not module.db.nextPullIsDelayed then
 		module:TriggerBossPull(encounterID, encounterName)
@@ -12065,27 +15585,52 @@ function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, g
 	module.db.nextPullIsDelayed = nil
 end
 
-function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, groupSize)
-	module.db.encounterID = nil
+function module:StartHistoryRecord(mode)
+	if mode == 2 and VMRT.Reminder2.HistoryMPlusDisabled then --m+
+		return
+	end
 
+	if VMRT.Reminder2.HistoryEnabled then
+		IsHistoryEnabled = true
+	else
+		IsHistoryEnabled = false
+	end
+end
+function module:SaveHistorySegment()
 	if IsHistoryEnabled then
 		module:AddHistoryRecord(0)
-
 
 		local enoughLength
 		if #module.db.historyNow > 1 and (module.db.historyNow[#module.db.historyNow][1] - module.db.historyNow[1][1]) >= 30 then
 			enoughLength = true
 		end
 		if enoughLength then
-			tinsert(module.db.history,1,module.db.historyNow)
+			if not VMRT.Reminder2.HistoryMPlusSessionEnabled and module.db.historyNow[1][2] == 22 then
+				tinsert(module.db.historySession,1,module.db.historyNow)
+			else
+				tinsert(module.db.history,1,module.db.historyNow)
+			end
 		end
 		module.db.historyNow = {}
 		for i=(VMRT.Reminder2.HistoryNumSaved or 1)+1,#module.db.history do
 			module.db.history[i] = nil
 		end
+		for i=(VMRT.Reminder2.HistoryNumSaved or 1)+1,#module.db.historySession do
+			module.db.historySession[i] = nil
+		end
 	end
+end
 
-	IsHistoryEnabled = false
+function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, groupSize)
+	module.db.encounterID = nil
+	module.db.encounterDiff = nil
+
+	if not module.db.InChallengeMode then
+		module:SaveHistorySegment()
+		IsHistoryEnabled = false
+	else
+		module:AddHistoryRecord(0)		
+	end
 
 	module:ResetPrevZone()
 	module:LoadForCurrentZone()
@@ -12098,7 +15643,7 @@ function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, gro
 				return
 			end
 
-			local str = module.options:GetHistoryString(true)
+			local str = options:GetHistoryString(true)
 
 			if not str or #str > 500000 then
 				return
@@ -12193,11 +15738,18 @@ function module:UnloadAll()
 	tUNIT_SPELLCAST_SUCCEEDED = nil
 	tUNIT_CAST = nil
 
+	module.db.simrun = nil
+
 	if C_VoiceChat and C_VoiceChat.StopSpeakingText then
 		C_VoiceChat.StopSpeakingText()
 	end
 
 	frameBars:StopAllBars()
+
+	for _ in pairs(module.db.forceLoadUIDs) do
+		wipe(module.db.forceLoadUIDs)
+		break
+	end
 end
 
 function module:CopyTriggerEventForReminder(trigger)
@@ -12441,8 +15993,70 @@ function module:LoadOneReminder(uid)
 	end
 end
 
+function module:FindReminderByData(data)
+	for i=1,#reminders do
+		if reminders[i].data == data or reminders[i].data.uid == data.uid then
+			return reminders[i]
+		end
+	end
+end
+
+function module:FilterFuncReminders(data,encounterID,encounterDiff,zoneID,myName,myClass,myRole,checkIsLoaded)
+	if 
+		not data.disabled and 
+		#data.triggers > 0 and 
+		(not checkIsLoaded or not module:FindReminderByData(data)) and
+		((
+		 (
+		  (encounterID and data.bossID == encounterID and (not data.diffID or (data.diffID == encounterDiff or encounterDiff == -1))) or
+		  (zoneID and (module:FindNumberInString(zoneID,data.zoneID) or data.zoneID=="-1"))
+		 ) and
+		 (not myName or module:CheckPlayerCondition(data,myName,myClass,myRole)) and
+		 bit.band(VMRT.Reminder2.options[data.uid or 0] or 0,bit.lshift(1,0)) == 0
+		) or 
+		 module.db.forceLoadUIDs[data.uid or 0])
+	then
+		return true
+	else
+		return false
+	end
+end
+
+function module:UnloadUnusedReminders()
+	local eventsTable = module.db.eventsToTriggers
+	local count = 0
+	for i=#reminders,1,-1 do
+		local reminder = reminders[i]
+		if not module:FilterFuncReminders(reminder.data,module.db.encounterID,module.db.encounterDiff,module.db.currentZoneID) then
+			count = count + 1
+
+			for event,edata in pairs(eventsTable) do
+				for _,edata2 in pairs(#edata == 0 and edata or {edata}) do
+					for j=#edata2,1,-1 do
+						if edata2[j]._reminder == reminder then
+							tremove(edata2, j)
+						end
+					end
+				end
+			end
+
+			for j=1,#reminder.triggers do
+				module:UnloadTrigger(reminder.triggers[j])
+			end
+
+			tremove(reminders, i)
+		end
+	end
+
+	if module.db.debug then print("Unloaded Reminders",count) end
+end
+
 function module:LoadReminders(encounterID,encounterDiff,zoneID,zoneName)
-	module:UnloadAll()
+	if module.db.stayLoaded then
+		module:UnloadUnusedReminders()
+	else
+		module:UnloadAll()
+	end
 	if not module.IsEnabled then
 		return
 	end
@@ -12460,17 +16074,7 @@ function module:LoadReminders(encounterID,encounterDiff,zoneID,zoneName)
 		if uid_key ~= data.uid or type(data.triggers)~="table" or type(data.players)~="table" then
 			CURRENT_DATA[uid_key] = nil
 		elseif 
-			not data.disabled and 
-			#data.triggers > 0 and
-			((
-			 (
-			  (encounterID and data.bossID == encounterID and (not data.diffID or data.diffID == encounterDiff)) or
-			  (zoneID and (module:FindNumberInString(zoneID,data.zoneID) or data.zoneID=="-1"))
-			 ) and
-			 module:CheckPlayerCondition(data,myName,myClass,myRole) and
-			 bit.band(VMRT.Reminder2.options[data.uid or 0] or 0,bit.lshift(1,0)) == 0
-			) or 
-			 module.db.forceLoadUIDs[data.uid or 0])
+			module:FilterFuncReminders(data,encounterID,encounterDiff,zoneID,myName,myClass,myRole,true)
 		then
 			local reminder = {
 				triggers = {},
@@ -12652,28 +16256,8 @@ function module:LoadReminders(encounterID,encounterDiff,zoneID,zoneName)
 		module:RegisterEvents("NAME_PLATE_UNIT_ADDED","NAME_PLATE_UNIT_REMOVED")
 	end
 
-	if encounterID and VMRT.Reminder2.HistoryEnabled then
-		if not module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED then 
-			module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED = {} 
-			module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
-		end
-		if not module.db.eventsToTriggers.BOSS_START then 
-			module.db.eventsToTriggers.BOSS_START = {} 
-		end
-		if not module.db.eventsToTriggers.BOSS_PHASE then 
-			module.db.eventsToTriggers.BOSS_PHASE = {} 
-			module:RegisterBigWigsCallback("BigWigs_Message")
-			module:RegisterBigWigsCallback("BigWigs_SetStage")
-			module:RegisterDBMCallback("DBM_SetStage")
-		end
-		if not module.db.eventsToTriggers.CHAT_MSG then 
-			module.db.eventsToTriggers.CHAT_MSG = {} 
-			module:RegisterEvents(unpack(module.C[8].events))
-		end
-		if not module.db.eventsToTriggers.INSTANCE_ENCOUNTER_ENGAGE_UNIT then 
-			module.db.eventsToTriggers.INSTANCE_ENCOUNTER_ENGAGE_UNIT = {} 
-			module:RegisterEvents("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-		end
+	if encounterID then
+		module:PrepeareForHistoryRecording()
 	end
 	if (module.db.eventsToTriggers.NOTE_TIMERS or module.db.eventsToTriggers.NOTE_TIMERS_ALL) and not module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED then 
 		module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED = {} 
@@ -12703,10 +16287,34 @@ function module:LoadReminders(encounterID,encounterDiff,zoneID,zoneName)
 	if #reminders > 0 and zoneID and zoneName then
 		VMRT.Reminder2.zoneNames[zoneID] = zoneName
 	end
+end
 
-	for _ in pairs(module.db.forceLoadUIDs) do
-		wipe(module.db.forceLoadUIDs)
-		break
+function module:PrepeareForHistoryRecording()
+	if not VMRT.Reminder2.HistoryEnabled then
+		return
+	end
+	if not module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED then 
+		module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED = {} 
+		module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
+
+		tCOMBAT_LOG_EVENT_UNFILTERED = module.db.eventsToTriggers.COMBAT_LOG_EVENT_UNFILTERED
+	end
+	if not module.db.eventsToTriggers.BOSS_START then 
+		module.db.eventsToTriggers.BOSS_START = {} 
+	end
+	if not module.db.eventsToTriggers.BOSS_PHASE then 
+		module.db.eventsToTriggers.BOSS_PHASE = {} 
+		module:RegisterBigWigsCallback("BigWigs_Message")
+		module:RegisterBigWigsCallback("BigWigs_SetStage")
+		module:RegisterDBMCallback("DBM_SetStage")
+	end
+	if not module.db.eventsToTriggers.CHAT_MSG then 
+		module.db.eventsToTriggers.CHAT_MSG = {} 
+		module:RegisterEvents(unpack(module.C[8].events))
+	end
+	if not module.db.eventsToTriggers.INSTANCE_ENCOUNTER_ENGAGE_UNIT then 
+		module.db.eventsToTriggers.INSTANCE_ENCOUNTER_ENGAGE_UNIT = {} 
+		module:RegisterEvents("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 	end
 end
 
@@ -12834,21 +16442,47 @@ do
 		end
 	end
 
-	function module:ProcessTextToData(text, sender, isStringImport, isSelfImport)
-		local data = {strsplit("\n",text)}
-		if data[1] then
-			local ver,addonVer = strsplit(DELIMITER_1,data[1])
-			if tonumber(ver or "?") ~= senderVersion then
-				if tonumber(ver or "0") > senderVersion then
-					print("MRT Reminder: your reminder addon version is outdated (string ver."..(addonVer or "unk")..", your addon ver."..addonVersion..")")
-				else
-					print("MRT Reminder: import data is outdated (string ver."..(addonVer or "unk")..", your addon ver."..addonVersion..")")
-				end
-				return
+	function module:ProcessTextToData_CheckVersion(dataStr)
+		local ver,addonVer = strsplit(DELIMITER_1,dataStr)
+		if tonumber(ver or "?") ~= senderVersion then
+			if tonumber(ver or "0") > senderVersion then
+				print("MRT Reminder: your reminder addon version is outdated (string ver."..(addonVer or "unk")..", your addon ver."..addonVersion..")")
+			else
+				print("MRT Reminder: import data is outdated (string ver."..(addonVer or "unk")..", your addon ver."..addonVersion..")")
 			end
-		else
+			return false
+		end
+		return true
+	end
+
+	function module:AnalyzeTextToData(text)
+		local data = {strsplit("\n",text)}
+		if not data[1] or not module:ProcessTextToData_CheckVersion(data[1]) then
 			return
 		end
+
+		local counter = 0
+
+		for i=2,#data do
+			local uid,name,msg,msgSize,dur,checks,countdownType,sound,extraOptions,glowOptions,countdownVoice,extraCheck,bossID,diffID,zoneID,players,notePattern,roles,classes,triggersNum,triggersData = strsplit(DELIMITER_1,data[i],21)
+			if uid then
+				if msg then
+					counter = counter + 1
+				end
+			end
+		end
+
+		return {
+			count = counter,
+		}
+	end
+
+	function module:ProcessTextToData(text, sender, isStringImport, isSelfImport)
+		local data = {strsplit("\n",text)}
+		if not data[1] or not module:ProcessTextToData_CheckVersion(data[1]) then
+			return
+		end
+
 		local workingArray
 		if isStringImport then
 			workingArray = CURRENT_DATA
@@ -12919,6 +16553,9 @@ do
 					if bit.band(checks,bit.lshift(1,4)) > 0 then new.sametargets = true end
 					if bit.band(checks,bit.lshift(1,5)) > 0 then new.dynamicdisable = true end
 					if bit.band(checks,bit.lshift(1,6)) > 0 then new.norewrite = true end
+					if bit.band(checks,bit.lshift(1,7)) > 0 then new.durrev = true end
+					if bit.band(checks,bit.lshift(1,8)) > 0 then new.hideTextChanged = true end
+
 
 					for j=1,#module.datas.rolesList do
 						if bit.band(roles,bit.lshift(1, j-1)) > 0 then new["role"..j] = true end
@@ -13006,8 +16643,9 @@ do
 			module:SetProfile(0)
 		end
 		--[[
-		if module.options.UpdateData then
-			module.options:UpdateData()
+		if options.UpdateData then
+			options:UpdateData()
+			options.timeLine:Update()
 		end
 		if VMRT.Reminder2.enabled then
 			module:ReloadAll()
@@ -13018,8 +16656,13 @@ do
 end
 
 do
-	function module.options:GetHistoryString(minimized)
-		local t = module.db.history
+	function options:GetHistoryString(minimized)
+		local t = {}
+		for _, h_key in pairs({"history","historySession"}) do	
+			for i=1,#module.db[h_key] do
+				t[#t+1] = module.db[h_key][i]
+			end
+		end
 		if minimized then
 			if #t > 0 then
 				t = {t[1]}
@@ -13121,6 +16764,8 @@ do
 				if data.sametargets then checks = bit.bor(checks,bit.lshift(1,4)) end
 				if data.dynamicdisable then checks = bit.bor(checks,bit.lshift(1,5)) end
 				if data.norewrite then checks = bit.bor(checks,bit.lshift(1,6)) end
+				if data.durrev then checks = bit.bor(checks,bit.lshift(1,7)) end
+				if data.hideTextChanged then checks = bit.bor(checks,bit.lshift(1,8)) end
 
 				local glowOptions = (
 					(data.glowType or "") .. DELIMITER_2 .. 
@@ -13193,16 +16838,16 @@ do
 		local parts = ceil(#encoded / 247)
 		--print("Reminder: sending parts",parts,'send size',#encoded)
 
-		if module.options.SyncProgress then
-			module.options:SyncProgress(0)
+		if options.SyncProgress then
+			options:SyncProgress(0)
 		end
 		for i=1,parts do
 			local msg = encoded:sub( (i-1)*247+1 , i*247 )
 			local progress = i
 			if not isGuild then
-				ExRT.F.SendExMsgExt({ondone=function() module.options:SyncProgress(progress,parts) end},"rmd","D\t"..newIndex.."\t"..msg)
+				ExRT.F.SendExMsgExt({ondone=function() options:SyncProgress(progress,parts) end},"rmd","D\t"..newIndex.."\t"..msg)
 			else
-				ExRT.F.SendExMsgExt({ondone=function() module.options:SyncProgress(progress,parts) end},"rmd","d\t"..newIndex.."\t"..msg,"GUILD")
+				ExRT.F.SendExMsgExt({ondone=function() options:SyncProgress(progress,parts) end},"rmd","d\t"..newIndex.."\t"..msg,"GUILD")
 			end
 		end
 	end
@@ -13241,10 +16886,10 @@ function module:addonMessage(sender, prefix, subprefix, arg1, ...)
 						VMRT.Reminder2.LastUpdateTime = time()
 	
 						module:ProcessTextToData(decompressed, sender, nil, sender == ExRT.SDB.charKey or sender == ExRT.SDB.charName)
-						if module.options and module.options.UpdateSenderDataText then
-							module.options:UpdateSenderDataText()
+						if options and options.UpdateSenderDataText then
+							options:UpdateSenderDataText()
 						end
-					end)
+					end,module:AnalyzeTextToData(decompressed))
 				end
 			end
 		elseif subprefix == "H" then
@@ -13446,7 +17091,7 @@ do
 		if VMRT and VMRT.Reminder2 and VMRT.Reminder2.disablePopups then
 			return
 		end
-		local player = queue[1]
+		local player = queue[1] and queue[1].player
 		if not player then
 			return
 		end
@@ -13463,13 +17108,13 @@ do
 			return
 		end
 		frame.playerRaw = player
-		frame.player:SetText(player)
+		frame.player:SetText(player..(queue[1].data and queue[1].data.count and "\n"..(AUCTION_HOUSE_QUANTITY_LABEL or "Quantity")..": "..queue[1].data.count or ""))
 		frame:Show()
 	end
 
-	function frame:Popup(player,func)
-		queue[#queue+1] = player
-		queue[#queue+1] = func
+	function frame:Popup(player,func,analyzeData)
+		queue[#queue+1] = {player = player, data = analyzeData}
+ 		queue[#queue+1] = func
 	
 		frame:PopupNext()
 	end
