@@ -159,6 +159,7 @@ do
         2570, -- Hallowfall Arathi
         2590, -- Council of Dornogal
         2594, -- The Assembly of the Deeps
+        2600, -- The Severed Threads
     }
     local MAPS_THE_WAR_WITHIN = {
         [2214] = true, -- The Ringing Deeps
@@ -351,21 +352,21 @@ do
         local hasFilters = ConfigModule:HasFilters()
         local selectedFilters = ConfigModule:GetFilterTable()
 
-        local _, factionID = C_TaskQuest.GetQuestInfoByQuestID(info.questId)
-        local questTagInfo = C_QuestLog.GetQuestTagInfo(info.questId)
+        local _, factionID = C_TaskQuest.GetQuestInfoByQuestID(info.questID)
+        local questTagInfo = C_QuestLog.GetQuestTagInfo(info.questID)
 
         if not questTagInfo then
             return -- fix for nil tag
         end
 
         local tradeskillLineID = questTagInfo.tradeskillLineID
-        local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(info.questId)
-        C_TaskQuest.RequestPreloadRewardData(info.questId)
+        local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(info.questID)
+        C_TaskQuest.RequestPreloadRewardData(info.questID)
 
         local isQuestFiltered = hasFilters
 
         if hasFilters then
-            local lootFiltered = self:IsQuestRewardFiltered(selectedFilters, info.questId)
+            local lootFiltered = self:IsQuestRewardFiltered(selectedFilters, info.questID)
             if lootFiltered ~= nil then
                 isQuestFiltered = lootFiltered
             end
@@ -407,7 +408,7 @@ do
             end
 
             if selectedFilters.TRACKED then
-                if C_QuestLog.GetQuestWatchType(info.questId) == Enum.QuestWatchType.Manual or C_SuperTrack.GetSuperTrackedQuestID() == info.questId then
+                if C_QuestLog.GetQuestWatchType(info.questID) == Enum.QuestWatchType.Manual or C_SuperTrack.GetSuperTrackedQuestID() == info.questID then
                     isQuestFiltered = false
                 end
             end
@@ -455,7 +456,7 @@ do
                     end
 
                     for _, bounty in ipairs(bounties) do
-                        if bounty and not C_QuestLog.IsComplete(bounty.questID) and C_QuestLog.IsQuestCriteriaForBounty(info.questId, bounty.questID) and (bountyFilter == 0 or bountyFilter == bounty.questID) then
+                        if bounty and not C_QuestLog.IsComplete(bounty.questID) and C_QuestLog.IsQuestCriteriaForBounty(info.questID, bounty.questID) and (bountyFilter == 0 or bountyFilter == bounty.questID) then
                             isQuestFiltered = false
                         end
                     end
