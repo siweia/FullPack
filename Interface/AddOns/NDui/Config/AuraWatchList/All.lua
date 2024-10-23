@@ -57,6 +57,8 @@ local list = {
 		{AuraID = 371024, UnitID = "player"},	-- 元素强能药水
 		{AuraID = 371028, UnitID = "player"},	-- 究极元素强能药水
 		-- 11.0 饰品
+		{AuraID = 92099, UnitID = "player"},	-- 灰鳞的优雅
+		{AuraID = 268769, UnitID = "player"},	-- 望远镜饰品
 		{AuraID = 443531, UnitID = "player"},	-- 振奋之光
 		{AuraID = 435493, UnitID = "player"},	-- 死亡之吻
 		{AuraID = 455451, UnitID = "player"},	-- 迅芯烛台
@@ -211,6 +213,7 @@ local list = {
 		{AuraID = 408556, UnitID = "player", Flash = true},	-- 缠绕
 		{AuraID = 408805, UnitID = "player", Flash = true},	-- 失衡
 		{AuraID = 409492, UnitID = "player", Flash = true},	-- 痛苦呼号
+		{AuraID = 462661, UnitID = "player", Flash = true},	-- 彼岸之赐, TWW S1
 		-- 5人
 		{AuraID = 395035, UnitID = "player", Flash = true},	-- 粉碎灵魂，阻击战
 		{AuraID = 386881, UnitID = "player"},	-- 冰霜炸弹，碧蓝魔馆
@@ -274,6 +277,7 @@ local list = {
 		{AuraID = 464748, UnitID = "player", Flash = true},	-- 束缚之网，流丝
 	},
 	["Warning"] = { -- 目标重要光环组
+		{AuraID = 268756, UnitID = "target", Caster = "player"},	-- 望远镜饰品
 		{AuraID = 355596, UnitID = "target", Flash = true},	-- 橙弓，哀痛箭
 		-- 大幻象
 		{AuraID = 304975, UnitID = "target", Value = true},	-- 虚空哀嚎，吸收盾
@@ -281,6 +285,7 @@ local list = {
 		-- 大米
 		{AuraID = 226510, UnitID = "target"},	-- 血池回血
 		{AuraID = 343502, UnitID = "target"},	-- 鼓舞光环
+		{AuraID = 462704, UnitID = "target"},	-- 碎裂精华，TWW S1
 		-- 5人
 		{AuraID = 372988, UnitID = "target", Value = true},	-- 寒冰壁垒，红玉
 		{AuraID = 391050, UnitID = "target", Value = true},	-- 暴风骤雨之盾，红玉
@@ -334,6 +339,8 @@ local list = {
 		{AuraID = 440177, UnitID = "target", Flash = true},	-- 准备饕餮，噬灭者乌格拉克斯
 		{AuraID = 450980, UnitID = "target", Value = true},	-- 存在瓦解，阿努巴拉什
 		{AuraID = 451277, UnitID = "target", Value = true},	-- 尖刺风暴，阿努巴拉什
+		{AuraID = 440179, UnitID = "target", Value = true},	-- 缠绕，阿努巴拉什
+		{AuraID = 456245, UnitID = "target", Value = true},	-- 刺痛谵妄，阿努巴拉什
 		{AuraID = 448488, UnitID = "target", Value = true},	-- 崇拜者的保护，尾王
 		-- PVP
 		{AuraID = 498, UnitID = "target"},		-- 圣佑术

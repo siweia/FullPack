@@ -943,17 +943,18 @@ function module:OnLogin()
 			AddNewContainer("Bag", i, "BagCustom"..i, filters["bagCustom"..i])
 		end
 		AddNewContainer("Bag", 6, "BagReagent", filters.onlyBagReagent)
-		AddNewContainer("Bag", 17, "Junk", filters.bagsJunk)
+		AddNewContainer("Bag", 18, "Junk", filters.bagsJunk)
 		AddNewContainer("Bag", 9, "EquipSet", filters.bagEquipSet)
 		AddNewContainer("Bag", 10, "BagAOE", filters.bagAOE)
 		AddNewContainer("Bag", 7, "AzeriteItem", filters.bagAzeriteItem)
+		AddNewContainer("Bag", 17, "BagLower", filters.bagLower)
 		AddNewContainer("Bag", 8, "Equipment", filters.bagEquipment)
 		AddNewContainer("Bag", 11, "BagCollection", filters.bagCollection)
+		AddNewContainer("Bag", 14, "BagStone", filters.bagStone)
 		AddNewContainer("Bag", 15, "Consumable", filters.bagConsumable)
 		AddNewContainer("Bag", 12, "BagGoods", filters.bagGoods)
 		AddNewContainer("Bag", 16, "BagQuest", filters.bagQuest)
 		AddNewContainer("Bag", 13, "BagAnima", filters.bagAnima)
-		AddNewContainer("Bag", 14, "BagStone", filters.bagStone)
 
 		f.main = MyContainer:New("Bag", {Bags = "bags", BagType = "Bag"})
 		f.main.__anchor = {"BOTTOMRIGHT", -50, 100}
@@ -967,6 +968,7 @@ function module:OnLogin()
 		AddNewContainer("Bank", 9, "BankAOE", filters.bankAOE)
 		AddNewContainer("Bank", 6, "BankAzeriteItem", filters.bankAzeriteItem)
 		AddNewContainer("Bank", 10, "BankLegendary", filters.bankLegendary)
+		AddNewContainer("Bank", 16, "BankLower", filters.bankLower)
 		AddNewContainer("Bank", 7, "BankEquipment", filters.bankEquipment)
 		AddNewContainer("Bank", 11, "BankCollection", filters.bankCollection)
 		AddNewContainer("Bank", 14, "BankConsumable", filters.bankConsumable)
@@ -1102,7 +1104,7 @@ function module:OnLogin()
 	}
 
 	local function isItemNeedsLevel(item)
-		return item.link and item.quality > 1 and (module:IsItemHasLevel(item) or item.classID == Enum.ItemClass.Gem)
+		return item.link and item.quality > 1 and item.ilvl
 	end
 
 	local function GetIconOverlayAtlas(item)
@@ -1177,10 +1179,7 @@ function module:OnLogin()
 		if C.db["Bags"]["BagsiLvl"] then
 			local level = item.level -- ilvl for keystone and battlepet
 			if not level and isItemNeedsLevel(item) then
-				local ilvl = B.GetItemLevel(item.link, item.bagId ~= -1 and item.bagId, item.slotId) -- SetBagItem return nil for default bank slots
-				if ilvl and ilvl > C.db["Bags"]["iLvlToShow"] then
-					level = ilvl
-				end
+				level = item.ilvl
 			end
 			if level then
 				local color = DB.QualityColors[item.quality]
@@ -1330,6 +1329,8 @@ function module:OnLogin()
 			label = C_Spell.GetSpellName(404861)
 		elseif strmatch(name, "AOE") then
 			label = ITEM_ACCOUNTBOUND_UNTIL_EQUIP
+		elseif strmatch(name, "Lower") then
+			label = L["LowerItem"]
 		end
 		if label then
 			self.label = B.CreateFS(self, 14, label, true, "TOPLEFT", 5, -8)
@@ -1447,7 +1448,9 @@ function module:OnLogin()
 	C_Container.SetInsertItemsLeftToRight(false)
 
 	-- Init
+	C.db["Bags"]["GatherEmpty"] = not C.db["Bags"]["GatherEmpty"]
 	ToggleAllBags()
+	C.db["Bags"]["GatherEmpty"] = not C.db["Bags"]["GatherEmpty"]
 	ToggleAllBags()
 	module.initComplete = true
 

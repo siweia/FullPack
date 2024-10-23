@@ -157,8 +157,10 @@ local function setupClickSets(self)
 				--self:SetAttribute(format(keyIndex, "type"), "spell")
 				--self:SetAttribute(format(keyIndex, "spell"), value)
 				local spellName = GetSpellName(value)
-				self:SetAttribute(format(keyIndex, "type"), "macro")
-				self:SetAttribute(format(keyIndex, "macrotext"), "/cast [@mouseover]"..spellName)
+				if spellName then
+					self:SetAttribute(format(keyIndex, "type"), "macro")
+					self:SetAttribute(format(keyIndex, "macrotext"), "/cast [@mouseover]"..spellName)
+				end
 			elseif value == "target" then
 				self:SetAttribute(format(keyIndex, "type"), "target")
 			elseif value == "focus" then
@@ -201,7 +203,7 @@ end
 
 function UF:AddClickSetsListener()
 	if not C.db["UFs"]["RaidClickSets"] then return end
-
+	SetCVar("autoSelfCast", 0) -- disable auto self casting
 	B:RegisterEvent("PLAYER_REGEN_ENABLED", UF.DelayClickSets)
 end
 
