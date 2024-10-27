@@ -6026,10 +6026,10 @@ function options:Load()
 		local roptions = VMRT.Reminder2.options[uid] or 0
 		if enable then
 			if bit.band(roptions,optionBit) > 0 then
-				roptions = bit.bxor(options,optionBit)
+				roptions = bit.bxor(roptions,optionBit)
 			end
 		else
-			roptions = bit.bor(options,optionBit)
+			roptions = bit.bor(roptions,optionBit)
 		end
 		if roptions == 0 then roptions = nil end
 		VMRT.Reminder2.options[uid] = roptions

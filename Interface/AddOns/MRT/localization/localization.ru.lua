@@ -985,6 +985,7 @@ L.InspectViewerHideInRaid = "Скрыть тех кто не в рейде"
 L.InspectViewerColorizeNoValorUpgrade = "Выделять предметы без макс. уровневых улучшений"
 L.InspectViewerNoExRTAddon = "У игрока не установлен MRT"
 L.InspectViewerRefreshAll = "Обновить всех"
+L.InspectViewerCheap = "Дешевый"
 
 L.CoinsSpoilsOfPandariaWinTrigger = "Система перезагружается. Не выключать питание, иначе возможен взрыв."
 L.CoinsEmpty = "Здесь пока пусто"

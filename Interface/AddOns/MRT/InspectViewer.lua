@@ -122,6 +122,10 @@ local IS_SL = UnitLevel'player' >= 60
 local IS_DF = UnitLevel'player' >= 70 and not ExRT.isClassic
 local IS_TWW = UnitLevel'player' >= 71 and not ExRT.isClassic
 
+module.db.topEnchGemsCheap = {
+[7380]=true,[7381]=true,[7382]=true,[7329]=true,[7330]=true,[7331]=true,[7335]=true,[7335]=true,[7336]=true,[7336]=true,[7337]=true,[7337]=true,[7386]=true,[7387]=true,[7388]=true,[7341]=true,[7342]=true,[7343]=true,[7392]=true,[7393]=true,[7394]=true,[7394]=true,[7347]=true,[7348]=true,[7349]=true,
+}
+
 module.db.topEnchGems = IS_TWW and {
 	[3368]="DKWeapon:knight",
 	[3370]="DKWeapon:frost",
@@ -739,6 +743,7 @@ function module.options:Load()
 	module.db.colorizeLowIlvl685 = VMRT.InspectViewer.ColorizeLowIlvl685
 	module.db.colorizeNoValorUpgrade = VMRT.InspectViewer.ColorizeNoValorUpgrade
 	module.db.minEnchRank = VMRT.InspectViewer.TopEnchGemsMinRank
+	module.db.checkCheap = VMRT.InspectViewer.TopEnchGemsCheckCheap
 
 	local colorizeLowIlvl630 = 233
 	local colorizeLowIlvl685 = 252
@@ -755,8 +760,8 @@ function module.options:Load()
 		colorizeLowIlvl685 = 482
 	end
 	if IS_TWW then
-		colorizeLowIlvl630 = 597
-		colorizeLowIlvl685 = 623
+		colorizeLowIlvl630 = 606
+		colorizeLowIlvl685 = 619
 	end
 
 	self.chkItemsTrackDropDown = ELib:DropDown(self,300,6):Point(50,0):Size(50)
@@ -766,28 +771,58 @@ function module.options:Load()
 
 	enchRankSubMenu = {
 		{text = L.RaidCheckMinRank, isTitle = true},
-		{text = "|A:Professions-ChatIcon-Quality-Tier1:20:20|a 1", radio = true, arg1 = 1, checkState = (module.db.minEnchRank or 3) == 1, func = function(self,checked)
+		{text = "|A:Professions-ChatIcon-Quality-Tier1:20:20|a 1 ("..L.InspectViewerCheap..")", radio = true, arg1 = 1, checkState = (module.db.minEnchRank or 3) == 1 and module.db.checkCheap, func = function(self,checked)
 			module.db.minEnchRank = 1
+			module.db.checkCheap = true
 			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
 			module.options.ReloadPage()
-			--ELib:DropDownClose()
 			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 1 end end
 			ELib.ScrollDropDown.UpdateChecks()
 		end},
-		{text = "|A:Professions-ChatIcon-Quality-Tier2:20:20|a 2", radio = true, arg1 = 2, checkState = (module.db.minEnchRank or 3) == 2, func = function(self,checked)
+		{text = "|A:Professions-ChatIcon-Quality-Tier2:20:20|a 2 ("..L.InspectViewerCheap..")", radio = true, arg1 = 2, checkState = (module.db.minEnchRank or 3) == 2 and module.db.checkCheap, func = function(self,checked)
 			module.db.minEnchRank = 2
+			module.db.checkCheap = true
 			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
 			module.options.ReloadPage()
-			--ELib:DropDownClose()
 			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 2 end end
 			ELib.ScrollDropDown.UpdateChecks()
 		end},
-		{text = "|A:Professions-ChatIcon-Quality-Tier3:20:20|a 3", radio = true, arg1 = 3, checkState = (module.db.minEnchRank or 3) == 3, func = function(self,checked)
+		{text = "|A:Professions-ChatIcon-Quality-Tier3:20:20|a 3 ("..L.InspectViewerCheap..")", radio = true, arg1 = 3, checkState = (module.db.minEnchRank or 3) == 3 and module.db.checkCheap, func = function(self,checked)
 			module.db.minEnchRank = nil
+			module.db.checkCheap = true
 			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
 			module.options.ReloadPage()
-			--ELib:DropDownClose()
 			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 3 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+		{text = "|A:Professions-ChatIcon-Quality-Tier1:20:20|a 1", radio = true, arg1 = 4, checkState = (module.db.minEnchRank or 3) == 1 and not module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = 1
+			module.db.checkCheap = false
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 4 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+		{text = "|A:Professions-ChatIcon-Quality-Tier2:20:20|a 2", radio = true, arg1 = 5, checkState = (module.db.minEnchRank or 3) == 2 and not module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = 2
+			module.db.checkCheap = false
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 5 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+		{text = "|A:Professions-ChatIcon-Quality-Tier3:20:20|a 3", radio = true, arg1 = 6, checkState = (module.db.minEnchRank or 3) == 3 and not module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = nil
+			module.db.checkCheap = false
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 6 end end
 			ELib.ScrollDropDown.UpdateChecks()
 		end},
 	}
@@ -1044,14 +1079,26 @@ function module.options:Load()
 					ench = tonumber(ench)
 
 					local enchLevel = module.db.topEnchGems[ench]
-					if not enchLevel or (type(enchLevel) == "number" and enchLevel < (module.db.minEnchRank or 3)) then
+					if 
+						not enchLevel or 
+						(
+						 type(enchLevel) == "number" and 
+						 ((enchLevel + (not module.db.topEnchGemsCheap[ench] and 3 or 0)) < ((module.db.minEnchRank or 3) + (module.db.checkCheap and 0 or 3)))
+						)
+					then
 						isTop = false
 					end
 				end
 				if gem ~= "0" and gem ~= "" then
 					gem = tonumber(gem)
 					local enchLevel = module.db.topEnchGems[gem]
-					if not enchLevel or (type(enchLevel) == "number" and enchLevel < (module.db.minEnchRank or 3)) then
+					if 
+						not enchLevel or 
+						(
+						 type(enchLevel) == "number" and 
+						 ((enchLevel + (not module.db.topEnchGemsCheap[ench] and 3 or 0)) < ((module.db.minEnchRank or 3) + (module.db.checkCheap and 0 or 3)))
+						)
+					then
 						isTop = false
 					end
 				end
