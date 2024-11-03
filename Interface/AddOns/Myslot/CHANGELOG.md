@@ -1,8 +1,6 @@
 # Myslot
 
-## [v5.22.1](https://github.com/tg123/myslot/tree/v5.22.1) (2024-10-06)
-[Full Changelog](https://github.com/tg123/myslot/commits/v5.22.1) 
+## [v5.22.2](https://github.com/tg123/myslot/tree/v5.22.2) (2024-11-02)
+[Full Changelog](https://github.com/tg123/myslot/commits/v5.22.2) 
 
-- add an option button and more options (#68)  
-    * add option button  
-    * add option to turn clear before import on and off  
+- bump interface versions for compatibility updates  
