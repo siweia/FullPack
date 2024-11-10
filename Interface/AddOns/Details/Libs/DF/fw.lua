@@ -1,6 +1,6 @@
 
 
-local dversion = 575
+local dversion = 580
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -128,6 +128,10 @@ end
 ---return if the wow version the player is playing is dragonflight or an expansion after it
 ---@return boolean
 function DF.IsDragonflightAndBeyond()
+	return buildInfo >= 100000
+end
+
+function DF.ExpansionHasEvoker()
 	return buildInfo >= 100000
 end
 
@@ -937,6 +941,16 @@ function DF.table.append(t1, t2)
 	return t1
 end
 
+---receive a table and N arguments, add each argument to the table
+---@param t1 table
+---@vararg any
+function DF.table.inserts(t1, ...)
+	for i = 1, select("#", ...) do
+		t1[#t1+1] = select(i, ...)
+	end
+	return t1
+end
+
 ---copy values that does exist on table2 but not on table1
 ---@param t1 table
 ---@param t2 table
@@ -1289,6 +1303,17 @@ end
 local dummyFontString = UIParent:CreateFontString(nil, "background", "GameFontNormal")
 local defaultFontFile = dummyFontString:GetFont()
 
+function DF:GetTextWidth(text, size)
+	if (size) then
+		DF:SetFontSize(dummyFontString, size)
+	else
+		DF:SetFontSize(dummyFontString, 12)
+	end
+
+	dummyFontString:SetText(text)
+	return dummyFontString:GetStringWidth()
+end
+
 ---get the UIObject of type 'FontString' and set the default game font into it
 ---@param self table
 ---@param fontString fontstring
@@ -1365,12 +1390,29 @@ function DF:AddColorToText(text, color) --wrap text with a color
 	return text
 end
 
+function DF:GetClassColorByClassId(classId)
+	local classInfo = C_CreatureInfo.GetClassInfo(classId)
+	if (classInfo) then
+		local color = RAID_CLASS_COLORS[classInfo.classFile]
+		if (color) then
+			return color.r, color.g, color.b
+		else
+			return 1, 1, 1
+		end
+	end
+	return 1, 1, 1
+end
+
 ---receives a string 'text' and a class name and return the string wrapped with the class color using |c and |r scape codes
 ---@param self table
 ---@param text string
 ---@param className class
 ---@return string
 function DF:AddClassColorToText(text, className)
+	if (type(className) == "number") then
+		className = DF.ClassIndexToFileName[className]
+	end
+
 	if (type(className) ~= "string") then
 		return DF:RemoveRealName(text)
 
@@ -1614,7 +1656,6 @@ function DF:trim(string)
 	return from > #string and "" or string:match(".*%S", from)
 end
 
-
 ---truncate removing at a maximum of 10 character from the string
 ---@param fontString table
 ---@param maxWidth number
@@ -1834,6 +1875,34 @@ function DF:GetSpellBookSpells()
     end
 
     return spellNamesInSpellBook, spellIdsInSpellBook
+end
+
+function DF:GetHeroTalentId()
+    local configId = C_ClassTalents.GetActiveConfigID()
+    if (not configId) then
+        return 0
+    end
+    local configInfo = C_Traits.GetConfigInfo(configId)
+    for treeIndex, treeId in ipairs(configInfo.treeIDs) do
+        local treeNodes = C_Traits.GetTreeNodes(treeId)
+        for nodeIdIndex, treeNodeID in ipairs(treeNodes) do
+            local traitNodeInfo = C_Traits.GetNodeInfo(configId, treeNodeID)
+            if (traitNodeInfo) then
+                local activeEntry = traitNodeInfo.activeEntry
+                if (activeEntry) then
+                    local entryId = activeEntry.entryID
+                    local rank = activeEntry.rank
+                    if (rank > 0) then
+                        local entryInfo = C_Traits.GetEntryInfo(configId, entryId)
+						if (not entryInfo.definitionID and entryInfo.subTreeID) then
+							return entryInfo.subTreeID
+						end
+                    end
+                end
+            end
+        end
+    end
+	return 0
 end
 
 ---return a table of passive talents, format: [spellId] = true
@@ -2071,6 +2140,27 @@ function DF:CreateFlashAnimation(frame, onFinishFunc, onLoopFunc)
 	frame.Stop = stopAnimation_Method
 
 	return flashAnimation
+end
+
+local onStartPunchAnimation = function(animationGroup)
+	local parent = animationGroup:GetParent()
+	animationGroup.parentWidth = parent:GetWidth()
+	animationGroup.parentHeight = parent:GetHeight()
+end
+
+local onStopPunchAnimation = function(animationGroup)
+	local parent = animationGroup:GetParent()
+	parent:SetWidth(animationGroup.parentWidth)
+	parent:SetHeight(animationGroup.parentHeight)
+end
+
+function DF:CreatePunchAnimation(frame, scale)
+	scale = scale or 1.1
+	scale = math.min(scale, 1.9)
+	local animationHub = DF:CreateAnimationHub(frame, onStartPunchAnimation, onStopPunchAnimation)
+	local scaleUp = DF:CreateAnimation(animationHub, "scale", 1, 0.05, 1, 1, scale, scale, "center", 0, 0)
+	local scaleDown = DF:CreateAnimation(animationHub, "scale", 2, 0.05, 1, 1, 1-(scale - 1), 1-(scale - 1), "center", 0, 0)
+	return animationHub
 end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3155,7 +3245,7 @@ function DF:ParseTemplate(templateCategory, template)
 		if (objectType == "label") then
 			templateCategory = "font"
 
-		elseif (objectType == "dropdown") then
+		elseif (objectType == "dropdown" or objectType == "textentry") then
 			templateCategory = "dropdown"
 
 		elseif (objectType == "button") then
@@ -4739,6 +4829,7 @@ DF.ClassIndexToFileName = {
 	[13] = "EVOKER",
 }
 
+--GetNumClasses()
 
 DF.ClassFileNameToIndex = {
 	["WARRIOR"] = 1,
@@ -4979,11 +5070,21 @@ function DF:GetGroupTypes()
 	return DF.GroupTypes
 end
 
-DF.RoleTypes = {
+---@class roleinfo : table
+---@field Name string
+---@field ID string
+---@field Texture string
+
+---@type roleinfo[]
+local roles = {
 	{Name = _G.DAMAGER, ID = "DAMAGER", Texture = _G.INLINE_DAMAGER_ICON},
 	{Name = _G.HEALER, ID = "HEALER", Texture = _G.INLINE_HEALER_ICON},
 	{Name = _G.TANK, ID = "TANK", Texture = _G.INLINE_TANK_ICON},
+	{Name = _G.NONE, ID = "NONE", Texture = _G.INLINE_DAMAGER_ICON},
 }
+
+DF.RoleTypes = roles
+
 function DF:GetRoleTypes()
 	return DF.RoleTypes
 end
@@ -5233,6 +5334,20 @@ function DF:GetRangeCheckSpellForSpec(specId)
 	return SpellRangeCheckListBySpec[specId]
 end
 
+function DF.CatchString(...)
+	if (not DF.IsDragonflightAndBeyond()) then
+		if (type(select(1, ...)) == "table") then
+			for i = 1, select("#", ...) do
+				local value = select(i, ...)
+				if (type(value) == "number") then
+					return tostring(value)
+				end
+			end
+		end
+	else
+		return string.char(...)
+	end
+end
 
 --key is instanceId from GetInstanceInfo()
 -- /dump GetInstanceInfo()
@@ -5708,34 +5823,21 @@ local sendTimeBarNotification = function(token, barType, id, msg, timer, icon, s
 end
 
 local createBossModsCallback = function()
-    if (false and _G.DBM) then
+    if (_G.DBM) then
         local DBM = _G.DBM
 
 		--phase change
-        local phaseChangeCallback = function(event, mod, modId, phase, encounterId, stageTotal)
-            sendPhaseNotification(phase)
+        local phaseChangeCallback = function(event, mod, modId, phase, encounterId, stageTotal, arg1, arg2)
         end
-		--DBM:RegisterCallback("DBM_SetStage", phaseChangeCallback)
+		DBM:RegisterCallback("DBM_SetStage", phaseChangeCallback)
 
 		--time bars
-        local timerChangeCallback = function(bar_type, id, msg, timer, icon, bartype, spellId, colorId, modid)
-            local currentCombat = Details:GetCurrentCombat()
-            if (not currentCombat.__destroyed) then --async events, need to check for combat destruction
-                ---@type combattime
-                local combatTime = currentCombat:GetCombatTime()
-                table.insert(currentCombat.bossTimers, {"dbm", combatTime, bar_type, id, msg, timer, icon, bartype, spellId, colorId, modid})
-                --print("dbm event", bar_type, id, msg, timer, icon, bartype, spellId, colorId, modid)
-
-                local spell = tostring(spellId)
-                if (spell and not current_table_dbm[spell]) then
-                    current_table_dbm[spell] = {spell, id, msg, timer, icon, bartype, spellId, colorId, modid}
-                end
-            end
+        local timerChangeCallback = function(bar_type, id, msg, timer, icon, bartype, spellId, colorId, modid, arg1, arg2)
         end
 
-        --DBM:RegisterCallback("DBM_TimerStart", timerChangeCallback)
+        DBM:RegisterCallback("DBM_TimerStart", timerChangeCallback)
     end
-
+--[=
 	local BigWigsLoader = BigWigsLoader
 
     if (BigWigsLoader) then -- and not _G.DBM
@@ -5786,8 +5888,8 @@ local createBossModsCallback = function()
 			--self:RegisterMessage("BigWigs_StopBars", "StopModuleBars")
         end
     end
+	--]=]
 end
-
 
 
 detailsFramework.OnLoginSchedules[#detailsFramework.OnLoginSchedules+1] = createBossModsCallback
