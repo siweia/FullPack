@@ -62,6 +62,7 @@ local list = {
 		{AuraID = 443531, UnitID = "player"},	-- 振奋之光
 		{AuraID = 435493, UnitID = "player"},	-- 死亡之吻
 		{AuraID = 455451, UnitID = "player"},	-- 迅芯烛台
+		{AuraID = 445560, UnitID = "player"},	-- 紫蛋
 		{AuraID = 449954, UnitID = "player"},	-- 奸邪发射机
 		{AuraID = 449947, UnitID = "player", Text = NPE_JUMP},	-- 奸邪发射机，跳3下
 		-- 10.0 饰品
@@ -334,6 +335,7 @@ local list = {
 		{AuraID = 343470, UnitID = "target", Value = true},	-- 通灵战潮，碎骨之盾
 		{AuraID = 328351, UnitID = "target", Flash = true},	-- 通灵战潮，染血长枪
 		{AuraID = 273721, UnitID = "target", Flash = true},	-- 围攻，1号易伤
+		{AuraID = 423588, UnitID = "target", Value = true},	-- 修道院，圣光屏障
 		-- S1
 		{AuraID = 445409, UnitID = "target", Value = true},	-- 加固壳壁，斯卡莫拉克
 		-- Raids
