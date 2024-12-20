@@ -88,7 +88,7 @@ function StatusBarFrameMixin:SetColors(db)
 			self.BG:SetVertexColor(0.7, 0.7, 0.7)
 		else
 			c = db.barColors.useClassColor.inactive and classColor or db.barColors.inactiveColor
-			self.BG:SetVertexColor(c.r, c.g, c.b, db.useIconAlpha and 1 or c.a)
+			self.BG:SetVertexColor(c.r, c.g, c.b, db.useIconAlpha and 1 or db.barColors.inactiveColor.a)
 		end
 	end
 
@@ -366,9 +366,11 @@ local function OmniCDCastingBarFrame_OnUpdate(self, elapsed)
 		else
 			self.fadeOut = nil;
 			self:Hide();
+			OmniCDCastingBarFrame_OnHide(self)
 		end
 	else
 		self:Hide();
+		OmniCDCastingBarFrame_OnHide(self)
 	end
 end
 
@@ -602,7 +604,6 @@ function P:AcquireStatusBar(icon, key, nameWithoutRealm)
 		castingBar.statusBar = statusBar
 		castingBar:SetScript("OnUpdate", OmniCDCastingBarFrame_OnUpdate)
 		castingBar:SetScript("OnShow", OmniCDCastingBarFrame_OnShow)
-		castingBar:SetScript("OnHide", OmniCDCastingBarFrame_OnHide)
 
 		statusBar.Text:SetFontObject(E.StatusBarFont)
 		castingBar.Text:SetFontObject(E.StatusBarFont)
