@@ -66,6 +66,7 @@ function M:OnLogin()
 	M:EnhancedPicker()
 	M:UpdateMaxZoomLevel()
 	M:HandleNDuiTitle()
+	M:ToggleAddOnProfiler()
 
 	-- Auto chatBubbles
 	if NDuiADB["AutoBubbles"] then
@@ -90,7 +91,7 @@ function M:OnLogin()
 	if deleteDialog.OnShow then
 		hooksecurefunc(deleteDialog, "OnShow", function(self)
 			if C.db["Misc"]["InstantDelete"] then
-				self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING)
+				self.EditBox:SetText(DELETE_ITEM_CONFIRM_STRING)
 			end
 		end)
 	end
@@ -565,20 +566,24 @@ function M:JerryWay()
 
 	SlashCmdList["NDUI_JERRY_WAY"] = function(msg)
 		msg = gsub(msg, "(%d)[%.,] (%d)", "%1 %2")
-		local x, y, z = strmatch(msg, "(%S+)%s(%S+)(.*)")
-		if x and y then
-			local mapID = C_Map_GetBestMapForUnit("player")
-			if mapID then
-				local mapInfo = C_Map_GetMapInfo(mapID)
-				local mapName = mapInfo and mapInfo.name
-				if mapName then
-					x = GetCorrectCoord(x)
-					y = GetCorrectCoord(y)
-					if x and y then
-						print(format(pointString, mapID, x*100, y*100, mapName, x, y, z or ""))
-						C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(mapID, x/100, y/100))
-						C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-					end
+
+		local mapID, x, y, z = strmatch(msg, "^#(%d+)%s+(%S+)%s+(%S+)(.*)")
+		if not mapID then
+			mapID = C_Map.GetBestMapForUnit("player")
+			x, y, z = strmatch(msg, "(%S+)%s+(%S+)(.*)")
+		end
+
+		if tonumber(mapID) and tonumber(x) and tonumber(y) then
+			local mapInfo = C_Map.GetMapInfo(mapID)
+			local mapName = mapInfo and mapInfo.name
+			if mapName then
+				x = GetCorrectCoord(x)
+				y = GetCorrectCoord(y)
+				if x and y then
+					print(format(pointString, mapID, x*100, y*100, mapName, x, y, z or ""))
+					C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(mapID, x/100, y/100))
+					C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+					--C_Map.OpenWorldMap(mapID)
 				end
 			end
 		end
@@ -800,4 +805,36 @@ end
 
 function M:UpdateMaxZoomLevel()
 	SetCVar("cameraDistanceMaxZoomFactor", C.db["Misc"]["MaxZoom"])
+end
+
+function M:ToggleAddOnProfiler()
+	local function CheckState()
+		return NDuiADB["AddOnProfiler"]
+	end
+
+	C_AddOnProfiler.IsEnabled = function()
+		return CheckState()
+	end
+
+	local bu = CreateFrame("CheckButton", nil, AddonList, "OptionsBaseCheckButtonTemplate")
+	bu:SetHitRectInsets(-5, -5, -5, -5)
+	bu:SetPoint("BOTTOM", 0, 2)
+	B.ReskinCheck(bu)
+	B.CreateFS(bu, 14, L["CPU Usage"], "info", "LEFT", 30, 0)
+	bu:SetChecked(CheckState())
+	bu:SetScript("OnClick", function()
+		NDuiADB["AddOnProfiler"] = bu:GetChecked()
+	end)
+end
+
+function hhl()
+	local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo()
+if choiceInfo then
+    local optionInfo = choiceInfo.options and choiceInfo.options[1]
+    if optionInfo then
+        for _, button in ipairs(optionInfo.buttons) do
+            C_PlayerChoice.SendPlayerChoiceResponse(button.id)
+        end
+    end
+end
 end
