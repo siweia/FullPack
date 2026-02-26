@@ -5,7 +5,6 @@ local LAB = LibStub("LibActionButton-1.0-NDui")
 
 local _G = _G
 local tinsert, next = tinsert, next
-local GetActionTexture = GetActionTexture
 local margin, padding = C.Bars.margin, C.Bars.padding
 
 function Bar:UpdateAllSize()
@@ -198,7 +197,7 @@ function Bar:UpdateBarConfig()
 end
 
 function Bar:ReassignBindings()
-	if InCombatLockdown() then return end
+	if InCombatLockdown() or Bar.isHousing then return end
 
 	for index = 1, 8 do
 		local frame = Bar.headers[index]
@@ -224,6 +223,15 @@ function Bar:ClearBindings()
 		if frame then
 			ClearOverrideBindings(frame)
 		end
+	end
+end
+
+function Bar:UpdateHousingState(state)
+	Bar.isHousing = (state ~= 0)
+	if Bar.isHousing then
+		Bar:ClearBindings()
+	else
+		Bar:ReassignBindings()
 	end
 end
 
@@ -339,6 +347,14 @@ function Bar:UpdateOverlays()
 	end
 end
 
+function Bar:UpdateCooldownText()
+	for _, button in pairs(Bar.buttons) do
+		if button.cooldownText then
+			button.cooldownText:SetFont(DB.Font[1], C.db["Actionbar"]["CDFontSize"], DB.Font[3])
+		end
+	end
+end
+
 function Bar:OnLogin()
 	Bar.buttons = {}
 	Bar:MicroMenu()
@@ -357,6 +373,7 @@ function Bar:OnLogin()
 	Bar:UpdateVisibility()
 	Bar:UpdateAllSize()
 	Bar:HideBlizz()
+	Bar:UpdateCooldownText()
 
 	if C_PetBattles.IsInBattle() then
 		Bar:ClearBindings()
@@ -366,6 +383,7 @@ function Bar:OnLogin()
 	B:RegisterEvent("UPDATE_BINDINGS", Bar.ReassignBindings)
 	B:RegisterEvent("PET_BATTLE_CLOSE", Bar.ReassignBindings)
 	B:RegisterEvent("PET_BATTLE_OPENING_DONE", Bar.ClearBindings)
+	B:RegisterEvent("HOUSE_EDITOR_MODE_CHANGED", Bar.UpdateHousingState)
 
 	if AdiButtonAuras then
 		AdiButtonAuras:RegisterLAB("LibActionButton-1.0-NDui")

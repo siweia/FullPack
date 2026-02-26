@@ -61,8 +61,6 @@ function Bar:StyleActionButton(button)
 	local icon = button.icon
 	local cooldown = button.cooldown
 	local hotkey = button.HotKey
-	local count = button.Count
-	local name = button.Name
 	local flash = button.Flash
 	local border = button.Border
 	local normal = button.NormalTexture
@@ -100,6 +98,8 @@ function Bar:StyleActionButton(button)
 	end
 	if cooldown then
 		cooldown:SetAllPoints()
+		button.cooldownText = cooldown:GetRegions()
+		button.cooldownText:SetFontObject(Game16Font)
 	end
 	if pushed then
 		pushed:SetInside()

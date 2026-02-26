@@ -209,6 +209,8 @@ function module:OnSetHideCountdownNumbers(hide)
 end
 
 function module:OnLogin()
+	SetCVar("countdownForCooldowns", C.db["Actionbar"]["Cooldown"] and 1 or 0)
+--[=[ -- disabled in 12.0
 	if not C.db["Actionbar"]["Cooldown"] then return end
 
 	local cooldownIndex = getmetatable(ActionButton1Cooldown).__index
@@ -219,4 +221,5 @@ function module:OnLogin()
 
 	-- Hide Default Cooldown
 	SetCVar("countdownForCooldowns", 0)
+]=]
 end

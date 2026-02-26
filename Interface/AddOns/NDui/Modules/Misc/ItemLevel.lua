@@ -7,7 +7,7 @@ local pairs, select, next, type, unpack = pairs, select, next, type, unpack
 local UnitGUID, GetItemInfo = UnitGUID, C_Item.GetItemInfo
 local GetContainerItemLink = C_Container.GetContainerItemLink
 local GetInventoryItemLink = GetInventoryItemLink
-local EquipmentManager_UnpackLocation, EquipmentManager_GetItemInfoByLocation = EquipmentManager_UnpackLocation, EquipmentManager_GetItemInfoByLocation
+local EquipmentManager_GetItemInfoByLocation = EquipmentManager_GetItemInfoByLocation
 local C_AzeriteEmpoweredItem_IsPowerSelected = C_AzeriteEmpoweredItem.IsPowerSelected
 local GetTradePlayerItemLink, GetTradeTargetItemLink = GetTradePlayerItemLink, GetTradeTargetItemLink
 
@@ -287,8 +287,8 @@ function M:ItemLevel_FlyoutSetup()
 	if tonumber(location) then
 		if location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then return end
 
-		local _, _, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(location)
-		if voidStorage then return end
+		local locationData = EquipmentManager_GetLocationData(location)
+		local bags, slot, bag = locationData.isBags, locationData.slot, locationData.bag
 		local quality = select(13, EquipmentManager_GetItemInfoByLocation(location))
 		if bags then
 			M.ItemLevel_FlyoutUpdate(self, bag, slot, quality)

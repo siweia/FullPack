@@ -134,12 +134,11 @@ function G:SetupRaidDebuffs(parent)
 	--AddNewDungeon(dungeons, 1182) -- 通灵战潮
 	--AddNewDungeon(dungeons, 1184) -- 塞兹仙林的迷雾
 
-	-- isNewPatch, remove in future
-	AddNewDungeon(dungeons, 1298) -- 水闸行动
-	AddNewDungeon(dungeons, 1187) -- 伤逝剧场
-	AddNewDungeon(dungeons, 1178) -- 麦卡贡行动
-	AddNewDungeon(dungeons, 1012) -- 暴富矿区！！
+	--AddNewDungeon(dungeons, 1187) -- 伤逝剧场
+	--AddNewDungeon(dungeons, 1178) -- 麦卡贡行动
+	--AddNewDungeon(dungeons, 1012) -- 暴富矿区！！
 
+	AddNewDungeon(dungeons, 1298) -- 水闸行动
 	AddNewDungeon(dungeons, 1303) -- 奥尔达尼生态圆顶
 	AddNewDungeon(dungeons, 1185) -- 赎罪大厅
 	AddNewDungeon(dungeons, 1194) -- 集市
@@ -1200,6 +1199,7 @@ function G:SetupRaidFrame(parent)
 			if frame.mystyle == "raid" and not frame.raidType then
 				SetUnitFrameSize(frame, "Raid")
 				UF.UpdateRaidNameAnchor(frame, frame.nameText)
+				UF:RefreshBuffAndDebuff(frame)
 			end
 		end
 		if UF.CreateAndUpdateRaidHeader then
@@ -1281,6 +1281,7 @@ function G:SetupPartyFrame(parent)
 			if frame.raidType == "party" then
 				SetUnitFrameSize(frame, "Party")
 				UF.UpdateRaidNameAnchor(frame, frame.nameText)
+				UF:RefreshBuffAndDebuff(frame)
 			end
 		end
 		if UF.CreateAndUpdatePartyHeader then
@@ -1441,52 +1442,9 @@ function G:SetupCastbar(parent)
 		if focusCB then
 			focusCB.mover:Hide()
 		end
-	end)
-end
-
-function G:SetupSwingBars(parent)
-	local guiName = "NDuiGUI_SwingSetup"
-	toggleExtraGUI(guiName)
-	if extraGUIs[guiName] then return end
-
-	local panel = createExtraGUI(parent, guiName, L["UFs SwingBar"].."*")
-	local scroll = G:CreateScroll(panel, 260, 540)
-
-	local parent, offset = scroll.child, -10
-	local frame = _G.oUF_Player
-
-	local function configureSwingBars()
-		if not frame then return end
-
-		local width, height = C.db["UFs"]["SwingWidth"], C.db["UFs"]["SwingHeight"]
-		local swing = frame.Swing
-		swing:SetSize(width, height)
-		swing.Offhand:SetHeight(height)
-		swing.mover:SetSize(width, height)
-		swing.mover:Show()
-
-		swing.Text:SetShown(C.db["UFs"]["SwingTimer"])
-		swing.TextMH:SetShown(C.db["UFs"]["SwingTimer"])
-		swing.TextOH:SetShown(C.db["UFs"]["SwingTimer"])
-
-		swing.Offhand:ClearAllPoints()
-		if C.db["UFs"]["OffOnTop"] then
-			swing.Offhand:SetPoint("BOTTOMLEFT", swing, "TOPLEFT", 0, 3)
-			swing.Offhand:SetPoint("BOTTOMRIGHT", swing, "TOPRIGHT", 0, 3)
-		else
-			swing.Offhand:SetPoint("TOPLEFT", swing, "BOTTOMLEFT", 0, -3)
-			swing.Offhand:SetPoint("TOPRIGHT", swing, "BOTTOMRIGHT", 0, -3)
+		if UF.UpdateCastBarColors then
+			UF:UpdateCastBarColors()
 		end
-	end
-
-	createOptionCheck(parent, offset, L["UFs SwingTimer"], "UFs", "SwingTimer", configureSwingBars, L["SwingTimer Tip"])
-	createOptionCheck(parent, offset-35, L["OffhandOnTop"], "UFs", "OffOnTop", configureSwingBars)
-	createOptionSlider(parent, L["Width"], 50, 1000, 275, offset-105, "SwingWidth", configureSwingBars)
-	createOptionSlider(parent, L["Height"], 1, 50, 3, offset-175, "SwingHeight", configureSwingBars)
-
-	panel:HookScript("OnHide", function()
-		local mover = frame and frame.Swing and frame.Swing.mover
-		if mover then mover:Hide() end
 	end)
 end
 
@@ -1501,19 +1459,20 @@ function G:SetupBagFilter(parent)
 	local filterOptions = {
 		[1] = "FilterJunk",
 		[2] = "FilterConsumable",
-		[3] = "FilterAzerite",
-		[4] = "FilterEquipment",
-		[5] = "FilterEquipSet",
-		[6] = "FilterLegendary",
-		[7] = "FilterCollection",
-		[8] = "FilterFavourite",
-		[9] = "FilterGoods",
-		[10] = "FilterQuest",
-		[11] = "FilterAnima",
-		[12] = "FilterStone",
-		[13] = "FilterAOE",
-		[14] = "FilterLower",
-		[15] = "FilterLegacy",
+		[3] = "FilterEquipment",
+		[4] = "FilterEquipSet",
+		[5] = "FilterLegendary",
+		[6] = "FilterCollection",
+		[7] = "FilterFavourite",
+		[8] = "FilterGoods",
+		[9] = "FilterQuest",
+		[10] = "FilterAOE",
+		[11] = "FilterLower",
+		[12] = "FilterLegacy",
+		[13] = "FilterDecor",
+		[14] = "FilterAzerite",
+		[15] = "FilterAnima",
+		[16] = "FilterStone",
 	}
 
 	local BAG = B:GetModule("Bags")
@@ -1523,7 +1482,7 @@ function G:SetupBagFilter(parent)
 
 	local offset = 10
 	for _, value in ipairs(filterOptions) do
-		createOptionCheck(scroll, -offset, L[value], "Bags", value, updateAllBags)
+		createOptionCheck(scroll.child, -offset, L[value], "Bags", value, updateAllBags)
 		offset = offset + 35
 	end
 end
@@ -1625,10 +1584,10 @@ function G:SetupNameplateSize(parent)
 
 	local optionValues = {
 		["enemy"] = {"PlateWidth", "PlateHeight", "NameTextSize","HealthTextSize", "HealthTextOffset", "PlateCBHeight", "CBTextSize", "PlateCBOffset", "HarmWidth", "HarmHeight", "NameTextOffset"},
-		["friend"] = {"FriendPlateWidth", "FriendPlateHeight", "FriendNameSize","FriendHealthSize", "FriendHealthOffset", "FriendPlateCBHeight", "FriendCBTextSize", "FriendPlateCBOffset", "HelpWidth", "HelpHeight", "FriendNameOffset"},
+		--["friend"] = {"FriendPlateWidth", "FriendPlateHeight", "FriendNameSize","FriendHealthSize", "FriendHealthOffset", "FriendPlateCBHeight", "FriendCBTextSize", "FriendPlateCBOffset", "HelpWidth", "HelpHeight", "FriendNameOffset"},
 	}
 	local function createOptionGroup(parent, offset, value, func, isEnemy)
-		createOptionTitle(parent, "", offset)
+		--createOptionTitle(parent, "", offset)
 		createOptionSlider(parent, L["Width"], 50, 500, 190, offset-60, optionValues[value][1], func, "Nameplate")
 		createOptionSlider(parent, L["Height"], 5, 50, 8, offset-130, optionValues[value][2], func, "Nameplate")
 		createOptionSlider(parent, L["InteractWidth"], 50, 500, 190, offset-200, optionValues[value][9], func, "Nameplate")
@@ -1647,7 +1606,7 @@ function G:SetupNameplateSize(parent)
 	end
 
 	local UF = B:GetModule("UnitFrames")
-	local options = {
+--[[	local options = {
 		[1] = L["HostileNameplate"],
 		[2] = L["FriendlyNameplate"],
 	}
@@ -1671,8 +1630,10 @@ function G:SetupNameplateSize(parent)
 
 		dd.panels[i] = panel
 		dd.options[i]:HookScript("OnClick", toggleOptionsPanel)
-	end
-	toggleOptionsPanel(dd.options[1])
+	end]]
+	--toggleOptionsPanel(dd.options[1])
+
+	createOptionGroup(scroll.child, 30, "enemy", UF.RefreshAllPlates, true)
 end
 
 function G:SetupNameOnlySize(parent)
@@ -1788,7 +1749,7 @@ function G:SetupMicroMenu(parent)
 	local parent, offset = scroll.child, -10
 	createOptionTitle(parent, L["Menubar"], offset)
 	createOptionSlider(parent, L["ButtonSize"], 20, 40, 22, offset-60, "MBSize", Bar.MicroMenu_Setup, "Actionbar")
-	createOptionSlider(parent, L["ButtonsPerRow"], 1, 12, 12, offset-130, "MBPerRow", Bar.MicroMenu_Setup, "Actionbar")
+	createOptionSlider(parent, L["ButtonsPerRow"], 1, 13, 12, offset-130, "MBPerRow", Bar.MicroMenu_Setup, "Actionbar")
 	createOptionSlider(parent, L["Spacing"], -10, 10, 5, offset-200, "MBSpacing", Bar.MicroMenu_Setup, "Actionbar")
 end
 
@@ -1850,8 +1811,8 @@ function G:SetupUFAuras(parent)
 		["Pet"] = {1, 1, 5, 6, 6},
 		["Boss"] = {2, 3, 6, 6, 6},
 	}
-	local buffOptions = {DISABLE, L["ShowAll"], L["ShowDispell"]}
-	local debuffOptions = {DISABLE, L["ShowAll"], L["BlockOthers"]}
+	local buffOptions = {DISABLE, L["ShowAll"], L["ShowDispell"], L["ShowCancelable"]}
+	local debuffOptions = {DISABLE, L["ShowAll"], L["BlockOthers"], L["ShowDispell"]}
 	local growthOptions = {}
 	for i = 1, 4 do
 		growthOptions[i] = UF.AuraDirections[i].name
@@ -1881,6 +1842,7 @@ function G:SetupUFAuras(parent)
 	createOptionTitle(parent, GENERAL, offset)
 	createOptionCheck(parent, offset-35, L["DesaturateIcon"], "UFs", "Desaturate", UF.UpdateUFAuras, L["DesaturateIconTip"])
 	createOptionCheck(parent, offset-70, L["DebuffColor"], "UFs", "DebuffColor", UF.UpdateUFAuras, L["DebuffColorTip"])
+	createOptionSlider(parent, L["CDFontSize"], 5, 30, 12, offset-130, "CDFontSize", UF.UpdateUFAuras)
 
 	local options = {
 		[1] = L["PlayerUF"],
@@ -1899,7 +1861,7 @@ function G:SetupUFAuras(parent)
 		[6] = "Boss",
 	}
 
-	local dd = G:CreateDropdown(scroll.child, "", 40, -135, options, nil, 180, 28)
+	local dd = G:CreateDropdown(scroll.child, "", 40, -200, options, nil, 180, 28)
 	dd:SetFrameLevel(20)
 	dd.Text:SetText(options[1])
 	dd:SetBackdropBorderColor(1, .8, 0, .5)
@@ -1910,7 +1872,7 @@ function G:SetupUFAuras(parent)
 		panel:SetSize(260, 1)
 		panel:SetPoint("TOP", 0, -30)
 		panel:Hide()
-		createOptionGroup(panel, -130, data[i], UF.UpdateUFAuras, i == 6)
+		createOptionGroup(panel, -195, data[i], UF.UpdateUFAuras, i == 6)
 
 		dd.panels[i] = panel
 		dd.options[i]:HookScript("OnClick", toggleOptionsPanel)
@@ -1975,13 +1937,13 @@ function G:SetupActionbarStyle(parent)
 		button1 = OKAY,
 		button2 = CANCEL,
 		OnShow = function(self)
-			self.button1:Disable()
+			self.ButtonContainer.Button1:Disable()
 		end,
 		OnAccept = function(self)
 			Bar:ImportActionbarStyle(self.EditBox:GetText())
 		end,
 		EditBoxOnTextChanged = function(self)
-			local button1 = self:GetParent().button1
+			local button1 = self:GetParent().ButtonContainer.Button1
 			local text = self:GetText()
 			local found = text and strfind(text, "^NAB:")
 			if found then
@@ -2076,18 +2038,25 @@ function G:SetupBuffFrame(parent)
 		A.DebuffFrame.mover:SetSize(A.DebuffFrame:GetSize())
 	end
 
+	local function updatePrivateAuras()
+		local PA = B:GetModule("PrivateAuras")
+		if PA then
+			PA:Update()
+		end
+	end
+
 	local function createOptionGroup(parent, title, offset, value, func)
 		createOptionTitle(parent, title, offset)
 		createOptionCheck(parent, offset-35, L["ReverseGrow"], "Auras", "Reverse"..value, func)
 		createOptionSlider(parent, L["Auras Size"], 24, 50, defaultSize, offset-100, value.."Size", func, "Auras")
-		if func then -- no func for private auras
+		if value ~= "Private" then -- no func for private auras
 			createOptionSlider(parent, L["IconsPerRow"], 10, 40, defaultPerRow, offset-170, value.."sPerRow", func, "Auras")
 		end
 	end
 
 	createOptionGroup(parent, "Buffs*", offset, "Buff", updateBuffFrame)
 	createOptionGroup(parent, "Debuffs*", offset-260, "Debuff", updateDebuffFrame)
-	createOptionGroup(parent, "PrivateAuras", offset-520, "Private")
+	createOptionGroup(parent, L["PrivateAuras"], offset-520, "Private", updatePrivateAuras)
 end
 
 function G:NameplateColorDots(parent)
@@ -2672,7 +2641,7 @@ function G:SetupAvada()
 		end
 	end
 
-	local function createOptionGroup(parent, i)
+	local function createOptionGroup(parent)
 		parent.options = {}
 
 		local unitOption = G:CreateDropdown(parent, L["Unit*"], 1, 1, unitOptions, L["AvadaUnitOptionTip"], 88, 28)
@@ -2736,7 +2705,7 @@ function G:SetupAvada()
 		bu:SetScript("OnLeave", B.HideTooltip)
 		bu:SetScript("OnMouseDown", receiveCursor)
 		bu:SetScript("OnReceiveDrag", receiveCursor)
-		createOptionGroup(bu, i)
+		createOptionGroup(bu)
 		frame.buttons[i] = bu
 	end
 
@@ -2756,5 +2725,100 @@ function G:SetupAvada()
 	panel:HookScript("OnShow", refreshAllFrames)
 end
 
-SlashCmdList["NDUI_AVADACONFIG"] = G.SetupAvada
-SLASH_NDUI_AVADACONFIG1 = "/aa"
+--SlashCmdList["NDUI_AVADACONFIG"] = G.SetupAvada
+--SLASH_NDUI_AVADACONFIG1 = "/aa"
+
+function G:SetupPrivateAuras(parent)
+	local guiName = "NDuiGUI_PrivateAurasSetup"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, L["PrivateAuras"].."*")
+	local scroll = G:CreateScroll(panel, 260, 540)
+	local parent = scroll.child
+	local offset = -10
+	local UF = B:GetModule("UnitFrames")
+	if not UF then return end
+
+	local function updatePrivateAuras()
+		for _, frame in pairs(ns.oUF.objects) do
+			if frame.PrivateAuras then
+				UF:UpdatePrivateAuras(frame.PrivateAuras, true)
+			end
+		end
+	end
+
+	createOptionCheck(parent, offset, L["CDAnimation"], "UFs", "CDAnimation", updatePrivateAuras)
+	createOptionCheck(parent, offset-30, L["CDText"], "UFs", "CDText", updatePrivateAuras)
+	createOptionSlider(parent, L["Auras Size"], 10, 50, 22, offset-110, "PrivateSize", updatePrivateAuras, "UFs")
+end
+
+function G:SetupDamageMeters(parent)
+	local guiName = "NDuiGUI_DamageMetersSetup"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, DAMAGE_METER_LABEL)
+	local scroll = G:CreateScroll(panel, 260, 540)
+	local parent = scroll.child
+	local offset = -10
+	local MISC = B:GetModule("Misc")
+	local function updateAttached()
+		if MISC then
+			MISC:AttachedMeters_Start()
+		end
+	end
+
+	createOptionTitle(parent, L["Window2"], offset)
+	createOptionDropdown(parent, L["AttachedTo"], offset-60, {DISABLE, L["Window1"], L["Window3"]}, L["AttachedToTip"], "Misc", "W2Target", 1, updateAttached)
+	createOptionDropdown(parent, L["AttachedPoint"], offset-120, {L["TOP"], L["BOTTOM"], L["LEFT"], L["RIGHT"]}, L["AttachedPointTip"], "Misc", "W2Point", 1, updateAttached)
+	createOptionTitle(parent, L["Window3"], offset-180)
+	createOptionDropdown(parent, L["AttachedTo"], offset-240, {DISABLE, L["Window1"], L["Window2"]}, L["AttachedToTip"], "Misc", "W3Target", 1, updateAttached)
+	createOptionDropdown(parent, L["AttachedPoint"], offset-300, {L["TOP"], L["BOTTOM"], L["LEFT"], L["RIGHT"]}, L["AttachedPointTip"], "Misc", "W3Point", 1, updateAttached)
+end
+
+function G:SetupRaidAuras(parent)
+	local guiName = "NDuiGUI_RaidAurasSetup"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, L["RaidAuras"])
+	local scroll = G:CreateScroll(panel, 260, 540)
+	local parent = scroll.child
+	local offset = -10
+	local UF = B:GetModule("UnitFrames")
+
+	local function updateRaidAuras()
+		if UF then
+			UF:UpdateUFAuras()
+		end
+	end
+
+	createOptionTitle(parent, GENERAL, offset)
+	createOptionCheck(parent, offset-35, L["CDText"], "UFs", "RaidCDText", updateRaidAuras)
+	createOptionSlider(parent, L["CDFontSize"], 5, 30, 12, offset-90, "RaidCDSize", updateRaidAuras)
+
+	createOptionTitle(parent, "Buffs", offset-160)
+	createOptionDropdown(parent, L["RaidBuffType"], offset-210, {DISABLE, L["Blizzard"], L["Defensive"], L["CombinedFilters"]}, nil, "UFs", "RaidBuffType", 2, updateRaidAuras)
+	createOptionSlider(parent, L["RaidBuffPerRow"], 1, 20, 7, offset-280, "RaidBuffPerRow", updateRaidAuras, "UFs")
+	createOptionSlider(parent, L["MaxBuffs"], 1, 20, 6, offset-360, "RaidNumBuff", updateRaidAuras, "UFs")
+
+	createOptionTitle(parent, "Debuffs", offset-420)
+	createOptionDropdown(parent, L["RaidDebuffType"], offset-470, {DISABLE, L["Blizzard"], L["ShowDispell"], L["CombinedFilters"], L["ShowAll"]}, nil, "UFs", "RaidDebuffType", 2, updateRaidAuras)
+	createOptionSlider(parent, L["RaidDebuffPerRow"], 1, 20, 7, offset-540, "RaidDebuffPerRow", updateRaidAuras, "UFs")
+	createOptionSlider(parent, L["MaxDebuffs"], 1, 20, 6, offset-600, "RaidNumDebuff", updateRaidAuras, "UFs")
+end
+
+function G:SetupCooldownViewer(parent)
+	local guiName = "NDuiGUI_CooldownViewerSetup"
+	toggleExtraGUI(guiName)
+	if extraGUIs[guiName] then return end
+
+	local panel = createExtraGUI(parent, guiName, COOLDOWN_VIEWER_LABEL)
+	local scroll = G:CreateScroll(panel, 260, 540)
+	local parent = scroll.child
+	local offset = -10
+
+	createOptionCheck(parent, offset, L["CentralizedBuffIcon"], "Misc", "CentralBuffView")
+	createOptionCheck(parent, offset-30, L["CentralizedUtility"], "Misc", "CentralUtilView")
+end

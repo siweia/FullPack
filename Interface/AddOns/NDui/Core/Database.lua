@@ -9,11 +9,11 @@ DB.Version = C_AddOns.GetAddOnMetadata("NDui", "Version")
 DB.Support = C_AddOns.GetAddOnMetadata("NDui", "X-Support")
 DB.Client = GetLocale()
 DB.ScreenWidth, DB.ScreenHeight = GetPhysicalScreenSize()
-DB.isNewPatch = select(4, GetBuildInfo()) >= 110205 -- 11.2.5
+DB.isNewPatch = select(4, GetBuildInfo()) >= 120001 -- 12.0.1
 
 -- Deprecated
 do
-	local function EasyMenu_Initialize( frame, level, menuList )
+	local function EasyMenu_Initialize( _, level, menuList )
 		for index = 1, #menuList do
 			local value = menuList[index]
 			if (value.text) then
@@ -83,6 +83,7 @@ DB.flatTex = Media.."flatTex"
 DB.bgTex = Media.."bgTex"
 DB.pushedTex = Media.."pushed"
 DB.arrowTex = Media.."TargetArrow"
+DB.barArrow = Media.."Arrows.png"
 DB.starTex = Media.."Hutu\\star"
 DB.flagTex = Media.."Hutu\\flag"
 DB.MicroTex = Media.."Hutu\\Menu\\"
