@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2436, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103105705")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(175646)
 mod:SetEncounterID(2424)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -9,18 +9,40 @@ mod:SetZone(2441)
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(346742, true, 2)--Fan Mail
+mod:AddCustomAlertSoundOption(346286, true, 1)--Money Order
+mod:AddCustomAlertSoundOption(346947, true, 1)--Unstable Goods
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(346742, true, 2, 0)
+mod:AddCustomTimerOptions(346962, true, 3, 0)--Money Order
+mod:AddCustomTimerOptions(346286, true, 5, 0)
+mod:AddCustomTimerOptions(346947, true, 5, 0)
+--Midnight private aura replacements
+--There are two other PAs but they are not useful since they are not player actionable PAs
+mod:AddPrivateAuraSoundOption(346962, true, 346962, 1)
+
+function mod:OnLimitedCombatStart()
+	self:EnableAlertOptions(346742, 574, "aesoon", 2)
+	self:EnableAlertOptions(346286, 576, "catchballs", 12)
+	self:EnableAlertOptions(346947, 577, "specialsoon", 1)
+
+	self:EnableTimelineOptions(346742, 574)
+	self:EnableTimelineOptions(346962, 575)
+	self:EnableTimelineOptions(346286, 576)
+	self:EnableTimelineOptions(346947, 577)
+
+	self:EnablePrivateAuraSound(346962, "gathershare", 2)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 346947 346286 346742 346293",
 	"SPELL_CAST_SUCCESS 346962",
 	"SPELL_AURA_APPLIED 346844 346329 346962 346403 356374 369133",
 	"SPELL_AURA_REMOVED 346962"
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED",
---	"UNIT_DIED"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, package tracking with icon/infoframe for tosses as well?
 local warnHazardousLiquids			= mod:NewSpellAnnounce(346286, 2)
 local warnAlchemicalResidue			= mod:NewTargetNoFilterAnnounce(346844, 2, nil, false, 2)
 local warnUnstableGoods				= mod:NewTargetNoFilterAnnounce(369133, 2)--Holding package
@@ -32,47 +54,54 @@ local yellMoneyOrder				= mod:NewYell(346962, nil, nil, nil, "YELL")
 local yellMoneyOrderFades			= mod:NewShortFadesYell(346962, nil, nil, nil, "YELL")
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(346329, nil, nil, nil, 1, 8)
 
-local timerUnstableGoodsCD			= mod:NewCDTimer(51.8, 346947, nil, nil, nil, 5)
-local timerHazardousLiquidsCD		= mod:NewCDTimer(52.1, 346286, nil, nil, nil, 3)
-local timerFanMailCD				= mod:NewCDTimer(25.1, 346293, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
-local timerMoneyOrderCD				= mod:NewCDTimer(50.6, 346962, nil, nil, nil, 3)
+local timerUnstableGoodsCD			= mod:NewCDCountTimer(42.5, 346947, nil, nil, nil, 5)
+local timerHazardousLiquidsCD		= mod:NewCDCountTimer(42.5, 346286, nil, nil, nil, 3)
+local timerFanMailCD				= mod:NewCDCountTimer(42.5, 346293, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
+local timerMoneyOrderCD				= mod:NewCDCountTimer(42.5, 346962, nil, nil, nil, 3)
 
---mod:GroupSpells(369133, 346947)--Unstable goods, one for spawn and one for holdin it, two diff icons so separated on purpose
-
-mod.vb.goodPhase = 0
+mod.vb.goodsCount = 0
 mod.vb.fanCount = 0
+mod.vb.liquidsCount = 0
+mod.vb.moCount = 0
 
 function mod:OnCombatStart(delay)
-	self.vb.goodPhase = 0
+	self.vb.goodsCount = 0
 	self.vb.fanCount = 0
-	timerHazardousLiquidsCD:Start(6.9-delay)
-	timerFanMailCD:Start(16.1-delay)
-	timerMoneyOrderCD:Start(23.4-delay)
-	timerUnstableGoodsCD:Start(30.6-delay)--START
+	self.vb.liquidsCount = 0
+	self.vb.moCount = 0
+	timerHazardousLiquidsCD:Start(5-delay, 1)
+	timerFanMailCD:Start(15.4-delay, 1)
+	timerMoneyOrderCD:Start(22.6-delay, 1)
+	timerUnstableGoodsCD:Start(35.2-delay, 1)
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 346947 then
-		self.vb.goodPhase = self.vb.goodPhase + 1
-		specWarnUnstableGoods:Show(self.vb.goodPhase)
+		self.vb.goodsCount = self.vb.goodsCount + 1
+		specWarnUnstableGoods:Show(self.vb.goodsCount)
 		specWarnUnstableGoods:Play("specialsoon")
-		timerUnstableGoodsCD:Start()
+		--"Unstable Goods-346947-npc:175646-00000FBFBE = pull:35.2, 43.7, 43.8",
+		timerUnstableGoodsCD:Start(nil, self.vb.goodsCount+1)
 	elseif spellId == 346286 then
+		self.vb.liquidsCount = self.vb.liquidsCount + 1
 		warnHazardousLiquids:Show()
-		timerHazardousLiquidsCD:Start()
+		--"Hazardous Liquids-346286-npc:175646-00000FBFBE = pull:6.1, 42.5, 43.7",
+		timerHazardousLiquidsCD:Start(nil, self.vb.liquidsCount+1)
 	elseif spellId == 346742 or spellId == 346293 then--Which one used? or maybe it's hard and non hard?
 		self.vb.fanCount = self.vb.fanCount + 1
 		specWarnFanMail:Show(self.vb.fanCount)
 		specWarnFanMail:Play("aesoon")
-		timerFanMailCD:Start()
+		timerFanMailCD:Start(nil, self.vb.fanCount+1)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 346962 then
-		timerMoneyOrderCD:Start()
+		--"Money Order-346962-npc:175646-00000FBFBE = pull:23.0, 42.5, 43.8",
+		self.vb.moCount = self.vb.moCount + 1
+		timerMoneyOrderCD:Start(nil, self.vb.moCount+1)
 	end
 end
 
@@ -103,29 +132,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			yellMoneyOrderFades:Cancel()
 		end
-	end
-end
-
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 320366 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
-		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("watchfeet")
-	end
-end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 164578 then
-
-	end
-end
-
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 257453  then
-
 	end
 end
 --]]

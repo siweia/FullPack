@@ -1,5 +1,7 @@
-## Interface: 110005, 110007
+## Interface: 120001
 ## X-Min-Interface: 80000
+## Category: DBM
+
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffc030c0Dungeons (Cata)|r
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffc030c0Groupe-Cata|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffc030c0Gruppe-Cata|r
@@ -31,12 +33,11 @@
 ## X-DBM-Mod-Name-esMX: Mazmorras (Cataclysm)
 ## X-DBM-Mod-Name-ptBR: Masmorras (Cataclysm)
 ## X-DBM-Mod-Sort: 802
-## X-DBM-Mod-MapID: 755,645,36,670,644,33,643,725,657,309,859,568,938,940,939,646
+## X-DBM-Mod-MapID: 755,645,36,670,644,33,643,725,657,309,859,568,938,940,939,646,2849
 ## X-DBM-Mod-MinCoreRevision: 20210721040757
 ## X-DBM-Mod-MinExpansion: 3
 ## X-Curse-Project-ID: 314994
-## X-WoWI-ID: 24904
-## Version: r177
+## Version: r235
 
 localization.en.lua
 localization.de.lua
@@ -49,7 +50,7 @@ localization.cn.lua
 localization.br.lua
 BlackrockCaverns\RomoggBonecrusher.lua
 BlackrockCaverns\Corla.lua
-BlackrockCaverns\KarshSteelBender.lua
+BlackrockCaverns\KarshSteelbender.lua
 BlackrockCaverns\Beauty.lua
 BlackrockCaverns\AscendantLordObsidius.lua
 BlackrockCaverns\BlackrockCavernsTrash.lua

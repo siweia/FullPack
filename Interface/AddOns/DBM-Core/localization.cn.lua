@@ -1,6 +1,6 @@
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
-----Mini Dragon <流浪者酒馆-Brilla@金色平原(The Golden Plains-CN)> projecteurs@gmail.NOSPAM.com 202401211
+----Mini Dragon <流浪者酒馆-Brilla@金色平原(The Golden Plains-CN)> projecteurs@gmail.NOSPAM.com 20260122
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -13,7 +13,7 @@ if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month 
 	L.DBM								= "HMM"
 end
 
-L.HOW_TO_USE_MOD					= "欢迎使用" .. L.DBM .. "。在聊天框输入 /dbm help 以获取可用命令的帮助。输入 /dbm 可打开设置窗口，并对各个Boss模块进行设置，也可以浏览首领击杀记录。"..L.DBM.." 会自动按你的专精做出相应配置，但是你可以进行微调。"
+L.HOW_TO_USE_MOD					= "欢迎使用" .. L.DBM .. "。在聊天框输入 /dbm help 以获取可用命令的帮助。输入 /dbm 可打开设置窗口。手动按需加载区域模块可对任意Boss进行设置，也可以浏览首领击杀记录。"..L.DBM.." 会自动按你的专精做出相应配置，但是你可以进行微调。"
 L.SILENT_REMINDER					= "提示：" .. L.DBM .. " 正处于静音模式。"
 L.NEWS_UPDATE						= "|h|c11ff1111News|r|h: 此次更新主要重做了DBM的结构。无论正式服、还是各个版本的怀旧服都使用相同版本的DBM内核和模组。详情点击 |Hgarrmission:DBM:news|h|cff3588ff[这里]|r|h"
 L.NEWS_UPDATE_REPEAT				= "|h|c11ff1111News|r|h: 此次更新主要重做了DBM的结构。无论正式服、还是各个版本的怀旧服都使用相同版本的DBM内核和模组。你当前进入的团队缺少相应模组，无法提供战斗警报。本信息将持续显示，直到你安装了正确的模组。"
@@ -39,7 +39,8 @@ L.COPY_WA_DIALOG					= "复制WA代码"
 L.TEXT_ONLY_RANGE			= "因API限制，距离窗体只能显示绝对距离值。"
 L.NO_RANGE					= "距离窗体已无法使用。本命令将会被移除。"
 L.NO_ARROW					= "箭头在副本中无法使用"
-L.NO_HUD						= "HUDMap 在副本中无法使用"
+L.NO_HUD					= "HUDMap 在副本中无法使用"
+L.NO_COMMS					= "插件之间的通信在战斗或激活的大秘中无法使用。战斗或地下城结束后，请再次使用此命令。"
 
 L.DYNAMIC_DIFFICULTY_CLUMP	= "由于玩家数量不足，" .. L.DBM .. " 无法开启动态距离检测。"
 L.DYNAMIC_ADD_COUNT			= "由于玩家数量不足，" .. L.DBM .. " 无法开启小怪计数。"
@@ -51,6 +52,7 @@ L.BIGWIGS_ICON_CONFLICT		= L.DBM .. "检测到你同时开启了Bigwigs,请关�
 
 L.MOD_AVAILABLE				= L.DBM .. "已经为%s制作了相关模块。你可以在Curse, Wago, WOWI或者到GitHub Releases页面上找到新版本。"
 L.MOD_MISSING				= "找不到团队模块"
+L.NOT_INSTALLED				= "未安装"
 
 L.COMBAT_STARTED				= "%s作战开始，祝你走运 :)"
 L.COMBAT_STARTED_IN_PROGRESS	= "已进行的战斗-%s正在作战。祝你走运 :)"
@@ -70,8 +72,11 @@ L.SCENARIO_COMPLETE_I		= "场景战役-%s战斗胜利！总计%d次胜利。"
 L.SCENARIO_COMPLETE_L		= "场景战役-%s战斗胜利！用时%s！上次用时%s，最快用时%s。总计%d次胜利。"
 L.SCENARIO_COMPLETE_NR		= "场景战役-%s战斗胜利！用时%s！新的纪录诞生了！原纪录为%s。总计%d次胜利。"
 L.COMBAT_ENDED_AT			= "%s （%s）作战结束，用时%s。"
+L.COMBAT_ENDED				= "%s 作战结束，用时%s。"--No health (post midnight)
 L.COMBAT_ENDED_AT_LONG		= "%s （%s）作战结束，用时%s。该难度下总计失败%d次。"
-L.GUILD_COMBAT_ENDED_AT		= "%s开组的公会版%s （%s）作战结束，用时%s。"
+L.COMBAT_ENDED_LONG			= "%s 作战结束，用时%s。该难度下总计失败%d次。"--No health (post midnight)
+L.GUILD_COMBAT_ENDED_AT		= "%s工会团队%s （%s）作战结束，用时%s。"
+L.GUILD_COMBAT_ENDED		= "%s工会团队%s 作战结束，用时%s。" --No health (post midnight)
 L.SCENARIO_ENDED_AT			= "场景战役-%s作战结束，用时%s。"
 L.SCENARIO_ENDED_AT_LONG		= "场景战役-%s作战结束，用时%s。该难度下总计失败%d次。"
 L.COMBAT_STATE_RECOVERED		= "%s作战%s前开始，正在恢复计时条……"
@@ -87,7 +92,8 @@ L.LOWHEALTH_WARNING			= "生命值低 (剩余百分之%d生命值)启动声音�
 L.ENTERING_COMBAT			= "进入战斗"
 L.LEAVING_COMBAT			= "离开战斗"
 
-L.COMBAT_STARTED_AI_TIMER	= "我的CPU是类神经网络处理器，一种学习型电脑。(本场战斗" .. L.DBM .. "将会使用人工智能来估计时间轴)。" --Terminator
+L.RAID_DIFFICULTY_CHANGED	= "团队副本难度已设置为 %s."
+L.DUNGEON_DIFFICULTY_CHANGED= "地下城难度已设置为 %s."
 
 L.PROFILE_NOT_FOUND			= "<" .. L.DBM .. "> 你当前的配置文件已损坏. 'Default' 默认配置文件会被应用."
 L.PROFILE_CREATED			= "配置文件 '%s' 已经创建."
@@ -179,6 +185,7 @@ L.WHISPER_SCENARIO_END_KILL_STATS	= "%s已在场景战役-%s的战斗中取得�
 L.WHISPER_SCENARIO_END_WIPE			= "%s在场景战役-%s的战斗中灭团了。"
 L.WHISPER_SCENARIO_END_WIPE_STATS	= "%s在场景战役-%s的战斗中灭团了。该难度下总共失败%d次。"
 
+L.DUNGEONS					= "地下城"
 L.VERSIONCHECK_HEADER		= L.DBM.." - 版本检测"
 L.VERSIONCHECK_ENTRY			= "%s: %s (r%d) %s"--One Boss mod
 L.VERSIONCHECK_ENTRY_TWO		= "%s: %s (r%d) & %s (r%d)"--Two Boss mods
@@ -194,6 +201,7 @@ L.BIG_WIGS								= "BigWigs"
 L.WEAKAURA_KEY							= " (|cff308530WA 代码:|r %s)"
 
 L.UPDATEREMINDER_HEADER			= "您的 " .. L.DEADLY_BOSS_MODS .. " 版本已过期。\n您可以在Curse, Wago, WOWI或者到GitHub Releases页面下载到新版本：%s（%s）。如果您使用整合包，请使用更新器更新。"
+L.UPDATEREMINDER_HEADER_SUBMODULE = "您的 %s 模组版本已过期。\n您可以在Curse, Wago, WOWI或者到GitHub Releases页面下载到新版本：%s。如果您使用整合包，请使用更新器更新。"
 L.UPDATEREMINDER_FOOTER			= "按下 " .. (IsMacClient() and "Cmd-C" or "Ctrl-C") .. "复制下载地址到剪切板。"
 L.UPDATEREMINDER_FOOTER_GENERIC	= "按下 " .. (IsMacClient() and "Cmd-C" or "Ctrl-C") .. "复制链接到剪切板。"
 L.UPDATEREMINDER_DISABLE			= "警告：你的 " .. L.DEADLY_BOSS_MODS .. " 已经过期且与当前游戏版本或最新版本DBM不兼容，它已被强制禁用，直到你更新。这是为了确保它不会导致你或其他团队成员出错。"
@@ -216,6 +224,7 @@ L.PLATER_NP_AURAS_MSG					= L.DBM .. "现在提供可以在敌人姓名版提供
 L.MOVABLE_BAR				= "拖动我！"
 
 L.PIZZA_SYNC_INFO					= "|Hplayer:%1$s|h[%1$s]|h向你发送了一个" .. L.DBM .. " 计时条: '%2$s'\n|Hgarrmission:DBM:cancel:%2$s:nil|h|cff3588ff[取消此倒计时]|r|h |Hgarrmission:DBM:ignore:%2$s:%1$s|h|cff3588ff[忽略来自%1$s的计时条]|r|h"
+--L.PIZZA_SYNC_INFO
 L.PIZZA_CONFIRM_IGNORE			= "是否要在该次游戏连接中屏蔽来自%s的计时条？"
 L.PIZZA_ERROR_USAGE				= "命令：/dbm [broadcast] timer <时间（秒）> <文本>"
 
@@ -259,26 +268,29 @@ L.INFOFRAME_ALT				= "次能量:"--Alternate Power
 
 L.LFG_INVITE						= "随机副本确认"
 
+--Common slash commands
 L.SLASHCMD_HELP				= {
-	"可用命令:",
+	"可用/命令:",
 	"-----------------",
 	"/dbm unlock: 显示一个可移动的计时条，可通过对它来移动所有" .. L.DBM .. "计时条的位置(也可使用: move)。",
-	"/range <码> 或者 /distance <码>: 显示距离雷达窗体。使用 /rrange 或者 /rdistance 翻转颜色。",
-	"/hudar <码>: 显示基于HUD的距离显示器提示器。",
+	"/dbm pull <秒>: 向所有团队成员发送一个长度为<秒>的开怪计时条(需要队长或助理权限)。",
+	"/dbm break <分钟>: 向所有团队成员发送一个长度为<分钟>的狂暴计时条(需要队长或助理权限)。",
 	"/dbm timer: 启动一个" .. L.DBM .. "计时器，输入'/dbm timer'查询更多信息。",
-	"/dbm arrow: 显示" .. L.DBM .. "箭头，输入'/dbm arrow'查询更多信息。",
-	"/dbm hud: 显示DBM hud，输入'/dbm hud'查询更多信息。",
-	"/dbm help2: 显示用于团队的命令"
+	"/dbm midwizard: 再次显示至暗之夜配置向导 (仅正式服)。",
+	"/dbm key: 执行大秘钥石和评级检查，适用于队伍/公会，并提供副本传送的快捷方式。 (也可使用: key, keys, keystone)",
+	"/dbm lag: 检测全团网络延时",
+	"/dbm durability: 检测全团装备耐久度",
+	"/dbm help2: 显示额外的/命令"
 }
 L.SLASHCMD_HELP2				= {
 	"可用命令:",
 	"-----------------",
-	"/dbm pull <秒>: 向所有团队成员发送一个长度为<秒>的开怪计时条(需要队长或助理权限)。",
-	"/dbm break <分钟>: 向所有团队成员发送一个长度为<分钟>的狂暴计时条(需要队长或助理权限)。",
 	"/dbm version: 进行团队范围的" .. L.DBM .. "版本检测(也可使用: ver)",
 	"/dbm version2: 进行团队范围的" .. L.DBM .. "版本检测并密语那些过期版本用户(也可使用: ver2)",
-	"/dbm lag: 检测全团网络延时",
-	"/dbm durability: 检测全团装备耐久度"
+	"/range <码> 或者 /distance <码>: 显示距离雷达窗体。使用 /rrange 或者 /rdistance 翻转颜色。",
+	"/hudar <码>: 显示基于HUD的距离显示器提示器。",
+	"/dbm arrow: 显示" .. L.DBM .. "箭头，输入'/dbm arrow'查询更多信息。",
+	"/dbm hud: 显示DBM hud，输入'/dbm hud'查询更多信息。"
 }
 L.TIMER_USAGE	= {
 	L.DBM .. "计时器可用命令:",
@@ -464,30 +476,30 @@ L.AUTO_SPEC_WARN_OPTIONS.targetchange	= "特殊警报：需要立刻切换目标
 L.AUTO_TIMER_TEXTS.target				= "%s: >%%s<"
 L.AUTO_TIMER_TEXTS.targetcount 			= "%s: >%%s< (%%s)"
 L.AUTO_TIMER_TEXTS.cast					= "%s"
-L.AUTO_TIMER_TEXTS.castcount				= "%s (%%s)"
-L.AUTO_TIMER_TEXTS.castsource			= "%s: %%s"
+L.AUTO_TIMER_TEXTS.castcount			= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.castsource			= "%s：%%s"
 L.AUTO_TIMER_TEXTS.active				= "%s结束"--Buff/Debuff/event on boss
-L.AUTO_TIMER_TEXTS.fades					= "%s消失"--Buff/Debuff on players
+L.AUTO_TIMER_TEXTS.fades				= "%s消失"--Buff/Debuff on players
 L.AUTO_TIMER_TEXTS.ai					= "%s AI"
 
-L.AUTO_TIMER_TEXTS.cd					= "%s冷却"
-L.AUTO_TIMER_TEXTS.cdcount				= "%s冷却（%%s）"
-L.AUTO_TIMER_TEXTS.cdsource				= "%s冷却: >%%s<"
-L.AUTO_TIMER_TEXTS.cdspecial				= "特殊技能冷却"
+L.AUTO_TIMER_TEXTS.cd					= "%s"
+L.AUTO_TIMER_TEXTS.cdcount				= "%s（%%s）"
+L.AUTO_TIMER_TEXTS.cdsource				= "%s：>%%s<"
+L.AUTO_TIMER_TEXTS.cdspecial			= "特殊技能冷却"
 
-L.AUTO_TIMER_TEXTS.next 					= "下一次%s"
-L.AUTO_TIMER_TEXTS.nextcount				= "下一次%s（%%s）"
-L.AUTO_TIMER_TEXTS.nextsource			= "下一次%s: >%%s<"
+L.AUTO_TIMER_TEXTS.next 				= "%s"
+L.AUTO_TIMER_TEXTS.nextcount			= "%s（%%s）"
+L.AUTO_TIMER_TEXTS.nextsource			= "%s：>%%s<"
 L.AUTO_TIMER_TEXTS.nextspecial			= "下一次特殊技能"
 
 L.AUTO_TIMER_TEXTS.achievement 			= "%s"
-L.AUTO_TIMER_TEXTS.stage					= "阶段"
-L.AUTO_TIMER_TEXTS.stagecount				= "阶段 %%s"
-L.AUTO_TIMER_TEXTS.stagecountcycle			= "阶段 %%s (%%s)"--Example: Stage 2 (3) for a fight that alternates stage 1 and stage 2, but also tracks total cycles
-L.AUTO_TIMER_TEXTS.stagecontext				= "%s"
-L.AUTO_TIMER_TEXTS.stagecontextcount		= "%s (%%s)"
-L.AUTO_TIMER_TEXTS.intermission				= "转阶段"
-L.AUTO_TIMER_TEXTS.intermissioncount		= "转阶段 %%s"
+L.AUTO_TIMER_TEXTS.stage				= "阶段"
+L.AUTO_TIMER_TEXTS.stagecount			= "阶段 %%s"
+L.AUTO_TIMER_TEXTS.stagecountcycle		= "阶段 %%s (%%s)"--Example: Stage 2 (3) for a fight that alternates stage 1 and stage 2, but also tracks total cycles
+L.AUTO_TIMER_TEXTS.stagecontext			= "%s"
+L.AUTO_TIMER_TEXTS.stagecontextcount	= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.intermission			= "转阶段"
+L.AUTO_TIMER_TEXTS.intermissioncount	= "转阶段 %%s"
 L.AUTO_TIMER_TEXTS.adds					= "下一波小怪"
 L.AUTO_TIMER_TEXTS.addscustom			= "小怪 (%%s)"
 L.AUTO_TIMER_TEXTS.roleplay				= GUILD_INTEREST_RP or "剧情"
@@ -540,10 +552,11 @@ L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "为$spell:%s的目标添加团队标记�
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "为$spell:%s的目标添加团队标记，以近战和团队阵容优先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "为$spell:%s的目标添加团队标记，以远程和字母顺序优先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "为$spell:%s的目标添加团队标记，以远程和团队阵容优先"
-L.AUTO_ICONS_OPTION_TARGETS_MRH			= "为$spell:%s的目标添加团队标记，以近战高于远程再高于治疗排序，团队角色回退"
+L.AUTO_ICONS_OPTION_TARGETS_MRH			= "为$spell:%s的目标添加团队标记，以近战高于远程再高于治疗排序，团队阵容其次"
+L.AUTO_ICONS_OPTION_TARGETS_TOH			= "为$spell:%s的目标添加团队标记，以坦克高于近战再高于远程排序，团队阵容其次"
 L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "为$spell:%s的目标添加团队标记，以字母顺序优先"
 L.AUTO_ICONS_OPTION_TARGETS_ROSTER 		= "为$spell:%s的目标添加团队标记，以团队阵容优先"
-L.AUTO_ICONS_OPTION_NPCS			= "为$spell:%s添加团队标记"
+L.AUTO_ICONS_OPTION_NPCS				= "为$spell:%s添加团队标记"
 L.AUTO_ICONS_OPTION_CONFLICT 			= " （可能与其他选项冲突）"
 
 L.AUTO_ARROW_OPTION_TEXT				= "为$spell:%s的目标添加箭头"
@@ -634,14 +647,9 @@ L.SPEED_CLEAR_TIMER_TEXT	= "最速清除"
 L.COMBAT_RES_TIMER_TEXT	= "下一次可用战复"
 L.TIMER_RESPAWN		= "%s 刷新"
 
-L.LAG_CHECKING				= "延时检测请稍后... "
-L.LAG_HEADER					= L.DEADLY_BOSS_MODS .. " - 延时检测"
-L.LAG_ENTRY					= "%s：世界延时[%d毫秒] / 本地延时[%d毫秒]"
-L.LAG_FOOTER					= "未反馈此次检测的团员:%s"
-
-L.DUR_CHECKING				= "全团装备耐久度检测请稍后... "
-L.DUR_HEADER					= L.DEADLY_BOSS_MODS .. "- 装备耐久度检测结果"
-L.DUR_ENTRY					= "%s: %d 耐久度 / %s件装备损坏"
+L.LAG_HEADER					= L.DBM .. " - 延时检测"
+L.DUR_HEADER					= L.DBM .. "- 装备耐久度检测结果"
+--L.KEYSTONES_HEADER					= L.DBM.. " - Keystones"
 
 L.OVERRIDE_ACTIVATED			= "本次战斗的配置已经被队长的配置覆盖"
 
@@ -676,3 +684,50 @@ L.DBM_INSTALL_PACKAGE_DUNGEON	= "五人本与事件模块"
 
 -- Tests
 L.DBM_TAINTED_BY_TESTS			= "DBM曾经在当前进程中使用过测试模式的时间卷曲功能，建议你在正式战斗前 /reload 界面以防止DBM出现奇怪的问题。"
+
+-- Boss tooltip
+L.TOOLTIP_DBM					= L.DBM .. " 信息"
+L.TOOLTIP_ENRAGE_TIMER			= "战斗时间"
+L.TOOLTIP_KILLS					= "击杀 (%s)"
+L.TOOLTIP_WIPES					= "失败 (%s)"
+L.TOOLTIP_FASTEST				= "最快击杀 (%s)"
+
+-- Difficulty info not found in normal globals, used by both GUI and tooltip
+L.FOLLOWER	= "追随者"
+L.STORY 	= PLAYER_DIFFICULTY_STORY_RAID or "故事模式"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
+L.DUOS		= "卑鄙双雄"
+
+-- Keystone dungeon names (keep to a max of 6 characters)
+-- See https://wago.tools/db2/MapChallengeMode for ID => Dungeon Names
+-- 军团Remix大秘
+L.KEYSTONE_NAMES[197] = '艾萨' -- Eye of Azshara
+L.KEYSTONE_NAMES[198] = '黑心' -- Darkheart Thicket
+L.KEYSTONE_NAMES[199] = '黑鸦' -- Black Rook Hold
+L.KEYSTONE_NAMES[200] = '英灵' -- Halls of Valor
+L.KEYSTONE_NAMES[206] = '巢穴' -- Neltharion's Lair
+L.KEYSTONE_NAMES[207] = '守望' -- Vault of the Wardens
+L.KEYSTONE_NAMES[208] = '噬魂' -- Maw of Souls
+L.KEYSTONE_NAMES[209] = '回廊' -- The Arcway
+L.KEYSTONE_NAMES[210] = '群星' -- Court of Stars
+L.KEYSTONE_NAMES[227] = '卡下' -- Return to Karazhan: Lower
+L.KEYSTONE_NAMES[233] = '教堂' -- Cathedral of Eternal Night
+L.KEYSTONE_NAMES[234] = '卡上' -- Return to Karazhan: Upper
+L.KEYSTONE_NAMES[239] = '执政' -- Seat of the Triumvirate
+
+-- S3大秘
+L.KEYSTONE_NAMES[378] = '赎罪' -- Halls of Atonement
+L.KEYSTONE_NAMES[391] = '天街' -- Tazavesh: Streets of Wonder
+L.KEYSTONE_NAMES[392] = '宏图' -- Tazavesh: So'leah's Gambit
+L.KEYSTONE_NAMES[499] = '隐修' -- Priority of the Sacred Flame
+L.KEYSTONE_NAMES[503] = '回响' -- Ara-Kara, City of Echoes
+L.KEYSTONE_NAMES[505] = '破晨' -- The Dawnbreaker
+L.KEYSTONE_NAMES[525] = '水闸' -- Operation Floodgate
+L.KEYSTONE_NAMES[542] = '生态' -- Eco-Dome Al'dani
+
+-- Midnight jazz
+L.MN_TIMELINE_HEADER	= "你想使用游戏自带的计时条还是DBM的计时条？"
+L.MN_BLIZZARD_TIMELINE	= "游戏自带计时条"
+L.MN_DBM_TIMELINE		= "DBM计时条"
+L.MN_WARNIGS_HEADER		= "你想使用游戏自带的战斗警告，还是DBM战斗警告？"
+L.MN_BLIZZARD_WARNINGS	= "游戏自带警告"
+L.MN_DBM_WARNINGS		= "DBM警告"

@@ -1,21 +1,51 @@
 local mod	= DBM:NewMod(2406, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103105705")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(165408)
 mod:SetEncounterID(2401)
+mod:SetHotfixNoticeRev(20250808000000)
+--mod:SetMinSyncRevision(20211203000000)
 mod:SetZone(2287)
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(322711, true, 2)--Refracted Sinlight
+mod:AddCustomAlertSoundOption(322936, true, 2)--Crumbling Slam
+mod:AddCustomAlertSoundOption(322943, false, 1)--Heave Debris
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(322711, true, 3, 0)
+mod:AddCustomTimerOptions(322936, true, 5, 0)
+mod:AddCustomTimerOptions(322943, true, 3, 0)
+mod:AddCustomTimerOptions(322977, true, 3, 0)--Sinlight Visions
+--Midnight private aura replacements
+mod:AddPrivateAuraSoundOption(323001, true, 323001, 1)--GTFO
+
+function mod:OnLimitedCombatStart()
+	self:EnableAlertOptions(322711, 477, "watchstep", 2)
+	if self:IsTank() then
+		self:EnableAlertOptions(322936, 478, "moveboss", 2)
+	end
+	self:EnableAlertOptions(322943, 479, "watchstep", 2)
+
+	self:EnableTimelineOptions(322711, 477)
+	self:EnableTimelineOptions(322936, 478)
+	self:EnableTimelineOptions(322943, 479)
+	self:EnableTimelineOptions(322977, 480)
+
+	self:EnablePrivateAuraSound(323001, "watchfeet", 8)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 322936 322711",
 	"SPELL_CAST_SUCCESS 322943",
 	"SPELL_AURA_APPLIED 322977",
 	"SPELL_PERIODIC_DAMAGE 323001",
 	"SPELL_PERIODIC_MISSED 323001"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
+--]]
 
 --TODO, Target scan Heave Debris? it's instant cast, maybe it has an emote?
 --Sinlight visions deleted?
@@ -24,50 +54,61 @@ mod:RegisterEventsInCombat(
 (ability.id = 322936 or ability.id = 322711 or ability.id = 322977) and type = "begincast"
  or (ability.id = 322943) and type = "cast"
  or ability.id = 322977 and type = "applydebuff"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
-local warnHeaveDebris				= mod:NewSpellAnnounce(322943, 3)
+--[[
+local warnHeaveDebris				= mod:NewCountAnnounce(322943, 3)
 
 local specWarnCrumblingSlam			= mod:NewSpecialWarningMove(322936, "Tank", nil, nil, 1, 2)
-local specWarnRefractedSinlight		= mod:NewSpecialWarningDodge(322711, nil, nil, nil, 3, 2)
+local specWarnRefractedSinlight		= mod:NewSpecialWarningDodgeCount(322711, nil, nil, nil, 3, 2)
 local specWarnSinlightVisions		= mod:NewSpecialWarningDispel(322977, "RemoveMagic", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(323001, nil, nil, nil, 1, 8)
 
-local timerCrumblingSlamCD			= mod:NewCDTimer(12.1, 322936, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--12.1 except after refracted sinlight
-local timerHeaveDebrisCD			= mod:NewCDTimer(12.1, 322943, nil, nil, nil, 3)--12.1 except after refracted sinlight
-local timerRefractedSinlightCD		= mod:NewCDTimer(47.3, 322711, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--45--51
+local timerCrumblingSlamCD			= mod:NewCDCountTimer(12.1, 322936, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--12.1 except after refracted sinlight
+local timerHeaveDebrisCD			= mod:NewCDCountTimer(12.1, 322943, nil, nil, nil, 3)--12.1 except after refracted sinlight
+local timerRefractedSinlightCD		= mod:NewCDCountTimer(49.7, 322711, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--45--51
 --local timerSinlightVisionsCD		= mod:NewCDTimer(23, 322977, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)--23-27
 
 --"Sinlight Visions-339237-npc:165408 = pull:5.0, 5.0, 20.0, 5.0, 15.0, 20.0
 
+mod.vb.slamCount = 0
+mod.vb.debrisCount = 0
+mod.vb.refractedCount = 0
+
 function mod:OnCombatStart(delay)
-	timerCrumblingSlamCD:Start(4-delay)
+	self.vb.slamCount = 0
+	self.vb.debrisCount = 0
+	self.vb.refractedCount = 0
+	timerCrumblingSlamCD:Start(4-delay, 1)
 --	timerSinlightVisionsCD:Start(5-delay)--SUCCESS
-	timerHeaveDebrisCD:Start(13.5-delay)--SUCCESS
-	timerRefractedSinlightCD:Start(49.9-delay)
+	timerHeaveDebrisCD:Start(15.1-delay, 1)--SUCCESS
+	timerRefractedSinlightCD:Start(32.8-delay, 1)
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 322936 then
+		self.vb.slamCount = self.vb.slamCount + 1
 		specWarnCrumblingSlam:Show()
 		specWarnCrumblingSlam:Play("moveboss")
---		timerCrumblingSlamCD:Start()
 	elseif spellId == 322711 then
-		specWarnRefractedSinlight:Show()
+		self.vb.refractedCount = self.vb.refractedCount + 1
+		specWarnRefractedSinlight:Show(self.vb.refractedCount)
 		specWarnRefractedSinlight:Play("watchstep")
 		timerRefractedSinlightCD:Start()
 		timerCrumblingSlamCD:Stop()
 		timerHeaveDebrisCD:Stop()
-		timerHeaveDebrisCD:Start(17)
-		timerCrumblingSlamCD:Start(22)
+		timerHeaveDebrisCD:Start(18, self.vb.debrisCount+1)
+		timerCrumblingSlamCD:Start(21.8, self.vb.slamCount+1)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 322943 then
-		warnHeaveDebris:Show()
-		timerHeaveDebrisCD:Start()
+		self.vb.debrisCount = self.vb.debrisCount + 1
+		warnHeaveDebris:Show(self.vb.debrisCount)
+		timerHeaveDebrisCD:Start(nil, self.vb.debrisCount+1)
 --	elseif spellId == 322977 then
 		--timerSinlightVisionsCD:Start()--Unknown, pull too short
 	end
@@ -88,11 +129,4 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
---[[
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 257453  then
-
-	end
-end
 --]]

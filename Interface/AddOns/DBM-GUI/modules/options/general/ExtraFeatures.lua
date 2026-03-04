@@ -1,3 +1,5 @@
+local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+
 local L = DBM_GUI_L
 
 local extraFeaturesPanel	= DBM_GUI.Cat_General:CreateNewPanel(L.Panel_ExtraFeatures, "option")
@@ -8,9 +10,11 @@ soundAlertsArea:CreateCheckButton(L.WorldBossNearAlert, true, nil, "WorldBossNea
 soundAlertsArea:CreateCheckButton(L.RLReadyCheckSound, true, nil, "RLReadyCheckSound")
 soundAlertsArea:CreateCheckButton(L.AutoReplySound, true, nil, "AutoReplySound")
 
-local combatAlertsArea		= extraFeaturesPanel:CreateArea(L.Area_CombatAlerts)
-combatAlertsArea:CreateCheckButton(L.AFKHealthWarning, true, nil, "AFKHealthWarning2")
-combatAlertsArea:CreateCheckButton(L.HealthWarningLow, true, nil, "HealthWarningLow")
+local combatAlertsArea		= extraFeaturesPanel:CreateArea(DBM:IsRetail() and L.Area_CombatAlertsRetail or L.Area_CombatAlerts)
+if not DBM:IsRetail() then
+	combatAlertsArea:CreateCheckButton(L.AFKHealthWarning, true, nil, "AFKHealthWarning2")
+	combatAlertsArea:CreateCheckButton(L.HealthWarningLow, true, nil, "HealthWarningLow")
+end
 combatAlertsArea:CreateCheckButton(L.EnteringCombatAlert, true, nil, "EnteringCombatAlert")
 combatAlertsArea:CreateCheckButton(L.LeavingCombatAlert, true, nil, "LeavingCombatAlert")
 

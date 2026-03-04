@@ -12,8 +12,13 @@ local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local isWrath = WOW_PROJECT_ID == (WOW_PROJECT_WRATH_CLASSIC or 11)
 local isClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
 
-local DDM = _G["LibStub"]:GetLibrary("LibDropDownMenu")
-local UIDropDownMenu_AddButton, UIDropDownMenu_Initialize, ToggleDropDownMenu = DDM.UIDropDownMenu_AddButton, DDM.UIDropDownMenu_Initialize, DDM.ToggleDropDownMenu
+local DDM, UIDropDownMenu_AddButton, UIDropDownMenu_Initialize, ToggleDropDownMenu
+if isWrath then
+	DDM = LibStub:GetLibrary("LibDropDownMenu")
+	UIDropDownMenu_AddButton = DDM.UIDropDownMenu_AddButton
+	UIDropDownMenu_Initialize = DDM.UIDropDownMenu_Initialize
+	ToggleDropDownMenu = DDM.ToggleDropDownMenu
+end
 
 local function UnitPhaseReasonHack(uId)
 	if isRetail then
@@ -25,7 +30,7 @@ end
 local L = DBM_CORE_L
 ---@class DBMRangeCheckFrame: Frame
 local mainFrame = CreateFrame("Frame")
-local textFrame, radarFrame, updateIcon, updateRangeFrame, initializeDropdown
+local textFrame, radarFrame, updateIcon, updateRangeFrame, initializeDropdown, initializeDropdownLegacy
 local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS -- For Phanx' Class Colors
 
 -- Function for automatically converting inputed ranges from old mods to be ones that have valid item/api checks
@@ -34,10 +39,6 @@ local function setCompatibleRestrictedRange(range)
 		return 4
 	elseif range <= 8 then
 		return 8
-	elseif range <= 10 then
-		return 10
-	elseif range <= 11 then
-		return 11
 	elseif range <= 13 then
 		return 13
 	elseif range <= 18 then
@@ -71,7 +72,7 @@ local itsBCAgain--Needs to be called outside of below scope, itsDFBaby does not
 do
 	local UnitPosition, UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected = UnitPosition, UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected
 
-	local CheckInteractDistance, IsItemInRange, UnitInRange = CheckInteractDistance, C_Item and C_Item.IsItemInRange or IsItemInRange, UnitInRange
+	local IsItemInRange, UnitInRange = C_Item and C_Item.IsItemInRange or IsItemInRange, UnitInRange
 	-- All ranges are tested and compared against UnitDistanceSquared.
 	-- Example: Worgsaw has a tooltip of 6 but doesn't factor in hitboxes/etc. It doesn't return false until UnitDistanceSquared of 8.
 	local itemRanges = {
@@ -91,11 +92,6 @@ do
 		itemRanges[100] = 41058 -- Hyldnir Harpoon (WotLK)
 	end
 
-	local apiRanges = {
-		[10] = 3, -- CheckInteractDistance (Duel)
-		[11] = 2, -- CheckInteractDistance (Trade)
-	}
-
 	local function itsDFBaby(uId)
 		local inRange, checkedRange = UnitInRange(uId)
 		if inRange and checkedRange then--Range checked and api was successful
@@ -111,8 +107,6 @@ do
 				return UnitInRange(uId) and checkrange or 1000
 			elseif itemRanges[checkrange] then -- Only query item range for requested active range check
 				return IsItemInRange(itemRanges[checkrange], uId) and checkrange or 1000
-			elseif apiRanges[checkrange] then -- Only query item range for requested active range if no item found for it
-				return CheckInteractDistance(uId, apiRanges[checkrange]) and checkrange or 1000
 			else
 				return 1000 -- Just so it has a numeric value, even if it's unknown to protect from nil errors
 			end
@@ -120,9 +114,7 @@ do
 			if isRetail and IsItemInRange(90175, uId) then return 4
 			elseif not isClassic and IsItemInRange(16114, uId) then return 6
 			elseif IsItemInRange(8149, uId) then return 8
-			elseif CheckInteractDistance(uId, 3) then return 10
-			elseif CheckInteractDistance(uId, 2) then return 11
-			elseif IsItemInRange(isClassic and 17626 or 32321 , uId) then return 13
+			elseif IsItemInRange(isClassic and 17626 or 32321, uId) then return 13
 			elseif IsItemInRange(6450, uId) then return 18
 			elseif IsItemInRange(21519, uId) then return 23
 			elseif IsItemInRange(13289, uId) then return 28
@@ -138,11 +130,11 @@ do
 
 	--Retail is limited to just returning true or false for being within 43 (40+hitbox) of target while in instances (outdoors retail can still use UnitDistanceSquared)
 	function getDistanceBetweenAll(checkrange)
-		local restrictionsActive = not isWrath and DBM:HasMapRestrictions()
+		local restrictionsActive = DBM:HasMapRestrictions()
 		checkrange = restrictionsActive and 43 or checkrange
 		for uId in DBM:GetGroupMembers() do
 			if UnitExists(uId) and not UnitIsUnit(uId, "player") and not UnitIsDeadOrGhost(uId) and UnitIsConnected(uId) and UnitPhaseReasonHack(uId) then
-				local range = DBM:HasMapRestrictions() and (not isWrath and itsDFBaby(uId) or itsBCAgain(uId, checkrange)) or UnitDistanceSquared(uId) * 0.5
+				local range = DBM:HasMapRestrictions() and itsDFBaby(uId) or UnitDistanceSquared(uId) * 0.5
 				if checkrange < (range + 0.5) then
 					return true
 				end
@@ -154,14 +146,14 @@ do
 	function getDistanceBetween(uId, x, y)
 		local restrictionsActive = DBM:HasMapRestrictions()
 		if not x then -- If only one arg then 2nd arg is always assumed to be player
-			return restrictionsActive and (not isWrath and itsDFBaby(uId) or itsBCAgain(uId)) or UnitDistanceSquared(uId) ^ 0.5
+			return restrictionsActive and (itsDFBaby(uId)) or UnitDistanceSquared(uId) ^ 0.5
 		end
 		if type(x) == "string" and UnitExists(x) then -- arguments: uId, uId2
 			-- First attempt to avoid UnitPosition if any of args is player UnitDistanceSquared should work
 			if UnitIsUnit("player", uId) then
-				return restrictionsActive and (not isWrath and itsDFBaby(x) or itsBCAgain(x)) or UnitDistanceSquared(x) ^ 0.5
+				return restrictionsActive and itsDFBaby(x) or UnitDistanceSquared(x) ^ 0.5
 			elseif UnitIsUnit("player", x) then
-				return restrictionsActive and (not isWrath and itsDFBaby(uId) or itsBCAgain(uId)) or UnitDistanceSquared(uId) ^ 0.5
+				return restrictionsActive and itsDFBaby(uId) or UnitDistanceSquared(uId) ^ 0.5
 			else -- Neither unit is player, no way to avoid UnitPosition
 				if restrictionsActive then -- Cannot compare two units that don't involve player with restrictions, just fail quietly
 					return 1000
@@ -192,254 +184,197 @@ do
 	local sound1 = "Interface\\AddOns\\DBM-Core\\Sounds\\blip_8.ogg"
 	local sound2 = "Interface\\AddOns\\DBM-Core\\Sounds\\alarmclockbeeps.ogg"
 
-	local function setSound(self, option, sound)
+	local function toggleLocked()
+		DBM.Options.RangeFrameLocked = not DBM.Options.RangeFrameLocked
+	end
+
+	local function isLocked()
+		return DBM.Options.RangeFrameLocked
+	end
+
+	local function setSound(arg1, option, sound)
+		if not isWrath then -- New dropdown code
+			option = arg1.option
+			sound = arg1.sound
+		end
 		DBM.Options[option] = sound
 		if sound ~= "none" then
 			DBM:PlaySoundFile(sound)
 		end
 	end
 
-	local function setRange(self, range)
+	local function isSoundSelected(index)
+		return DBM.Options[index.option] == index.sound
+	end
+
+	local function setRange(arg1, range)
+		if not isWrath then range = arg1 end -- New dropdown code
 		rangeCheck:Hide(true)
 		rangeCheck:Show(range, mainFrame.filter, true, mainFrame.redCircleNumPlayers or 1)
 	end
 
-	local function setThreshold(self, threshold)
+	local function isRangeSelected(range)
+		return mainFrame.range == range
+	end
+
+	local function setThreshold(arg1, threshold)
+		if not isWrath then threshold = arg1 end -- New dropdown code
 		rangeCheck:Hide(true)
 		rangeCheck:Show(mainFrame.range, mainFrame.filter, true, threshold)
 	end
 
-	local function setFrames(self, option)
+	local function isThresholdSelected(threshold)
+		return mainFrame.redCircleNumPlayers == threshold
+	end
+
+	local function setFrames(arg1, option)
+		if not isWrath then option = arg1 end -- New dropdown code
 		DBM.Options.RangeFrameFrames = option
 		rangeCheck:Hide(true)
 		rangeCheck:Show(mainFrame.range, mainFrame.filter, true, mainFrame.redCircleNumPlayers or 1)
 	end
 
-	local function toggleLocked()
-		DBM.Options.RangeFrameLocked = not DBM.Options.RangeFrameLocked
+	local function isFramesSelected(option)
+		return DBM.Options.RangeFrameFrames == option
 	end
 
-	function initializeDropdown(_, level, menu)
-		local info
+	function initializeDropdown(owner, rootDescription)
+		rootDescription:CreateCheckbox(LOCK_FRAME, isLocked, toggleLocked)
 
+		local range = rootDescription:CreateButton(L.RANGECHECK_SETRANGE)
+		local ranges = not isClassic and { 6, 8, 13, 18, 23, 33, 43 } or { 8, 13, 18, 23, 33 }
+		for _, v in ipairs(ranges) do
+			range:CreateRadio(L.RANGECHECK_SETRANGE_TO:format(v), isRangeSelected, setRange, v)
+		end
+
+		local threshold = rootDescription:CreateButton(L.RANGECHECK_SETTHRESHOLD)
+		for _, v in ipairs({ 1, 2, 3, 4, 5, 6, 8 }) do
+			threshold:CreateRadio(v, isThresholdSelected, setThreshold, v)
+		end
+
+		local sounds = rootDescription:CreateButton(L.RANGECHECK_SOUNDS)
+		local soundsSub1 = sounds:CreateButton(L.RANGECHECK_SOUND_OPTION_1)
+		local soundsSub2 = sounds:CreateButton(L.RANGECHECK_SOUND_OPTION_2)
+		for text, v in pairs({ [L.RANGECHECK_SOUND_0] = sound0, [L.RANGECHECK_SOUND_1] = sound1, [L.RANGECHECK_SOUND_2] = sound2 }) do
+			soundsSub1:CreateRadio(text, isSoundSelected, setSound, {
+				option = "RangeFrameSound1",
+				sound = v
+			})
+			soundsSub2:CreateRadio(text, isSoundSelected, setSound, {
+				option = "RangeFrameSound2",
+				sound = v
+			})
+		end
+
+		local frames = rootDescription:CreateButton(L.RANGECHECK_OPTION_FRAMES)
+		for text, v in pairs({ [L.RANGECHECK_OPTION_TEXT] = "text", [L.RANGECHECK_OPTION_RADAR] = "radar", [L.RANGECHECK_OPTION_BOTH] = "both" }) do
+			frames:CreateRadio(text, isFramesSelected, setFrames, v)
+		end
+
+		rootDescription:CreateButton(HIDE, function() rangeCheck:Hide(true) end)
+	end
+
+	function initializeDropdownLegacy(_, level, menu)
 		if level == 1 then
-			info = {}
-			info.text = L.RANGECHECK_SETRANGE
-			info.notCheckable = true
-			info.hasArrow = true
-			info.keepShownOnClick = true
-			info.menuList = "range"
-			UIDropDownMenu_AddButton(info, 1)
-
-			info = {}
-			info.text = L.RANGECHECK_SETTHRESHOLD
-			info.notCheckable = true
-			info.hasArrow = true
-			info.keepShownOnClick = true
-			info.menuList = "threshold"
-			UIDropDownMenu_AddButton(info, 1)
-
-			info = {}
-			info.text = L.RANGECHECK_SOUNDS
-			info.notCheckable = true
-			info.hasArrow = true
-			info.keepShownOnClick = true
-			info.menuList = "sounds"
-			UIDropDownMenu_AddButton(info, 1)
-
-			info = {}
-			info.text = L.RANGECHECK_OPTION_FRAMES
-			info.notCheckable = true
-			info.hasArrow = true
-			info.keepShownOnClick = true
-			info.menuList = "frames"
-			UIDropDownMenu_AddButton(info, 1)
-
-			info = {}
-			info.text = LOCK_FRAME
-			if DBM.Options.RangeFrameLocked then
-				info.checked = true
-			end
-			info.func = toggleLocked
-			UIDropDownMenu_AddButton(info, 1)
-
-			info = {}
-			info.text = HIDE
-			info.notCheckable = true
-			info.func = function() rangeCheck:Hide(true) end
-			info.arg1 = rangeCheck
-			UIDropDownMenu_AddButton(info, 1)
+			UIDropDownMenu_AddButton({
+				text = LOCK_FRAME,
+				keepShownOnClick = true,
+				checked = isLocked(),
+				func = toggleLocked
+			}, 1)
+			UIDropDownMenu_AddButton({
+				text = L.RANGECHECK_SETRANGE,
+				notCheckable = true,
+				hasArrow = true,
+				keepShownOnClick = true,
+				menuList = "range"
+			}, 1)
+			UIDropDownMenu_AddButton({
+				text = L.RANGECHECK_SETTHRESHOLD,
+				notCheckable = true,
+				hasArrow = true,
+				keepShownOnClick = true,
+				menuList = "threshold"
+			}, 1)
+			UIDropDownMenu_AddButton({
+				text = L.RANGECHECK_SOUNDS,
+				notCheckable = true,
+				hasArrow = true,
+				keepShownOnClick = true,
+				menuList = "sounds"
+			}, 1)
+			UIDropDownMenu_AddButton({
+				text = L.RANGECHECK_OPTION_FRAMES,
+				notCheckable = true,
+				hasArrow = true,
+				keepShownOnClick = true,
+				menuList = "frames"
+			}, 1)
+			UIDropDownMenu_AddButton({
+				text = HIDE,
+				notCheckable = true,
+				func = rangeCheck.Hide,
+				arg1 = rangeCheck,
+				arg2 = true
+			}, 1)
 		elseif level == 2 then
 			if menu == "range" then
-				if not isClassic then
-					info = {}
-					info.text = L.RANGECHECK_SETRANGE_TO:format(6)
-					info.func = setRange
-					info.arg1 = 6
-					info.checked = (mainFrame.range == 6)
-					UIDropDownMenu_AddButton(info, 2)
-				end
-
-				info = {}
-				info.text = L.RANGECHECK_SETRANGE_TO:format(8)
-				info.func = setRange
-				info.arg1 = 8
-				info.checked = (mainFrame.range == 8)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_SETRANGE_TO:format(10)
-				info.func = setRange
-				info.arg1 = 10
-				info.checked = (mainFrame.range == 10)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_SETRANGE_TO:format(13)
-				info.func = setRange
-				info.arg1 = 13
-				info.checked = (mainFrame.range == 13)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_SETRANGE_TO:format(18)
-				info.func = setRange
-				info.arg1 = 18
-				info.checked = (mainFrame.range == 18)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_SETRANGE_TO:format(23)
-				info.func = setRange
-				info.arg1 = 23
-				info.checked = (mainFrame.range == 23)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_SETRANGE_TO:format(33)
-				info.func = setRange
-				info.arg1 = 33
-				info.checked = (mainFrame.range == 33)
-				UIDropDownMenu_AddButton(info, 2)
-
-				if not isClassic then
-					info = {}
-					info.text = L.RANGECHECK_SETRANGE_TO:format(43)
-					info.func = setRange
-					info.arg1 = 43
-					info.checked = (mainFrame.range == 43)
-					UIDropDownMenu_AddButton(info, 2)
+				local ranges = not isClassic and { 6, 8, 13, 18, 23, 33, 43 } or { 8, 13, 18, 23, 33 }
+				for _, v in ipairs(ranges) do
+					UIDropDownMenu_AddButton({
+						text = L.RANGECHECK_SETRANGE_TO:format(v),
+						func = setRange,
+						arg1 = v,
+						checked = isRangeSelected(v)
+					}, 2)
 				end
 			elseif menu == "threshold" then
-				info = {}
-				info.text = 1
-				info.func = setThreshold
-				info.arg1 = 1
-				info.checked = (mainFrame.redCircleNumPlayers == 1)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = 2
-				info.func = setThreshold
-				info.arg1 = 2
-				info.checked = (mainFrame.redCircleNumPlayers == 2)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = 3
-				info.func = setThreshold
-				info.arg1 = 3
-				info.checked = (mainFrame.redCircleNumPlayers == 3)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = 4
-				info.func = setThreshold
-				info.arg1 = 4
-				info.checked = (mainFrame.redCircleNumPlayers == 4)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = 5
-				info.func = setThreshold
-				info.arg1 = 5
-				info.checked = (mainFrame.redCircleNumPlayers == 5)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = 6
-				info.func = setThreshold
-				info.arg1 = 6
-				info.checked = (mainFrame.redCircleNumPlayers == 6)
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = 8
-				info.func = setThreshold
-				info.arg1 = 8
-				info.checked = (mainFrame.redCircleNumPlayers == 8)
-				UIDropDownMenu_AddButton(info, 2)
+				for _, v in ipairs({ 1, 2, 3, 4, 5, 6, 8 }) do
+					UIDropDownMenu_AddButton({
+						text = v,
+						func = setThreshold,
+						arg1 = v,
+						checked = isThresholdSelected(v)
+					}, 2)
+				end
 			elseif menu == "sounds" then
-				info = {}
-				info.text = L.RANGECHECK_SOUND_OPTION_1
-				info.notCheckable = true
-				info.hasArrow = true
-				info.menuList = "RangeFrameSound1"
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_SOUND_OPTION_2
-				info.notCheckable = true
-				info.hasArrow = true
-				info.menuList = "RangeFrameSound2"
-				UIDropDownMenu_AddButton(info, 2)
+				UIDropDownMenu_AddButton({
+					text = L.RANGECHECK_SOUND_OPTION_1,
+					notCheckable = true,
+					hasArrow = true,
+					keepShownOnClick = true,
+					menuList = "RangeFrameSound1"
+				}, 2)
+				UIDropDownMenu_AddButton({
+					text = L.RANGECHECK_SOUND_OPTION_2,
+					notCheckable = true,
+					hasArrow = true,
+					keepShownOnClick = true,
+					menuList = "RangeFrameSound2"
+				}, 2)
 			elseif menu == "frames" then
-				info = {}
-				info.text = L.RANGECHECK_OPTION_TEXT
-				info.func = setFrames
-				info.arg1 = "text"
-				info.checked = (DBM.Options.RangeFrameFrames == "text")
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_OPTION_RADAR
-				info.func = setFrames
-				info.arg1 = "radar"
-				info.checked = (DBM.Options.RangeFrameFrames == "radar")
-				UIDropDownMenu_AddButton(info, 2)
-
-				info = {}
-				info.text = L.RANGECHECK_OPTION_BOTH
-				info.func = setFrames
-				info.arg1 = "both"
-				info.checked = (DBM.Options.RangeFrameFrames == "both")
-				UIDropDownMenu_AddButton(info, 2)
+				for text, v in pairs({ [L.RANGECHECK_OPTION_TEXT] = "text", [L.RANGECHECK_OPTION_RADAR] = "radar", [L.RANGECHECK_OPTION_BOTH] = "both" }) do
+					UIDropDownMenu_AddButton({
+						text = text,
+						func = setFrames,
+						arg1 = v,
+						checked = isFramesSelected(v)
+					}, 2)
+				end
 			end
 		elseif level == 3 then
-			local option = menu
-			info = {}
-			info.text = L.RANGECHECK_SOUND_0
-			info.func = setSound
-			info.arg1 = option
-			info.arg2 = sound0
-			info.checked = (DBM.Options[option] == sound0)
-			UIDropDownMenu_AddButton(info, 3)
-
-			info = {}
-			info.text = L.RANGECHECK_SOUND_1
-			info.func = setSound
-			info.arg1 = option
-			info.arg2 = sound1
-			info.checked = (DBM.Options[option] == sound1)
-			UIDropDownMenu_AddButton(info, 3)
-
-			info = {}
-			info.text = L.RANGECHECK_SOUND_2
-			info.func = setSound
-			info.arg1 = option
-			info.arg2 = sound2
-			info.checked = (DBM.Options[option] == sound2)
-			UIDropDownMenu_AddButton(info, 3)
+			for text, v in pairs({ [L.RANGECHECK_SOUND_0] = sound0, [L.RANGECHECK_SOUND_1] = sound1, [L.RANGECHECK_SOUND_2] = sound2 }) do
+				UIDropDownMenu_AddButton({
+					text = text,
+					func = setSound,
+					arg1 = menu,
+					arg2 = v,
+					checked = isSoundSelected({
+						option = menu,
+						sound = v
+					})
+				}, 3)
+			end
 		end
 	end
 end
@@ -504,11 +439,16 @@ local function createTextFrame()
 	end)
 	textFrame:SetScript("OnMouseDown", function(_, button)
 		if button == "RightButton" then
-			local dropdownFrame = CreateFrame("Frame", "DBMRangeCheckDropdown", UIParent)
-			---@diagnostic disable-next-line: param-type-mismatch
-			UIDropDownMenu_Initialize(dropdownFrame, initializeDropdown)
-			---@diagnostic disable-next-line: param-type-mismatch
-			ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
+			if isWrath then
+				---@diagnostic disable-next-line: param-type-mismatch
+				local dropdownFrame = DDM.Create_DropDownMenu("Frame", "DBMRangeCheckDropdown", textFrame)
+				---@diagnostic disable-next-line: param-type-mismatch
+				UIDropDownMenu_Initialize(dropdownFrame, initializeDropdownLegacy)
+				---@diagnostic disable-next-line: param-type-mismatch
+				ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
+			else
+				MenuUtil.CreateContextMenu(textFrame, initializeDropdown)
+			end
 		end
 	end)
 
@@ -573,11 +513,16 @@ local function createRadarFrame()
 	end)
 	radarFrame:SetScript("OnMouseDown", function(_, button)
 		if button == "RightButton" then
-			local dropdownFrame = CreateFrame("Frame", "DBMRangeCheckDropdown", UIParent)
-			---@diagnostic disable-next-line: param-type-mismatch
-			UIDropDownMenu_Initialize(dropdownFrame, initializeDropdown)
-			---@diagnostic disable-next-line: param-type-mismatch
-			ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
+			if isWrath then
+				---@diagnostic disable-next-line: param-type-mismatch
+				local dropdownFrame = DDM.Create_DropDownMenu("Frame", "DBMRangeCheckDropdown", radarFrame)
+				---@diagnostic disable-next-line: param-type-mismatch
+				UIDropDownMenu_Initialize(dropdownFrame, initializeDropdownLegacy)
+				---@diagnostic disable-next-line: param-type-mismatch
+				ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
+			else
+				MenuUtil.CreateContextMenu(radarFrame, initializeDropdown)
+			end
 		end
 	end)
 
@@ -869,7 +814,7 @@ function rangeCheck:Show(range, filter, forceshow, redCircleNumPlayers, reverse,
 	end
 	DBM:UpdateMapRestrictions()--Probably redundant but one place I feel good about a redundant call. this isn't something that spams like an update handler
 	local restrictionsActive = DBM:HasMapRestrictions()
-	if not isWrath and restrictionsActive then--Don't popup on retail or classic era at all if in an instance (it now only works in wrath)
+	if restrictionsActive then--Don't popup on retail or classic era at all if in an instance (it now only works in wrath)
 		return
 	end
 	if type(range) == "function" then -- The first argument is optional
@@ -914,7 +859,7 @@ function rangeCheck:Show(range, filter, forceshow, redCircleNumPlayers, reverse,
 end
 
 function rangeCheck:Hide(force)
-	if restoreRange and not force and (isWrath or not (mainFrame.restrictions or DBM:HasMapRestrictions())) then -- Restore range frame to way it was when boss mod is done with it
+	if restoreRange and not force and not (mainFrame.restrictions or DBM:HasMapRestrictions()) then -- Restore range frame to way it was when boss mod is done with it
 		rangeCheck:Show(restoreRange, restoreFilter, true, restoreThreshold, restoreReverse)
 	else
 		restoreRange, restoreFilter, restoreThreshold, restoreReverse = nil, nil, nil, nil
@@ -943,7 +888,7 @@ end
 function rangeCheck:UpdateRestrictions(force)
 	DBM:UpdateMapRestrictions()
 	mainFrame.restrictions = force or DBM:HasMapRestrictions()
-	if mainFrame.restrictions and not isWrath then
+	if mainFrame.restrictions then
 		rangeCheck:Hide(true)
 	end
 end
@@ -980,7 +925,7 @@ do
 	SLASH_DBMRRANGE2 = "/rdistance"
 	SlashCmdList["DBMRANGE"] = function(msg)
 		DBM:UpdateMapRestrictions()
-		if not isWrath and DBM:HasMapRestrictions() then
+		if DBM:HasMapRestrictions() then
 			DBM:AddMsg(L.NO_RANGE)
 		else
 			UpdateLocalRangeFrame(tonumber(msg))
@@ -988,7 +933,7 @@ do
 	end
 	SlashCmdList["DBMRRANGE"] = function(msg)
 		DBM:UpdateMapRestrictions()
-		if not isWrath and DBM:HasMapRestrictions() then
+		if DBM:HasMapRestrictions() then
 			DBM:AddMsg(L.NO_RANGE)
 		else
 			UpdateLocalRangeFrame(tonumber(msg), true)

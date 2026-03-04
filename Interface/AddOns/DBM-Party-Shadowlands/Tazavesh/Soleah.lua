@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2455, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103105705")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(177269)
 mod:SetEncounterID(2442)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -9,15 +9,47 @@ mod:SetZone(2441)
 
 mod:RegisterCombat("combat")
 
+--TODO, add 351057/599 if it has a blizzard bar
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(350796, true, 2)--Hyperlight Spark
+mod:AddCustomAlertSoundOption(351124, "Dps", 1)--Summon Ass
+mod:AddCustomAlertSoundOption(353632, false, 1)--Collapsing Star
+mod:AddCustomAlertSoundOption(351064, true, 2)--Power Overwhelming
+mod:AddCustomAlertSoundOption(351096, true, 2)--Energy Fragmentation
+mod:AddCustomAlertSoundOption(351646, true, 2)--Hyperlight Nova
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(350796, true, 5, 0)
+mod:AddCustomTimerOptions(351124, true, 1, 0)
+mod:AddCustomTimerOptions(353632, true, 5, 0)
+mod:AddCustomTimerOptions(351064, true, 6, 0)
+mod:AddCustomTimerOptions(351096, true, 3, 0)
+mod:AddCustomTimerOptions(351646, true, 3, 0)
+
+function mod:OnLimitedCombatStart()
+	self:EnableAlertOptions(350796, 595, "specialsoon", 2)
+	self:EnableAlertOptions(351124, 596, "mobsoon", 2)
+	self:EnableAlertOptions(353632, 597, "helpsoak", 1)
+	self:EnableAlertOptions(351064, 598, "specialsoon", 2)
+	self:EnableAlertOptions(351096, 600, "watchwave", 2)
+	self:EnableAlertOptions(351646, 601, "watchstep", 2)
+
+	self:EnableTimelineOptions(350796, 595)
+	self:EnableTimelineOptions(351124, 596)
+	self:EnableTimelineOptions(353632, 597)
+	self:EnableTimelineOptions(351064, 598)
+	self:EnableTimelineOptions(351096, 600)
+	self:EnableTimelineOptions(351646, 601)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 350796 355922 353635 351119 350875 351096 351646",
 	"SPELL_CAST_SUCCESS 181089 351124",
 	"SPELL_AURA_APPLIED 357190 350804 351086",
 	"SPELL_AURA_APPLIED_DOSE 350804",
 	"SPELL_AURA_REMOVED 350804 351086"
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED"
 )
+--]]
 
 --TODO, figure out right P1 hyperlight id
 --TODO, verify the kind of mechanics that nova and fragmentation are
@@ -29,6 +61,7 @@ mod:RegisterEventsInCombat(
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
  or ability.id = 351119 and type = "begincast"
 --]]
+--[[
 --Stage One: Final Preparations
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(23344))
 local warnCollapsingStar			= mod:NewCountAnnounce(353635, 3)
@@ -67,9 +100,9 @@ function mod:OnCombatStart(delay)
 	self.vb.hyperlightCount = 0
 	self.vb.starCount = 0
 	table.wipe(castsPerGUID)
-	timerSummonAssassinsCD:Start(6.9-delay)
-	timerHyperlightSparkCD:Start(12.1-delay)
-	timerCollapsingStarCD:Start(20.6-delay)
+	timerSummonAssassinsCD:Start(6.0-delay)
+	timerHyperlightSparkCD:Start(11.1-delay)
+	timerCollapsingStarCD:Start(20.2-delay)
 end
 
 function mod:OnCombatEnd()
@@ -152,7 +185,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 357190 then
-		if self.Options.InfoFrame and not DBM.InfoFrame:IsShown() then
+		if self.Options.InfoFrame and not DBM.InfoFrame:IsShown() and not DBM.Test.testRunning then
 			DBM.InfoFrame:SetHeader(args.spellName)
 			DBM.InfoFrame:Show(5, "playerbaddebuff", 357190)
 		end
@@ -183,13 +216,4 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerPowerOverwhelmingCD:Start(65.2)
 	end
 end
-
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 320366 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
-		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("watchfeet")
-	end
-end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 --]]

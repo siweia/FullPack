@@ -11,14 +11,24 @@ L.WebsiteButton				= "Webseite"
 
 L.OTabBosses	= "Bosse"
 L.OTabOptions	= GAMEOPTIONS_MENU
+--L.OTabTools							= "Tools"--Such as break timer button, durability checks, latency checks, keystone checks (in future)
 
 L.TabCategory_Options	 	= "Allgemeine Einstellungen"
 L.TabCategory_OTHER			= "Sonstige Boss Mods"
 
+--Main Tab, Tools checks
+--L.Tools_LatencyCheck				= "Latency Check"
+--L.Tools_DurabilityCheck				= "Durability Check"
+--L.Tools_KeystoneCheck				= "Keystone Check"
+
+--L.Tools_BreakTimer					= "Start Break Timer"
+--L.Tools_PizzaTimer					= "Start Generic Timer"
+
+--L.Tools_Duration					= "Duration"
+--L.Tools_Message						= "Timer Message"
+
 L.BossModLoaded 			= "Statistiken von %s"
 L.BossModLoad_now 			= [[Dieses Boss Mod ist nicht geladen. Es wird automatisch geladen, wenn du die Instanz betrittst. Du kannst auch auf den Button klicken um das Boss Mod manuell zu laden.]]
-
---L.FOLLOWER				= "Follower"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
 
 L.PosX						= "Position X"
 L.PosY						= "Position Y"
@@ -274,7 +284,7 @@ L.Area_HideBlizzard					= "Disable & Hide other Blizzard Annoyances"
 L.HideBossEmoteFrame				= "Hide raid boss emote frame during boss fights"
 L.HideWatchFrame					= "Hide watch (objectives) frame during boss fights if no achievements are being tracked and if not in a Mythic+"
 L.HideQuestTooltips					= "Hide quest objectives from tooltips during boss fights"--Currently hidden (NYI)
-L.HideTooltips						= "Completely hide tooltips during boss fights"
+L.HideBlizzardTimeline				= "Blende die Blizzard-Schlachtzugszeitlinie während Bosskämpfen aus"
 
 L.Panel_ExtraFeatures		= "Sonstige Funktionen"
 --
@@ -306,6 +316,9 @@ L.AutoAcceptFriendInvite	= "Automatisch Gruppeneinladungen von Freunden akzeptie
 L.AutoAcceptGuildInvite		= "Automatisch Gruppeneinladungen von Gildenmitgliedern akzeptieren"
 L.Area_Advanced				= "Erweiterte Einstellungen"
 L.FakeBW					= "Bei Versionsprüfungen als \"BigWigs\" ausgeben, statt als DBM (nützlich für Gilden, die die Nutzung von \"BigWigs\" erzwingen)"
+--
+L.Area_Tooltip				= "Tooltip-Integration"
+
 
 L.Panel_Profile				= "Profile"
 L.Area_CreateProfile		= "Profilerzeugung für DBM Core Einstellungen"
@@ -354,7 +367,7 @@ L.Editbox_WindowWidth="GUI Fenster breite"
 L.Editbox_WindowHeight="GUI Fenster höhe"
 L.UIGroupingOptions="UI Gruppen Optionen (eine Änderung dieser Optionen während eine Mod bereits geladen ist benötigt ein UI-Reload)"
 L.GroupOptionsExcludeIcon="Ausnahme der \"setze Icon auf\" Optionen von der Zaubergruppierung (sie bleiben weiterhin in der \"Icons\" Kategorie)"
-L.AutoExpandSpellGroups="Erweitere automatisch die Optionen welche nach Zauber gruppiert sind"
+L.AutoExpandSpellGroups2="Erweitere automatisch die Optionen welche nach Zauber gruppiert sind"
 L.NoDescription="Diese Fähigkeit hat keine Beschreibung"
 L.AutoReplySound="Spiele Warnton und blinke Anwendungssymbol beim Erhalt von DBM auto-Antwort"
 L.Area_AutoLoggingFilters="Filter für automatischen Aufzeichnen"
@@ -391,6 +404,8 @@ L.SpecialWarnHeader4="Typ 4: Setze Option für hoch priotisierte 'Renn weg' Spez
 L.SpecialWarnHeader5="Typ 5: Setze Option für Ansagen mit Notizen, welche meinen Spielernamen betreffen"
 L.ShowReminders="Zeige Erinnerungsnachrichten für fehlende und deaktivierte sub-Module, sub-Modul hotfixes sowie veraltete Sub-Module und aktivierter Lautlos-modus"
 L.WorldBuffAlert="Zeige Warnung und Timer wenn World-Buff RP auf dem eigenen Realm gestartet wurde"
+L.RaidDiffChangedAlert				= "Zeige Warnung wenn die Schwierigkeit des Raids geändert wird"
+L.DungeonDiffChangedAlert			= "Zeige Warnung wenn die Schwierigkeit der Dungeon geändert wird"
 L.Area_BugAlerts="Einstellungen für Fehlermeldungen"
 L.BadTimerAlert="Zeige Chat Nachricht wenn DBM einen Timer mit einer Abweichung von mehr als einer Sekunde entdeckt"
 L.PullVoice="Setze Stimme für Pull-Timer"
@@ -405,6 +420,8 @@ L.EventEngagePT="Sound für Pull-Timer"
 L.Area_ColorBytype="Leitfaden für das Färben von Balken nach Typ"
 L.Panel_ColorByType="Färben nach Typ"
 L.BarSaturation="Balkensättigung für kleine Timer (falls große Timer deaktiviert sind): %0.2f"
+L.MidnightNote="Hinweis: Aufgrund von API-Einschränkungen in Midnight. DBM kann nicht unterschiedliche Start- und Endfarben unterstützen. Es wird nur die Startfarbe verwendet."
+
 L.CBTGeneric="Generisch"
 L.CBTAdd="Weiter Gegner (Adds)"
 L.CBTAOE="Flächenschaden (AOE)"

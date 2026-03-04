@@ -5,7 +5,7 @@ local L = DBM_GUI_L
 
 L.TranslationByPrefix		= "번역: "
 L.TranslationBy 			= "Elnarfim"
-L.Website					= "디스코드 |cFF73C2FBhttps://discord.gg/deadlybossmods|r를 방문해 보세요. SNS에서 @deadlybossmods 또는 @MysticalOS를 팔로우하세요"
+L.Website							= "최신 소식/업데이트 정보는 MysticalOS를 팔로우하면 볼 수 있습니다. |cFF73C2FBhttps://allmylinks.com/mysticalos|r 보내주신 성원에 감사드립니다!"
 L.WebsiteButton				= "웹사이트"
 
 L.OTabBosses					= "보스 설정"--Deprecated and will be deleted once tabs no longer use this
@@ -15,10 +15,19 @@ L.OTabWorld						= "필드 보스"--Since there are so many world mods, enough t
 L.OTabScenarios						= "시나리오"--Future use, will be used for scenarios and delves, likely after there are more than 2 mods (so probably 12.x or later)
 L.OTabPlugins						= "기타"--Scenarios, PVP, Delves (11.x), Solo/Challenge content (torghast, mage tower, etc)
 L.OTabOptions					= "핵심 설정"
+L.OTabTools						= "도구"--Such as break timer button, durability checks, latency checks, keystone checks (in future)
 L.OTabAbout						= "소개"
 
-L.FOLLOWER						= "추종자"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
-L.STORY					    		= "이야기"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
+--Main Tab, Tools checks
+L.Tools_LatencyCheck				= "지연시간 검사"
+L.Tools_DurabilityCheck				= "내구도 검사"
+L.Tools_KeystoneCheck				= "쐐기돌 확인"
+
+L.Tools_BreakTimer					= "휴식 타이머 시작"
+L.Tools_PizzaTimer					= "일반 타이머 시작"
+
+L.Tools_Duration					= "지속시간"
+L.Tools_Message						= "타이머 메시지"
 
 L.TabCategory_CURRENT_SEASON		= "현재 시즌"
 
@@ -78,6 +87,7 @@ L.Button_InfoFrame			= "정보 창 표시/숨기기"
 L.Button_TestBars			= "테스트 바 시작"
 L.Button_MoveBars			= "바 이동"
 L.Button_ResetInfoRange		= "정보/거리 창 위치 초기화"
+L.Button_ShowMidnightWizard			= "한밤 설정 마법사"
 
 L.ModelOptions				= "3D 모델 뷰어 설정"
 L.EnableModels				= "보스 설정에 3D 모델 사용"
@@ -94,8 +104,7 @@ L.Editbox_WindowHeight		= "설정 창 높이"
 L.UIGroupingOptions			= "UI 그룹 설정 (이미 로딩이 된 모드는 UI 재시작을 해야 변경됩니다)"
 L.GroupOptionsExcludeIcon	= "주문 단위로 형성된 그룹에서 '공격대 징표' 설정 제외 (제외된 설정들은 '공격대 징표' 카테고리에 배치)"
 L.GroupOptionsExcludePrivateAura	= "주문 단위로 형성된 그룹에서 '비공개 오라' 효과음 설정 제외 (제외된 설정들은 '비공개 오라' 카테고리에 배치)"
-
-L.AutoExpandSpellGroups		= "주문 단위로 그룹이 형성된 설정들을 자동으로 펼치기"
+L.AutoExpandSpellGroups2		= "주문 단위로 그룹이 형성된 설정들을 자동으로 펼치기"
 L.ShowWAKeys				= "보스 모드 활성 조건을 이용한 WeakAuras 제작을 지원하기 위해 주문 이름 옆에 WeakAuras 키를 표시합니다."
 --L.ShowSpellDescWhenExpanded	= "설정 그룹이 펼쳐진 상태에서도 주문 설명 계속 표시"--Might not be used
 L.NoDescription				= "이 능력에 대한 설명이 없습니다"
@@ -116,14 +125,16 @@ L.RecordOnlyBosses			= "일반몹 기록 안함 (보스만 기록합니다. 보�
 L.DoNotLogLFG				= "던전 찾기와 공격대 찾기 기록 안함 (대기열 등록 콘텐트)"
 --Auto Logging: Recorded Content types
 L.Area_AutoLoggingContent	= "자동으로 기록할 콘텐트"
-L.LogCurrentMythicRaids		= "현재 확장팩 (또는 리믹스) 신화 레이드"--Retail Only
-L.LogCurrentRaids			= "현재 확장팩 (또는 리믹스) 비 신화 레이드 (영웅, 일반 그리고 던전 찾기와 공찾 기록 안함 옵션이 꺼져있을 경우엔 공찾까지)"
-L.LogTWRaids				= "시간여행 또는 크로미의 시간 레이드 (리믹스 제외)"--Retail Only
-L.LogTrivialRaids			= "구 레이드 (이전 확장팩)"
-L.LogCurrentMPlus			= "현재 확장팩 (또는 리믹스) 신화+ 던전"--Retail Only
-L.LogCurrentMythicZero		= "현재 확장팩 (또는 리믹스) 신화 0단 던전"--Retail Only
+L.LogCurrentMythicRaids		= "현재 확장팩 (리믹스 포함) 신화 공격대"--Retail Only
+L.LogCurrentRaids			= "현재 확장팩 (리믹스 포함) 비 신화 공격대 (영웅, 일반 그리고 던전 찾기와 공찾 기록 안함 옵션이 꺼져있을 경우엔 공찾까지)"
+L.LogTWRaids				= "시간여행 및 크로미의 시간 공격대 (리믹스 제외)"--Retail Only
+L.LogTrivialRaids			= "낭만 공격대 (이전 확장팩)"
+L.LogCurrentMPlus			= "현재 확장팩 (리믹스 포함) 신화+ 던전"--Retail Only
+L.LogCurrentMythicZero		= "현재 확장팩 (리믹스 포함) 신화 0단 던전"--Retail Only
 L.LogTWDungeons				= "시간여행 또는 크로미의 시간 던전 (리믹스 제외)"--Retail Only
 L.LogCurrentHeroic			= "현재 확장팩 영웅 던전 (알림: 던전 찾기를 통해 영던을 돌면서 로그를 기록하고 싶다면 던전 찾기 기록 안함 옵션을 끄세요)"
+L.LogDelves					= "현재 레벨 구렁"--Retail Only
+L.LogChallenges					= "현재 레벨 특수한 도전 (토르가스트, 환영, 마법사 탑 등)"--Retail Only
 
 -- Panel: Extra Features
 L.Panel_ExtraFeatures		= "기타 기능"
@@ -153,6 +164,9 @@ L.AutoAcceptFriendInvite	= "친구의 파티/공격대 초대 자동 수락"
 L.AutoAcceptGuildInvite		= "길드원의 파티/공격대 초대 자동 수락"
 L.Area_Advanced				= "고급 설정"
 L.FakeBW					= "DBM 대신 BigWigs 사용자로 위장하기 (BigWigs 사용을 강제하는 공격대에서 유용)"
+--
+L.Area_Tooltip						= "툴팁 통합"
+
 
 -- Panel: Profiles
 L.Panel_Profile				= "프로필"
@@ -198,6 +212,7 @@ L.RaidWarnColor_1 			= "색상 1"
 L.RaidWarnColor_2 			= "색상 2"
 L.RaidWarnColor_3 			= "색상 3"
 L.RaidWarnColor_4 			= "색상 4"
+L.RaidWarnColor 			= "색상"--Only one used in midnight
 L.InfoRaidWarning			= [[레이드 경고 프레임의 위치와 색상을 설정할 수 있습니다.
 본 프레임은 "플레이어 X가 Y에 걸렸습니다"와 같은 메시지를 표시하는데 사용됩니다.]]
 L.ColorResetted 			= "이 영역의 색상 설정을 초기화 합니다."
@@ -214,6 +229,7 @@ L.ThickOutline				= "두꺼운 외곽선"
 L.MonochromeOutline			= "단색 외곽선"
 L.MonochromeThickOutline	= "단색 두꺼운 외곽선"
 L.RaidWarnSound				= "레이드 알림에 효과음 재생"
+L.AnnouncementMidnightNotice		= "이 패널엔 블리자드에서 '하급'으로 분류한 경고들의 설정이 있습니다"
 
 -- Panel: Spec Warn Frame
 L.Panel_SpecWarnFrame		= "특수 알림"
@@ -233,11 +249,37 @@ L.SpecWarn_FlashAlpha		= "점멸 투명도: %0.1f"
 L.SpecWarn_DemoButton		= "예제 보기"
 L.SpecWarn_ResetMe			= "기본값으로 초기화"
 L.SpecialWarnSoundOption	= "기본 효과음 설정"
-L.SpecialWarnHeader1		= "유형 1: 당신이 뭔가 걸렸거나 취해야 할 행동에 대한 보통 수준 알림 설정 세트"
-L.SpecialWarnHeader2		= "유형 2: 공격대 전체에 해당되는 보통 수준 알림 설정 세트"
-L.SpecialWarnHeader3		= "유형 3: 최우선 알림 설정 세트"
-L.SpecialWarnHeader4		= "유형 4: 최우선 도망 특수 알림 설정 세트"
-L.SpecialWarnHeader5		= "유형 5: 메모에 당신의 이름이 있을 때 알림 설정 세트"
+--PreMidnight
+L.SpecialWarnHeader1		= "SA 1: 당신이 뭔가 걸렸거나 취해야 할 행동에 대한 보통 수준 알림 설정 세트"
+L.SpecialWarnHeader2		= "SA 2: 공격대 전체에 해당되는 보통 수준 알림 설정 세트"
+L.SpecialWarnHeader3		= "SA 3: 최우선 알림 설정 세트"
+L.SpecialWarnHeader4		= "SA 4: 최우선 도망 특수 알림 설정 세트"
+L.SpecialWarnHeader5		= "SA 5: 메모에 당신의 이름이 있을 때 알림 설정 세트"
+--Post Midnight
+L.SpecialWarnHeaderMedium			= "SA 1: 블리자드에서 '중간' 등급으로 분류한 스킬 알림"
+L.SpecialWarnHeaderCritical			= "SA 2: 블리자드에서 '치명적' 등급으로 분류한 스킬 알림"
+
+-- Panel: Private Auras Frame
+--Note, Slider_BarOffSetX and Slider_BarOffSetY and SpamBlockNoPrivateAuraSound reused here
+L.Panel_PrivateAuras				= "비공개 오라"
+L.Area_PersonalPrivateAuras			= "개인 비공개 오라 설정"
+L.EnablePersonalPrivateAuraIcons	= "화면에 개인 비공개 오라 아이콘 표시"--checkbox
+L.EnablePersonalPrivateAuraText		= "블리자드 비공개 오라 텍스트 메시지 크기 설정 무시"--checkbox
+L.UpscaleDurationText				= "아이콘에 뜨는 지속시간 텍스트를 더 크게 표시"
+L.SetPAGrowDirection				= "확장 방향"--Dropdown
+L.SetPAIconScale					= "아이콘 크기: %d"--Slider, Reused for personal and tank
+L.SetPAMaxIcons						= "최대 아이콘 수: %d"--Slider, Reused for personal and tank
+L.SetPAIconSpacing					= "아이콘 간격: %d"--Slider, Reused for personal and tank
+L.SetPAStackScale					= "중첩 텍스트 크기: %d"--Slider, Reused for personal and tank
+L.SetPATextScale					= "텍스트 메시지 크기: %0.1f"--Slider
+L.HidePATooltip						= "주문 툴팁 끄기"--checkbox
+L.HidePABorder						= "테두리 끄기"--checkbox
+L.Area_TankPrivateAuras				= "오프탱 비공개 오라 설정"
+L.EnableTankPrivateAuraIcons		= "화면에 오프탱 비공개 오라 아이콘 표시 (탱커 전문화 필요)"--checkbox
+L.RIGHT								= "오른쪽"
+L.LEFT								= "왼쪽"
+L.UP								= "위쪽"
+L.DOWN								= "아래쪽"
 
 -- Panel: Generalwarnings
 L.Tab_GeneralMessages 		= "대화창 메시지"
@@ -264,18 +306,23 @@ L.RoleSpecAlert				= "공격대에 들어왔을 때 현재 전문화와 설정�
 L.CheckGear					= "풀링 타이머가 나오면 착용 장비 알림 메시지 표시 (착용 아이템 레벨이 소지한 아이템 레벨보다 40 이상 낮거나 주무기가 없을 경우)"
 L.WorldBossAlert			= "같은 서버의 길드원이나 친구가 필드 보스 전투를 시작하면 알림 메시지 표시 (전송자가 연합 서버에 있다면 부정확합니다)"
 L.WorldBuffAlert			= "내 서버에서 월드 버프가 시작되면 알림 메시지 표시 (디스커버리 시즌 제외)"
+L.RaidDiffChangedAlert		= "공격대 난이도가 바뀌면 알림 메시지 표시"
+L.RaidDiffChangedRaidOnly			= "공격대 그룹일 때만 공격대 난이도 변경 알림 표시 (주의: 공격대로 전환되기 전 파티 상태에선 난이도 알림이 되지 않습니다)"
+L.DungeonDiffChangedAlert	= "던전 난이도가 바뀌면 알림 메시지 표시"
 
 L.Area_BugAlerts			= "버그 제보 알림 설정"
 L.BadTimerAlert				= "DBM이 최소 1초 이상 맞지 않는 불량 타이머를 감지했을 때 대화창에 메시지 표시"
 
 -- Panel: Spoken Alerts Frame
-L.Panel_SpokenAlerts			= "초읽기와 음성팩"
+L.Panel_SpokenAlerts			= "초읽기 및 음성팩"
 L.Area_VoiceSelection		= "음성 선택"
 L.CountdownVoice			= "1순위 초읽기 음성 설정"
 L.CountdownVoice2			= "2순위 초읽기 음성 설정"
 L.CountdownVoice3			= "3순위 초읽기 음성 설정"
 L.PullVoice					= "풀링 타이머 음성 설정"
 L.VoicePackChoice			= "음성 경고에 쓸 음성팩 설정"
+L.CountdownStartTime			= "블리자드 기본 타이머 초읽기 시작 시간 설정"
+L.CountStart					= "%d초 전"
 L.MissingVoicePack				= "음성팩 찾을 수 없음 (%s)"
 L.Area_CountdownOptions		= "초읽기 설정"
 L.Area_VoicePackReplace		= "음성팩 대체 설정 (사용시 음성팩의 효과음이 출력되며 기본 효과음 대체)"
@@ -310,18 +357,19 @@ L.Area_ColorBytype			= "속성별 바 색상 가이드"
 L.Panel_ColorByType	 		= "바 색상"
 L.AreaTitle_BarColors				= "일반 바 색상 (기본값은 스킬 속성마다 지정)"
 L.AreaTitle_ImpBarColors			= "중요 바 색상 (사용자가 중요로 설정한 바)"
-L.BarTexture 				= "바 텍스쳐"
+L.BarTexture 				= "바 텍스처"
 L.BarStyle 					= "바 작동 방식"
 L.BarDBM					= "Classic (처음 생긴 바가 확대 표시될 위치로 스르륵 이동)"
 L.BarSimple					= "Simple (처음 바는 사라지고 큰 바가 새로 생성)"
 L.BarStartColor	 			= "시작 색상"
 L.BarEndColor 				= "종료 색상"
 L.Bar_Height				= "바 높이: %d"
-L.Slider_BarOffSetX 		= "바 정렬: %d"
-L.Slider_BarOffSetY 		= "바 간격: %d"
+L.Slider_BarOffSetX 				= "X 위치 조정: %d"--Reused in other regions like Private Auras
+L.Slider_BarOffSetY 				= "Y 위치 조정: %d"--Reused in other regions like Private Auras
 L.Slider_BarWidth 			= "바 너비: %d"
 L.Slider_BarScale 			= "바 크기: %0.2f"
 L.BarSaturation				= "작은 바 채도 (커다란 바 사용시 비활성): %0.2f"
+L.MidnightNote				= "참고: 한밤에서 API가 제한되기 때문에 DBM이 시작과 종료의 다른 색상을 지원할 수 없으며 시작 색상만 사용됩니다."
 
 --Types
 L.BarStartColorAdd				= "시작 색상 1 (쫄)"
@@ -344,33 +392,35 @@ L.BarEndColorI2					= "종료 색상 8 (중요)"
 L.Bar7Header					= "중요 바 설정"
 L.Bar7ForceLarge				= "항상 커다란 바 사용"
 L.Bar7CustomInline				= "바 안쪽에 사용자 지정 '!' 아이콘 사용"
---Dropdown Options
-L.CBTGeneric					= "일반"
 --Timer Example Texts
+L.CBTGeneric					= "일반"
 L.CBTAdd							= "쫄 등장"
 L.CBTAOE							= "광역 주문"
 L.CBTTargeted						= "대상 지정 주문"
 L.CBTInterrupt						= "차단 가능 주문"
 L.CBTRole							= "특정 역할 전용 주문"
-L.CBTPhase							= "페이즈 전환"
+L.CBTPhase							= "페이즈 변경"
 L.CBTImportant						= "사용자 지정 중요 주문"
 --Dropdown Options
-L.SAOne						= "일반 음성 1 (개인 알림)"
-L.SATwo						= "일반 음성 2 (전체 알림)"
-L.SAThree					= "일반 음성 3 (동작 1순위)"
-L.SAFour					= "일반 음성 4 (도망치기 1순위)"
-L.ColorDropGeneric					= "일반 (기본 설정)"
-L.ColorDrop1						= "색상 1"
-L.ColorDrop2						= "색상 2"
-L.ColorDrop3						= "색상 3"
-L.ColorDrop4						= "색상 4"
-L.ColorDrop5						= "색상 5"
-L.ColorDrop6						= "색상 6"
-L.CDDImportant1						= "중요 1"
-L.CDDImportant2						= "중요 2"
-L.CVoiceOne						= "초읽기 음성 1"
-L.CVoiceTwo						= "초읽기 음성 2"
-L.CVoiceThree					= "초읽기 음성 3"
+--Special Announce Dropdowns
+L.SAOne						= "음성팩 / 없으면 SA 1"
+L.SATwo						= "음성팩 / 없으면 SA 2"
+L.SAThree					= "음성팩 / 없으면 SA 3"
+L.SAFour					= "음성팩 / 없으면 SA 4"
+--Timer Dropdowns
+L.ColorDropGeneric					= "일반 (기본값: 미분류)"
+L.ColorDrop1						= "색상 1 (기본값: 쫄)"
+L.ColorDrop2						= "색상 2 (기본값: 광역스킬)"
+L.ColorDrop3						= "색상 3 (기본값: 나에게)"
+L.ColorDrop4						= "색상 4 (기본값: 차단)"
+L.ColorDrop5						= "색상 5 (기본값: 역할 기반)"
+L.ColorDrop6						= "색상 6 (기본값: 공략 단계)"
+L.CDDImportant1						= "중요 1 (기본 설정 아님)"
+L.CDDImportant2						= "중요 2 (기본 설정 아님)"
+--Countdown Dropdowns
+L.CVoiceOne						= "전역 초읽기 1"
+L.CVoiceTwo						= "전역 초읽기 2"
+L.CVoiceThree					= "전역 초읽기 3"
 
 -- Panel: Bar Appearance
 L.Panel_Appearance	 		= "바 외형"
@@ -379,15 +429,27 @@ L.AreaTitle_BarSetup		= "바 외형 설정"
 L.AreaTitle_Behavior		= "바 작동 방식 설정"
 L.AreaTitle_BarSetupSmall 	= "작은 바 설정"
 L.AreaTitle_BarSetupHuge 	= "커다란 바 설정"
+L.AreaTitle_BarSetupVariance		= "가변적 바 설정"
 L.EnableHugeBar 			= "커다란 바 사용 (일명 바 2)"
+L.EnableVarianceBar 				= "타이머 바를 확장해서 스킬의 최대 대기 시간 표시"
+L.VarianceColor						= "편차 바 색상"
+L.VarianceTransparency				= "바 투명도: %0.1f"
+L.VarianceTimerTextBehavior			= "편차 타이머 텍스트 작동 방식 설정"
+L.ZeroatWindowEnds					= "타이머 마지막 지점을 0으로 설정"
+L.ZeroatWindowStartPause			= "타이머 시작 지점을 0으로 하고 0에서 정지"
+L.ZeroatWindowStartRestart			= "타이머 시작 지점을 0으로 하고 0에서 재시작"
+L.ZeroatWindowStartNeg				= "타이머 시작 지점을 0으로 하고 0에서 음수로 진행"--Default
 L.BarIconLeft 				= "왼쪽 아이콘"
 L.BarIconRight 				= "오른쪽 아이콘"
+L.BarIconPosition					= "아이콘 위치"
 L.ExpandUpwards				= "위로 쌓기"
 L.FillUpBars				= "채워나가기"
-L.ClickThrough				= "마우스 클릭 불가"
+L.ClickThrough				= "마우스 클릭 방지 (클릭 통과)"
 L.Bar_Decimal				= "남은시간 소수점 표시: %d초 이하"
 L.Bar_Alpha					= "투명도: %0.1f"
-L.Bar_EnlargeTime			= "다음 시간보다 적으면 바 확대: %d초"
+L.Bar_EnlargeTime			= "타이머 바 확대: %d초 이하"
+L.Bar_AppearTime				= "타이머 바 숨김: %d초 이상"--Used for when hidden bars show on the small bar anchor
+L.Bar_HideLongBars					= "위의 설정시간에 도달하지 않은 타이머 바 숨김"
 L.BarSpark					= "바 끝 강조"
 L.BarFlash					= "만료 전에 바 점멸"
 L.BarSort					= "남은 시간 기준으로 정렬"
@@ -402,6 +464,11 @@ L.KeepBar					= "스킬 시전 전까지 타이머 작동 중단"
 L.KeepBar2					= "(모드에서 지원할 경우에만)"
 L.FadeBar					= "사정거리 밖의 스킬에 대한 타이머 바 숨김"
 L.BarSkin					= "바 스킨"
+L.InlineIconsDropdown				= "도감 속성 아이콘 스타일"
+L.SingleLargeIcon					= "큰 아이콘 1개"
+L.DoubleLargeIcons					= "큰 아이콘 2개"
+L.DoubleInlineIcons					= "모든 큰 아이콘"
+L.StackedMiniIcons					= "작은 아이콘 모음"
 
 -- Panel: Pull, Break, Combat
 L.Panel_PullBreakCombat				= "풀링과 휴식"
@@ -411,20 +478,27 @@ L.Area_SoundOptions					= "효과음 설정"
 -- Tab: Global Disables & Filters
 L.TabCategory_Filters	 	= "기능 끄기 및 필터"
 L.Area_DBMFiltersSetup		= "DBM 기능 필터 가이드"
-L.Area_BlizzFiltersSetup	= "블리자드 기능 필터 가이드"
+L.Area_BlizzFiltersSetup	= "블리자드 기본 기능 필터 가이드"
 
 -- Panel: Toggle DBM Features
 L.Panel_SpamFilter			= "DBM 기능 끄기"
 
-L.Area_SpamFilter_SpecFeatures		= "알림 기능"
+L.Area_Global_Toggles				= "전체 기능 켜기/끄기"
+L.NoWarnings						= "모든 DBM 알림 끄기"
+L.NoTimers							= "모든 DBM 타이머 바 끄기"
+
+L.Area_SpamFilter_SpecFeatures		= "세부 알림 기능 (위에서 전체 비활성화를 하지 않을 때만 적용)"
 L.SpamBlockNoShowAnnounce	= "모든 알림 및 효과음 재생 안함"
 L.SpamBlockNoSpecWarnText	= "특수 알림 텍스트 표시 안함"
 L.SpamBlockNoSpecWarnFlash	= "특수 알림에 화면 점멸 사용 안함"
 L.SpamBlockNoSpecWarnVibrate		= "특수 알림에 컨트롤러 진동 안함"
 L.SpamBlockNoSpecWarnSound	= "특수 알림 효과음 재생 안함 (초읽기와 음성팩 메뉴에서 활성화된 음성팩은 계속 작동)"
-L.SpamBlockNoPrivateAuraSound		= "비공개 오라 효과음 등록 안함"
 
-L.Area_SpamFilter_Timers	= "타이머"
+L.Area_Private_Aura_Features		= "비공개 오라 기능"
+L.SpamBlockNoPrivateAuraSound		= "비공개 오라 효과음 등록 안함"
+L.SpamBlockNoPrivateAuraFrame		= "비공개 오라 프레임 표시 안함"
+
+L.Area_SpamFilter_Timers			= "세부 타이머 기능 (위에서 전체 비활성화를 하지 않을 때만 적용)"
 L.SpamBlockNoShowBossTimers		= "던전/레이드 보스 타이머 표시 안함"
 L.SpamBlockNoShowTrashTimers		= "던전/레이드 일반몹 타이머 표시 안함 (알림: 이름표의 쿨타임도 표시되지 않습니다)"
 L.SpamBlockNoShowEventTimers		= "이벤트나 알림 타이머 표시 안함 (대기열, 보스 재생성 등)"
@@ -435,7 +509,7 @@ L.Area_SpamFilter_Nameplates		= "이름표"
 L.SpamBlockNoNameplate				= "특수한 보스 패턴의 스킬 아이콘을 이름표에 표시 안함 (예: 적에게 버프나 디버프 거는 패턴)"
 L.SpamBlockNoNameplateCD			= "스킬 쿨타임 타이머 아이콘을 이름표에 표시 안함"
 L.SpamBlockNoNameplateCasts			= "스킬 시전시 아이콘을 이름표에 표시 안함"
-L.SpamBlockNoBossGUIDs				= "타이머도 있는 스킬의 쿨타임 타이머 아이콘을 이름표에 표시 안함\n(보통 던전 보스에 적용)"
+L.SpamBlockNoBossGUIDs				= "타이머를 보유한 스킬의 쿨타임 타이머 아이콘을 이름표에 표시 안함\n(보통 던전 보스에 적용)"
 L.AlwaysKeepNPs						= "쿨타임 타이머 아이콘을 만료됐어도 스킬 재시전까지 유지"
 
 L.Area_SpamFilter_Misc		= "기타"
@@ -497,30 +571,31 @@ L.SpamSpecRoleSwitch				= "'대상 변경' &amp; '쫄 등장' 경고 빼기 (텍
 L.SpamSpecRoleGTFO					= "'바닥 피하기' 경고 빼기 (텍스트와 효과음 전부)"
 
 -- Panel: Blizzard Features
-L.Panel_HideBlizzard				= "블리자드 기능 차단"
+L.Panel_HideBlizzard				= "블리자드 기본 기능 차단"
 --Toast
 L.Area_HideToast					= "블리자드 토스트 알림 비활성화 (팝업)"
-L.HideGarrisonUpdates				= "보스 전투중 추종자 토스트 알림 숨기기"
-L.HideGuildChallengeUpdates			= "보스 전투중 길드 도전 과제 토스트 알림 숨기기"
+L.HideGarrisonUpdates				= "보스 전투 중 추종자 토스트 알림 숨기기"
+L.HideGuildChallengeUpdates			= "보스 전투 중 길드 도전 과제 토스트 알림 숨기기"
 --L.HideBossKill				= "보스 처치 토스트 알림 숨기기"--NYI
 --L.HideVaultUnlock					= "금고 잠금 해제 토스트 알림 숨기기"--NYI
 --Cut Scenes
 L.Area_Cinematics					= "게임내 시네마틱 재생 차단"
-L.DuringFight						= "보스 전투중 컷신 재생 차단"--uses explicite IsEncounterInProgress check
+L.DuringFight						= "보스 전투 중 컷신 재생 차단"--uses explicite IsEncounterInProgress check
 L.InstanceAnywhere					= "던전이나 공격대 인스턴스에서 비전투 컷신 재생 차단"
 L.NonInstanceAnywhere				= "위험: 야외 컷신 재생 차단 (권장하지 않음)"
 L.OnlyAfterSeen						= "위 선택 사항에 해당되는 것 중 1회 이상 본 컷신만 재생 차단 (스토리 이해를 위해 한번은 보도록 의도된 옵션이며 사용을 강력히 권장합니다)"
 --Sound
 L.Area_Sound						= "게임내 소리 차단"
-L.DisableSFX					= "보스 전투중 효과 음량 비활성화"
-L.DisableAmbiance					= "보스 전투중 환경 음량 비활성화"
-L.DisableMusic						= "보스 전투중 배경음악 음량 비활성화 (알림: 옵션을 켜면 이벤트 효과음에서 보스 전투 배경음을 설정해도 재생이 되지 않습니다)"
+L.DisableSFX					= "보스 전투 중 효과 음량 비활성화"
+L.DisableAmbiance					= "보스 전투 중 환경 음량 비활성화"
+L.DisableMusic						= "보스 전투 중 배경음악 음량 비활성화 (알림: 옵션을 켜면 이벤트 효과음에서 보스 전투 배경음을 설정해도 재생이 되지 않습니다)"
 --Other
-L.Area_HideBlizzard			= "그 외 블리자드 성가신 요소 비활성화 및 숨김"
-L.HideBossEmoteFrame		= "보스 전투중 보스 감정표현 프레임 숨기기"
+L.Area_HideBlizzard			= "그 외 성가신 블리자드 기본 UI 요소 비활성화 및 숨김"
+L.HideBossEmoteFrame		= "보스 전투 중 보스 경고 숨기기"
 L.HideWatchFrame			= "추적중인 업적이 없고 신화+ 난이도가 아니라면 보스 전투시 퀘스트 추적 프레임 숨기기"
-L.HideQuestTooltips			= "보스 전투중 툴팁에서 퀘스트 목표 숨기기"--Currently hidden (NYI)
-L.HideTooltips				= "보스 전투중 툴팁 완전히 숨기기"
+L.HideQuestTooltips			= "보스 전투 중 툴팁에서 퀘스트 목표 숨기기"--Currently hidden (NYI)
+
+L.HideBlizzardTimeline				= "보스 전투 중 블리자드 기본 공격대 타임라인 숨기기"
 
 -- Panel: Raid Leader Controls
 L.Tab_RLControls					= "공대장 제어 설정"
@@ -554,9 +629,10 @@ L.ReceivingFooter3					= "'내 모드 설정을 대체'를 활성화하면 당�
 L.TabFooter							= "이 패널의 모든 설정은 당신이 공격대/공찾 공대장일때만 작동합니다"
 
 -- Panel: Privacy
-L.Tab_Privacy 				= "자동 응답과 사생활 보호"
+L.Tab_Privacy 				= "자동 응답 및 사생활 보호"
+L.Tab_PrivacyMidnight				= "애드온 통신 및 사생활 보호"
 L.Area_WhisperMessages		= "귓속말 설정"
-L.AutoRespond 				= "전투중 자동 귓속말 답변"
+L.AutoRespond 				= "전투 중 자동 귓속말 답변"
 L.WhisperStats 				= "귓속말 답변에 처치/전멸 통계 포함"
 L.DisableStatusWhisper 		= "공격대 전반에 관한 상태 보고 귓속말을 끕니다. (공대장 권한 필요) 일반/영웅/신화 레이드와 신화+ 던전에만 적용됩니다"
 L.Area_SyncMessages			= "애드온 동기화 설정"
@@ -575,6 +651,7 @@ L.Panel_Range				= "거리 창"
 -- Panel: Nameplate
 L.Panel_Nameplates			= "이름표"
 L.Plater_Config						= "Plater 설정창 열기"
+L.ThreatPlates_Config						= "Threat Plates 설정창 열기"
 L.Area_NPStyle				= "외형 (알림: Plater를 사용하지 않을 때만 설정이 가능합니다)"
 L.NPAuraText					= "이름표 아이콘에 타이머 텍스트 표시"
 L.NPAuraSize				= "아이콘 픽셀 크기 (정사각형): %d"
@@ -645,9 +722,14 @@ L.LocalImportDone					= "Transcriptor에서 로그 %d개 보스 전투 %d개를 
 L.Parsing							= "분석중..."
 L.SelectLogDropdown					= "보스 전투 선택"
 L.CreateTest						= "테스트 작성"
+L.ExportTest						= "테스트 내보내기"
+L.ExportedTest						= "테스트 케이스를 %d줄 내보냈습니다. (%.1f%% 걸러짐)"
+L.ExportedTestFailedAnon			= "경고: 로그 익명화에 실패했으며 %d개의 익명화가 안된 문자열이 있습니다. (대화창에 세부 내역과 출력)"
+L.ExportTestFailedNonAnonString		= "경고: 문자열 %q 익명화되지 않은 것으로 보입니다."
 L.CreatedTest						= "%d개의 이벤트로 테스트를 %.1f초에 걸쳐 작성했습니다."
 L.NoLogsFound						= "Transcriptor 가져오기에 로그 데이터가 들어있지 않습니다."
 L.NoTestDataAvailable				= "사용 가능한 테스트 데이터 없음"
+L.TestDataLoading					= "테스트 로딩 중..."
 L.NoLogSelected						= "테스트 작성 실패: 선택한 로그가 없습니다."
 L.LogAlreadyImported				= "테스트 작성 실패: 이미 가져온 것입니다."
 
@@ -665,7 +747,6 @@ L.Queued							= "대기중"
 L.Running							= "실행중"
 L.Failed							= "실패"
 L.ShowReport						= "보고서 보기"
-L.ShowDiff							= "차이점 보기"
 L.ShowErrors						= "오류 보기"
 L.TestModEntry						= "[시험장] %s"
 L.EnterTestMode						= "시험장 모드"
@@ -674,3 +755,7 @@ L.SkipPhase							= "다음 단계로 넘어가기"
 L.AnonymizeTest						= "플레이어 이름과 GUID 익명 처리"
 L.ShowThisTestEverywhere			= "모든 모드에 이 테스트 표시"
 L.SaveThisTest						= "이 테스트 기록을 계속해서 저장"
+
+L.BossModTColor						= "바 색상"
+L.BossModCVoice						= "초읽기 음성"
+L.BossModSWSound					= "알림 소리"

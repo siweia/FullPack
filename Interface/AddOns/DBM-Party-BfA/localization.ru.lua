@@ -22,13 +22,13 @@ L:SetGeneralLocalization({
 L= DBM:GetModLocalization(2093)
 
 L:SetWarningLocalization({
-	warnGoodBrew		= "Применение %s: 3 сек",
+	warnGoodBrew		= "Применение %s: 3 сек.",
 	specWarnBrewOnBoss	= "Хорошее пойло под %s"
 })
 
 L:SetOptionLocalization({
-	warnGoodBrew		= "Предупреждение при применении хорошего пойла",
-	specWarnBrewOnBoss	= "Спецпредупреждение, когда хорошее пойло под боссом"
+	warnGoodBrew		= "Показывать предупреждение, когда применяется $spell:264608 и $spell:265088",
+	specWarnBrewOnBoss	= "Показывать спецпредупреждение, когда $spell:264608 и $spell:265088 под боссом"
 })
 
 L:SetMiscLocalization({
@@ -114,7 +114,7 @@ L:SetGeneralLocalization({
 ---------
 --Trash--
 ---------
-L = DBM:GetModLocalization("UndermineTrash")
+L = DBM:GetModLocalization("MotherloadTrash")
 
 L:SetGeneralLocalization({
 	name =	"Трэш мобы ЗОЛОТАЯ ЖИЛА!!!"

@@ -3,12 +3,15 @@ local private = select(2, ...)
 
 ---@class TrashCombatScanningModule: DBMModule
 local module = private:NewModule("TrashCombatScanningModule")
-module:RegisterEvents(
-	"LOADING_SCREEN_DISABLED",
-	"ZONE_CHANGED_NEW_AREA",
-	"ENCOUNTER_START",
-	"ENCOUNTER_END"
-)
+
+if not private.isRetail then
+	module:RegisterEvents(
+		"LOADING_SCREEN_DISABLED",
+		"ZONE_CHANGED_NEW_AREA",
+		"ENCOUNTER_START",
+		"ENCOUNTER_END"
+	)
+end
 
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
@@ -20,18 +23,57 @@ if DBM:IsPostMoP() then
 end
 
 local registeredZones = {}--Global table for tracking registered zones
+local registeredSyncZone = {}--Global table for tracking registered zones that use syncing
 local ActiveGUIDs = {}--GUIDS we're flagged in combat with
 local inCombat = false
+local syncingActive = false
 local currentZone = DBM:GetCurrentArea() or 0
---Only up to two cached mods at a time, since it's unlikely more than 2 mods will be scanning units at once
+--Only up to three cached mods at a time, since it's unlikely more than 3 mods will be scanning units at once
+--TODO, this really needs rewrite cause it actually IS possible to have more than 3 if you ever engage more than 1 boss at once (possible doing older content)
+--Better handling would also reduce duplicate copy/paste code
 local affixesMod--Mythic+ or Raid affixes module
-local lastUsedMod--Trash module for given zone
-local cachedMods = {}
+local activeTrashMod--Trash module for given zone
+local activeBossMod--Boss module for given zone
+local cachedTrashMods = {}
+local cachedBossMods = {}
 
 ---Scan for new Unit Engages
 ---<br>This will break if more than one mod is scanning units at once, which shouldn't happen since you can't be in more than one dungeon at same time (and affixes doesn't monitor this)
----@param self DBMMod
-local function ScanEngagedUnits(self)
+local function ScanEngagedUnits(delay)
+	--Scan mouseover
+	if UnitAffectingCombat("mouseover") and not UnitIsFriend("mouseover", "player") then
+		local guid = UnitGUID("mouseover")
+		if guid and DBM:IsCreatureGUID(guid) then
+			if not ActiveGUIDs[guid] then
+				ActiveGUIDs[guid] = true
+				local cid = DBM:GetCIDFromGUID(guid)
+				DBM:FireEvent("DBM_EnemyEngaged", guid, cid, delay, "mouseover")
+				if activeTrashMod and activeTrashMod.StartEngageTimers then
+					activeTrashMod:StartEngageTimers(guid, cid, delay, "mouseover")
+				end
+				if activeBossMod and activeBossMod.StartEngageTimers then
+					activeBossMod:StartEngageTimers(guid, cid, delay, "mouseover")
+				end
+			end
+		end
+	end
+	--Scan softenemy
+	if UnitAffectingCombat("softenemy") and not UnitIsFriend("softenemy", "player") then
+		local guid = UnitGUID("softenemy")
+		if guid and DBM:IsCreatureGUID(guid) then
+			if not ActiveGUIDs[guid] then
+				ActiveGUIDs[guid] = true
+				local cid = DBM:GetCIDFromGUID(guid)
+				DBM:FireEvent("DBM_EnemyEngaged", guid, cid, delay, "softenemy")
+				if activeTrashMod and activeTrashMod.StartEngageTimers then
+					activeTrashMod:StartEngageTimers(guid, cid, delay, "softenemy")
+				end
+				if activeBossMod and activeBossMod.StartEngageTimers then
+					activeBossMod:StartEngageTimers(guid, cid, delay, "softenemy")
+				end
+			end
+		end
+	end
 	--Iterate over all raid/party members and their targets
 	local uId = (IsInRaid() and "raid") or "party"
 	for i = 0, GetNumGroupMembers() do
@@ -42,8 +84,17 @@ local function ScanEngagedUnits(self)
 				if not ActiveGUIDs[guid] then
 					ActiveGUIDs[guid] = true
 					local cid = DBM:GetCIDFromGUID(guid)
-					self:StartEngageTimers(guid, cid, 0)
-					DBM:Debug("Firing Engaged Unit for "..guid, 3, nil, true)
+					DBM:FireEvent("DBM_EnemyEngaged", guid, cid, delay, uId)
+					if activeTrashMod and activeTrashMod.StartEngageTimers then
+						activeTrashMod:StartEngageTimers(guid, cid, delay, uId)
+					end
+					if activeBossMod and activeBossMod.StartEngageTimers then
+						activeBossMod:StartEngageTimers(guid, cid, delay, uId)
+					end
+					--WARNING. this is a REALLY shitty work around that will hit sync throttling quite rapidly
+					if syncingActive and DBM.Options.ZoneCombatSyncing then--ZoneCombatSyncing is off by default due to above comment and can't be turned on via GUI
+						private.sendSync(private.DBMSyncProtocol, "ZC", guid .. "\t" .. cid, "ALERT")
+					end
 				end
 			end
 		end
@@ -57,32 +108,38 @@ local function ScanEngagedUnits(self)
 				if not ActiveGUIDs[guid] then
 					ActiveGUIDs[guid] = true
 					local cid = DBM:GetCIDFromGUID(guid)
-					self:StartEngageTimers(guid, cid, 0.5)
-					DBM:Debug("Firing Engaged Unit for "..guid, 3, nil, true)
+					DBM:FireEvent("DBM_EnemyEngaged", guid, cid, delay, foundUnit)
+					if activeTrashMod and activeTrashMod.StartEngageTimers then
+						activeTrashMod:StartEngageTimers(guid, cid, delay, foundUnit)
+					end
+					if activeBossMod and activeBossMod.StartEngageTimers then
+						activeBossMod:StartEngageTimers(guid, cid, delay, foundUnit)
+					end
 				end
 			end
 		end
 	end
 	--Only run twice per second.
-	DBM:Schedule(0.5, ScanEngagedUnits, self)
+	DBM:Schedule(0.5, ScanEngagedUnits, 0.5)--Apply 0.5 delay on repeat scans
 end
 
-local function checkForCombat()
+---@param delay number
+local function checkForCombat(delay)
 	local combatFound = DBM:GroupInCombat()
 	if combatFound and not inCombat then
 		inCombat = true
 		DBM:Debug("Zone Combat Detected", 2, nil, true)
+		--Only trash and affix mods should look for zone combat
 		if affixesMod then
 			affixesMod:EnteringZoneCombat()
 		end
-		if lastUsedMod then
-			if lastUsedMod.EnteringZoneCombat then
-				lastUsedMod:EnteringZoneCombat()
-			end
-			if lastUsedMod.StartEngageTimers then
-				ScanEngagedUnits(lastUsedMod)
-				DBM:Debug("Starting Engaged Unit Scans", 2)
-			end
+		if activeTrashMod and activeTrashMod.EnteringZoneCombat then
+			activeTrashMod:EnteringZoneCombat()
+		end
+		--Only trash and boss mods should start scanning engaged units
+		if not private.isRetail and ((activeTrashMod and activeTrashMod.StartEngageTimers) or (activeBossMod and activeBossMod.StartEngageTimers)) then
+			ScanEngagedUnits(delay)--Apply only the pre combat delay on initial instant scan
+			DBM:Debug("Starting Engaged Unit Scans", 2)
 		end
 	elseif not combatFound and inCombat then
 		inCombat = false
@@ -91,10 +148,8 @@ local function checkForCombat()
 		if affixesMod then
 			affixesMod:LeavingZoneCombat()
 		end
-		if lastUsedMod then
-			if lastUsedMod.LeavingZoneCombat then
-				lastUsedMod:LeavingZoneCombat()
-			end
+		if activeTrashMod and activeTrashMod.LeavingZoneCombat then
+			activeTrashMod:LeavingZoneCombat()
 		end
 		DBM:Unschedule(ScanEngagedUnits)
 	end
@@ -105,6 +160,9 @@ local function DelayedZoneCheck(force)
 	currentZone = DBM:GetCurrentArea() or 0
 	if not force and registeredZones[currentZone] and not eventsRegistered then
 		eventsRegistered = true
+		if registeredSyncZone[currentZone] then
+			syncingActive = true
+		end
 		module:RegisterShortTermEvents(
 			"UNIT_FLAGS player party1 party2 party3 party4",
 			"PLAYER_REGEN_DISABLED",
@@ -114,14 +172,17 @@ local function DelayedZoneCheck(force)
 			module:RegisterShortTermEvents("CHALLENGE_MODE_DEATH_COUNT_UPDATED")
 		end
 		DBM:Unschedule(checkForCombat)
-		checkForCombat()--Still run an initial check
+		checkForCombat(0)--Still run an initial check
 		DBM:Debug("Registering Trash Tracking Events", 2)
-		lastUsedMod = DBM:GetModByName(cachedMods[currentZone])
+		activeTrashMod = DBM:GetModByName(cachedTrashMods[currentZone])
+		activeBossMod = DBM:GetModByName(cachedBossMods[currentZone])
 	elseif force or (not registeredZones[currentZone] and eventsRegistered) then
 		eventsRegistered = false
+		syncingActive = false
 		inCombat = false
 		table.wipe(ActiveGUIDs)
-		lastUsedMod = nil
+		activeTrashMod = nil
+		activeBossMod = nil
 		module:UnregisterShortTermEvents()
 		DBM:Unschedule(checkForCombat)
 		DBM:Unschedule(ScanEngagedUnits)
@@ -132,23 +193,30 @@ end
 --Only party is monitored because main use case is dungeons and delves.
 --And we don't want to waste performance in registered raids. 5 players should be enough to determine raid combat
 function module:UNIT_FLAGS()
-	DBM:Unschedule(checkForCombat)
 	--Use throttled delay to avoid checks running too often when multiple flags change at once
-	if DBM:AntiSpam(0.25, "UNIT_FLAGS") then
-		DBM:Schedule(0.1, checkForCombat)--Delay check til next frame to ensure flags are updated
+	if DBM:AntiSpam(0.1, "UNIT_FLAGS") then
+		DBM:Unschedule(checkForCombat)
+		DBM:Debug("DBM is scheduling combat checks", 3)--Temporary debug, it will clutter transcriptor logs
+		--Delay check til next frame to ensure flags are updated
+		DBM:Schedule(0.1, checkForCombat, 0.1)
+		DBM:Schedule(0.25, checkForCombat, 0.25)
+		DBM:Schedule(0.5, checkForCombat, 0.5)
+		DBM:Schedule(0.75, checkForCombat, 0.75)
 	end
 end
 --Sometimes UNIT_FLAGS doesn't fire if group is spead out, so we track backup events that can indicate combat status changed
 module.CHALLENGE_MODE_DEATH_COUNT_UPDATED	= module.UNIT_FLAGS
-module.PLAYER_REGEN_DISABLED				= module.UNIT_FLAGS
-module.PLAYER_REGEN_ENABLED					= module.UNIT_FLAGS
+module.PLAYER_REGEN_DISABLED	= module.UNIT_FLAGS
+module.PLAYER_REGEN_ENABLED	= module.UNIT_FLAGS
 
 function module:LOADING_SCREEN_DISABLED()
-	DBM:Unschedule(DelayedZoneCheck)
-	--Checks Delayed 3 second after core checks to prevent race condition of checking before core did and updated cached ID
-	--Delayed 2 seconds longer than Affixes mod so there is no race condition. Affixes needs to register events first
-	DBM:Schedule(4, DelayedZoneCheck)
-	DBM:Schedule(8, DelayedZoneCheck)
+	if DBM:AntiSpam(0.1, "DelayedZoneCheck") then
+		DBM:Unschedule(DelayedZoneCheck)
+		--Checks Delayed 3 second after core checks to prevent race condition of checking before core did and updated cached ID
+		--Delayed 2 seconds longer than Affixes mod so there is no race condition. Affixes needs to register events first
+		DBM:Schedule(4, DelayedZoneCheck)
+		DBM:Schedule(8, DelayedZoneCheck)
+	end
 end
 module.OnModuleLoad = module.LOADING_SCREEN_DISABLED
 module.ZONE_CHANGED_NEW_AREA	= module.LOADING_SCREEN_DISABLED
@@ -159,46 +227,82 @@ end
 
 function module:ENCOUNTER_START()
 	--This basically force unloads things in a raid, since we're not typically fighting trash during a raid boss
+	--Also force disables zone syncing
+	syncingActive = false
 	if IsInRaid() then
 		DelayedZoneCheck(true)
 	else
 		--If we're in a dungeon, we use it as yet another redundant combat check
-		DBM:Unschedule(checkForCombat)
 		if registeredZones and DBM:AntiSpam(0.25, "UNIT_FLAGS") then
-			DBM:Schedule(0.1, checkForCombat)--Delay check til next frame to ensure flags are updated
+			DBM:Unschedule(checkForCombat)
+			DBM:Schedule(0.1, checkForCombat, 0.1)
+			DBM:Schedule(0.25, checkForCombat, 0.25)
+			DBM:Schedule(0.5, checkForCombat, 0.5)
+			DBM:Schedule(0.75, checkForCombat, 0.75)
 		end
 	end
 end
 
 function module:ENCOUNTER_END()
 	--Restore trash registered zone combat events if there are any
+	if registeredSyncZone[currentZone] then
+		syncingActive = true
+	end
 	if IsInRaid() then
 		DelayedZoneCheck()
 	else
 		--If we're in a dungeon, we use it as yet another redundant combat check
-		DBM:Unschedule(checkForCombat)
 		if registeredZones and DBM:AntiSpam(0.25, "UNIT_FLAGS") then
-			DBM:Schedule(0.1, checkForCombat)--Delay check til next frame to ensure flags are updated
+			DBM:Unschedule(checkForCombat)
+			DBM:Schedule(0.1, checkForCombat, 0.1)
+			DBM:Schedule(0.25, checkForCombat, 0.25)
+			DBM:Schedule(0.5, checkForCombat, 0.5)
+			DBM:Schedule(0.75, checkForCombat, 0.75)
 		end
+	end
+end
+
+function module:OnSync(_, guid, cid)
+	if not ActiveGUIDs[guid] then
+		ActiveGUIDs[guid] = true
+		if activeTrashMod then
+			activeTrashMod:StartEngageTimers(guid, cid, 0)
+		end
+		if activeBossMod then
+			activeBossMod:StartEngageTimers(guid, cid, 0)
+		end
+		DBM:Debug("Firing Synced Engaged Unit for "..guid, 3, nil, true)
 	end
 end
 
 ---Used for registering combat with enemies that don't support conventional means (such as dungeon trash)
 ---@param zone number Instance ID of the zone
 ---@param modId? string|number The mod id to register for combat scanning
-function bossModPrototype:RegisterZoneCombat(zone, modId)
+---@param useSyncing boolean? If true, this mod will use syncing for combat scanning to solve range issues
+function bossModPrototype:RegisterZoneCombat(zone, modId, useSyncing)
+	if private.isRetail or DBM.Options.NoCombatScanningFeatures then return end
 	modId = modId or self.id
-	if DBM.Options.NoCombatScanningFeatures then return end
 	if not registeredZones[zone] then
 		registeredZones[zone] = true
+	end
+	if not registeredSyncZone[zone] then
+		registeredSyncZone[zone] = useSyncing
 	end
 	if modId == "MPlusAffixes" then
 		affixesMod = DBM:GetModByName(modId)--Just cache mod outright, it'll never change
 		DBM:Debug("|cffff0000Registered affixesMod for modID: |r"..modId, 2, nil, true)
-	elseif not cachedMods[zone] then
-		cachedMods[zone] = modId
-		DBM:Debug("|cffff0000Registered cachedMods for modID: |r"..modId, 2, nil, true)
+	elseif type(modId) == "string" and modId:find("Trash") then
+		if not cachedTrashMods[zone] then
+			cachedTrashMods[zone] = modId
+			DBM:Debug("|cffff0000Registered cachedTrashMods for modID: |r"..modId, 2, nil, true)
+		end
+	else
+		if not cachedBossMods[zone] then
+			cachedBossMods[zone] = modId
+			DBM:Debug("|cffff0000Registered cachedBossMods for modID: |r"..modId, 2, nil, true)
+		end
 	end
+	module:LOADING_SCREEN_DISABLED()
 end
 
 ---@param zone number Instance ID of the zone
@@ -214,9 +318,12 @@ function bossModPrototype:UnregisterZoneCombat(zone, modId)
 	if affixesMod == mod then
 		affixesMod = nil
 		DBM:Debug("Unregistered affixesMod for modID: "..modId, 2, nil, true)
-	elseif cachedMods[zone] == modId then
-		cachedMods[zone] = nil
-		DBM:Debug("Unregistered cachedMods for modID: "..modId, 2, nil, true)
+	elseif cachedTrashMods[zone] == modId then
+		cachedTrashMods[zone] = nil
+		DBM:Debug("Unregistered cachedTrashMods for modID: "..modId, 2, nil, true)
+	elseif cachedBossMods[zone] == modId then
+		cachedBossMods[zone] = nil
+		DBM:Debug("Unregistered cachedBossMods for modID: "..modId, 2, nil, true)
 	end
 end
 
@@ -237,8 +344,8 @@ do
 					if not ActiveGUIDs[guid] then
 						ActiveGUIDs[guid] = true
 						local cid = DBM:GetCIDFromGUID(guid)
-						self:StartEngageTimers(guid, cid, scanTime)
-						DBM:Debug("Firing Engaged Unit for "..cid, 3, nil, true)
+						self:StartEngageTimers(guid, cid, scanTime, unitId)
+						DBM:Debug("Firing Engaged Unit for "..guid..". Scantime: "..scanTime, 3, nil, true)
 					end
 				end
 			end
@@ -250,6 +357,7 @@ do
 	---<br>Uses mod:StartEngageTimers(guid, cid, scanTime) as return function to start timers
 	---@param maxScanTime number?
 	function bossModPrototype:RegisterBossUnitScan(maxScanTime)
+		if DBM:IsPostMidnight() then return end
 		ScanEngagedBossUnits(self, 0, maxScanTime or 3)
 	end
 end

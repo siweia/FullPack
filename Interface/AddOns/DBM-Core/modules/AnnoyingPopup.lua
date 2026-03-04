@@ -112,7 +112,6 @@ end
 
 -- It's kinda sad that this is needed, but I see way too many people running around in SoD without classic mods installed while at the same time complaining that DBM doesn't work.
 -- No one seems to be reading messages in ChatFrame :(
--- /run DBM:ShowAnnoyingPopup("Incomplete DBM installation detected.\nWelcome to Molten Core", "long checkbox text", "Copy this to download from Wago.io", "https://addons.wago.io/addons/7x61xpN1", "Copy this to download from Curse", "https://www.curseforge.com/wow/addons/dbm-vanilla")
 local function show(headerLarge, headerSmall, checkbox, url1Info, url1, url2Info, url2)
 	createFrame()
 	frame.header1:SetText(headerLarge)
@@ -157,7 +156,7 @@ local popupData = {
 		wagoUrl = "https://addons.wago.io/addons/deadly-boss-mods-dbm-old-dungeon-mods",
 		curseUrl = "https://www.curseforge.com/wow/addons/deadly-boss-mods-dbm-dungeons",
 		useFriendlyMessage = true
-	}
+	},
 }
 
 --Basically no naxx
@@ -179,10 +178,12 @@ local annoyingPopupZonesVanillaClassic = {
 	[469]  = {addon = "DBM-Raids-Vanilla", package = "Vanilla"},  -- Blackwing Lair
 	[509]  = {addon = "DBM-Raids-Vanilla", package = "Vanilla"},  -- Ruins of Ahn'Qiraj
 	[531]  = {addon = "DBM-Raids-Vanilla", package = "Vanilla"},  -- Temple of Ahn'Qiraj
-	[533]  = {addon = "DBM-Raids-Vanilla", package = "Vanilla"},  -- Naxxramas
+	[533]  = {addon = "DBM-Raids-Vanilla", package = "Vanilla", trackPerInstance = true},  -- Naxxramas, tracking separetely as we may have returning players that clicked the warning away not really understanding it
 	[2791] = {addon = "DBM-Azeroth",       package = "Vanilla"},  -- Azuregos (instanced in SoD), we literally wiped there to spell reflect because people didn't have this installed in my guild
 	[2784] = {addon = "DBM-Party-Vanilla", package = "Dungeons"}, -- Demon Fall Canyon in SoD, it's a bit harder than usual dungeons, so let's show a warning. Remove if too many people complain.
-	[2832] = {addon = "DBM-Azeroth",       package = "Vanilla"}, -- Dragons of nightmare
+	[2832] = {addon = "DBM-Azeroth",       package = "Vanilla"},  -- Nightmare Grove (instanced outdoor dragons)
+	[2856] = {addon = "DBM-Raids-Vanilla", package = "Vanilla", useFriendlyMessage = false, trackPerInstance = true},  -- Scarlet Enclave
+	[2875] = {addon = "DBM-Party-Vanilla", package = "Dungeons", useFriendlyMessage = false, trackPerInstance = true}, -- SoD Karazhan Cryptos, much harder than the usual classic dungeon
 }
 
 local annoyingPopupZonesBCC = {
@@ -219,31 +220,68 @@ local annoyingPopupZonesCata = {
 	[754]  = {addon = "DBM-Raids-Cata", package = "Cata"},  -- ???
 }
 
-local annoyingPopupZonesRetail = {
-	--TWW Season 1 M+ Dungeons
-	[2652]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[2662]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[2660]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[2669]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[670]   = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[1822]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[2286]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
-	[2290]  = {addon = "DBM-Party-Dragonflight", package = "Dungeons"},  -- ???
+local annoyingPopupZonesMoP = {
+	--Raids
+	[1009]  = {addon = "DBM-Raids-MoP", package = "MoP"},  -- ???
+	[1008]  = {addon = "DBM-Raids-MoP", package = "MoP"},  -- ???
+	[1136]  = {addon = "DBM-Raids-MoP", package = "MoP"},  -- ???
+	[996]   = {addon = "DBM-Raids-MoP", package = "MoP"},  -- ???
+	[1098]  = {addon = "DBM-Raids-MoP", package = "MoP"},  -- ???
+	--Dungeons
+	[960]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[961]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[959]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[962]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[994]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[1011]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[1007]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[1001]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
+	[1004]  = {addon = "DBM-Party-MoP", package = "Dungeons"},  -- ???
 }
 
-function DBM:ShowAnnoyingPopup(packageId, zone)
-	if DBM_AnnoyingPopupDisables and DBM_AnnoyingPopupDisables[packageId] then
+local annoyingPopupZonesRetail = {
+	--TWW Season 3 M+ Dungeons
+	[2662]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- DawnBreaker
+	[2660]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Ara-Kara City of Echoes
+--	[2773]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Operation: Floodgate
+--	[2649]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Priory of the Sacred Flame
+	[2830]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Echo-Dome
+	[2287]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Halls of Atonement
+	[2441]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Tazavesh, the Veiled Market
+	--TWW Season 2 M+ Dungeons
+	[2651]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Darkflame Cleft
+	[2649]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Priory of the Sacred Flame
+	[2648]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- The Rookery
+	[2661]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Cinderbrew Meadery
+	[1594]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- MOTHERLOAD
+	[2097]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Mechagon
+	[2293]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Theater of Pain
+	[2773]  = {addon = "DBM-Party-WarWithin", package = "Dungeons"},  -- Floodgate
+	--Visions Revisited (TWW)
+	[2828]  = {addon = "DBM-Challenges", package = "Dungeons"},  -- Vision of Orgrimmar Revisited
+	[2827]  = {addon = "DBM-Challenges", package = "Dungeons"},  -- Vision of Stormwind Revisited
+	--Mage Tower
+
+}
+
+function DBM:ShowAnnoyingPopup(zoneInfo, zone)
+	local trackId = zoneInfo.trackPerInstance and zoneInfo.package .. tostring(zone) or zoneInfo.package
+	if DBM_AnnoyingPopupDisables and DBM_AnnoyingPopupDisables[trackId] then
 		return
 	end
-	local data = popupData[packageId]
+	local data = popupData[zoneInfo.package]
 	if not data or not zone then
 		if DBM.Options.DebugMode then error("bad arguments") end
 		return
 	end
+	local useFriendlyMessage = data.useFriendlyMessage
+	if zoneInfo.useFriendlyMessage ~= nil then
+		useFriendlyMessage = zoneInfo.useFriendlyMessage
+	end
 	show(
 		L.DBM_INSTALL_REMINDER_HEADER,
 		L.DBM_INSTALL_REMINDER_EXPLAIN:format(zone, data.package, data.package),
-		data.useFriendlyMessage and L.DBM_INSTALL_REMINDER_DISABLE2 or L.DBM_INSTALL_REMINDER_DISABLE,
+		useFriendlyMessage and L.DBM_INSTALL_REMINDER_DISABLE2 or L.DBM_INSTALL_REMINDER_DISABLE,
 		L.DBM_INSTALL_REMINDER_DL_WAGO,
 		data.wagoUrl,
 		L.DBM_INSTALL_REMINDER_DL_CURSE,
@@ -252,7 +290,7 @@ function DBM:ShowAnnoyingPopup(packageId, zone)
 	callback = function()
 		if frame.checkbox:GetChecked() then
 			DBM_AnnoyingPopupDisables = DBM_AnnoyingPopupDisables or {}
-			DBM_AnnoyingPopupDisables[packageId] = GetServerTime()
+			DBM_AnnoyingPopupDisables[trackId] = GetServerTime()
 		end
 	end
 end
@@ -267,10 +305,12 @@ function DBM:AnnoyingPopupCheckZone(mapId, zoneLookup)
 		zoneInfo = annoyingPopupZonesWrath[mapId]
 	elseif zoneLookup == "Cata" then
 		zoneInfo = annoyingPopupZonesCata[mapId]
+	elseif zoneLookup == "MoP" then
+		zoneInfo = annoyingPopupZonesMoP[mapId]
 	elseif zoneLookup == "Retail" then
 		zoneInfo = annoyingPopupZonesRetail[mapId]
 	end
-	if zoneInfo and not DBM:DoesAddOnExist(zoneInfo.addon) then
-		self:ShowAnnoyingPopup(zoneInfo.package, (GetInstanceInfo()))
+	if zoneInfo and not C_AddOns.DoesAddOnExist(zoneInfo.addon) then
+		self:ShowAnnoyingPopup(zoneInfo, (GetInstanceInfo()))
 	end
 end

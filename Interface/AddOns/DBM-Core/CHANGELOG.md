@@ -1,13 +1,19 @@
 # DBM - Core
 
-## [11.0.38](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/11.0.38) (2024-12-14)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/11.0.37...11.0.38) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [12.0.28](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/12.0.28) (2026-03-04)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/12.0.27...12.0.28) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- bump core version  
-- Update localization.fr.lua (#1436)  
-- Update localization.br.lua (#1437)  
-- Update localization.es.lua (#1435)  
-- Timers: Fix timers with a negative offset, commonly used at combat start (#1438)  
-- work around annoying core bug where starting a timer of 0 uses self.timer instead. But that annoying bug has to stay since over a decade worth of mods has assumed that to be valid  
-- auto set "keep" on variance timers in debugmode  
+- prep new tag with new work around for the STILL unfixed Ruia problem  
+- handle disabled private auras in core in a way that hides them from UI until such a time they return  
+- Update koKR (#1942)  
+    Update koKR locale  
+- fix debug  
+- since blizzard is now randomly unprivating auras, add a print if DBM attempts to register a private aura that isn't one anymore  
+- Update localization.tw.lua (#1937)  
+- Update localization.cn.lua (#1939)  
+- Fix debug logic  
+- added method for updating announce and special announce icon on the fly  
+- Add new dropdown option that lets you specifiy time you begin hearing countdown on Blizzard timer objects  
+    Improved encounter debug code for collecting hardcoded timers/warnings  
+- add the 3 count media i been sitting on for ages  
 - bump alpha  

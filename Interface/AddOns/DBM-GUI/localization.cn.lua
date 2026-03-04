@@ -1,7 +1,7 @@
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
 -- sunlcy@NGA
--- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20241010
+-- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20260214
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_GUI_L then DBM_GUI_L = {} end
@@ -22,10 +22,19 @@ L.OTabWorld		= "世界Boss"
 L.OTabScenarios	= "场景"
 L.OTabPlugins	= "其他"
 L.OTabOptions	= "核心选项"
+L.OTabTools		= "小工具"--Such as break timer button, durability checks, latency checks, keystone checks (in future)
 L.OTabAbout		= "关于"
 
-L.FOLLOWER	= "追随者"
-L.STORY 	= "故事模式"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
+--Main Tab, Tools checks
+L.Tools_LatencyCheck		= "延迟检查"
+L.Tools_DurabilityCheck		= "持久检查"
+L.Tools_KeystoneCheck		= "大秘钥匙检查"
+
+L.Tools_BreakTimer					= "开始休息计时"
+L.Tools_PizzaTimer					= "开始通用计时"
+
+L.Tools_Duration					= "持久"
+L.Tools_Message						= "计时器信息"
 
 L.TabCategory_CURRENT_SEASON		= "当前赛季"
 
@@ -85,6 +94,7 @@ L.Button_InfoFrame			= "显示/隐藏信息框体"
 L.Button_TestBars			= "测试计时条"
 L.Button_MoveBars			= "移动计时条"
 L.Button_ResetInfoRange		= "重置信息/距离雷达框体"
+L.Button_ShowMidnightWizard		= "至暗之夜设置向导"
 
 L.ModelOptions				= "3D模型选项"
 L.EnableModels				= "在首领选项中启用3D模型"
@@ -100,7 +110,8 @@ L.Editbox_WindowHeight		= "GUI窗口高度"
 
 L.UIGroupingOptions			= "界面分组选项 (更改这些需要输入 /reload 来重载界面)"
 L.GroupOptionsExcludeIcon	= "按照技能分组排除“设置标记图标”选项 (它们将像以前一样在“图标”类中显示)"
-L.AutoExpandSpellGroups		= "按照技能分组自动扩展选项"
+L.GroupOptionsExcludePrivateAura	= "排除“私人光环”声音选项，不按技能分组（它们将被分组到自己的“私人光环”类别中）"
+L.AutoExpandSpellGroups2		= "按照技能分组自动扩展选项"
 L.ShowWAKeys				= "在技能名称旁边显示 WeakAuras 键，以便使用DBM触发器编写WeakAuras脚本。 需要注意的是，在分阵营的对战中，技能的ID可能会因为队长的阵营而变动"
 --L.ShowSpellDescWhenExpanded	= "分组扩展时显示技能描述"
 L.NoDescription				= "此技能无描述说明"
@@ -108,6 +119,7 @@ L.CustomOptions				= "此类别包含针对没有自己的技能或事件ID的�
 
 -- Panel: Auto Logging
 L.Panel_AutoLogging			= "自动记录"
+
 --Auto Logging: Logging toggles/types
 L.Area_AutoLogging			= "自动战斗日志开关"
 L.AutologBosses				= "自动采用官方格式记录日志。"
@@ -126,6 +138,8 @@ L.LogCurrentMPlus			= "当前等级（或Remix）M+ 5人本"--Retail Only
 L.LogCurrentMythicZero		= "当前等级（或Remix）M0 5人本"--Retail Only
 L.LogTWDungeons				= "时光5人本或通过克罗米进入的（非Remix）5人本"--Retail Only
 L.LogCurrentHeroic			= "当前等级的英雄5人本"
+L.LogDelves					= "当前等级地下堡"--Retail Only
+L.LogChallenges				= "当先等级特殊挑战 (例如爬塔、惊魂幻象、法师塔等)"--Retail Only
 
 -- Panel: Extra Features
 L.Panel_ExtraFeatures		= "其他功能"
@@ -155,6 +169,8 @@ L.AutoAcceptFriendInvite	= "自动接受来自好友列表里的好友的组队�
 L.AutoAcceptGuildInvite		= "自动接受同公会成员的组队邀请"
 L.Area_Advanced				= "高级选项"
 L.FakeBW					= "当Bigwig启用检测时，假装DBM就是Bigwig"
+
+L.Area_Tooltip				= "鼠标信息提示集成"
 
 -- Panel: Profiles
 L.Panel_Profile				= "配置文件"
@@ -191,6 +207,7 @@ L.TabCategory_Alerts	 	= "警报"
 L.Area_SpecAnnounceConfig	= "特殊警报提示和声音指南"
 L.Area_SpecAnnounceNotes	= "特殊警报自定义指南"
 L.Area_VoicePackInfo		= "所有 DBM 语音包信息"
+
 -- Panel: Raidwarning
 L.Tab_RaidWarning 			= "团队警报"
 L.RaidWarning_Header		= "团队警报设置"
@@ -199,6 +216,7 @@ L.RaidWarnColor_1 			= "颜色 1"
 L.RaidWarnColor_2 			= "颜色 2"
 L.RaidWarnColor_3		 	= "颜色 3"
 L.RaidWarnColor_4 			= "颜色 4"
+L.RaidWarnColors 			= "颜色"
 L.InfoRaidWarning			= [[你可以对团队警报的文本颜色及其位置进行设定。
 在这里会显示诸如“玩家X受到了Y效果的影响”之类的信息。]]
 L.ColorResetted 			= "该颜色设置已重置。"
@@ -215,6 +233,7 @@ L.ThickOutline				= "加粗描边"
 L.MonochromeOutline			= "单色描边"
 L.MonochromeThickOutline	= "单色加粗描边"
 L.RaidWarnSound				= "发出团队警报时播放声音"
+L.AnnouncementMidnightNotice	= "本页面的设置用于暴雪定义的“次要警告”"
 
 -- Panel: Spec Warn Frame
 L.Panel_SpecWarnFrame		= "特殊团队警报"
@@ -234,11 +253,36 @@ L.SpecWarn_FlashAlpha		= "闪烁透明度: %0.1f"
 L.SpecWarn_DemoButton		= "测试警报"
 L.SpecWarn_ResetMe			= "重置"
 L.SpecialWarnSoundOption	= "设置默认声音"
-L.SpecialWarnHeader1		= "类型 1: 设置影响您或您的操作的普通优先级警报选项"
-L.SpecialWarnHeader2		= "类型 2: 设置影响每个人的正常优先级警报选项"
-L.SpecialWarnHeader3		= "类型 3: 设置高优先级警报的选项"
-L.SpecialWarnHeader4		= "类型 4: 设置“高优先级”选项会避免特殊警报"
-L.SpecialWarnHeader5		= "类型 5: 设置警报选项，并包含玩家姓名"
+--PreMidnight
+L.SpecialWarnHeader1		= "特殊警告 1: 设置影响您或您的操作的普通优先级警报选项"
+L.SpecialWarnHeader2		= "特殊警告 2: 设置影响每个人的正常优先级警报选项"
+L.SpecialWarnHeader3		= "特殊警告 3: 设置高优先级警报的选项"
+L.SpecialWarnHeader4		= "特殊警告 4: 设置高优先级“快躲开”等特殊警报选项"
+L.SpecialWarnHeader5		= "特殊警告 5: 设置警报选项，并包含玩家姓名"
+--Post Midnight
+L.SpecialWarnHeaderMedium			= "特殊警告 1: 暴雪定义的“中等警告”机制"
+L.SpecialWarnHeaderCritical			= "特殊警告 2: 暴雪定义的“重要警告”机制"
+
+-- Panel: Private Auras Frame
+L.Panel_PrivateAuras				= "私人光环"
+L.Area_PersonalPrivateAuras			= "个人私人光环选项"
+L.EnablePersonalPrivateAuraIcons	= "在屏幕上显示个人私人光环图标"--复选框
+L.EnablePersonalPrivateAuraText		= "覆盖暴雪私人光环文字信息缩放比例"--复选框
+L.UpscaleDurationText				= "放大图标上的持续时间文字"
+L.SetPAGrowDirection				= "扩展方向"
+L.SetPAIconScale					= "图标缩放比例：%d"
+L.SetPAMaxIcons						= "最大图标数量：%d"
+L.SetPAIconSpacing					= "图标间距：%d"
+L.SetPAStackScale					= "层数文字缩放比例：%d"
+L.SetPATextScale					= "文字信息缩放比例：%0.1f"
+L.HidePATooltip						= "禁用鼠标悬停时的法术提示框"
+L.HidePABorder						= "禁用边框"
+L.Area_TankPrivateAuras				= "副坦私人光环选项"
+L.EnableTankPrivateAuraIcons		= "在屏幕上显示副坦私人光环图标（需要坦克专精）"
+L.RIGHT								= "右"
+L.LEFT								= "左"
+L.UP								= "上"
+L.DOWN								= "下"
 
 -- Panel: Generalwarnings
 L.Tab_GeneralMessages 		= "聊天窗口消息"
@@ -265,6 +309,9 @@ L.RoleSpecAlert				= "当进入团队时，如果拾取专精与当前角色专�
 L.CheckGear					= "当你身上的装备装等低于背包装等40点时显示警告。(可能没有装备某物品或装备了低等级的任务道具或没有装备主武器)"
 L.WorldBossAlert			= "当世界Boss进入战斗后发送警告，这个信息可能是你的朋友或者同公会成员发送的。 (由于跨服，卡位面等因素，可能不准确)"
 L.WorldBuffAlert			= "在您的位面启动世界增益释放时显示警报信息和计时器。(探索服不可用)"
+L.RaidDiffChangedAlert		= "当团队副本难度改变时显示警报信息"
+L.RaidDiffChangedRaidOnly	= "仅在团队模式下，当团队副本难度改变时显示警报信息 (注意: 不转换成团队不会显示)"
+L.DungeonDiffChangedAlert	= "当地下城难度改变时显示警报信息"
 
 L.Area_BugAlerts			= "错误报告选项"
 L.BadTimerAlert				= "在聊天窗口中显示DBM检测到计时器错误且至少有1秒不正确的信息"
@@ -279,12 +326,12 @@ L.PullVoice					= "设置开怪倒计时语音"
 L.VoicePackChoice			= "设置语音报警的语音包"
 L.MissingVoicePack			= "缺少语音包 (%s)"
 L.Area_CountdownOptions		= "倒计时选项"
-L.Area_VoicePackReplace		= "语音包替换选项 (当语音包启用、静音以及需要替换)"
+L.Area_VoicePackReplace		= "语音包替换选项 (启用语音包时，哪些音效会被静音并替换)"
 L.VPReplaceNote				= "注意: 语音包永远不会更改或删除您的警报声音\n当替换语音包时，它们只是在静音状态。"
 L.ReplacesAnnounce			= "替换提示声音 (注意: 语音包除了阶段转换及小怪外很少使用)"
 L.ReplacesSADefault			= "替换默认特殊警报声音（自定义声音不会被替换）"
 L.Area_VoicePackAdvOptions	= "语音包高级选项"
-L.Area_VPLearnMore          = "了解更多关于语音包以及如何使用这些选项的信息"
+L.Area_VPLearnMore          = "了解更多语音包及这些选项的使用方法"
 L.VPLearnMore               = "|cFF73C2FBhttps://github.com/DeadlyBossMods/DBM-Retail/wiki/%5BGuide%5D-DBM-&-Voicepacks#2022-update|r"
 L.Area_BrowseOtherVP		= "获取其他语音包"
 L.BrowseOtherVPs			= "|cFF73C2FBhttps://curseforge.com/wow/addons/search?search=dbm+voice|r"
@@ -302,6 +349,7 @@ L.EventDungeonMusic			= "设置在副本内播放的音乐"
 L.EventEngageMusic			= "设置战斗过程中的音乐"
 L.Area_EventSoundsExtras	= "事件音效选项"
 L.EventMusicCombined		= "允许在副本内播放在音乐选项中的全部音效(需要/reload 才能加载)"
+L.DisableBuiltInMusic		= "禁用内置事件音乐并仅加载第三方音乐包"
 L.Area_EventSoundsFilters	= "事件音效过滤条件"
 L.EventFilterDungMythicMusic= "不要在M/M+难度下播放副本音乐"
 L.EventFilterMythicMusic	= "不要在M/M+难度下播放战斗音乐"
@@ -312,9 +360,9 @@ L.Area_ColorBytype			= "计时条分类着色指南"
 -- Panel: Color by Type
 L.Panel_ColorByType	 		= "计时条分类着色"
 L.AreaTitle_BarColors		= "计时条颜色"
-L.AreaTitle_ImpBarColors	= "导入计时条颜色 (其他用户配置的计时条颜色)"
+L.AreaTitle_ImpBarColors	= "导入计时条颜色(用户设置为重要的计时条)"
 L.BarTexture				= "计时条材质"
-L.BarStyle					= "计时条样式"
+L.BarStyle					= "计时条行为(动态表现)"
 L.BarDBM					= "DBM(有动画)"
 L.BarSimple					= "简易(没动画)"
 L.BarStartColor				= "初始颜色"
@@ -325,6 +373,7 @@ L.Slider_BarOffSetY 		= "Y 偏移: %d"
 L.Slider_BarWidth 			= "宽度: %d"
 L.Slider_BarScale 			= "缩放: %0.2f"
 L.BarSaturation				= "小型计时条的饱和度 (当大型计时条被禁用时): %0.2f"
+L.MidnightNote				= "注意：由于至暗之夜版本中的API限制，DBM无法支持不同的开始和结束颜色。仅将使用开始颜色。"
 
 --Types
 L.BarStartColorAdd			= "初始颜色 (小怪)"
@@ -353,45 +402,58 @@ L.CBTAdd					= "小怪来临"
 L.CBTAOE					= "AOE技能"
 L.CBTTargeted				= "点名技能"
 L.CBTInterrupt				= "打断技能"
-L.CBTRole					= "剧情"
+L.CBTRole					= "特殊剧情技能"
 L.CBTPhase					= "阶段转换"
-L.CBTImportant				= "重要 (自定义)"
+L.CBTImportant				= "玩家重要技能"
 --Dropdown Options
-L.SAOne						= "全局声音1 (个人)"
-L.SATwo						= "全局声音2 (所有人)"
-L.SAThree					= "全局声音3 (优先行动)"
-L.SAFour					= "全局声音4 (优先躲开)"
+--Special Announce Dropdowns
+L.SAOne						= "语音包/特殊警告声音1"
+L.SATwo						= "语音包/特殊警告声音2"
+L.SAThree					= "语音包/特殊警告声音3"
+L.SAFour					= "语音包/特殊警告声音4"
 --Timer Dropdowns
 L.ColorDropGeneric			= "通用技能配色"
-L.ColorDrop1				= "小怪来临配色"
-L.ColorDrop2				= "AOE技能配色"
-L.ColorDrop3				= "点名技能配色"
-L.ColorDrop4				= "打断技能配色"
-L.ColorDrop5				= "剧情配色"
-L.ColorDrop6				= "阶段转换配色"
-L.CDDImportant1				= "重要 1 配色"
-L.CDDImportant2				= "重要 2 配色"
+L.ColorDrop1				= "小怪来临 配色1"
+L.ColorDrop2				= "AOE技能 配色2"
+L.ColorDrop3				= "点名技能 配色3"
+L.ColorDrop4				= "打断技能 配色4"
+L.ColorDrop5				= "剧情 配色5"
+L.ColorDrop6				= "阶段转换 配色6"
+L.CDDImportant1				= "重要 配色1"
+L.CDDImportant2				= "重要 配色2"
 --Countdown Dropdowns
 L.CVoiceOne					= "全局倒数 1"
 L.CVoiceTwo					= "全局倒数 2"
 L.CVoiceThree				= "全局倒数 3"
 
 -- Panel: Bar Appearance
-L.Panel_Appearance	 		= "计时条设置"
-L.Panel_Behavior	 		= "计时条特性"
+L.Panel_Appearance	 		= "计时条外观"
+L.Panel_Behavior	 		= "计时条动作"
 L.AreaTitle_BarSetup		= "计时条综合设置"
 L.AreaTitle_Behavior		= "计时条特性设置"
 L.AreaTitle_BarSetupSmall 	= "小型计时条设置"
 L.AreaTitle_BarSetupHuge	= "大型计时条设置"
+L.AreaTitle_BarSetupVariance	= "差异计时条设置"
 L.EnableHugeBar 			= "开启大型计时条（2号计时条）"
+L.EnableVarianceBar 		= "开启差异计时条"
+L.VarianceColor				= "差异颜色"
+L.VarianceTransparency		= "计时条透明度: %0.1f"
+L.VarianceTimerTextBehavior	= "设置可变计时条行为"
+L.ZeroatWindowEnds			= "文本在CD结束时归零"
+L.ZeroatWindowStartPause	= "文本在CD结束时归零并暂停T"
+L.ZeroatWindowStartRestart	= "文本在CD结束时归零并重复"
+L.ZeroatWindowStartNeg		= "文本在CD结束时归零并变为负数"--Default
 L.BarIconLeft 				= "左侧图标"
 L.BarIconRight 				= "右侧图标"
+L.BarIconPosition			= "图标位置"
 L.ExpandUpwards				= "快消失的计时条在上"
 L.FillUpBars				= "填充计时条"
 L.ClickThrough				= "禁用鼠标点击事件（允许你点击计时条后面的目标）"
 L.Bar_Decimal				= "%d 秒以内显示小数点"
 L.Bar_Alpha					= "透明度: %0.1f"
 L.Bar_EnlargeTime			= "在 %d 秒后计时条变大"
+L.Bar_AppearTime			= "隐藏 %d 秒之外的计时条"--Used for when hidden bars show on the small bar anchor
+L.Bar_HideLongBars			= "隐藏计时条，直到小于阈值"
 L.BarSpark					= "计时条闪光"
 L.BarFlash					= "快走完时闪动"
 L.BarSort					= "按剩余时间排序"
@@ -406,6 +468,11 @@ L.KeepBar					= "保持计时条显示直到技能被释放"
 L.KeepBar2					= "(当被模组支持时)"
 L.FadeBar					= "隐藏超出技能范围的计时条"
 L.BarSkin					= "计时条皮肤"
+L.InlineIconsDropdown		= "通报图标样式"
+L.SingleLargeIcon			= "一个大图标"
+L.DoubleLargeIcons			= "两个大图标"
+L.DoubleInlineIcons			= "全部大图标"
+L.StackedMiniIcons			= "堆叠小图标"
 
 -- Panel: Pull, Break, Combat
 L.Panel_PullBreakCombat				= "开怪选项"
@@ -419,6 +486,10 @@ L.Area_BlizzFiltersSetup	= "暴雪信息过滤指南"
 
 -- Panel: Toggle DBM Features
 L.Panel_SpamFilter			= "关闭DBM功能"
+
+L.Area_Global_Toggles				= "全局功能开关"
+L.NoWarnings						= "完全关闭DBM警告"
+L.NoTimers							= "完全关闭DBM计时器"
 
 L.Area_SpamFilter_SpecFeatures		= "通告功能"
 L.SpamBlockNoShowAnnounce			= "不为那些不那么重要的通告显示文字和播放语音"
@@ -435,11 +506,12 @@ L.SpamBlockNoShowEventTimers		= "不显示事件计时条（角色扮演，Boss�
 L.SpamBlockNoShowUTimers			= "不显示用户自定义生成的计时条(Custom/Pull/Break)"
 L.SpamBlockNoCountdowns				= "不要播放倒计时语音"
 
-L.Area_SpamFilter_Nameplates		= "姓名版功能"
+L.Area_SpamFilter_Nameplates		= "姓名板功能"
 L.SpamBlockNoNameplate				= "不为特殊Boss机制显示姓名面板技能图标（例如敌对目标上的buff和debuff）"
 L.SpamBlockNoNameplateCD			= "不为技能冷却计时器显示姓名面板技能图标"
 L.SpamBlockNoNameplateCasts			= "不为技能施放计时器显示姓名面板技能图标"
 L.SpamBlockNoBossGUIDs				= "不为在使用混合计时条技能冷却计时器显示姓名面板技能图标\n(包括姓名版和普通动作条。通常适用于副本Boss)"
+L.AlwaysKeepNPs						= "保持已过期的计时器冷却计时器图标可见，直到重新施放技能"
 
 L.Area_SpamFilter_Misc		= "其他功能"
 L.SpamBlockNoSetIcon		= "不在目标上设定标记"
@@ -523,7 +595,7 @@ L.Area_HideBlizzard					= "隐藏游戏自带提示选项"
 L.HideBossEmoteFrame				= "Boss 战斗中隐藏Boss表情框体"
 L.HideWatchFrame					= "在没有成就追踪的情况下，Boss战斗中隐藏任务追踪框体"
 L.HideQuestTooltips					= "Boss 战斗中隐藏鼠标提示窗体中的任务进度"
-L.HideTooltips						= "Boss 战斗中完全隐藏鼠标提示窗体"
+L.HideBlizzardTimeline				= "Boss 战斗中隐藏暴雪团队时间线"
 
 -- Panel: Raid Leader Controls
 L.Tab_RLControls					= "团队队长控制项"
@@ -576,6 +648,7 @@ L.Panel_Range				= "距离框"
 
 -- Panel: Nameplate
 L.Panel_Nameplates			= "姓名板"
+L.Plater_Config				= "Open Plater Config"
 L.Area_NPStyle				= "样式(注意：仅在DBM管理姓名版时配置。)"
 L.NPAuraText				= "在姓名版图标上显示计时器"
 L.NPAuraSize				= "技能图标大小 (比例): %d"
@@ -625,7 +698,7 @@ L.DevModPanelExplanation			= [[欢迎来到此模组的开发和测试模式。
 
 L.TimewarpSetting					= "时间扭曲：%dx"
 L.TimewarpDynamic					= "时间扭曲：动态 (最快)"
-L.TestSupportArea					= "模组爱如选项"
+L.TestSupportArea					= "模组载入选项"
 L.ModNotLoadedWithTests				= "警告：本模组尚加载完整的支持测试。如果模组直接调用 UnitHealth()或UnitName()之类的函数，将不会工作正确，一般是与目标的生命值、能量或者目标有关。"
 L.ModLoadedWithTests				= "模组当前载入了测试支持，因为至少有一个插件启动了测试模式。"
 L.AlwaysLoadModWithTests			= "总是载入此模组的测试模式 (轻微延长加载时间)"
@@ -645,6 +718,10 @@ L.LocalImportDone					= "在Transcriptor中导入了 %d 个 logs，包括 %d 场
 L.Parsing							= "分析中..."
 L.SelectLogDropdown					= "选择战斗"
 L.CreateTest						= "创建测试"
+L.ExportTest						= "输出测试"
+L.ExportedTest						= "测试已输出，一共%d行 (过滤了 %.1f%%)."
+L.ExportedTestFailedAnon			= "警告: 日志匿名化失败，发现 %d 个非匿名字符串（详细信息见聊天框架和输出）。"
+L.ExportTestFailedNonAnonString		= "警告: 字符串 %q 看上去非匿名"
 L.CreatedTest						= "为 %d 个事件建立了测试，用时 %.1f 秒。"
 L.NoLogsFound						= "Transcriptor 的导入不包含任何战斗数据。"
 L.NoTestDataAvailable				= "无可用测试数据"
@@ -665,10 +742,15 @@ L.Queued							= "队列中"
 L.Running							= "运行中"
 L.Failed							= "失败"
 L.ShowReport						= "显示报告"
-L.ShowDiff							= "显示区别"
 L.ShowErrors						= "显示错误"
 L.TestModEntry						= "[测试环境] %s"
 L.EnterTestMode						= "测试模式"
 L.SkipPhase							= "转跳至下一阶段"
 
 L.AnonymizeTest						= "将玩家姓名和GUID匿名"
+L.ShowThisTestEverywhere			= "在每个MOD中显示此测试"
+L.SaveThisTest						= "保存此测试记录"
+
+L.BossModTColor						= "条颜色"
+L.BossModCVoice						= "倒数语音"
+L.BossModSWSound					= "警报声音"

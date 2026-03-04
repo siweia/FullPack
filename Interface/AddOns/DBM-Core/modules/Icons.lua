@@ -79,7 +79,7 @@ function bossModPrototype:SetIcon(target, icon, timer, ignoreOld)
 			SetRaidTarget(uId, self.iconRestore[uId] and icon == 0 and self.iconRestore[uId] or icon)
 		end
 		--schedule restoring old icon if timer enabled.
-		if timer then
+		if timer and timer > 0 then
 			self:ScheduleMethod(timer, "SetIcon", target, 0)
 		end
 	end
@@ -151,6 +151,7 @@ do
 				tinsert(iconUnitTable[scanId], uId)
 			end
 			self:Unschedule(SetIconByTable)
+			self:Unschedule(clearIconTable, scanId)
 			if maxIcon and iconSet[scanId] == maxIcon then
 				SetIconByTable(self, startIcon, descendingIcon, returnFunc, scanId)
 			elseif self:LatencyCheck() then--lag can fail the icons so we check it before allowing.
@@ -283,6 +284,7 @@ do
 				tinsert(iconUnitTable[scanId], uId)
 			end
 			self:Unschedule(SetIconBySortedTable)
+			self:Unschedule(clearIconTable, scanId)
 			if maxIcon and iconSet[scanId] == maxIcon then
 				SetIconBySortedTable(self, sortType, startIcon, descendingIcon, returnFunc, scanId)
 			elseif self:LatencyCheck() then--lag can fail the icons so we check it before allowing.

@@ -20,6 +20,7 @@ local test = private:GetPrototype("DBMTest")
 local yellPrototype = private:GetPrototype("Yell")
 local mt = {__index = yellPrototype}
 local voidForm = DBM:GetSpellName(194249)
+local SendChatMessage = C_ChatInfo.SendChatMessage or SendChatMessage
 
 ---@param self DBMMod
 local function newYell(self, yellType, spellId, yellText, optionDefault, optionName, chatType)
@@ -62,6 +63,7 @@ local function newYell(self, yellType, spellId, yellText, optionDefault, optionN
 			spellName = spellName,
 			spellId = spellId,
 			text = displayText or yellText,
+			customText = yellText and true or false,
 			mod = self,
 			chatType = chatType,
 			yellType = yellType
@@ -89,11 +91,15 @@ function yellPrototype:Yell(...)
 	end
 	--If type is icon yell but no icon exists, strip icon from text
 	local alteredText--We don't want to alter the objects real text, just temp alter it for this call
-	if not ... and (self.yellType == "position" or self.yellType == "shortposition" or self.yellType == "iconfade") then
+	if not ... and (self.yellType == "position" or self.yellType == "shortposition" or self.yellType == "iconfade") and not self.customText then
 		alteredText = L.AUTO_YELL_ANNOUNCE_TEXT[self.yellType.."noicon"]:format(self.spellName)
 	end
 	local text = stringUtils.pformat(alteredText or self.text, ...)
 	test:Trace(self.mod, "ShowYell", self, text) -- Trace before actually showing to not run into the IsInInstance() filter while testing
+	if DBM:IsPostMidnight() then
+		--Post midnight yell restrictions in instances
+		return
+	end
 	if not IsInInstance() then--as of 8.2.5+, forbidden in outdoor world
 		DBM:Debug("WARNING: A mod is still trying to call chat SAY/YELL messages outdoors, FIXME")
 		return
@@ -116,6 +122,10 @@ function yellPrototype:Say(...)
 	end
 	local text = stringUtils.pformat(self.text, ...)
 	test:Trace(self.mod, "ShowYell", self, text) -- Trace before actually showing to not run into the IsInInstance() filter while testing
+	if DBM:IsPostMidnight() then
+		--Post midnight yell restrictions in instances
+		return
+	end
 	if not IsInInstance() then--as of 8.2.5+, forbidden in outdoor world
 		DBM:Debug("WARNING: A mod is still trying to call chat SAY/YELL messages outdoors, FIXME")
 		return

@@ -102,6 +102,14 @@ local challengeModeIds = {
 	[505] = 2662, -- The Dawnbreaker
 	[506] = 2661, -- Cinderbrew Meadery
 	[507] = 670, -- Grim Batol
+	[525] = 2773, -- Operation: Floodgate
+	[541] = 725, -- The Stonecore
+	[542] = 2830, -- Eco-Dome Al'dani
+	[556] = 658, -- Pit of Saron
+	[557] = 2805, -- Windrunner Spire
+	[558] = 2811, -- Magisters' Terrace
+	[559] = 2915, -- Nexus-Point Xenas
+	[560] = 2874, -- Maisara Caverns
 }
 
 do
@@ -220,7 +228,7 @@ do
 		---@class DBMPopupFrame: Frame, BackdropTemplate
 		popupFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 		popupFrame:SetFrameStrata("DIALOG")
-		popupFrame:SetFrameLevel(popupFrame:GetFrameLevel() + 10)
+		popupFrame:SetFrameLevel(_G["DBM_GUI_OptionsFrame"]:GetFrameLevel() + 10)
 		popupFrame:SetSize(512, 512)
 		popupFrame:SetPoint("CENTER")
 		popupFrame.backdropInfo = {
@@ -459,35 +467,37 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 	if isTestView then
 		extraOffset = extraOffset + DBM_GUI:AddModTestOptionsAbove(panel, mod)
 	end
-	local iconstat = panel.frame:CreateFontString("DBM_GUI_Mod_Icons" .. mod.localization.general.name, "ARTWORK")
-	iconstat:SetPoint("TOP", panel.frame, 0, -10 - extraOffset)
-	iconstat:SetFontObject(GameFontNormal)
-	iconstat:SetText(L.IconsInUse)
-	for i = 1, 8 do
-		local icon = panel.frame:CreateTexture()
-		icon:SetTexture(137009) -- "Interface\\TargetingFrame\\UI-RaidTargetingIcons.blp"
-		icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26 - extraOffset)
-		icon:SetSize(16, 16)
-		if not mod.usedIcons or not mod.usedIcons[i] then
-			icon:SetAlpha(0.25)
-			icon:SetDesaturated(true)
-		end
-		if		i == 1 then		icon:SetTexCoord(0,		0.25,	0,		0.25)
-		elseif	i == 2 then		icon:SetTexCoord(0.25,	0.5,	0,		0.25)
-		elseif	i == 3 then		icon:SetTexCoord(0.5,	0.75,	0,		0.25)
-		elseif	i == 4 then		icon:SetTexCoord(0.75,	1,		0,		0.25)
-		elseif	i == 5 then		icon:SetTexCoord(0,		0.25,	0.25,	0.5)
-		elseif	i == 6 then		icon:SetTexCoord(0.25,	0.5,	0.25,	0.5)
-		elseif	i == 7 then		icon:SetTexCoord(0.5,	0.75,	0.25,	0.5)
-		elseif	i == 8 then		icon:SetTexCoord(0.75,	1,		0.25,	0.5)
---		elseif	i == 9 then		icon:SetTexCoord(0,		0.25,	0.5,	0.75)
---		elseif	i == 10 then	icon:SetTexCoord(0.25,	0.5,	0.5,	0.75)
---		elseif	i == 11 then	icon:SetTexCoord(0.5,	0.75,	0.5,	0.75)
---		elseif	i == 12 then	icon:SetTexCoord(0.75,	1,		0.5,	0.75)
---		elseif	i == 13 then	icon:SetTexCoord(0,		0.25,	0.75,	1)
---		elseif	i == 14 then	icon:SetTexCoord(0.25,	0.5,	0.75,	1)
---		elseif	i == 15 then	icon:SetTexCoord(0.5,	0.75,	0.75,	1)
---		elseif	i == 16 then	icon:SetTexCoord(0.75,	1,		0.75,	1)
+	if not DBM:IsPostMidnight() then
+		local iconstat = panel.frame:CreateFontString("DBM_GUI_Mod_Icons" .. mod.localization.general.name, "ARTWORK")
+		iconstat:SetPoint("TOP", panel.frame, 0, -10 - extraOffset)
+		iconstat:SetFontObject(GameFontNormal)
+		iconstat:SetText(L.IconsInUse)
+		for i = 1, 8 do
+			local icon = panel.frame:CreateTexture()
+			icon:SetTexture(137009) -- "Interface\\TargetingFrame\\UI-RaidTargetingIcons.blp"
+			icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26 - extraOffset)
+			icon:SetSize(16, 16)
+			if not mod.usedIcons or not mod.usedIcons[i] then
+				icon:SetAlpha(0.25)
+				icon:SetDesaturated(true)
+			end
+			if		i == 1 then		icon:SetTexCoord(0,		0.25,	0,		0.25)
+			elseif	i == 2 then		icon:SetTexCoord(0.25,	0.5,	0,		0.25)
+			elseif	i == 3 then		icon:SetTexCoord(0.5,	0.75,	0,		0.25)
+			elseif	i == 4 then		icon:SetTexCoord(0.75,	1,		0,		0.25)
+			elseif	i == 5 then		icon:SetTexCoord(0,		0.25,	0.25,	0.5)
+			elseif	i == 6 then		icon:SetTexCoord(0.25,	0.5,	0.25,	0.5)
+			elseif	i == 7 then		icon:SetTexCoord(0.5,	0.75,	0.25,	0.5)
+			elseif	i == 8 then		icon:SetTexCoord(0.75,	1,		0.25,	0.5)
+--			elseif	i == 9 then		icon:SetTexCoord(0,		0.25,	0.5,	0.75)
+--			elseif	i == 10 then	icon:SetTexCoord(0.25,	0.5,	0.5,	0.75)
+--			elseif	i == 11 then	icon:SetTexCoord(0.5,	0.75,	0.5,	0.75)
+--			elseif	i == 12 then	icon:SetTexCoord(0.75,	1,		0.5,	0.75)
+--			elseif	i == 13 then	icon:SetTexCoord(0,		0.25,	0.75,	1)
+--			elseif	i == 14 then	icon:SetTexCoord(0.25,	0.5,	0.75,	1)
+--			elseif	i == 15 then	icon:SetTexCoord(0.5,	0.75,	0.75,	1)
+--			elseif	i == 16 then	icon:SetTexCoord(0.75,	1,		0.75,	1)
+			end
 		end
 	end
 
@@ -497,9 +507,9 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 	reset:SetScript("OnClick", function()
 		DBM:LoadModDefaultOption(mod)
 	end)
-	if not isTestView then
+	if not isTestView and not DBM:IsPostMidnight() then
 		local playground = panel:CreateButton(L.EnterTestMode, 155, 28, nil, GameFontNormalSmall)
-		playground.myheight = 40
+		playground.myheight = 0
 		playground:SetPoint("TOPLEFT", reset, "BOTTOMLEFT", 0, -2)
 		playground:SetScript("OnClick", function()
 			mod.showTestUI = true
@@ -513,8 +523,6 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 	button:SetScript("OnClick", function()
 		mod:Toggle()
 	end)
-	button.textObj:ClearAllPoints()
-	button.textObj:SetPoint("TOPLEFT", button, "TOPRIGHT", 0, 2)
 
 	if mod.addon then
 		for spellID, options in getmetatable(mod.groupOptions).__pairs(mod.groupOptions) do
@@ -598,7 +606,7 @@ local function GetSpecializationGroup()
 		if MAX_TALENT_TABS then
 			for i=1, MAX_TALENT_TABS do
 				if ( i <= numTabs ) then
-					local _, _, pointsSpent = GetTalentTabInfo(i)
+					local _, _, _, _, pointsSpent = GetTalentTabInfo(i)
 					if pointsSpent > highestPointsSpent then
 						highestPointsSpent = pointsSpent
 						currentSpecGroup = i
@@ -660,11 +668,14 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 			DBM:CopyAllModOption(addon.modId, name, tonumber(profile))
 			C_Timer.After(0.05, refresh)
 		end, 100)
-		copyModProfile:SetPoint("TOPLEFT", -7, -54)
+		local isNewDropdown = copyModProfile.mytype == "dropdown2"
+		copyModProfile:SetPoint("TOPLEFT", isNewDropdown and 15 or -7, -54)
 		copyModProfile:SetScript("OnShow", function()
 			copyModProfile.value = nil
 			copyModProfile.text = nil
-			_G[copyModProfile:GetName() .. "Text"]:SetText("")
+			if not isNewDropdown then
+				_G[copyModProfile:GetName() .. "Text"]:SetText("")
+			end
 		end)
 
 		local copyModSoundProfile = modProfileArea:CreateDropdown(L.SelectModProfileCopySound, modProfileDropdown, nil, nil, function(value)
@@ -677,7 +688,9 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 		copyModSoundProfile:SetScript("OnShow", function()
 			copyModSoundProfile.value = nil
 			copyModSoundProfile.text = nil
-			_G[copyModSoundProfile:GetName() .. "Text"]:SetText("")
+			if not isNewDropdown then
+				_G[copyModSoundProfile:GetName() .. "Text"]:SetText("")
+			end
 		end)
 
 		local copyModNoteProfile = modProfileArea:CreateDropdown(L.SelectModProfileCopyNote, modProfileDropdown, nil, nil, function(value)
@@ -690,7 +703,9 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 		copyModNoteProfile:SetScript("OnShow", function()
 			copyModNoteProfile.value = nil
 			copyModNoteProfile.text = nil
-			_G[copyModNoteProfile:GetName() .. "Text"]:SetText("")
+			if not isNewDropdown then
+				_G[copyModNoteProfile:GetName() .. "Text"]:SetText("")
+			end
 		end)
 
 		local deleteModProfile = modProfileArea:CreateDropdown(L.SelectModProfileDelete, modProfileDropdown, nil, nil, function(value)
@@ -699,11 +714,13 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 			C_Timer.After(0.05, refresh)
 		end, 100)
 		deleteModProfile.myheight = 60
-		deleteModProfile:SetPoint("TOPLEFT", copyModSoundProfile, "BOTTOMLEFT", 0, -10)
+		deleteModProfile:SetPoint("TOPLEFT", copyModSoundProfile, "BOTTOMLEFT", 0, isNewDropdown and -15 or -10)
 		deleteModProfile:SetScript("OnShow", function()
 			deleteModProfile.value = nil
 			deleteModProfile.text = nil
-			_G[deleteModProfile:GetName() .. "Text"]:SetText("")
+			if not isNewDropdown then
+				_G[deleteModProfile:GetName() .. "Text"]:SetText("")
+			end
 		end)
 
 		function refresh()
@@ -787,7 +804,7 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 	area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -270 or -25)
 
 	local statOrder = {
-		"follower", "story", "lfr", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker"
+		"follower", "story", "lfr", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker", "duos"
 	}
 
 	for _, mod in ipairs(DBM.Mods) do
@@ -855,8 +872,8 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 			end
 
 			local statTypes = {
-				follower	= L.FOLLOWER,--no PLAYER_DIFFICULTY entry yet
-				story		= L.STORY,--no PLAYER_DIFFICULTY entry yet
+				follower	= DBM_CORE_L.FOLLOWER,--no PLAYER_DIFFICULTY entry yet
+				story		= DBM_CORE_L.STORY,--no PLAYER_DIFFICULTY entry yet
 				lfr25		= PLAYER_DIFFICULTY3,
 				normal		= mod.addon.minExpansion < 5 and not DBM:IsSeasonal("SeasonOfDiscovery") and RAID_DIFFICULTY1 or PLAYER_DIFFICULTY1,
 				normal25	= RAID_DIFFICULTY2,
@@ -864,7 +881,8 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 				heroic25	= RAID_DIFFICULTY4,
 				mythic		= PLAYER_DIFFICULTY6,
 				challenge	= (mod.addon.minExpansion < 6 and not mod.upgradedMPlus) and CHALLENGE_MODE or PLAYER_DIFFICULTY6 .. "+",
-				timewalker	= PLAYER_DIFFICULTY_TIMEWALKER
+				timewalker	= PLAYER_DIFFICULTY_TIMEWALKER,
+				duos		= DBM_CORE_L.DUOS
 			}
 			if (mod.addon.type == "PARTY" or mod.addon.type == "SCENARIO") or -- Fixes dungeons being labled incorrectly
 				(mod.addon.type == "RAID" and statSplit["timewalker"]) or -- Fixes raids with timewalker being labled incorrectly
@@ -915,18 +933,6 @@ end
 do
 	local subTabId = 0
 
-	local cachedAddOns = {}
-	local C_AddOns = {
-		DoesAddOnExist = C_AddOns.DoesAddOnExist or function(addon)
-			if not cachedAddOns then
-				for i = 1, GetNumAddOns() do ---@diagnostic disable-line:deprecated
-				cachedAddOns[GetAddOnInfo(i)] = true ---@diagnostic disable-line:deprecated
-				end
-			end
-			return cachedAddOns[addon]
-		end,
-	}
-
 	local currentSeasons = {}
 	function UpdateCurrentSeason()
 		if not C_ChallengeMode or not C_ChallengeMode.GetMapTable then
@@ -964,28 +970,13 @@ do
 				end
 			end
 		end
-		if C_AddOns.DoesAddOnExist("DBM-Affixes") then
-			local affixAddon
-			for _, addon in ipairs(DBM.AddOns) do
-				if addon.modId == "DBM-Affixes" then
-					affixAddon = addon
-					break
-				end
-			end
-			if affixAddon then
-				currentSeasons["MPlusAffixes"] = seasonCategory:CreateNewPanel("MPlusAffixes", "PARTY", false, affixAddon.name, false, "DBM-Affixes", true)
-				hasAnyMod = true
-			end
-		end
 		if not hasAnyMod then
 			seasonCategoryTab.hidden = true
 		end
 	end
 
-    local expansions = {"CLASSIC", "BC", "WOTLK", "CATA", "MOP", "WOD", "LEG", "BFA", "SHADOWLANDS", "DRAGONFLIGHT", "WARWITHIN"}
+    local expansions = {"CLASSIC", "BC", "WOTLK", "CATA", "MOP", "WOD", "LEG", "BFA", "SHADOWLANDS", "DRAGONFLIGHT", "WARWITHIN", "MIDNIGHT"}
 
-	-- WotLK compat, search for "local C_AddOns" in DBM-Core.lua for more details
-	local IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded or IsAddOnLoaded ---@diagnostic disable-line:deprecated
 	function DBM_GUI:UpdateModList()
 		for _, addon in ipairs(DBM.AddOns) do
 			if not addon.panel then
@@ -996,11 +987,8 @@ do
 				end
 				-- Create a Panel for "Naxxramas" "Eye of Eternity" ...
 				addon.panel = DBM_GUI:CreateNewPanel(addon.name or "Error: No-modId", addon.type, false, customName, true, addon.modId)
-				if addon.modId == "DBM-Affixes" then -- If affixes, hide second general entry (as it's under Current Season)
-					DBM_GUI.tabs[3].buttons[#DBM_GUI.tabs[3].buttons].hidden = true
-				end
 
-				if not IsAddOnLoaded(addon.modId) then
+				if not C_AddOns.IsAddOnLoaded(addon.modId) then
 					local autoLoadFrame = CreateFrame("Frame", nil, addon.panel.frame)
 					autoLoadFrame:SetScript("OnShow", function()
 						if not addon.attemptedAutoLoad then
@@ -1025,7 +1013,7 @@ do
 				end
 			end
 
-			if addon.panel and addon.subTabs and IsAddOnLoaded(addon.modId) then
+			if addon.panel and addon.subTabs and C_AddOns.IsAddOnLoaded(addon.modId) then
 				if not addon.subPanels then
 					addon.subPanels = {}
 				end

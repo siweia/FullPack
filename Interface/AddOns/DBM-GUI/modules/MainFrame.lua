@@ -8,7 +8,6 @@ local DBM_GUI = DBM_GUI
 
 local DBM = DBM
 local CreateFrame = CreateFrame
-local IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 local frame = _G["DBM_GUI_OptionsFrame"]
 table.insert(_G["UISpecialFrames"], frame:GetName())
 frame:SetFrameStrata("DIALOG")
@@ -44,7 +43,9 @@ frame:SetScript("OnShow", function(self)
 	end
 end)
 frame:SetScript("OnHide", function()
-	_G["DBM_GUI_DropDown"]:Hide()
+	if _G["DBM_GUI_DropDown"] then
+		_G["DBM_GUI_DropDown"]:Hide()
+	end
 end)
 frame:SetScript("OnDragStart", frame.StartMoving)
 frame:SetScript("OnDragStop", function(self)
@@ -57,13 +58,14 @@ end)
 frame:SetScript("OnSizeChanged", function(self)
 	self:UpdateMenuFrame()
 	if DBM_GUI.currentViewing then
-		self:DisplayFrame(DBM_GUI.currentViewing)
+		self:DisplayFrame(DBM_GUI.currentViewing, false)
 	end
 end)
 frame.tabs = {}
 
+CreateFrame("Button", "$parentClosePanelButton", frame, "UIPanelCloseButtonDefaultAnchors")
+
 if not isRetail then
-	CreateFrame("Button", "$parentClosePanelButton", frame, "UIPanelCloseButtonDefaultAnchors")
 	local titleBg = frame:CreateTexture("$parentTitleBga", "BACKGROUND", "_UI-Frame-TitleTileBg")
 	titleBg:ClearAllPoints()
 	titleBg:SetPoint("TOPLEFT", 8, -3)
@@ -156,7 +158,7 @@ frameWebsite:SetText(L.Website)
 local frameWebsiteButtonA = CreateFrame("Frame", nil, frame)
 frameWebsiteButtonA:SetAllPoints(frameWebsite)
 frameWebsiteButtonA:SetScript("OnMouseUp", function()
-	DBM:ShowUpdateReminder(nil, nil, CL.COPY_URL_DIALOG, "https://discord.gg/deadlybossmods")
+	DBM:ShowUpdateReminder(nil, nil, CL.COPY_URL_DIALOG, "https://allmylinks.com/mysticalos")
 end)
 
 ---@class DBM_GUI_OptionsFrameDBMOptions: Frame
@@ -183,6 +185,11 @@ frame:CreateTab(worldBossOptions)
 local otherTab = CreateFrame("Frame", "$parentOtherOptions", frame)
 otherTab.name = L.OTabPlugins
 frame:CreateTab(otherTab)
+
+---@class DBM_GUI_OptionsFrameToolsOptions: Frame
+local toolsTab = CreateFrame("Frame", "$parentToolsOptions", frame)
+toolsTab.name = L.OTabTools
+frame:CreateTab(toolsTab)
 
 ---@class DBMGUIFrameWrapper: Frame, BackdropTemplate
 local frameWrapper = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -228,7 +235,7 @@ function frame:LoadAndShowFrame(subFrame)
 	if not subFrame.isLoaded then
 		if subFrame.isSeason then
 			---@diagnostic disable-next-line: deprecated
-			if not IsAddOnLoaded(subFrame.addonId) then
+			if not C_AddOns.IsAddOnLoaded(subFrame.addonId) then
 				for _, addon in ipairs(DBM.AddOns) do
 					if addon.modId == subFrame.addonId then
 						DBM:LoadMod(addon, true)
@@ -285,7 +292,7 @@ for i = 1, math.floor(UIParent:GetHeight() / 18) do
 	buttonToggle:SetScript("OnClick", function()
 		if not button.element.isLoaded and button.element.addonId then
 			---@diagnostic disable-next-line: deprecated
-			if not IsAddOnLoaded(button.element.addonId) then
+			if not C_AddOns.IsAddOnLoaded(button.element.addonId) then
 				for _, addon in ipairs(DBM.AddOns) do
 					if addon.modId == button.element.addonId then
 						DBM:LoadMod(addon, true)

@@ -12,15 +12,15 @@ DBM.Test = test
 -- Indicates whether a test is currently running.
 test.testRunning = false
 
+test.environment = "WoW" -- Overriden by DBM-Offline
+
 -- Overriden by DBM-Test once loaded.
 -- This field is intentionally set in an odd way to prevent LuaLS from suggesting this function.
 local traceField = "Trace"
 test[traceField] = function() end
 
-local LoadAddOn = _G.C_AddOns.LoadAddOn or LoadAddOn ---@diagnostic disable-line:deprecated
-
 function test:Load()
-	local loaded, err = LoadAddOn("DBM-Test")
+	local loaded, err = C_AddOns.LoadAddOn("DBM-Test")
 	if not loaded then
 		DBM:AddMsg("Failed to load DBM-Test: " .. (_G["ADDON_" .. err] or CL.UNKNOWN))
 		return loaded, err
@@ -46,6 +46,14 @@ function test:TestsLoaded()
 	return self.Registry ~= nil and #self.Registry.sortedTests > 0
 end
 
+local function checkTestRunning()
+	if not DBM.Test.testRunning or not DBM.Test.timeWarper then
+		DBM:AddMsg("No test is currently running")
+		return false
+	end
+	return true
+end
+
 function test:HandleCommand(testName, timeWarp)
 	timeWarp = timeWarp and tonumber(timeWarp:match("(%d+)"))
 	local numTestAddOnsFound = self:LoadAllTests()
@@ -61,6 +69,9 @@ function test:HandleCommand(testName, timeWarp)
 		if #self.Registry.sortedTests == 0 then
 			DBM:AddMsg("  (none)")
 		end
+		DBM:AddMsg("/dbm test freeze -- freeze a currently running test")
+		DBM:AddMsg("/dbm test resume -- resume a frozen test")
+		DBM:AddMsg("/dbm test toggle-freeze -- freeze or resume a running test")
 		DBM:AddMsg("/dbm test <name> <time warp factor> -- execute a test")
 		DBM:AddMsg("/dbm test * <time warp factor> -- run all tests")
 		DBM:AddMsg("<name> can be a prefix, e.g., /dbm test Dragonflight runs all tests for Dragonflight.")
@@ -71,6 +82,21 @@ function test:HandleCommand(testName, timeWarp)
 	elseif testName:lower() == "clear" then
 		DBM_TestResults_Export = {}
 		DBM:AddMsg("Cleared exported test results.")
+	elseif testName:lower() == "freeze" then
+		if not checkTestRunning() then
+			return
+		end
+		DBM.Test.timeWarper:Freeze()
+	elseif testName:lower() == "resume" then
+		if not checkTestRunning() then
+			return
+		end
+		DBM.Test.timeWarper:Resume()
+	elseif testName:lower() == "toggle-freeze" then
+		if not checkTestRunning() then
+			return
+		end
+		DBM.Test.timeWarper:ToggleFreeze()
 	else
 		local tests = {}
 		if testName == "*" then
@@ -91,9 +117,6 @@ function test:HandleCommand(testName, timeWarp)
 			DBM:AddMsg("Test " .. test.name .. " finished, result: " .. report:GetResult())
 			if report:GetResult() == "Success" then
 				successes = successes + 1
-			end
-			if report:HasDiff() then
-				report:ReportDiff()
 			end
 			if report:HasErrors() then
 				report:ReportErrors()

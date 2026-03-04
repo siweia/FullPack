@@ -1,10 +1,10 @@
 local mod	= DBM:NewMod(2583, "DBM-Party-WarWithin", 6, 1271)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241214043239")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(213179)
 mod:SetEncounterID(2926)
-mod:SetUsedIcons(1, 2, 3, 4)
+--mod:SetUsedIcons(1, 2, 3, 4)
 mod:SetHotfixNoticeRev(20240818000000)
 --mod:SetMinSyncRevision(20211203000000)
 mod:SetZone(2660)
@@ -13,23 +13,47 @@ mod.sendMainBossGUID = true
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(438471, true, 1)--Voracious Bite
+mod:AddCustomAlertSoundOption(438476, true, 1)--Alerting Shrill
+mod:AddCustomAlertSoundOption(438473, true, 1)--Gossamer Onslaught
+--custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(438471, nil, 5, 0)--Voracious Bite
+mod:AddCustomTimerOptions(438476, nil, 1, 0)--Alerting Shrill
+mod:AddCustomTimerOptions(438473, nil, 2, 0)--Gossamer Onslaught
+--Midnight private aura replacements
+mod:AddPrivateAuraSoundOption(439070, true, 439070, 1)
+mod:AddPrivateAuraSoundOption(434830, true, 434830, 1)--GTFO
+
+function mod:OnLimitedCombatStart()
+	if self:IsTank() then
+		self:EnableAlertOptions(438471, 539, "defensive", 2)
+	end
+	self:EnableAlertOptions(438476, 540, "mobsoon", 2)
+	self:EnableAlertOptions(438473, 541, "watchstep", 2)
+
+	self:EnableTimelineOptions(438471, 539)
+	self:EnableTimelineOptions(438476, 540)
+	self:EnableTimelineOptions(438473, 541)
+
+	self:EnablePrivateAuraSound(439070, "justrun", 2)--Hunger Fixate
+	self:EnablePrivateAuraSound(434830, "watchfeet", 8)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 438471 438476 438473",
---	"SPELL_CAST_SUCCESS",
 	"SPELL_SUMMON 439040",
 	"SPELL_AURA_APPLIED 446794 439070 436614",
 	"SPELL_AURA_APPLIED_DOSE 446794 434830"
---	"SPELL_AURA_REMOVED"
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
+--]]
 
---TODO, if higher difficulties kill adds instead of CC/control them, swap to 8-5 icons instead of 1-4
 --[[
 (ability.id = 438471 or ability.id = 438476 or ability.id = 438473) and type = "begincast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
+--[[
 local warnInsatiable						= mod:NewStackAnnounce(446794, 4)
 local warnVileWebbing						= mod:NewCountAnnounce(434830, 3, nil, nil, DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.stack:format(434830))--Player
 local warnWebWrap							= mod:NewTargetNoFilterAnnounce(436614, 2, nil, "RemoveMagic")
@@ -38,12 +62,10 @@ local specWarnAlertingShrill				= mod:NewSpecialWarningCount(438476, nil, nil, n
 local specWarnGossamerOnslaught				= mod:NewSpecialWarningDodgeCount(438473, nil, nil, nil, 2, 2)
 local specWarnVoraciousBite					= mod:NewSpecialWarningDefensive(438471, nil, nil, nil, 1, 2)
 local specWarnHunger						= mod:NewSpecialWarningRun(439070, nil, nil, nil, 1, 2)
---local yellSomeAbility						= mod:NewYell(372107)
---local specWarnGTFO						= mod:NewSpecialWarningGTFO(372820, nil, nil, nil, 1, 8)
 
 local timerVoraciousBiteCD					= mod:NewCDCountTimer(14.1, 438471, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerAlertingShrillCD					= mod:NewCDCountTimer("v38.7-40.1", 438476, nil, nil, nil, 1)--38.7-40.1
-local timerGossamerOnslaughtCD				= mod:NewVarCountTimer("v38.7-40.1", 438473, nil, nil, nil, 3)--38.7-40.1
+local timerAlertingShrillCD					= mod:NewVarCountTimer("v38.7-40.9", 438476, nil, nil, nil, 1)--38.7-40.9
+local timerGossamerOnslaughtCD				= mod:NewVarCountTimer("v38.7-40.5", 438473, nil, nil, nil, 3)--38.7-40.5
 
 mod:AddSetIconOption("SetIconOnAdds", 438476, true, 5, {1, 2, 3, 4})
 
@@ -61,10 +83,6 @@ function mod:OnCombatStart(delay)
 	timerAlertingShrillCD:Start(10-delay, 1)
 	timerGossamerOnslaughtCD:Start(30.0-delay, 1)
 end
-
---function mod:OnCombatEnd()
-
---end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
@@ -84,10 +102,10 @@ function mod:SPELL_CAST_START(args)
 			specWarnAlertingShrill:ScheduleVoice(2, "killmob")
 		end
 		timerAlertingShrillCD:Start(nil, self.vb.shrillCount+1)
-		--if time remaining on Voracious Bite is < 7.2, it's extended by this every time
-		if timerVoraciousBiteCD:GetRemaining(self.vb.biteCount+1) < 7.2 then
+		--if time remaining on Voracious Bite is < 6.9, it's extended by this every time
+		if timerVoraciousBiteCD:GetRemaining(self.vb.biteCount+1) < 6.9 then
 			local elapsed, total = timerVoraciousBiteCD:GetTime(self.vb.biteCount+1)
-			local extend = 7.2 - (total-elapsed)
+			local extend = 6.9 - (total-elapsed)
 			DBM:Debug("timerVoraciousBiteCD extended by: "..extend, 2)
 			timerVoraciousBiteCD:Update(elapsed, total+extend, self.vb.biteCount+1)
 		end
@@ -105,15 +123,6 @@ function mod:SPELL_CAST_START(args)
 		end
 	end
 end
-
---[[
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 372858 then
-
-	end
-end
---]]
 
 function mod:SPELL_SUMMON(args)
 	local spellId = args.spellId
@@ -142,30 +151,4 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
-
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 372820 and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
-		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("watchfeet")
-	end
-end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
---]]
-
---[[
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 193435 then
-
-	end
-end
---]]
-
---[[
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 74859 then
-
-	end
-end
 --]]

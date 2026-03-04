@@ -1,5 +1,5 @@
 --@curseforge-project-slug: liblatency@
-local LL = LibStub:NewLibrary("LibLatency", 2)
+local LL = LibStub:NewLibrary("LibLatency", 4)
 if not LL then return end -- No upgrade needed
 
 -- Throttle times for separate channels
@@ -26,17 +26,21 @@ local frame = LL.frame
 local next, type, error, tonumber, format, match = next, type, error, tonumber, string.format, string.match
 local Ambiguate, GetTime, GetNetStats, IsInGroup, IsInRaid = Ambiguate, GetTime, GetNetStats, IsInGroup, IsInRaid
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
-local pName = UnitName("player")
+local pName = UnitNameUnmodified("player")
 
-C_ChatInfo.RegisterAddonMessagePrefix("Lag")
-frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
-	if prefix == "Lag" and throttleTable[channel] then
+C_ChatInfo.RegisterAddonMessagePrefix("LibLTNC")
+local issecretvalue = issecretvalue or function() return false end
+frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
+	if event == "READY_CHECK" then
+		local _, _, latencyHome, latencyWorld = GetNetStats()
+		SendAddonMessage("LibLTNC", format("%d,%d", latencyHome or 0, latencyWorld or 0), IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
+	elseif not issecretvalue(msg) and prefix == "LibLTNC" and throttleTable[channel] then
 		if msg == "R" then
 			local t = GetTime()
 			if t - throttleTable[channel] > 4 then
 				throttleTable[channel] = t
 				local _, _, latencyHome, latencyWorld = GetNetStats()
-				SendAddonMessage("Lag", format("%d,%d", latencyHome or 0, latencyWorld or 0), channel)
+				SendAddonMessage("LibLTNC", format("%d,%d", latencyHome or 0, latencyWorld or 0), channel)
 			end
 			return
 		end
@@ -52,6 +56,7 @@ frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
 	end
 end)
 frame:RegisterEvent("CHAT_MSG_ADDON")
+frame:RegisterEvent("READY_CHECK")
 
 -- For automatic group handling, don't pass a channel. The order is INSTANCE_CHAT > RAID > GROUP.
 -- GUILD is not covered by auto handling.
@@ -72,7 +77,7 @@ function LL:RequestLatency(channel)
 			local t = GetTime()
 			if t - throttleSendTable[channel] > 4 then
 				throttleSendTable[channel] = t
-				SendAddonMessage("Lag", "R", channel)
+				SendAddonMessage("LibLTNC", "R", channel)
 			end
 		end
 	end

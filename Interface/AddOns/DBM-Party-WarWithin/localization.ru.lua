@@ -199,7 +199,11 @@ L:SetGeneralLocalization({
 -----------------------------
 --  Goldie Baronbottom  --
 -----------------------------
---L = DBM:GetModLocalization(2589)
+L = DBM:GetModLocalization(2589)
+
+L:SetMiscLocalization{
+	RolePlay		= "Хорошо. Значит, с работничками вы разобрались."
+}
 
 ---------
 --Trash--
@@ -211,7 +215,7 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	AGBuffs		= "Автоматический выбор диалога для активации положительных эффектов при взаимодействии с объектами профессии"
+	AGBuffs		= "Автоматически выбирать диалог для активации положительных эффектов при взаимодействии с объектами профессий"
 })
 
 -------------------------
@@ -247,4 +251,57 @@ L = DBM:GetModLocalization("CityofThreadsTrash")
 
 L:SetGeneralLocalization({
 	name =	"Трэш мобы Город Нитей"
+})
+
+-----------------------------
+--  Big M.O.M.M.A.  --
+-----------------------------
+--L = DBM:GetModLocalization(2648)
+
+-----------------------------
+--  Demolition Duo  --
+-----------------------------
+--L = DBM:GetModLocalization(2649)
+
+-----------------------------
+--  Swampface  --
+-----------------------------
+--L = DBM:GetModLocalization(2650)
+
+-----------------------------
+--  Geezle Gigazap (aka Geez nuts)  --
+-----------------------------
+--L = DBM:GetModLocalization(2651)
+
+---------
+--Trash--
+---------
+L = DBM:GetModLocalization("OperationFloodgateTrash")
+
+L:SetGeneralLocalization({
+	name =	"Трэш мобы Операция: Шлюз"
+})
+
+-----------------------------
+--  Azhiccar  --
+-----------------------------
+--L = DBM:GetModLocalization(2675)
+
+-----------------------------
+--  Taah'bat and A'wazj  --
+-----------------------------
+--L = DBM:GetModLocalization(2676)
+
+-----------------------------
+--  Soul-Scribe  --
+-----------------------------
+--L = DBM:GetModLocalization(2677)
+
+---------
+--Trash--
+---------
+L = DBM:GetModLocalization("EcoDomeAldaniTrash")
+
+L:SetGeneralLocalization({
+	name =	"Трэш мобы Заповедник Аль'дани"
 })
