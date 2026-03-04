@@ -16,7 +16,7 @@ function Support.Add(addonName, loadFunc)
 end
 
 local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
+f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", function()
     f:UnregisterAllEvents()
     f:SetScript("OnEvent", nil)

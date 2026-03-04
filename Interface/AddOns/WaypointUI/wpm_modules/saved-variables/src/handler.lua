@@ -94,6 +94,8 @@ local function Migrate(self, migrationSchema)
             storedData[migration.from] = nil
         elseif migrationType == "delete" and destinationKey then
             storedData[destinationKey] = nil
+        elseif migrationType == "execute" and migration.script then
+            migration.script(self)
         end
     end
     return self

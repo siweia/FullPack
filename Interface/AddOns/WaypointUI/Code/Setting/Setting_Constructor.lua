@@ -77,7 +77,7 @@ function WidgetMixin:OnLoad(widgetInfo, root, tab)
         local description = widgetDescription and widgetDescription.description or nil
         local imagePath = widgetDescription and widgetDescription.imagePath or nil
         local imageType = widgetDescription and widgetDescription.imageType or nil
-        self:SetInfo(name, description, imagePath, imageType)
+        self:SetData(name, description, imagePath, imageType)
     end
     self:SetIndent(widgetIndent or 0)
 end
@@ -196,7 +196,7 @@ do -- Title
         widget:parent(parent)
         Mixin(widget, WidgetMixin)
         widget:OnLoad(widgetInfo, root, tab)
-        widget:SetInfo(titleInfo.imagePath, titleInfo.text, titleInfo.subtext)
+        widget:SetData(titleInfo.imagePath, titleInfo.text, titleInfo.subtext)
 
         return widget
     end
@@ -429,11 +429,20 @@ do -- Selection Menu
         if not force and HasDBKeyValueChanged(self) == false then return end
 
         local value = self:GetLocalValue()
+
+        if self.__selectionMenuGetFunc then
+            value = self.__selectionMenuGetFunc(value)
+        end
+
         self:GetButtonSelectionMenu():SetValue(value)
     end
 
     local function SelectionMenu_OnValueChanged(self, value)
         local widget = self.__widgetRef
+
+        if widget.__selectionMenuSetFunc then
+            value = widget.__selectionMenuSetFunc(value)
+        end
 
         if widget.__lastValue == value then return end
         widget.__lastValue = value
@@ -452,6 +461,8 @@ do -- Selection Menu
         local name = widgetInfo.widgetName or ""
         local key = widgetInfo.key
         local set = widgetInfo.set
+        local selectionMenuGet = widgetInfo.widgetSelectionMenu_get
+        local selectionMenuSet = widgetInfo.widgetSelectionMenu_set
         local selectionMenuData = widgetInfo.widgetSelectionMenu_data
 
 
@@ -468,10 +479,11 @@ do -- Selection Menu
 
         buttonSelectionMenu.__widgetRef = widget
         widget.__setFunc = set
+        widget.__selectionMenuGetFunc = selectionMenuGet
+        widget.__selectionMenuSetFunc = selectionMenuSet
 
         buttonSelectionMenu:SetSelectionMenu(SettingFrame.SelectionMenu)
         buttonSelectionMenu:SetData(ResolveValueThatIsFunctionOrValue(selectionMenuData))
-        buttonSelectionMenu:SetValue(widget:GetLocalValue())
         buttonSelectionMenu:HookValueChanged(SelectionMenu_OnValueChanged)
         widget:SetRefreshHandler(SelectionMenu_Refresh)
 

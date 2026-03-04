@@ -109,7 +109,7 @@ SettingFrameAnchor:HookScript("OnShow", OnShow)
 SettingFrameAnchor:HookScript("OnHide", OnHide)
 SettingFrameAnchor:SetScript("OnEvent", RenderUI)
 CallbackRegistry.Add("WoWClient.OnUIScaleChanged", RenderUI)
-SavedVariables.OnChange(Setting_Preload.DB_GLOBAL_NAME, "PrefFont", RenderUI, 10)
+SavedVariables.OnChange(Setting_Preload.DB_GLOBAL_NAME, "fontPath", RenderUI, 10)
 
 
 

@@ -204,7 +204,7 @@ do --Button
 end
 
 do --Button (Text)
-    local RED_TEXT_COLOR = GenericEnum.UIColorRGB.NormalText
+    local RED_TEXT_COLOR = GenericEnum.UIColorRGB.Normal
     local RED_TEXT_COLOR_HIGHLIGHTED = UIKit.Define.Color_RGBA{ r = 255, g = 255, b = 255, a = 1 }
     local GRAY_TEXT_COLOR = UIKit.Define.Color_RGBA{ r = 216, g = 216, b = 216, a = 1 }
     local GRAY_TEXT_COLOR_HIGHLIGHTED = UIKit.Define.Color_RGBA{ r = 255, g = 255, b = 255, a = 1 }

@@ -1,5 +1,5 @@
 --[[
-    Copyright (C) 2024 GurliGebis
+    Copyright (C) 2024-2026 GurliGebis
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -112,14 +112,14 @@ do
         if type(key) == "table" then
             for _, key2 in ipairs(key) do
                 if callbacks[key2] then
-                    table.insert(callbacks, func)
+                    table.insert(callbacks[key2], func)
                 else
                     callbacks[key2] = { func }
                 end
             end
         else
             if callbacks[key] then
-                table.insert(callbacks, func)
+                table.insert(callbacks[key], func)
             else
                 callbacks[key] = { func }
             end
@@ -388,7 +388,6 @@ do
                  "showHoveredPOI",
                  "lootFilterUpgrades",
                  "colorWarbandBonus",
-                 "enableTaintWorkarounds",
                  "enableDebugging"
             }
 

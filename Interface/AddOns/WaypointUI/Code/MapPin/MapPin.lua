@@ -14,7 +14,6 @@ local GetUserWaypoint = C_Map.GetUserWaypoint
 local SetUserWaypoint = C_Map.SetUserWaypoint
 local ClearUserWaypoint = C_Map.ClearUserWaypoint
 local HasUserWaypoint = C_Map.HasUserWaypoint
-local GetBestMapForUnit = C_Map.GetBestMapForUnit
 local GetMapInfo = C_Map.GetMapInfo
 local GetWorldPosFromMapPos = C_Map.GetWorldPosFromMapPos
 local CreateFrame = CreateFrame
@@ -23,14 +22,6 @@ local tostring = tostring
 local format = string.format
 local pairs = pairs
 local WorldMapFrame = WorldMapFrame
-
-
-do --World Map Util
-    function MapPin.ForceWorldMapRefresh()
-        WorldMapFrame:SetMapID(GetBestMapForUnit("player"))
-        WorldMapFrame:RefreshAll()
-    end
-end
 
 local SessionData = {
     name  = nil,
@@ -43,21 +34,8 @@ local SessionData = {
 local MUTED_FLAG_MAP = {
     ["TomTom_Waypoint"]       = true,
     ["Dugis_Waypoint"]        = true,
-    ["RareScanner_Waypoint"]  = true,
     ["SilverDragon_Waypoint"] = true
 }
-
-local function ApplySavedNavigation(saved)
-    if not saved then return SessionData end
-
-    SessionData.name = saved.name
-    SessionData.mapID = saved.mapID
-    SessionData.x = saved.x
-    SessionData.y = saved.y
-    SessionData.flags = saved.flags
-
-    return SessionData
-end
 
 local function PlayUserNavigationAudio()
     local Setting_CustomAudio = Config.DBGlobal:GetVariable("AudioCustom")
@@ -100,11 +78,16 @@ end
 
 function MapPin.GetUserNavigation()
     local savedWay = Config.DBLocal:GetVariable("slashWayCache")
-    local navigation = ApplySavedNavigation(savedWay)
-    if not savedWay then
-        Config.DBLocal:SetVariable("slashWayCache", navigation)
+
+    if savedWay then
+        SessionData.name = savedWay.name
+        SessionData.mapID = savedWay.mapID
+        SessionData.x = savedWay.x
+        SessionData.y = savedWay.y
+        SessionData.flags = savedWay.flags
     end
-    return navigation
+
+    return SessionData
 end
 
 function MapPin.NewUserNavigation(name, mapID, x, y, flags)
@@ -184,10 +167,10 @@ function MapPin.ToggleSuperTrackedPinDisplay(shown)
 end
 
 function MapPin.ValidateSuperTrackedPinDisplay(_, event)
-    if event == "USER_WAYPOINT_UPDATED" then
-        if not MapPin.IsUserNavigationTracked() then
-            MapPin.ClearUserNavigation(true)
-        end
+    if event == "USER_WAYPOINT_UPDATED" and (C_SuperTrack.GetHighestPrioritySuperTrackingType() == Enum.SuperTrackingType.UserWaypoint) and not MapPin.IsUserNavigationTracked() then
+        MapPin.ClearUserNavigation(true)
+    elseif event == "SUPER_TRACKING_CHANGED" and C_SuperTrack.GetHighestPrioritySuperTrackingType() ~= Enum.SuperTrackingType.UserWaypoint then
+        MapPin.ClearUserNavigation(true)
     end
 
     for flag, _ in pairs(MUTED_FLAG_MAP) do

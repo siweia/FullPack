@@ -16,8 +16,8 @@ local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 env.NAME = "Waypoint UI"
 env.ICON = Path.Root .. "\\Art\\Icon\\Icon.png"
 env.ICON_ALT = Path.Root .. "\\Art\\Icon\\IconAltLight.png"
-env.VERSION_STRING = "1.3.7"
-env.VERSION_NUMBER = 010307
+env.VERSION_STRING = "1.3.9"
+env.VERSION_NUMBER = 010309
 env.DEBUG_MODE = false
 
 
@@ -65,6 +65,7 @@ do
     ---@format enable
     local DB_GLOBAL_DEFAULTS = {
         lastLoadedVersion                      = nil,
+        fontPath                               = nil,
 
         WaypointSystemType                     = 1,
         DistanceThresholdPinpoint              = 325,
@@ -72,7 +73,6 @@ do
         AlwaysShow                             = false,
         RightClickToClear                      = true,
         BackgroundPreview                      = true,
-        PrefFont                               = 1,
         PrefMetric                             = false,
         WaypointScale                          = 1,
         WaypointScaleMin                       = 0.25,
@@ -82,7 +82,8 @@ do
         WaypointDistanceText                   = true,
         WaypointDistanceTextType               = 1,
         WaypointDistanceTextScale              = 1,
-        WaypointDistanceTextAlpha              = 0.7,
+        WaypointDistanceTextAlpha              = 1,
+        WaypointDistanceSubtextAlpha           = 0.7,
         PinpointAllowInQuestArea               = false,
         PinpointScale                          = 1,
         PinpointInfo                           = true,
@@ -116,7 +117,7 @@ do
         TomTomAutoReplaceWaypoint              = true,
         DugisSupportEnabled                    = true,
         DugisAutoReplaceWaypoint               = true,
-        SilverDragonSupportEnabled             = false,
+        SilverDragonSupportEnabled             = false
     }
     local DB_GLOBAL_PERSISTENT_DEFAULTS = {}
     local DB_LOCAL_DEFAULTS = {
@@ -126,6 +127,20 @@ do
     ---@format disable
 
     local DB_GLOBAL_MIGRATION            = {
+        -- < 1.3.9
+        {
+            migrationType = "execute",
+            script = function(db)
+                if db and db.GetVariable and db.SetVariable then
+                    local PrefFont = db:GetVariable("PrefFont")
+                    if PrefFont and PrefFont ~= 1 and UIFont.CustomFont.FontExists(PrefFont) then
+                        db:SetVariable("fontPath", UIFont.CustomFont.GetFontPathForIndex(PrefFont))
+                    end
+                    db:SetVariable("PrefFont", nil)
+                end
+            end
+        },
+
         -- < 1.0.0
         {
             migrationType = "variable",
@@ -507,13 +522,16 @@ do
     local function UpdateFonts()
         UIFont.CustomFont:RefreshFontList()
 
-        local selectedFontIndex = Config.DBGlobal:GetVariable("PrefFont")
-        local fontPath = UIFont.CustomFont.GetFontPathForIndex(selectedFontIndex)
+        local fontPath = Config.DBGlobal:GetVariable("fontPath")
+        if fontPath == nil or not UIFont.CustomFont.FontExists(fontPath) then
+            fontPath = UIFont.CustomFont.GetFontPathForIndex(1)
+        end
 
         UIFont.SetNormalFont(fontPath)
+        Config.DBGlobal:SetVariable("fontPath", fontPath)
     end
 
-    SavedVariables.OnChange("WaypointDB_Global", "PrefFont", UpdateFonts)
+    SavedVariables.OnChange("WaypointDB_Global", "fontPath", UpdateFonts)
 
     function FontHandler.Load()
         UpdateFonts()
@@ -521,15 +539,15 @@ do
 end
 
 
-local function OnAddonLoaded()
+local function LoadAddon()
     Config.LoadDB()
     SlashCmdRegister.LoadSchema()
     SoundHandler.Load()
-    C_Timer.After(0, FontHandler.Load)
 
     CVarUtil.SetCVar("showInGameNavigation", true, CVarUtil.Enum.TemporaryType.UntilLogout)
     Config.DBGlobal:SetVariable("lastLoadedVersion", env.VERSION_NUMBER)
     CallbackRegistry.Trigger("Preload.AddonReady")
 end
 
-CallbackRegistry.Add("WoWClient.OnAddonLoaded", OnAddonLoaded)
+CallbackRegistry.Add("WoWClient.OnAddonLoaded", LoadAddon)
+CallbackRegistry.Add("WoWClient.OnPlayerLogin", FontHandler.Load)

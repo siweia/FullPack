@@ -59,6 +59,21 @@ function UIFont_CustomFont.GetFontPathForIndex(index)
     return fonts.paths[index]
 end
 
+function UIFont_CustomFont.GetFontIndexForPath(path)
+    if not path then return end
+
+    for i = 1, #fonts.paths do
+        if fonts.paths[i] == path then
+            return i
+        end
+    end
+end
+
+function UIFont_CustomFont.FontExists(path)
+    if not path then return end
+    return UIFont_CustomFont.GetFontIndexForPath(path) ~= nil
+end
+
 function UIFont_CustomFont.GetFontInfoForIndex(index)
     if index < 1 or index > #fonts.names then return end
     return fonts.names[index], fonts.paths[index]

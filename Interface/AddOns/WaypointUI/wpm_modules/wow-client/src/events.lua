@@ -24,15 +24,18 @@ do -- UI Scale Changed
     end)
 end
 
-do -- Addon Loaded
+do -- Addon Lifecycle
     local f = CreateFrame("Frame")
     f:RegisterEvent("ADDON_LOADED")
+    f:RegisterEvent("PLAYER_LOGIN")
     f:SetScript("OnEvent", function(self, event, ...)
         if event == "ADDON_LOADED" then
             local name = ...
             if name == addonName then
                 CallbackRegistry.Trigger("WoWClient.OnAddonLoaded")
             end
+        elseif event == "PLAYER_LOGIN" then
+            CallbackRegistry.Trigger("WoWClient.OnPlayerLogin")
         end
     end)
 end

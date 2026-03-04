@@ -1,5 +1,5 @@
 --[[
-    Copyright (C) 2024 GurliGebis
+    Copyright (C) 2024-2026 GurliGebis
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -33,31 +33,29 @@ if not L then return end
 
 L["CONDUIT_ITEMS"] = "Предметы медиума"
 L["config_characterConfig"] = "Настройки персонажа"
---[[Translation missing --]]
-L["config_colorWarbandBonus"] = "Color World Quests with Warband bonus blue"
-L["config_enableDebugging"] = "Enable debugging (requires DebugLog addon installed)"
+L["config_colorWarbandBonus"] = "Цветные мировые задания с бонусом отряда синего цвета"
+L["config_enableDebugging"] = "Включить отладку (требуется установленный аддон DebugLog)"
 L["config_enabledFilters"] = "Включенные фильтры"
---[[Translation missing --]]
-L["config_enableTaintWorkarounds"] = "Enable taint workarounds - Reloads UI (might have unknown effects)"
+L["config_enableTaintWorkarounds"] = "Включить обходные пути для устранения уязвимостей - перезагрузка пользовательского интерфейса (могут иметь неизвестные последствия)"
 L["config_hideFilteredPOI"] = "Скрыть отфильтрованные World Quest иконки на карте мира"
-L["config_hideQuestList"] = "Hide World Quests in the quest log"
+L["config_hideQuestList"] = "Скрыть мировые задания в журнале заданий"
 L["config_hideUntrackedPOI"] = "Скрыть неотслеживаемые World Quest иконки на карте мира"
-L["config_lootFilterUpgrades"] = "Показать обновления только для Loot фильтра"
+L["config_lootFilterUpgrades"] = "Показывать улучшения только для фильтра добычи"
 L["config_lootUpgradesLevel"] = "Фильтр добычи показывает улучшения"
 L["config_lootUpgradesLevelValue"] = "На %d уровень экипировки меньше"
 L["config_lootUpgradesLevelValue1"] = "Только более высокий уровень экипировки"
 L["config_lootUpgradesLevelValue2"] = "До того же уровня экипировки"
-L["config_onlyCurrentZone"] = "Показывать Локальные Задания только для текущей зоны"
+L["config_onlyCurrentZone"] = "Показывать мировые задания только для текущей зоны"
 L["config_saveFilters"] = "Сохранять активные фильтры между входами"
-L["config_showAtTop"] = "Показать вверху списка квестов"
+L["config_showAtTop"] = "Отображать в верхней части журнала заданий"
 L["config_showContinentPOI"] = "Показать World Quest иконки на полной карте материка"
 L["config_showHoveredPOI"] = "Всегда показывать значок World Quest"
-L["config_sortMethod"] = "Сортировать Задания"
+L["config_sortMethod"] = "Сортировать задания по"
 L["config_sortMethod_1"] = "Имя"
 L["config_sortMethod_2"] = "Оставшееся время"
 L["config_sortMethod_3"] = "Зона"
 L["config_sortMethod_4"] = "Фракция"
 L["config_sortMethod_5"] = "Награды"
-L["config_timeFilterDuration"] = "Оставшееся время(Продолжительность)"
+L["config_timeFilterDuration"] = "Оставшееся время (продолжительность)"
 L["CURRENT_ZONE"] = "Текущая локация"
-L["UPGRADES"] = "Обновление"
+L["UPGRADES"] = "Обновления"

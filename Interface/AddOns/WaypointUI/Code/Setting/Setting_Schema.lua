@@ -34,6 +34,8 @@
 
     SelectionMenu:
         widgetSelectionMenu_data:       table|function
+        widgetSelectionMenu_get:        function
+        widgetSelectionMenu_set:        function
 
     Color Input:
 
@@ -112,7 +114,13 @@ do -- Schema
                                 UIFont.CustomFont:RefreshFontList()
                                 return UIFont.CustomFont:GetFontNames()
                             end,
-                            key                      = "PrefFont"
+                            widgetSelectionMenu_get  = function(value)
+                                return UIFont.CustomFont.GetFontIndexForPath(value)
+                            end,
+                            widgetSelectionMenu_set  = function(index)
+                                return UIFont.CustomFont.GetFontPathForIndex(index)
+                            end,
+                            key                      = "fontPath"
                         },
                         {
                             widgetName        = L["Config - General - Preferences - Meter"],
@@ -353,6 +361,17 @@ do -- Schema
                             widgetRange_step               = 0.1,
                             widgetRange_textFormattingFunc = FormatPercentage,
                             key                            = "WaypointDistanceTextAlpha"
+                        },
+                        {
+                            widgetName                     = L["Config - Appearance - Waypoint - Footer - SubtextAlpha"],
+                            widgetType                     = Setting_Enum.WidgetType.Range,
+                            showWhen                       = function() return Config.DBGlobal:GetVariable("WaypointDistanceText") == true and Config.DBGlobal:GetVariable("waypointwaypointDistanceTextType") ~= Waypoint_Enum.WaypointDistanceTextType.None end,
+                            indent                         = 1,
+                            widgetRange_min                = 0,
+                            widgetRange_max                = 1,
+                            widgetRange_step               = 0.1,
+                            widgetRange_textFormattingFunc = FormatPercentage,
+                            key                            = "WaypointDistanceSubtextAlpha"
                         }
                     }
                 },
@@ -815,7 +834,7 @@ do -- Schema
                             widgetDescription = Setting_Define.Descriptor{ description = L["Config - ExtraFeature - SilverDragonSupport - Enable - Description"] },
                             widgetType        = Setting_Enum.WidgetType.CheckButton,
                             key               = "SilverDragonSupportEnabled"
-                        },
+                        }
                     }
                 }
             }

@@ -1,5 +1,5 @@
 --[[
-    Copyright (C) 2024 GurliGebis
+    Copyright (C) 2024-2026 GurliGebis
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@ local DataModule = AngrierWorldQuests:NewModule("DataModule", "AceEvent-3.0")
 local ConfigModule = AngrierWorldQuests:GetModule("ConfigModule")
 
 local cachedItems = {}
+local rewardPreloadRequested = {}
 
 do
     --region Maps and data
@@ -160,12 +161,16 @@ do
         2590, -- Council of Dornogal
         2594, -- The Assembly of the Deeps
         2600, -- The Severed Threads
+        2653, -- The Cartels of Undermine
     }
     local MAPS_THE_WAR_WITHIN = {
         [2214] = true, -- The Ringing Deeps
         [2215] = true, -- Hallowfall
         [2248] = true, -- Isle of Dorn
         [2255] = true, -- Azj-Kahet
+        [2346] = true, -- Undermine
+        [2369] = true, -- Siren Isle
+        [2371] = true, -- K'aresh
     }
     --endregion
 
@@ -205,7 +210,7 @@ do
         elseif expansion == _AngrierWorldQuests.Enums.Expansion.THE_WAR_WITHIN then
             return FACTION_ORDER_THE_WAR_WITHIN
         else
-            return nil
+            return {}
         end
     end
 
@@ -361,7 +366,10 @@ do
 
         local tradeskillLineID = questTagInfo.tradeskillLineID
         local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(info.questID)
-        C_TaskQuest.RequestPreloadRewardData(info.questID)
+        if not rewardPreloadRequested[info.questID] then
+            rewardPreloadRequested[info.questID] = true
+            C_TaskQuest.RequestPreloadRewardData(info.questID)
+        end
 
         local isQuestFiltered = hasFilters
 
@@ -561,11 +569,13 @@ do
     function DataModule:QuestLogChanged(arg1)
         if arg1 == "player" then
             wipe(cachedItems)
+            wipe(rewardPreloadRequested)
         end
     end
 
     function DataModule:EnteringWorld()
         wipe(cachedItems)
+        wipe(rewardPreloadRequested)
     end
 
     function DataModule:RegisterEventHandlers()

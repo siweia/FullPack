@@ -77,8 +77,7 @@ do -- Waypoint
                         :id("Footer.DistanceText", id)
                         :fontObject(UIFont.UIFontObjectNormal8)
                         :textAlignment("CENTER", "MIDDLE")
-                        :size(FOOTER_TEXT_WIDTH, FOOTER_TEXT_HEIGHT)
-                        :alpha(0.5),
+                        :size(FOOTER_TEXT_WIDTH, FOOTER_TEXT_HEIGHT),
 
                     Text(name .. ".Footer.ArrivalTimeText")
                         :id("Footer.ArrivalTimeText", id)
@@ -86,7 +85,6 @@ do -- Waypoint
                         :fontObject(UIFont.UIFontObjectNormal8)
                         :textAlignment("CENTER", "MIDDLE")
                         :size(FOOTER_TEXT_WIDTH, FOOTER_TEXT_HEIGHT)
-                        :alpha(0.5)
                 })
                     :id("Footer", id)
                     :anchor(UIKit.NewGroupCaptureString("ContextIcon", id))

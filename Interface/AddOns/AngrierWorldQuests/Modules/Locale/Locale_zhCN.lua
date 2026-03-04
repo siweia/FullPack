@@ -1,5 +1,5 @@
 --[[
-    Copyright (C) 2024 GurliGebis
+    Copyright (C) 2024-2026 GurliGebis
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -33,8 +33,7 @@ if not L then return end
 
 L["CONDUIT_ITEMS"] = "导灵器"
 L["config_characterConfig"] = "为角色进行独立的配置"
---[[Translation missing --]]
-L["config_colorWarbandBonus"] = "Color World Quests with Warband bonus blue"
+L["config_colorWarbandBonus"] = "战团奖励染色"
 L["config_enableDebugging"] = "Enable debugging (requires DebugLog addon installed)"
 L["config_enabledFilters"] = "启用过滤"
 --[[Translation missing --]]
