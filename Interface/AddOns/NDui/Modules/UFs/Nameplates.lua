@@ -731,7 +731,7 @@ function UF:RefreshAllPlates()
 end
 
 local DisabledElements = {
-	"Health", "Castbar", "HealthPrediction", "PvPClassificationIndicator", "ThreatIndicator"
+	"Health", "Castbar", "HealthPrediction", "PvPClassificationIndicator", "ThreatIndicator", "Auras"
 }
 
 local SoftTargetBlockElements = {
@@ -809,7 +809,7 @@ function UF:UpdatePlateByType()
 
 	UF.UpdateNameplateSize(self)
 	UF.UpdateTargetIndicator(self)
-	UF.ToggleNameplateAuras(self)
+	--UF.ToggleNameplateAuras(self)
 end
 
 function UF:RefreshPlateType(unit)
@@ -840,13 +840,12 @@ function UF:OnUnitFactionChanged(unit)
 	end
 end
 
-function UF:OnUnitSoftTargetChanged(previousTarget, currentTarget)
+function UF:OnUnitSoftTargetChanged()
 	if not GetCVarBool("SoftTargetIconGameObject") then return end
 
 	for _, nameplate in pairs(C_NamePlate.GetNamePlates()) do
 		local unitFrame = nameplate and nameplate.unitFrame
-		local guid = unitFrame and unitFrame.unitGUID
-		if guid and (guid == previousTarget or guid == currentTarget) then
+		if unitFrame then
 			unitFrame.previousType = nil
 			UF.RefreshPlateType(unitFrame, unitFrame.unit)
 			UF.UpdateTargetChange(unitFrame)

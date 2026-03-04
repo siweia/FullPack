@@ -731,6 +731,43 @@ function G:SetupSpellsIndicator(parent)
 		local r, g, b = unpack(value[2])
 		createBar(scroll.child, spellID, value[1], r, g, b, value[3])
 	end
+
+	-- Preset spells: none secret spells in midnight
+	local menuList = {}
+	local function AddSpellFromPreset(_, spellID)
+		scroll.box:SetText(spellID)
+		DropDownList1:Hide()
+	end
+	local index = 1
+	for class, value in pairs(UF.NonSecretSpells) do
+		local color = B.HexRGB(B.ClassColor(class))
+		local localClassName = LOCALIZED_CLASS_NAMES_MALE[class] or OTHER
+		menuList[index] = {text = color..localClassName, notCheckable = true, hasArrow = true, menuList = {}}
+
+		for spellID in pairs(value) do
+			local spellName, texture = GetSpellName(spellID), GetSpellTexture(spellID)
+			if spellName then
+				tinsert(menuList[index].menuList, {
+					text = spellName..":"..spellID,
+					icon = texture,
+					tCoordLeft = .08,
+					tCoordRight = .92,
+					tCoordTop = .08,
+					tCoordBottom = .92,
+					arg1 = spellID,
+					func = AddSpellFromPreset,
+					notCheckable = true,
+				})
+			end
+		end
+		index = index + 1
+	end
+	local preset = B.CreateButton(panel, 100, 25, AVAILABLE)
+	preset:SetPoint("TOPRIGHT", -10, -20)
+	preset.text:SetTextColor(1, .8, 0)
+	preset:SetScript("OnClick", function(self)
+		EasyMenu(menuList, B.EasyMenu, self, -100, 150, "MENU", 1)
+	end)
 end
 
 local function refreshBuffsIndicator()
@@ -1589,9 +1626,9 @@ function G:SetupNameplateSize(parent)
 	local function createOptionGroup(parent, offset, value, func, isEnemy)
 		--createOptionTitle(parent, "", offset)
 		createOptionSlider(parent, L["Width"], 50, 500, 190, offset-60, optionValues[value][1], func, "Nameplate")
-		createOptionSlider(parent, L["Height"], 5, 50, 8, offset-130, optionValues[value][2], func, "Nameplate")
+		createOptionSlider(parent, L["Height"], 5, 100, 8, offset-130, optionValues[value][2], func, "Nameplate")
 		createOptionSlider(parent, L["InteractWidth"], 50, 500, 190, offset-200, optionValues[value][9], func, "Nameplate")
-		createOptionSlider(parent, L["InteractHeight"], 5, 50, 8, offset-270, optionValues[value][10], func, "Nameplate")
+		createOptionSlider(parent, L["InteractHeight"], 5, 100, 8, offset-270, optionValues[value][10], func, "Nameplate")
 		createOptionSlider(parent, L["NameTextSize"], 10, 50, 14, offset-340, optionValues[value][3], func, "Nameplate")
 		createOptionSlider(parent, L["Name Offset"], -100, 50, 5, offset-410, optionValues[value][11], func, "Nameplate")
 		createOptionSlider(parent, L["HealthTextSize"], 10, 50, 16, offset-480, optionValues[value][4], func, "Nameplate")

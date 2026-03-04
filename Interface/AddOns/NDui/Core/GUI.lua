@@ -525,7 +525,6 @@ G.DefaultSettings = {
 		GemNEnchant = true,
 		AzeriteTraits = true,
 		MissingStats = true,
-		SoloInfo = true,
 		RareAlerter = true,
 		RarePrint = true,
 		Focuser = true,
@@ -579,6 +578,7 @@ G.DefaultSettings = {
 		W3Point = 1,
 		CentralBuffView = false,
 		CentralUtilView = false,
+		CombatAnimation = true,
 	},
 	Tutorial = {
 		Complete = false,
@@ -608,7 +608,6 @@ G.AccountSettings = {
 	ClickSets = {},
 	TexStyle = 2,
 	KeystoneInfo = {},
-	AutoBubbles = false,
 	DisableInfobars = false,
 	ContactList = {},
 	CustomJunkList = {},
@@ -723,6 +722,7 @@ loader:SetScript("OnEvent", function(self, _, addon)
 		C.db["UFs"]["RaidBuffPerRow"] = 7
 		C.db["UFs"]["RaidDebuffPerRow"] = 7
 		C.db["UFs"]["Portrait"] = false
+		C.db["UFs"]["MBPerRow"] = 13
 		C.db["Reset3"] = true
 	end
 
@@ -1085,10 +1085,6 @@ local function updateIgnoredRares()
 	B:GetModule("Misc"):RareAlert_UpdateIgnored()
 end
 
-local function updateSoloInfo()
-	B:GetModule("Misc"):SoloInfo()
-end
-
 local function updateSpellItemAlert()
 	B:GetModule("Misc"):SpellItemAlert()
 end
@@ -1200,7 +1196,7 @@ G.TabList = {
 	L["Maps"],
 	IsNew..L["Skins"],
 	L["Tooltip"],
-	L["Misc"],
+	IsNew..L["Misc"],
 	IsNew..L["UI Settings"],
 	L["Profile"],
 }
@@ -1280,10 +1276,10 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		--{1, "UFs", "BuffClickThru", L["BuffClickThru"].."*", true, nil, updateRaidAurasOptions, L["ClickThroughTip"]},
 		--{3, "UFs", "RaidDebuffSize", L["RaidDebuffSize"].."*", nil, {5, 30, 1}, updateRaidAurasOptions},
 		--{3, "UFs", "RaidBuffSize", L["RaidBuffSize"].."*", true, {5, 30, 1}, updateRaidAurasOptions},
-		--{},--blank
-		--{1, "UFs", "RaidBuffIndicator", HeaderTag..L["RaidBuffIndicator"].."*", nil, setupSpellsIndicator, updateRaidAurasOptions, L["RaidBuffIndicatorTip"]},
-		--{4, "UFs", "BuffIndicatorType", L["BuffIndicatorType"].."*", nil, {L["BI_Blocks"], L["BI_Icons"], L["BI_Numbers"]}, updateRaidAurasOptions},
-		--{3, "UFs", "BuffIndicatorScale", L["BuffIndicatorScale"].."*", true, {.8, 2, .1}, updateRaidAurasOptions},
+		{},--blank
+		{1, "UFs", "RaidBuffIndicator", HeaderTag..L["RaidBuffIndicator"].."*", nil, setupSpellsIndicator, updateRaidAurasOptions, L["RaidBuffIndicatorTip"]},
+		{4, "UFs", "BuffIndicatorType", L["BuffIndicatorType"].."*", nil, {L["BI_Blocks"], L["BI_Icons"], L["BI_Numbers"]}, updateRaidAurasOptions},
+		{3, "UFs", "BuffIndicatorScale", L["BuffIndicatorScale"].."*", true, {.8, 2, .1}, updateRaidAurasOptions},
 		--{},--blank
 		--{1, "UFs", "InstanceAuras", HeaderTag..L["Instance Auras"].."*", nil, setupRaidDebuffs, updateRaidAurasOptions, L["InstanceAurasTip"]},
 		--{1, "UFs", "AuraClickThru", L["RaidAuras ClickThrough"].."*", true, nil, updateRaidAurasOptions, L["ClickThroughTip"]},
@@ -1382,8 +1378,8 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Auras", "Totems", HeaderTag..L["Enable Totembar"]},
 		{1, "Auras", "VerticalTotems", L["VerticalTotems"].."*", nil, nil, refreshTotemBar},
 		{3, "Auras", "TotemSize", L["TotemSize"].."*", true, {24, 60, 1}, refreshTotemBar},
-		--{},--blank
-		--{1, "Auras", "Reminder", L["Enable Reminder"].."*", nil, nil, updateReminder, L["ReminderTip"]},
+		{},--blank
+		{1, "Auras", "Reminder", L["Enable Reminder"].."*", nil, nil, updateReminder, L["ReminderTip"]},
 	},
 	[8] = {
 		{1, "Misc", "RaidTool", HeaderTag..L["Raid Manger"]},
@@ -1404,8 +1400,6 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "InstAlertOnly", L["InstAlertOnly"].."*", true, nil, updateInterruptAlert, L["InstAlertOnlyTip"]},
 		{1, "Misc", "SpellItemAlert", L["SpellItemAlert"].."*", nil, nil, updateSpellItemAlert, L["SpellItemAlertTip"]},
 		{1, "Misc", "LeaderOnly", IsNew..L["LeaderOnly"].."*", true, nil, nil, L["LeaderOnlyTip"]},
-		{},--blank
-		{1, "Misc", "SoloInfo", L["SoloInfo"].."*", nil, nil, updateSoloInfo},
 		{},--blank
 		{1, "Misc", "RareAlerter", HeaderTag..L["Rare Alert"].."*", nil, nil, updateRareAlert},
 		{1, "Misc", "RarePrint", L["Alert In Chat"].."*"},
@@ -1517,10 +1511,10 @@ G.OptionList = { -- type, key, value, name, horizon, doubleline
 		{1, "Misc", "AzeriteTraits", L["Show AzeriteTraits"].."*", true},
 		{},--blank
 		{1, "Misc", "HideTalking", L["No Talking"]},
-		{1, "ACCOUNT", "AutoBubbles", L["AutoBubbles"], true},
+		{1, "Misc", "InstantDelete", L["InstantDelete"].."*", true},
 		{1, "Misc", "HideBossEmote", L["HideBossEmote"].."*", nil, nil, toggleBossEmote},
 		{1, "Misc", "HideBossBanner", L["Hide Bossbanner"].."*", true, nil, toggleBossBanner},
-		{1, "Misc", "InstantDelete", L["InstantDelete"].."*"},
+		{1, "Misc", "CombatAnimation", IsNew..L["CombatAnimation"], nil, nil, toggleBossBanner},
 		{1, "Misc", "FasterLoot", L["Faster Loot"].."*", true, nil, updateFasterLoot},
 		{1, "Misc", "BlockInvite", "|cffff0000"..L["BlockInvite"].."*", nil, nil, nil, L["BlockInviteTip"]},
 		{1, "Misc", "FasterSkip", L["FasterMovieSkip"].."*", true, nil, nil, L["FasterMovieSkipTip"]},
